@@ -7,19 +7,15 @@
 // 
 // 
 
-#ifndef VECTOR_H
-#define VECTOR_H
-
-#ifdef __GNUG__
-#pragma interface
-#endif
+#ifndef AMETHYST_VECTOR_H
+#define AMETHYST_VECTOR_H
 
 namespace amethyst {
 
   // Cartesian_Vector Data Type and Support Functions
   class Cartesian_Vector {
      
-       public:
+     public:
        double x;
        double y;
        double z;
@@ -28,7 +24,12 @@ namespace amethyst {
        inline Cartesian_Vector(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz){};
        Cartesian_Vector(const Cartesian_Vector&);
 
-       void zeroize(void);
+       void   Zeroize(void);
+
+       double Magnitude(void);
+       void   Normalize(void);
+       void   Reverse(void);
+       
        
        //const Cartesian_Vector& operator = (Cartesian_Vector&);
        
@@ -36,6 +37,8 @@ namespace amethyst {
        const Cartesian_Vector& operator -= (Cartesian_Vector&);
        const Cartesian_Vector& operator *= (double&);
        const Cartesian_Vector& operator /= (double&);
+
+       Cartesian_Vector operator -(void);
        };
 
   typedef Cartesian_Vector Cartesian_Coord;
@@ -87,4 +90,4 @@ namespace amethyst {
   
 }
 
-#endif /* VECTOR_H */
+#endif /* AMETHYST_VECTOR_H */

@@ -7,8 +7,8 @@
 // Life is really simple, but we insist on making it complicated.
 //                                                      - Confucious
 
-#ifndef PHYSICS_H
-#define PHYSICS_H
+#ifndef AMETHYST_PHYSICS_H
+#define AMETHYST_PHYSICS_H
 
 #include "object.h"
 
@@ -66,5 +66,4 @@ namespace amethyst {
                                         double modifier);
 
 }
-#endif  /* PHYSICS_H */
-
+#endif  /* AMETHYST_PHYSICS_H */

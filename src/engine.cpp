@@ -28,7 +28,7 @@ namespace amethyst {
        do
        {
             obj1->force_clear();
-            print_object(*obj1);
+            //print_object(*obj1);
 
             obj1 = obj1->next;
        } while (obj1 != NULL);
@@ -54,14 +54,14 @@ namespace amethyst {
                  // Convert to Spherical Vector
                  Spherical_Vector sphr = phys_alias_transform (vector);;
 
-                 print_vector(obj1->name, sphr);
+                 //print_vector(obj1->name, sphr);
                  // Use radius value from spherical vector as distance
                  double distance = sphr.r;
 
                  // Replace radius with aggregate gravity force
                  sphr.r = phys_gravity(obj1->mass, obj2->mass, distance);
 
-                 print_vector("grav", sphr); //// DUBUG
+                 //print_vector("grav", sphr); //// DUBUG
 
                  // Add gravity as a force to first object
                  obj1->force_add(sphr);
@@ -90,7 +90,7 @@ namespace amethyst {
             obj1->force_apply();
             obj1->accel_apply(time);
             obj1->velocity_apply(time);
-            print_object(*obj1);
+            //print_object(*obj1);
             obj1 = obj1->next;
        } while (obj1 != NULL);
     

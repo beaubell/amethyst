@@ -63,8 +63,8 @@ void Object::force_add(Spherical_Vector sphr_force) {
     
 void Object::force_clear() {
 
-    force.zeroize();
-    acceleration.zeroize();
+    force.Zeroize();
+    acceleration.Zeroize();
     }
 
     

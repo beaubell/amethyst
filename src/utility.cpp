@@ -22,11 +22,13 @@ namespace amethyst {
        printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title, vector.x, vector.y, vector.z);
        }
 
+
   void print_vector(char *title, const Spherical_Vector &vector) {
   
        printf("%s SV: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title, vector.a, vector.p, vector.r);
        }
-              
+
+
   void print_object(const Object &obj) {
   
        printf("Object Summary: %s\n", obj.name);

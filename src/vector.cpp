@@ -7,18 +7,10 @@
 // 
 // 
 
+#include <math.h>
 #include "vector.h"
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 namespace amethyst {
-
-  //Cartesian_Vector::Cartesian_Vector(void){
-  
-  //     zeroize();
-  //     }
        
   Cartesian_Vector::Cartesian_Vector(const Cartesian_Vector &old) {
   
@@ -27,11 +19,31 @@ namespace amethyst {
        z = old.z;
        }
         
-  void Cartesian_Vector::zeroize(void) {
+  void Cartesian_Vector::Zeroize(void) {
   
        x = 0;
        y = 0;
        z = 0;
+       }
+
+  double Cartesian_Vector::Magnitude(void) {
+
+       return sqrt(x*x + y*y + z*z);
+       }
+
+  void Cartesian_Vector::Normalize(void) {
+
+       double m = Magnitude();
+       x /= m;
+       y /= m;
+       z /= m;
+       }
+
+  void Cartesian_Vector::Reverse(void) {
+
+       x = -x;
+       y = -y;
+       z = -z;
        }
        
   //const Cartesian_Vector& Cartesian_Vector::operator = (Cartesian_Vector& vector) {
@@ -77,7 +89,12 @@ namespace amethyst {
        z /= number;
        
        return *this;
-       }     
+       }
+
+  Cartesian_Vector Cartesian_Vector::operator - (void) {
+
+       return Cartesian_Vector(-x, -y, -z);
+       }      
        
   const Cartesian_Vector operator+(const Cartesian_Vector &left, const Cartesian_Vector &right) {
 
