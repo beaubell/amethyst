@@ -1,5 +1,6 @@
 /* 
    Physics Subroutines, Declarations
+   Amethyst Physics Library (c) 2003
    Author: Beau V.C. Bellamy
 */
 
@@ -9,13 +10,20 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
-
 #include "object.h"
 
+#ifdef __GNUG__
+#pragma interface
+#endif
+
+namespace amethyst {
 // Constants
 
   // Gravitational Constant, Defined in physics.cpp   (6.672E-11)
   extern double G;
+  
+  // Speed of Light        , Defined in physics.cpp   (2.99792458E8 meters per second)
+  extern double C;
 
   // PI
   //extern double PI;
@@ -37,7 +45,7 @@
 
   // Compute Cartisian Vector from Cartesian Coordinates
   Cartesian_Vector phys_vector (const Cartesian_Coord &a,
-			        const Cartesian_Coord &b);
+                                const Cartesian_Coord &b);
 
   // Invert Spherical Vector
   Spherical_Vector phys_vector_invert (const Spherical_Vector &a);
@@ -56,6 +64,7 @@
   Cartesian_Coord phys_alibi_transform (const Cartesian_Coord &a,
                                         const Cartesian_Vector &v,
                                         double modifier);
-					
+
+}
 #endif  /* PHYSICS_H */
 

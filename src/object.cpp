@@ -1,34 +1,36 @@
 /*
    Physics Object, Definitions
+   Amethyst Physics Library (c) 2003
    Author: Beau V.C. Bellamy
 */
 
 // A superior man is modest in his speech, but exceeds in his actions. 
 //                                                          - Confucious
 
+#include <stdlib.h>
+
+#include "physics.h"
+#include "object.h"
+
 #ifdef __GNUG__
 #pragma implementation
 #endif
 
-using namespace std;
-
-#include <stdlib.h>
-#include "physics.h"
-#include "object.h"
+namespace amethyst {
 
 Object::Object(){
 
-    location.x = 0;
-    location.y = 0;
-    location.z = 0;
+    //location.x = 0;
+    //location.y = 0;
+    //location.z = 0;
 
-    velocity.x = 0;
-    velocity.y = 0;
-    velocity.z = 0;
+    //velocity.x = 0;
+    //velocity.y = 0;
+    //velocity.z = 0;
 
-    acceleration.x = 0;
-    acceleration.y = 0;
-    acceleration.z = 0;
+    //acceleration.x = 0;
+    //acceleration.y = 0;
+    //acceleration.z = 0;
 
     mass = 0; 
 
@@ -39,41 +41,49 @@ Object::Object(){
     }
 
 
-Object::~Object(){
+//Object::~Object(){
 
     //printf("DEAD OBJECT");
+//    }
+
+
+void Object::force_add(Cartesian_Vector new_force) {
+
+    force += new_force;
     }
 
 
-void Object::force_add(Cartesian_Vector force) {
+void Object::force_add(Spherical_Vector sphr_force) {
 
-    acceleration = phys_alibi_transform (acceleration, force);
-    }
+    Cartesian_Vector new_force = phys_alias_transform (sphr_force);
 
-
-void Object::force_add(Spherical_Vector force) {
-
-    Cartesian_Vector new_force = phys_alias_transform (force);
-
-    acceleration = phys_alibi_transform (acceleration, new_force);
+    force += new_force;
     }
 
     
 void Object::force_clear() {
 
-    acceleration.x = 0;
-    acceleration.y = 0;
-    acceleration.z = 0;
+    force.zeroize();
+    acceleration.zeroize();
     }
 
     
-void Object::force_apply(double time) {
+void Object::force_apply(void) {
     
-    velocity = phys_alibi_transform (velocity, acceleration, time);
+    //velocity = phys_alibi_transform (velocity, acceleration, time);
+    acceleration = force / mass;
     }
 
+void Object::accel_apply(double time) {
+
+    Cartesian_Vector temp(acceleration * time);
+    velocity += temp;
+    }
 
 void Object::velocity_apply(double time) {
 
-    location = phys_alibi_transform (location, velocity, time);
+    Cartesian_Vector temp(velocity * time);
+    location += temp;
     }
+
+}
