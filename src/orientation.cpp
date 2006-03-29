@@ -9,12 +9,12 @@
 
 namespace amethyst {
   
-  /* Euler::Euler(const Euler &old) {
+  Euler::Euler(const Euler &old) {
   
        x = old.x;
        y = old.y;
        z = old.z;
-       } */
+       }
        
        
   Quaternion::Quaternion(const Quaternion &old) {
@@ -62,7 +62,11 @@ namespace amethyst {
        z /= L;
        w /= L;
        }
-   
+
+   Cartesian_Vector  Quaternion::GetVector(void) {
+
+       return Cartesian_Vector(x,y,z);
+       }
    
    const Quaternion& Quaternion::operator *= (Quaternion& right) {
        
@@ -84,11 +88,6 @@ namespace amethyst {
        
        Quaternion quat;
        
-       //quat.w = left.w * right.w;
-       //quat.x = left.x * right.x;
-       //quat.y = left.y * right.y;
-       //quat.z = left.z * right.z;
-       
        quat.w = (left.w * right.w) - (left.x * right.x) - (left.y * right.y) - (left.z * right.z);
        quat.x = (left.w * right.x) + (left.x * right.w) + (left.y * right.z) - (left.z * right.y);
        quat.y = (left.w * right.y) + (left.y * right.w) + (left.z * right.x) - (left.x * right.z);
@@ -97,4 +96,20 @@ namespace amethyst {
        return quat;
    
    }
+
+   const Quaternion operator*(const Quaternion &q, const Cartesian_Vector &v) {
+
+       return  Quaternion(  -(q.x*v.x + q.y*v.y + q.z*v.z),
+                              q.w*v.x + q.y*v.z - q.z*v.y,
+                              q.w*v.y + q.z*v.x - q.x*v.z,
+                              q.w*v.z + q.x*v.y - q.y*v.x);
+       }
+
+   const Quaternion operator*(const Cartesian_Vector &v, const Quaternion &q) {
+
+       return  Quaternion(  -(q.x*v.x + q.y*v.y + q.z*v.z),
+                              q.w*v.x + q.z*v.y - q.y*v.z,
+                              q.w*v.y + q.x*v.z - q.z*v.x,
+                              q.w*v.z + q.y*v.x - q.x*v.y);
+       }
 }

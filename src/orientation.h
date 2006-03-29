@@ -11,17 +11,17 @@
 namespace amethyst { 
 
   // Euler Data Type and Support Functions
-  class Euler : public Cartesian_Vector {
+  class Euler {
      
        public:
        
-       //float x;
-       //float y;
-       //float z;
+       double x;
+       double y;
+       double z;
        
-       //inline Euler() : x(0), y(0), z(0) {};
-       //inline Euler(const float &xx, const float &yy, const float &zz) : x(xx), y(yy), z(zz){};
-       //Euler(const Euler&);
+       inline Euler() : x(0), y(0), z(0) {};
+       inline Euler(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz){};
+       Euler(const Euler&);
 
        //void Set_Identity(void);
        
@@ -38,24 +38,32 @@ namespace amethyst {
      
        public:
     
-       float w;
-       float x;
-       float y;
-       float z;
+       double w;
+       double x;
+       double y;
+       double z;
        
        inline Quaternion() : w(0), x(0), y(0), z(0) {};
-       inline Quaternion(const float &ww, const float &xx, const float &yy, const float &zz) : w(ww), x(xx), y(yy), z(zz){};
+       inline Quaternion(const double &ww, const double &xx, const double &yy, const double &zz) : w(ww), x(xx), y(yy), z(zz){};
        Quaternion(const Quaternion&);
        Quaternion(const Euler&);
 
        void Normalize(void);
+
+       Cartesian_Vector GetVector(void);
+       Quaternion       Bar(void) { return Quaternion(w, -x, -y, -z); };
+       //Cartesian_Vector GetAxis(void);
        //void Set_Identity(void);
        
        //const Quaternion& operator = (Quaternion&);
        
        const Quaternion& operator *= (Quaternion&);
+       const Quaternion& operator ~  (void) { return Quaternion( w , -x, -y, -z); };
        };
 
   const Quaternion operator* (const Quaternion &left, const Quaternion &right);
+  const Quaternion operator* (const Quaternion &q, const Cartesian_Vector &v);
+  const Quaternion operator* (const Cartesian_Vector &v, const Quaternion &q);
+
 }
 #endif  /* AMETHYST_ORIENTATION_H */

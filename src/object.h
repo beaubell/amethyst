@@ -11,6 +11,7 @@
 #define OBJECT_H
 
 #include "vector.h"
+#include "orientation.h"
 
 #ifdef __GNUG__
 #pragma interface
@@ -83,11 +84,11 @@ namespace amethyst {
          Cartesian_Vector force;
  
        // attitude variables
-         /* Absolute Attitude, fixme*/
-         //Cartesian_Coord attitude;
+         /* Absolute Attitude */
+         Quaternion attitude;
 
-         /* Absolute rotation speed, fixme */ 
-         //Cartesian_Coord rotspd;
+         /* Absolute rotation speed, torque vector */
+         Quaternion torque;
 
 
        /* Pointer to external forces (Gravity, etc) */
