@@ -33,18 +33,35 @@
 #define TODEG(x)    x = x * 180 / M_PI
 #define TORAD(x)    x = x / 180 * M_PI
 
-#define JOYAXISGET(axis, var)  
-
-
 using namespace std;
 using namespace amethyst;
 
 class __global {
 
    public:
+      __global() { ship.location.x = 10;
+                   ship.location.y = 0;
+                   ship.location.z = 0;
+
+                   ship.attitude.w = 1;
+                   ship.attitude.x = 0;
+                   ship.attitude.y = 0;
+                   ship.attitude.z = 0;
+
+                   cam_num = 0;};
+
+      // Your Ship
       Object ship;
 
+      // Pointer to quadratic
       GLUquadric *quadratic;
+
+      // Joystick
+      //joystick *
+
+      // Camera Ring Buffer
+      Cartesian_Vector cam_pos[10], cam_view[10], cam_up[10];
+      int cam_num;
 
 };
 
@@ -53,13 +70,10 @@ __global Global;
 void DrawShip(void);
 static void setup_sdl(void);
 static void setup_joystick(void);
-Uint32 TimerFunction(Uint32 interval, void *param);
 
 GLuint dlShip;          // Display list identifier for the ship
 
 // Initial
-Quaternion dir(1, 0, 0, 0);
-Cartesian_Vector position(100,0,0), velocity, accel, thrust;
 unsigned short joy_null = 1000;
 short joy_max = 32767;
 short joy_min = -32768;
@@ -106,6 +120,9 @@ void print_vector(char *title, const Cartesian_Vector &vector) {
 // Called to draw scene
 void RenderScene(void)
 {
+    // Get Gobal State
+    Cartesian_Vector &position = Global.ship.location;
+    Quaternion       &attitude = Global.ship.attitude;
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -124,14 +141,10 @@ void RenderScene(void)
       //Cartesian_Vector shipoffset(0,0, 0);
 
       //dir.Normalize();
-
-      Cartesian_Vector real_pos   = (QVRotate(dir, (shipoffset + raw_pos ))) + position;
-      Cartesian_Vector real_view  = (QVRotate(dir, (shipoffset + raw_view))) + position;
-      Cartesian_Vector real_up    = (QVRotate(dir, (shipoffset + raw_up  ))) + position;
-
-      //Cartesian_Vector real_pos   = QVRotate(dir, (shipoffset + raw_pos ));
-      //Cartesian_Vector real_view  = QVRotate(dir, (shipoffset + raw_view));
-      //Cartesian_Vector real_up    = QVRotate(dir, (shipoffset + raw_up  ));
+     {
+      Cartesian_Vector real_pos   = (QVRotate(attitude, (shipoffset + raw_pos ))) + position;
+      Cartesian_Vector real_view  = (QVRotate(attitude, (shipoffset + raw_view))) + position;
+      Cartesian_Vector real_up    = (QVRotate(attitude, (shipoffset + raw_up  ))) + position;
 
       /*
       if (ref_count >= 15)
@@ -153,6 +166,20 @@ void RenderScene(void)
       
 
       // Apply Camera
+      Global.cam_num++;
+      if(Global.cam_num > 8) Global.cam_num = 0;
+      int cam_num = Global.cam_num;
+      
+      Global.cam_pos[cam_num] = real_pos;
+      Global.cam_view[cam_num] = real_view;
+      Global.cam_up[cam_num] = real_up;
+
+      int view_num = cam_num - 7;
+      if(view_num < 0) view_num = view_num + 9;
+      real_pos  = Global.cam_pos[view_num];
+      real_view = Global.cam_view[view_num];
+      real_up   = Global.cam_up[view_num];
+
       gluLookAt(real_pos.x,  real_pos.y,  real_pos.z,
                 real_view.x, real_view.y, real_view.z,
                 real_up.x,   real_up.y,   real_up.z);
@@ -163,7 +190,7 @@ void RenderScene(void)
 
     //glRotatef(viewx, 0.0f, 1.0f, 0.0f);
     //glRotatef(viewy, 1.0f, 0.0f, 0.0f);
-
+    }
     //Lights
     GLfloat lightPos[] = { 00.0f, 00.0f, 100.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -175,7 +202,7 @@ void RenderScene(void)
     //Draw Ship
     glPushMatrix();
 
-      double theta = 2 * acos(dir.w);
+      double theta = 2 * acos(attitude.w);
       TODEG(theta);
 
       //float scale = sqrtf ((dir.x * dir.x) + (dir.y *  dir.y) + (dir.z * dir.z));
@@ -186,17 +213,17 @@ void RenderScene(void)
       glTranslated(position.x, position.y, position.z);
 
       //Rotate Ship
-      glRotatef(theta, dir.x, dir.y, dir.z);
+      glRotatef(theta, attitude.x, attitude.y, attitude.z);
 
       {
         GLfloat fDiffLight[] =  { 0.0f, 0.0f, 1.0f };  // BLUE!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
       }
       glCallList(dlShip);
-gg:
+
     glPopMatrix();
 
-    
+
     //Draw Ship 2
     glPushMatrix();
 
@@ -212,7 +239,7 @@ gg:
       glCallList(dlShip);
 
     glPopMatrix();
-    
+
 
     //Draw view ref
     glPushMatrix();
@@ -405,6 +432,13 @@ static void setup_joystick()
 
 static void process_inputs()
 {
+    // Get Global State
+    Cartesian_Vector &position = Global.ship.location;
+    Cartesian_Vector &velocity = Global.ship.velocity;
+    Cartesian_Vector &thrust   = Global.ship.force;
+    Cartesian_Vector &accel    = Global.ship.acceleration;
+    Quaternion       &attitude = Global.ship.attitude;
+
     GLfloat yRot  = 0.0f;
     GLfloat xRot  = 0.0f;
     GLfloat zRot  = 0.0f;
@@ -429,14 +463,14 @@ static void process_inputs()
     //if (SDL_JoystickGetAxis(global_joy, 1) < -joy_null) xRot =
     //      (float(SDL_JoystickGetAxis(global_joy, 1) + joy_null)) * 1.0f / (float(joy_max - joy_null));
 
-    zRot = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 3), joy_null) * scaler);
+    zRot = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 2), joy_null) * scaler);
 
     //if (SDL_JoystickGetAxis(global_joy, 3) > joy_null) zRot =
     //      -(float(SDL_JoystickGetAxis(global_joy, 3) - joy_null)) * 1.0f / (float(joy_max - joy_null));
     //if (SDL_JoystickGetAxis(global_joy, 3) < -joy_null) zRot =
     //      -(float(SDL_JoystickGetAxis(global_joy, 3) + joy_null)) * 1.0f / (float(joy_max - joy_null));
 
-    speed = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 4), joy_null) * scaler);
+    speed = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 3), joy_null) * scaler);
 
     //if (joy_state.axis[4] > joy_null)  speed = (float(joy_state.axis[4] - joy_null)) * 1.0f / (float(joy_max - joy_null));
     //if (joy_state.axis[4] < -joy_null) speed = (float(joy_state.axis[4] + joy_null)) * 1.0f / (float(joy_max - joy_null));
@@ -463,10 +497,10 @@ static void process_inputs()
         };
 
     if (SDL_JoystickGetButton(global_joy, 7)) {
-        dir.w = 1;
-        dir.x = 0;
-        dir.y = 0;
-        dir.z = 0;
+        Global.ship.attitude.w = 1;
+        Global.ship.attitude.x = 0;
+        Global.ship.attitude.y = 0;
+        Global.ship.attitude.z = 0;
         viewx = 0;
         viewy = 0;
         position.Zeroize();
@@ -481,8 +515,8 @@ static void process_inputs()
     Euler eul(xRot, yRot, zRot);
     Quaternion quat(eul);
     
-    dir *= quat;
-    dir.Normalize();
+    Global.ship.attitude *= quat;
+    Global.ship.attitude.Normalize();
         
     
     //float scale = sqrtf ((dir.x * dir.x) + (dir.y *  dir.y) + (dir.z * dir.z));
@@ -500,7 +534,7 @@ static void process_inputs()
         }
 
     // Rotate trust vector to match ship orientation 
-    accel = QVRotate(dir, thrust);
+    accel = QVRotate(Global.ship.attitude, thrust);
 
     // Calculate new velocity from Acceleration vectors
     velocity += accel;
