@@ -43,7 +43,7 @@ namespace amethyst {
        double y;
        double z;
        
-       inline Quaternion() : w(0), x(0), y(0), z(0) {};
+       inline Quaternion() : w(1), x(0), y(0), z(0) {};
        inline Quaternion(const double &ww, const double &xx, const double &yy, const double &zz) : w(ww), x(xx), y(yy), z(zz){};
        Quaternion(const Quaternion&);
        Quaternion(const Euler&);
