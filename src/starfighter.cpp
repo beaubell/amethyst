@@ -451,34 +451,11 @@ static void process_inputs()
     // Get Inputs
     yRot = float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 0), joy_null) * scaler);
 
-    //if (SDL_JoystickGetAxis(global_joy, 0) > joy_null) yRot =
-    //      (float(SDL_JoystickGetAxis(global_joy, 0) - joy_null)) * 1.0f / (float(joy_max - joy_null));
-    //if (SDL_JoystickGetAxis(global_joy, 0) < -joy_null) yRot =
-    //      (float(SDL_JoystickGetAxis(global_joy, 0) + joy_null)) * 1.0f / (float(joy_max - joy_null));
-
     xRot = float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 1), joy_null) * scaler);
-
-    //if (SDL_JoystickGetAxis(global_joy, 1) > joy_null) xRot =
-    //      (float(SDL_JoystickGetAxis(global_joy, 1) - joy_null)) * 1.0f / (float(joy_max - joy_null));
-    //if (SDL_JoystickGetAxis(global_joy, 1) < -joy_null) xRot =
-    //      (float(SDL_JoystickGetAxis(global_joy, 1) + joy_null)) * 1.0f / (float(joy_max - joy_null));
 
     zRot = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 2), joy_null) * scaler);
 
-    //if (SDL_JoystickGetAxis(global_joy, 3) > joy_null) zRot =
-    //      -(float(SDL_JoystickGetAxis(global_joy, 3) - joy_null)) * 1.0f / (float(joy_max - joy_null));
-    //if (SDL_JoystickGetAxis(global_joy, 3) < -joy_null) zRot =
-    //      -(float(SDL_JoystickGetAxis(global_joy, 3) + joy_null)) * 1.0f / (float(joy_max - joy_null));
-
     speed = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 3), joy_null) * scaler);
-
-    //if (joy_state.axis[4] > joy_null)  speed = (float(joy_state.axis[4] - joy_null)) * 1.0f / (float(joy_max - joy_null));
-    //if (joy_state.axis[4] < -joy_null) speed = (float(joy_state.axis[4] + joy_null)) * 1.0f / (float(joy_max - joy_null));
-
-    //if (SDL_JoystickGetAxis(global_joy, 4) > joy_null)  speed =
-    //      (float(SDL_JoystickGetAxis(global_joy, 4) - joy_null)) * 1.0f / (float(joy_max - joy_null));
-    //if (SDL_JoystickGetAxis(global_joy, 4) < -joy_null) speed =
-    //      (float(SDL_JoystickGetAxis(global_joy, 4) + joy_null)) * 1.0f / (float(joy_max - joy_null));
 
     if (SDL_JoystickGetAxis(global_joy, 6) == joy_max) viewx += .1;
     if (SDL_JoystickGetAxis(global_joy, 6) == -joy_max) viewx -= .1;
@@ -594,7 +571,7 @@ static void main_loop()
 
     /* update the screen */
     RenderScene();
-    //SDL_Delay(time_left());
+    SDL_Delay(time_left());
     next_time += TICK_INTERVAL;
     }
 }
