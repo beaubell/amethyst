@@ -195,6 +195,17 @@ void RenderScene(void)
     //glRotatef(viewx, 0.0f, 1.0f, 0.0f);
     //glRotatef(viewy, 1.0f, 0.0f, 0.0f);
     }
+    //Sky Box
+    {
+      glPushMatrix();
+        glDisable(GL_LIGHTING);
+        //GLfloat lightPos[] = { 00.0f, 00.0f, 00.0f, 1.0f };
+        //glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+        skybox();
+        glEnable(GL_LIGHTING);
+      glPopMatrix();
+    }
+
     //Lights
     GLfloat lightPos[] = { 00.0f, 00.0f, 100.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -263,9 +274,14 @@ void RenderScene(void)
 
     glPopMatrix();
 
+#if 0
     glPushMatrix();
 
-      glBindTexture(GL_TEXTURE_2D, Global.texture[0]);   /* select our  texture */
+      glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, Global.texture[0]);
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
       glBegin(GL_QUADS);
       /* front face */
       glTexCoord2f(0.0f, 0.0f);
@@ -277,7 +293,12 @@ void RenderScene(void)
       glTexCoord2f(0.0f, 10.0f);
       glVertex3f(-10.0f, 10.0f, 10.0f);
       glEnd();
+
+      glDisable(GL_BLEND);
+      glDisable(GL_TEXTURE_2D);
+
     glPopMatrix();
+#endif
     //glPopMatrix();  Camera
     // Do the buffer Swap
     SDL_GL_SwapBuffers();
@@ -308,7 +329,7 @@ void SetupRC(void)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_TEXTURE_2D);  
 
     // Set up lighting
     GLfloat fAmbLight[] =   { 0.01f, 0.01f, 0.01f };
@@ -472,9 +493,9 @@ static void process_inputs()
 
     xRot = float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 1), joy_null) * scaler);
 
-    zRot = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 2), joy_null) * scaler);
+    zRot = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 3), joy_null) * scaler);
 
-    speed = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 3), joy_null) * scaler);
+    speed = -float(joystick_axis_norm(SDL_JoystickGetAxis(global_joy, 4), joy_null) * scaler);
 
     if (SDL_JoystickGetAxis(global_joy, 6) == joy_max) viewx += .1;
     if (SDL_JoystickGetAxis(global_joy, 6) == -joy_max) viewx -= .1;
@@ -607,7 +628,7 @@ int main(int argc, char* argv[])
 
     net_test();
 
-    load_image();
+    load_skybox();
 
     main_loop();
 
