@@ -24,6 +24,7 @@
 
 #include "joystick.h"
 #include "net.h"
+#include "texture.h"
 
 #define WIDTH  1024
 #define HEIGHT 768
@@ -55,6 +56,9 @@ class __global {
 
       // Pointer to quadratic
       GLUquadric *quadratic;
+
+      // Storage for one texture
+      GLuint  texture[1];
 
       // Joystick
       //joystick *
@@ -113,7 +117,7 @@ Uint32 time_left(void)
 
 
 void print_vector(char *title, const Cartesian_Vector &vector) {
-  
+
        printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title, vector.x, vector.y, vector.z);
        }
 
@@ -163,13 +167,13 @@ void RenderScene(void)
       //Euler eul(0, -4, -0);
 
       //Camera tilt in
-      
+
 
       // Apply Camera
       Global.cam_num++;
       if(Global.cam_num > 8) Global.cam_num = 0;
       int cam_num = Global.cam_num;
-      
+
       Global.cam_pos[cam_num] = real_pos;
       Global.cam_view[cam_num] = real_view;
       Global.cam_up[cam_num] = real_up;
@@ -250,17 +254,30 @@ void RenderScene(void)
       //Rotate Ship
       //glRotatef(theta, dir.x, dir.y, dir.z);
       {
-        GLfloat fDiffLight[] =  { 1.0f, 0.0f, 0.0f };  // Red!!
+        GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f };  // Red!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
       }
       glDisable(GL_LIGHTING);
-      gluSphere(Global.quadratic,1.392e6,32,32);
+      //gluSphere(Global.quadratic,1.392e6,32,32);
       glEnable(GL_LIGHTING);
 
     glPopMatrix();
 
+    glPushMatrix();
 
-
+      glBindTexture(GL_TEXTURE_2D, Global.texture[0]);   /* select our  texture */
+      glBegin(GL_QUADS);
+      /* front face */
+      glTexCoord2f(0.0f, 0.0f);
+      glVertex3f(-10.0f, -10.0f, 10.0f);
+      glTexCoord2f(10.0f, 0.0f);
+      glVertex3f(10.0f, -10.0f, 10.0f);
+      glTexCoord2f(10.0f, 10.0f);
+      glVertex3f(10.0f, 10.0f, 10.0f);
+      glTexCoord2f(0.0f, 10.0f);
+      glVertex3f(-10.0f, 10.0f, 10.0f);
+      glEnd();
+    glPopMatrix();
     //glPopMatrix();  Camera
     // Do the buffer Swap
     SDL_GL_SwapBuffers();
@@ -271,21 +288,22 @@ void SetupRC(void)
     // Black background
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f );
     //glClearColor(1.0f, 1.0f, 1.0f, 1.0f );
-    
-    
+
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-        
+    glEnable(GL_TEXTURE_2D);
+
     // Lit texture environment
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    
+
     // Load the ship texture
     //GLint iWidth, iHeight,iComponents;
     //GLenum eFormat;
-    //GLbyte *pBytes = gltLoadTGA("YellowSub.tga", &iWidth, &iHeight, &iComponents, &eFormat);    
+    //GLbyte *pBytes = gltLoadTGA("YellowSub.tga", &iWidth, &iHeight, &iComponents, &eFormat);
     //glTexImage2D(GL_TEXTURE_2D, 0, iComponents, iWidth, iHeight, 0, eFormat, GL_UNSIGNED_BYTE, (void *)pBytes);
     //free(pBytes);
-    
+
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -301,7 +319,7 @@ void SetupRC(void)
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-    
+
     // Build a single display list
     dlShip = glGenLists(1);
     glNewList(dlShip, GL_COMPILE);
@@ -316,29 +334,29 @@ void SetupRC(void)
 void ChangeSize(GLsizei w, GLsizei h)
 {
 
-	GLfloat fAspect;
+        GLfloat fAspect;
 
-	// Prevent a divide by zero, when window is too short
-	// (you cant make a window of zero width).
-	if(h == 0)
+        // Prevent a divide by zero, when window is too short
+        // (you cant make a window of zero width).
+        if(h == 0)
             h = 1;
 
         glViewport(0, 0, w, h);
-        
+
         fAspect = (GLfloat)w / (GLfloat)h;
 
-	// Reset the coordinate system before modifying
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	
-	// Set the clipping volume
-	gluPerspective(35.0f, fAspect, 1.0f, 50000000000.0f);
-        
+        // Reset the coordinate system before modifying
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+
+        // Set the clipping volume
+        gluPerspective(35.0f, fAspect, 1.0f, 50000000000.0f);
+
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 }
 
-static void setup_sdl() 
+static void setup_sdl()
 {
     const SDL_VideoInfo* video;
 
@@ -360,7 +378,7 @@ static void setup_sdl()
         exit(1);
     } else cout << "Success!" << endl;
 
-    cout << "Initializing OpenGL...";
+    cout << "Initializing OpenGL (Part 1)...";
 
     /* Set the minimum requirements for the OpenGL window */
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
@@ -369,13 +387,13 @@ static void setup_sdl()
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-    /* Note the SDL_DOUBLEBUF flag is not required to enable double 
-     * buffering when setting an OpenGL video mode. 
-     * Double buffering is enabled or disabled using the 
+    /* Note the SDL_DOUBLEBUF flag is not required to enable double
+     * buffering when setting an OpenGL video mode.
+     * Double buffering is enabled or disabled using the
      * SDL_GL_DOUBLEBUFFER attribute.
      */
     if( SDL_SetVideoMode( WIDTH, HEIGHT, video->vfmt->BitsPerPixel, SDL_OPENGL |  SDL_RESIZABLE) == 0 ) {
-        fprintf(stderr, 
+        fprintf(stderr,
                 "Couldn't set video mode: %s\n", SDL_GetError());
         exit(1);
     } else cout << "Sucess!" << endl;
@@ -385,7 +403,7 @@ static void setup_sdl()
 
 static void setup_opengl()
 {
-    cout << "Initializing OpenGL...";
+    cout << "Initializing OpenGL (Part 2)...";
 
     ChangeSize(WIDTH, HEIGHT);
 
@@ -398,9 +416,9 @@ static void setup_joystick()
 {
     cout << "Initializing Joystick...";
 
-    SDL_InitSubSystem(SDL_INIT_JOYSTICK); 
+    SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 
-    
+
     // Check for joystick
     if(SDL_NumJoysticks()>0){
       // Open joystick
@@ -418,14 +436,14 @@ static void setup_joystick()
         printf("Number of Shafts : 0\n");
       }
       else
-        cout << "Couldn't open Joystick 0" << endl;
-      
+        cout << "NOES!1  Couldn't open Joystick 0" << endl;
+
       // Close if opened
       //if(SDL_JoystickOpened(0))
       //  SDL_JoystickClose(global_joy);
     }
     else
-      cout << "No Joysticks found." << endl;
+      cout << "NOES!1 No Joysticks found." << endl;
 
 
 }
@@ -439,6 +457,7 @@ static void process_inputs()
     Cartesian_Vector &accel    = Global.ship.acceleration;
     Quaternion       &attitude = Global.ship.attitude;
 
+    // Initialize Context Data
     GLfloat yRot  = 0.0f;
     GLfloat xRot  = 0.0f;
     GLfloat zRot  = 0.0f;
@@ -459,13 +478,13 @@ static void process_inputs()
 
     if (SDL_JoystickGetAxis(global_joy, 6) == joy_max) viewx += .1;
     if (SDL_JoystickGetAxis(global_joy, 6) == -joy_max) viewx -= .1;
-    
+
     if (SDL_JoystickGetAxis(global_joy, 7) == joy_max) viewy += .1;
     if (SDL_JoystickGetAxis(global_joy, 7) == -joy_max) viewy -= .1;
 
     if (SDL_JoystickGetButton(global_joy, 15)) thrust.x += .001;
     if (SDL_JoystickGetButton(global_joy, 17)) thrust.x -= .001;
-    
+
     if (SDL_JoystickGetButton(global_joy, 14)) thrust.z += .001;
     if (SDL_JoystickGetButton(global_joy, 16)) thrust.z -= .001;
 
@@ -488,16 +507,16 @@ static void process_inputs()
     TORAD(xRot);
     TORAD(yRot);
     TORAD(zRot);
-       
+
     Euler eul(xRot, yRot, zRot);
     Quaternion quat(eul);
-    
+
     Global.ship.attitude *= quat;
     Global.ship.attitude.Normalize();
-        
-    
+
+
     //float scale = sqrtf ((dir.x * dir.x) + (dir.y *  dir.y) + (dir.z * dir.z));
-    
+
     //Ship position
     if (speed != 0) {
 
@@ -510,7 +529,7 @@ static void process_inputs()
         //Quaternion new_dir = ~(dir);
         }
 
-    // Rotate trust vector to match ship orientation 
+    // Rotate trust vector to match ship orientation
     accel = QVRotate(Global.ship.attitude, thrust);
 
     // Calculate new velocity from Acceleration vectors
@@ -524,7 +543,7 @@ static void process_inputs()
 
 
 
-static void main_loop() 
+static void main_loop()
 {
     SDL_Event event;
 //cout << "Yay!" << endl;
@@ -539,12 +558,12 @@ static void main_loop()
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
                     exit(0);
-             
+
                 case SDLK_KP_PLUS:
 //                    level++;
 //                    if (level > 5) level=5;
                     break;
-            
+
                 case SDLK_KP_MINUS:
 //                    level--;
 //                    if (level < 0) level=0;
@@ -587,6 +606,8 @@ int main(int argc, char* argv[])
     setup_opengl();
 
     net_test();
+
+    load_image();
 
     main_loop();
 
