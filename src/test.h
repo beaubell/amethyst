@@ -16,8 +16,14 @@
 
 namespace amethyst {
 
-  void functional_test(void);
+  // All tests return 1 for success 0 for failure
   void full_test(void);
+  bool full_test(bool quiet, bool debug);
+
+  bool test_cartsphere_conv(bool quiet, bool debug);
+  bool test_engine(bool quiet, bool debug);
+
+  void info_variable_size(void);
 
 }
 

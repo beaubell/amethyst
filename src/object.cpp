@@ -20,21 +20,11 @@ namespace amethyst {
 
 Object::Object(){
 
-    //location.x = 0;
-    //location.y = 0;
-    //location.z = 0;
-
-    //velocity.x = 0;
-    //velocity.y = 0;
-    //velocity.z = 0;
-
-    //acceleration.x = 0;
-    //acceleration.y = 0;
-    //acceleration.z = 0;
-
     mass = 0; 
 
     next = NULL;
+    meta = NULL;
+    name = NULL;
 
     //printf("NEW OBJECT!");
 
@@ -44,7 +34,7 @@ Object::Object(){
 //Object::~Object(){
 
     //printf("DEAD OBJECT");
-//    }
+    //}
 
 
 void Object::force_add(Cartesian_Vector new_force) {
@@ -60,16 +50,16 @@ void Object::force_add(Spherical_Vector sphr_force) {
     force += new_force;
     }
 
-    
+
 void Object::force_clear() {
 
     force.Zeroize();
     acceleration.Zeroize();
     }
 
-    
+
 void Object::force_apply(void) {
-    
+
     //velocity = phys_alibi_transform (velocity, acceleration, time);
     acceleration = force / mass;
     }

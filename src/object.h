@@ -60,7 +60,7 @@ namespace amethyst {
 
        // Calculate velocity from acceleration;
        void accel_apply(double time);    //time == 1 for 1 second     
-       
+
        // calculate velocity to determine actual movement
        void velocity_apply(double time); //time == 1 for 1 second
 
@@ -79,10 +79,10 @@ namespace amethyst {
 
          /* Absolute Acceleration  (in m s ^ -2)   Storage Variable */
          Cartesian_Vector acceleration;
- 
+
          /* Absolute Applied Force (in Newtons)    Storage Variable */
          Cartesian_Vector force;
- 
+
        // attitude variables
          /* Absolute Attitude */
          Quaternion attitude;
@@ -102,7 +102,7 @@ namespace amethyst {
 
        /* Pointer to Meta data. (like object graphics) */
        void *meta;
-       
+
        // let other threads know that this object is presently being modified.
        bool lock;
        char *name;
