@@ -7,43 +7,18 @@
 
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_opengl.h"
+
+
 #include <amethyst/object.h>
 #include <iostream>
 
+#include <stdio.h>
+
+#include "global.h"
+#include "texture.h"
+
 using namespace std;
 using namespace amethyst;
-
-class __global {
-
-  public:
-    __global() { ship.location.x = 10;
-      ship.location.y = 0;
-      ship.location.z = 0;
-
-      ship.attitude.w = 1;
-      ship.attitude.x = 0;
-      ship.attitude.y = 0;
-      ship.attitude.z = 0;
-
-      cam_num = 0;};
-
-      // Your Ship
-      Object ship;
-
-      // Pointer to quadratic
-      GLUquadric *quadratic;
-
-      // Storage for one texture
-      GLuint  texture[1];
-
-      // Joystick
-      //joystick *
-
-      // Camera Ring Buffer
-      Cartesian_Vector cam_pos[10], cam_view[10], cam_up[10];
-      int cam_num;
-
-};
 
 extern __global Global;
 GLuint TexIDSkyBox[10];
@@ -59,40 +34,47 @@ GLuint load_image(const char *file) {
 
     GLuint texture;
 
-    SDL_Surface *image, *test;
-    SDL_RWops *rwop;
-    rwop=SDL_RWFromFile(file, "rb");
-    image=IMG_LoadJPG_RW(rwop);
+    //SDL_Surface *image, *test;
+    //SDL_RWops *rwop;
 
-//    test=image;
+    // Open File "file"
+    //rwop=SDL_RWFromFile(file, "rb");
 
+    // Load Image from 'rwop' ("file")
+    //image=IMG_LoadJPG_RW(rwop);
+
+    textureImage *texti;
+
+    texti = (textureImage *)malloc(sizeof(textureImage));
+    getBitmapImageData(file, texti);
+
+    // allocate a texture segment and assign value to 'texture'
     glGenTextures(1, &texture);
+
+    // set unpacking method
     glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+
+    // Tell opengl we want to start playing with texture number assigned to 'texture'
     glBindTexture(GL_TEXTURE_2D, texture);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image->w,image->h,GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+    // Load 
+    //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image->w,image->h,GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+    //glTexImage2D(GL_TEXTURE_2D, 0, 3, test->w, test->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
 
-//    SDL_Surface *test = IMG_Load("/home/beau/projects/skybox/10/ft.jpg");
 
 //    std::cout << "\nSDL Surface" << std::endl;
-//    std::cout << " Flags    : "  << test->flags << std::endl;
-//    std::cout << " Format"     << std::endl;
-//    std::cout << "  BitsPP  : "  << test->format->BitsPerPixel  << std::endl;
-//    std::cout << "  BytesPP : "  << test->format->BytesPerPixel << std::endl;
-//    std::cout << " W/H      : "  << test->w << "/" << test->h << std::endl;
-//    std::cout << " Pitch    : "  << test->pitch << std::endl;
+//    std::cout << " Flags    : "  << image->flags << std::endl;
+//    std::cout << " Format"       << std::endl;
+//    std::cout << "  BitsPP  : "  << image->format->BitsPerPixel  << std::endl;
+//    std::cout << "  BytesPP : "  << image->format->BytesPerPixel << std::endl;
+//    std::cout << " W/H      : "  << image->w << "/" << image->h << std::endl;
+//    std::cout << " Pitch    : "  << image->pitch << std::endl;
 
-
-//    glGenTextures(1, &Global.texture[0]);   /* create the texture */
-//    glBindTexture(GL_TEXTURE_2D, Global.texture[0]);
-    /* actually generate the texture */
-//    glTexImage2D(GL_TEXTURE_2D, 0, 4, test->w, test->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, test->pixels);
-    /* enable linear filtering */
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-     SDL_FreeSurface(image);
+     // Free the surface that SDL created for us when it loaded the image
+     //SDL_FreeSurface(image);
+     free (texti->data);
+     free (texti);
      return texture;
 
     }
@@ -101,12 +83,25 @@ void load_skybox (void)
 {
     int i=1;
 
-    TexIDSkyBox[0] = load_image("/home/beau/projects/skybox/10/bk.jpg");
-    TexIDSkyBox[1] = load_image("/home/beau/projects/skybox/10/ft.jpg");
-    TexIDSkyBox[2] = load_image("/home/beau/projects/skybox/10/up.jpg");
-    TexIDSkyBox[3] = load_image("/home/beau/projects/skybox/10/dn.jpg");
-    TexIDSkyBox[4] = load_image("/home/beau/projects/skybox/10/rt.jpg");
-    TexIDSkyBox[5] = load_image("/home/beau/projects/skybox/10/lt.jpg");
+    // bmp test loader
+    //textureImage *texti;
+
+    //glGenTextures(1, &TexIDSkyBox[0]);
+    //texti = (textureImage *)malloc(sizeof(textureImage));
+    //getBitmapImageData("/home/beau/projects/skybox/10/bk.bmp", texti);
+    //glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[0]);
+    //glTexImage2D(GL_TEXTURE_2D, 0, 3, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
+    
+
+    TexIDSkyBox[0] = load_image("/home/beau/.amethyst/textures/bk.bmp");
+    TexIDSkyBox[1] = load_image("/home/beau/.amethyst/textures/ft.bmp");
+    TexIDSkyBox[2] = load_image("/home/beau/.amethyst/textures/dn.bmp");
+    TexIDSkyBox[3] = load_image("/home/beau/.amethyst/textures/up.bmp");
+    TexIDSkyBox[4] = load_image("/home/beau/.amethyst/textures/rt.bmp");
+    TexIDSkyBox[5] = load_image("/home/beau/.amethyst/textures/lt.bmp");
+
+    
+
 
     for(i=0;i<=5;++i)
     {
@@ -114,11 +109,25 @@ void load_skybox (void)
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
+
+        //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        //glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
     }
 
+    // Lit texture environment
+    //glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+    // Load the ship texture
+    //GLint iWidth, iHeight,iComponents;
+    //GLenum eFormat;
+    //GLbyte *pBytes = gltLoadTGA("YellowSub.tga", &iWidth, &iHeight, &iComponents, &eFormat);
+    //glTexImage2D(GL_TEXTURE_2D, 0, iComponents, iWidth, iHeight, 0, eFormat, GL_UNSIGNED_BYTE, (void *)pBytes);
+    //free(pBytes);
 
 }
 
@@ -189,4 +198,154 @@ void skybox (void)
 
   glDepthMask(GL_TRUE);
   glEnable(GL_DEPTH_TEST);
+}
+
+/* simple loader for 24bit bitmaps (data is in rgb-format) shamelessly borrowed from Nehe */
+int loadBMP(const char *filename, textureImage *texture)
+{
+    FILE *file;
+    unsigned short int bfType;
+    long int bfOffBits;
+    short int biPlanes;
+    short int biBitCount;
+    long int biSizeImage;
+    int i;
+    unsigned char temp;
+    /* make sure the file is there and open it read-only (binary) */
+    if ((file = fopen(filename, "rb")) == NULL)
+    {
+        printf("File not found : %s\n", filename);
+        return 0;
+    }
+    if(!fread(&bfType, sizeof(short int), 1, file))
+    {
+        printf("Error reading file!\n");
+        return 0;
+    }
+    /* check if file is a bitmap */
+    if (bfType != 19778)
+    {
+        printf("Not a Bitmap-File!\n");
+        return 0;
+    }        
+    /* get the file size */
+    /* skip file size and reserved fields of bitmap file header */
+    fseek(file, 8, SEEK_CUR);
+    /* get the position of the actual bitmap data */
+    if (!fread(&bfOffBits, sizeof(long int), 1, file))
+    {
+        printf("Error reading file!\n");
+        return 0;
+    }
+    printf("Data at Offset: %ld\n", bfOffBits);
+    /* skip size of bitmap info header */
+    fseek(file, 4, SEEK_CUR);
+    /* get the width of the bitmap */
+    fread(&texture->width, sizeof(int), 1, file);
+    printf("Width of Bitmap: %d\n", texture->width);
+    /* get the height of the bitmap */
+    fread(&texture->height, sizeof(int), 1, file);
+    printf("Height of Bitmap: %d\n", texture->height);
+    /* get the number of planes (must be set to 1) */
+    fread(&biPlanes, sizeof(short int), 1, file);
+    if (biPlanes != 1)
+    {
+        printf("Error: number of Planes not 1!\n");
+        return 0;
+    }
+    /* get the number of bits per pixel */
+    if (!fread(&biBitCount, sizeof(short int), 1, file))
+    {
+        printf("Error reading file!\n");
+        return 0;
+    }
+    printf("Bits per Pixel: %d\n", biBitCount);
+    if (biBitCount != 24)
+    {
+        printf("Bits per Pixel not 24\n");
+       return 0;
+    }
+    /* calculate the size of the image in bytes */
+    biSizeImage = texture->width * texture->height * 3;
+    printf("Size of the image data: %ld\n", biSizeImage);
+    texture->data = (unsigned char*)malloc(biSizeImage);
+    /* seek to the actual data */
+    fseek(file, bfOffBits, SEEK_SET);
+    if (!fread(texture->data, biSizeImage, 1, file))
+    {
+        printf("Error loading file!\n");
+        return 0;
+    }
+    /* swap red and blue (bgr -> rgb) */
+    for (i = 0; i < biSizeImage; i += 3)
+    {
+        temp = texture->data[i];
+        texture->data[i] = texture->data[i + 2];
+        texture->data[i + 2] = temp;
+    }
+    return 1;
+}
+
+
+//-----------------------------------------------------------------------------
+// Name: getBitmapImageData()
+// Desc: Simply image loader for 24 bit BMP files.
+//-----------------------------------------------------------------------------
+bool getBitmapImageData(const char *pFileName, textureImage *pImage )
+{
+    FILE *pFile = NULL;
+    unsigned short nNumPlanes;
+    unsigned short nNumBPP;
+	int i;
+
+    if( (pFile = fopen(pFileName, "rb") ) == NULL )
+		cout << "ERROR: getBitmapImageData - %s not found " << pFileName << "." << endl;
+
+    // Seek forward to width and height info
+    fseek( pFile, 18, SEEK_CUR );
+
+    if( (i = fread(&pImage->width, 4, 1, pFile) ) != 1 )
+		cout << "ERROR: getBitmapImageData - Couldn't read width from " << pFileName << "." << endl; 
+
+    if( (i = fread(&pImage->height, 4, 1, pFile) ) != 1 )
+		cout << "ERROR: getBitmapImageData - Couldn't read height from " << pFileName << "." << endl; 
+
+    if( (fread(&nNumPlanes, 2, 1, pFile) ) != 1 )
+		cout << "ERROR: getBitmapImageData - Couldn't read plane count from " << pFileName << "." << endl; 
+	
+    if( nNumPlanes != 1 )
+		cout << "ERROR: getBitmapImageData - Plane count from " << pFileName << " is not 1: " << nNumPlanes << "." << endl;
+
+    if( (i = fread(&nNumBPP, 2, 1, pFile)) != 1 )
+		cout << "ERROR: getBitmapImageData - Couldn't read BPP from " << pFileName << endl; 
+	
+    if( nNumBPP != 24 )
+		cout << "ERROR: getBitmapImageData - BPP from " << pFileName << " is not 24: " << nNumBPP << "." << endl;
+
+    // Seek forward to image data
+    fseek( pFile, 24, SEEK_CUR );
+
+	// Calculate the image's total size in bytes. Note how we multiply the 
+	// result of (width * height) by 3. This is becuase a 24 bit color BMP 
+	// file will give you 3 bytes per pixel.
+    int nTotalImagesize = (pImage->width * pImage->height) * 3;
+
+    pImage->data = (unsigned char*) malloc( nTotalImagesize );
+	
+    if( (i = fread(pImage->data, nTotalImagesize, 1, pFile) ) != 1 )
+		cout << "ERROR: getBitmapImageData - Couldn't read image data from " << pFileName << "." << endl;
+
+    //
+	// Finally, rearrange BGR to RGB
+	//
+	
+	char charTemp;
+    for( i = 0; i < nTotalImagesize; i += 3 )
+	{ 
+		charTemp = pImage->data[i];
+		pImage->data[i] = pImage->data[i+2];
+		pImage->data[i+2] = charTemp;
+    }
+
+    return true;
 }

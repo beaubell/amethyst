@@ -1,20 +1,17 @@
+#ifndef JOYSTICK_H
+#define JOYSTICK_H
+
 /***************************************************************************
  *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
  *   beau@borealisbroadband.net                                            *
  ***************************************************************************/
 
-using namespace std;
- 
-void joystick (void);
-void SetupJoystick (void);
-
-struct Joy_State
-{
-	int fd;
-	short axis[8];
-	short button[28];
-};
-
-extern struct Joy_State joy_state;
+typedef struct {
+   int joystick;
+   int axis;
+} Joy_Axis_Map;
 
 short joystick_axis_norm(short value, unsigned short null);
+void  setup_joystick    (void);
+
+#endif /* JOYSTICK_H */
