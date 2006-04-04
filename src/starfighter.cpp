@@ -192,7 +192,7 @@ void RenderScene(void)
         GLfloat fDiffLight[] =  { 1.0f, 0.0f, 0.0f };  // Red!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
       }
-      gluSphere(Global.quadratic,2e1,32,32);
+      //gluSphere(Global.quadratic,2e1,32,32);
 
     glPopMatrix();
 
@@ -444,9 +444,9 @@ int main(int argc, char* argv[])
 
     setup_sdl();
 
-    setup_joystick();
-
     setup_opengl();
+
+    setup_joystick();
 
     net_test();
 
