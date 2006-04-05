@@ -7,6 +7,8 @@
  ***************************************************************************/
 
 #include <amethyst/object.h>
+
+#include <string>
 #include "SDL/SDL.h"
 #include "SDL/SDL_opengl.h"
 
@@ -52,7 +54,19 @@ class __global {
                    axis_throttle.axis     = 4;
                    //axis_throttle.null     = 1000;
 
-                   home = "/home/beau";
+                   dir_home           = "/home/beau";
+                   dir_amethyst       = dir_home + "/.amethyst";
+                   dir_textures       = dir_amethyst + "/textures";
+
+                   file_tex_planet    = dir_textures + "/mars2048.bmp";
+                   file_tex_starfield = dir_textures + "/space2048.bmp";
+
+                   file_tex_sb_bk     = dir_textures + "/bk.bmp";
+                   file_tex_sb_ft     = dir_textures + "/ft.bmp";
+                   file_tex_sb_up     = dir_textures + "/up.bmp";
+                   file_tex_sb_dn     = dir_textures + "/dn.bmp";
+                   file_tex_sb_rt     = dir_textures + "/rt.bmp";
+                   file_tex_sb_lt     = dir_textures + "/lt.bmp";
                  };
 
       // Your Ship
@@ -60,12 +74,16 @@ class __global {
 
       // Model for ship
       GLuint dlShip;          // Display list identifier for the ship
+      GLuint planet_mdl;
+      GLuint starfield_mdl;
+
+      // Textures
+      //GLuint  texture[1];
+      GLuint planet_tex;
+      GLuint starfield_tex;
 
       // Pointer to quadratic
       GLUquadric *quadratic;
-
-      // Storage for one texture
-      GLuint  texture[1];
 
       // Field of View
       float   fov;
@@ -89,7 +107,19 @@ class __global {
       // Timer
       Uint32 next_time;
 
-      char  *home;
+      std::string dir_home;
+      std::string dir_amethyst;
+      std::string dir_textures;
+
+      std::string file_tex_planet;
+      std::string file_tex_starfield;
+
+      std::string file_tex_sb_bk;
+      std::string file_tex_sb_ft;
+      std::string file_tex_sb_up;
+      std::string file_tex_sb_dn;
+      std::string file_tex_sb_rt;
+      std::string file_tex_sb_lt;
 
 };
 
