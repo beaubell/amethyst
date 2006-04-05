@@ -93,12 +93,12 @@ void load_skybox (void)
     //glTexImage2D(GL_TEXTURE_2D, 0, 3, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
     
 
-    TexIDSkyBox[0] = load_image("/home/beau/.amethyst/textures/bk.bmp");
-    TexIDSkyBox[1] = load_image("/home/beau/.amethyst/textures/ft.bmp");
-    TexIDSkyBox[2] = load_image("/home/beau/.amethyst/textures/dn.bmp");
-    TexIDSkyBox[3] = load_image("/home/beau/.amethyst/textures/up.bmp");
-    TexIDSkyBox[4] = load_image("/home/beau/.amethyst/textures/rt.bmp");
-    TexIDSkyBox[5] = load_image("/home/beau/.amethyst/textures/lt.bmp");
+    TexIDSkyBox[0] = load_image(Global.file_tex_sb_bk.c_str());
+    TexIDSkyBox[1] = load_image(Global.file_tex_sb_ft.c_str());
+    TexIDSkyBox[2] = load_image(Global.file_tex_sb_dn.c_str());
+    TexIDSkyBox[3] = load_image(Global.file_tex_sb_up.c_str());
+    TexIDSkyBox[4] = load_image(Global.file_tex_sb_rt.c_str());
+    TexIDSkyBox[5] = load_image(Global.file_tex_sb_lt.c_str());
 
     
 
