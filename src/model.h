@@ -9,4 +9,6 @@
 void load_models(void);
 void free_models(void);
 
+void renderSphere( float cx, float cy, float cz, float r, int p );
+
 #endif /* MODEL_H */
