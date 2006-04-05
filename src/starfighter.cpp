@@ -133,17 +133,20 @@ void RenderScene(void)
       glPushMatrix();
         glDisable(GL_LIGHTING);
          skybox();
+         //glCallList(Global.starfield_mdl);
         glEnable(GL_LIGHTING);
       glPopMatrix();
     }
 
     //Lights
-    GLfloat lightPos[] = { 00.0f, 00.0f, 100.0f, 1.0f };
+    GLfloat lightPos[] = { 00.0f, 00.0f, 1000.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
 
     //Draw Ship
     glPushMatrix();
+
+      glDisable(GL_TEXTURE_2D);
 
       double theta = 2 * acos(attitude.w);
       TODEG(theta);
@@ -182,17 +185,23 @@ void RenderScene(void)
 
     //Draw sphere at origin
     glPushMatrix();
+      glEnable(GL_TEXTURE_2D);
+      glDisable(GL_CULL_FACE);
 
       //Move to ref position
-      //glTranslatef(real_view.x , real_view.y, real_view.z);
+      glTranslatef(100 , 100, 100);
 
       //Rotate Ship
       //glRotatef(theta, dir.x, dir.y, dir.z);
       {
-        GLfloat fDiffLight[] =  { 1.0f, 0.0f, 0.0f };  // Red!!
+        GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f };  // Whiteness!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
       }
-      //gluSphere(Global.quadratic,2e1,32,32);
+      //gluSphere(Global.quadratic,2e1,32,32);\
+      //glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
+      glCallList(Global.planet_mdl);
+
+      glEnable(GL_CULL_FACE);
 
     glPopMatrix();
 
@@ -279,7 +288,7 @@ static void setup_opengl()
     glEnable(GL_TEXTURE_2D);
 
     // Set up lighting
-    GLfloat fAmbLight[] =   { 0.01f, 0.01f, 0.01f };
+    GLfloat fAmbLight[] =   { 0.00f, 0.00f, 0.00f };
     GLfloat fDiffLight[] =  { 0.0f, 0.0f, 1.0f };  // BLUE!!
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
