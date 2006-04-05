@@ -256,7 +256,7 @@ void DrawShip(void)
         for(iFace = 0; iFace < 156; iFace++)
             for(iPoint = 0; iPoint < 3; iPoint++)
                 {
-                glTexCoord2fv(textures[face_indicies[iFace][iPoint+6]]);
+                //glTexCoord2fv(textures[face_indicies[iFace][iPoint+6]]);
                 glNormal3fv(normals[face_indicies[iFace][iPoint+3]]);
                 glVertex3fv(vertices[face_indicies[iFace][iPoint]]);
                 }
