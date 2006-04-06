@@ -457,7 +457,7 @@ int main(int argc, char* argv[])
 
     setup_joystick();
 
-    net_test();
+    //net_test();
 
     load_models();
 
