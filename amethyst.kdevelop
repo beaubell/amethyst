@@ -21,7 +21,7 @@
   </general>
   <kdevautoproject>
     <general>
-      <activetarget>src/amethyst</activetarget>
+      <activetarget>server/amethyst-srv</activetarget>
       <useconfiguration>debug</useconfiguration>
     </general>
     <run>
@@ -32,6 +32,9 @@
       <programargs/>
       <autocompile>true</autocompile>
       <envvars/>
+      <runarguments>
+        <amethyst-srv></amethyst-srv>
+      </runarguments>
     </run>
     <configurations>
       <optimized>
