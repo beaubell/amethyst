@@ -16,6 +16,9 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include <iostream>
+#include "utility.h"
+
 using namespace amethyst;
 
 //void init_net(void)
@@ -24,6 +27,23 @@ using namespace amethyst;
 
 
 //}
+struct packet_header
+{
+  char type;
+  char misc;
+};
+struct object_transfer
+{
+  char                        name[10];
+  amethyst::Cartesian_Vector  location;
+  amethyst::Cartesian_Vector  velocity;
+  amethyst::Cartesian_Vector  acceleration;
+
+  amethyst::Quaternion        attitude;
+
+  char                        pad[10];
+};
+
 static void
 bail (const char *on_what) {
     fputs(strerror(errno),stderr);
@@ -88,6 +108,25 @@ int main(int argc, char** argv)
            bail("recvfrom(2)");
 
        printf("MSG FROM: %s\n", inet_ntoa(adr_clnt.sin_addr));
+
+       // Cast packet_header struct over in packet
+       packet_header   *head   = (packet_header*)((char *)dgram);
+
+       // Print header info
+       printf("Type: %i Misc: %i\n", head->type, head->misc);
+
+       // Cast object_transfer struct over out packet after header struct
+       object_transfer *object = (object_transfer *)((char *)dgram + sizeof(packet_header));
+
+       // Print name and pad
+       printf("name: %s   pad: %s\n", &object->name, &object->pad);
+
+       // Print recieved info
+       print_vector("Location: ", object->location);
+       print_vector("Velocity: ",object->velocity);
+       print_vector("Accel   : ",object->acceleration);
+
+       print_vector("Attitude: ",object->attitude);
 
     }
 

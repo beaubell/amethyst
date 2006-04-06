@@ -33,7 +33,7 @@
       <autocompile>true</autocompile>
       <envvars/>
       <runarguments>
-        <amethyst-srv></amethyst-srv>
+        <amethyst-srv/>
       </runarguments>
     </run>
     <configurations>
