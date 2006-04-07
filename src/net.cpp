@@ -147,7 +147,7 @@ void net_recv_telemetry(void){
           //strncpy(object->name, Global.net_handle.c_str(),9);
           //object->name[9] = '\0';
 
-          std::cout << object->name << "\n";
+          //std::cout << object->name << "\n";
 
           //strncpy(object->pad, "XOXOXOXOXOXO",9);
           //object->pad[9] = '\0';
@@ -172,7 +172,7 @@ int net_start_thread(void)
     while(udprecv(Global.net_socket, Global.pack_in) == 1)
       net_recv_telemetry();
 
-    SDL_Delay(75);
+    SDL_Delay(50);
   }
 
 

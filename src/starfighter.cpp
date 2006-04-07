@@ -421,6 +421,13 @@ static void process_inputs()
     // Calculate new position based on velocity
     position += velocity;
 
+    // Process trajectory information for net ships to make them smoother.
+    for (int i = 0; i < Global.net_ships; i++)
+    {
+        //Global.net_ship[i].velocity += Global.net_ship[i].acceleration;
+        //Global.net_ship[i].location += Global.net_ship[i].velocity;
+    }
+
 }
 
 
@@ -468,13 +475,6 @@ static void main_loop()
 
     // Process Inputs
     process_inputs();
-
-       //print_vector("Location: ", Global.ship.location);
-       //print_vector("Velocity: ", Global.ship.velocity);
-       //print_vector("Accel   : ", Global.ship.acceleration);
-
-    // Send object to server
-    //net_send_telemetry();
 
     /* update the screen */
     RenderScene();

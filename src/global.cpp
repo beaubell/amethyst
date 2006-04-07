@@ -56,8 +56,8 @@ __global::__global()
     file_tex_sb_lt     = dir_textures + "/lt.bmp";
 
 
-    //net_server         = "www.stellarnetservices.net";
-    net_server         = "192.168.1.1";
+    net_server         = "www.stellarnetservices.net";
+    //net_server         = "192.168.1.1";
     //net_server         = "localhost";
     net_port           = 23232;
 
