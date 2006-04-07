@@ -3,32 +3,29 @@
  *   beau@autolfs.org                                                      *
  ***************************************************************************/
 
-#include "net.h"
+
 
 #include <iostream>
-
-//#include <stdlib.h>
-//#include <string.h>
-//#include <stdio.h>
-//#include <unistd.h>
 #include "SDL/SDL_net.h"
 
+#include "net.h"
 #include "global.h"
+
+#define ERROR (0xff)
 
 int udpsend(UDPsocket sock, int channel, UDPpacket *out)
 {
-	//Uint32 t,t2;
-	//int err;
-	
-	//t=SDL_GetTicks();
-
 	if(!SDLNet_UDP_Send(sock, channel, out))
 	{
 		printf("SDLNet_UDP_Send: %s\n",SDLNet_GetError());
 		exit(1);
 	}
-
 	return(1);
+}
+
+int udprecv(UDPsocket sock, UDPpacket *in)
+{
+	return SDLNet_UDP_Recv(sock, in);
 }
 
 
@@ -49,12 +46,6 @@ void net_test(void)
 
   //////////////
   //////////////
-
-  //UDPsocket sock;
-  //IPaddress ip;
-  //UDPpacket *in, *out;
-  //Uint16 port = strtol("23232",NULL,0);
-  //char *host = "localhost";
 
   if(SDLNet_ResolveHost(&Global.net_server_ip,Global.net_server.c_str(),Global.net_port)==-1)
   {
@@ -102,11 +93,11 @@ void net_test(void)
   std::cout << "\nPacket Header  : " << (sizeof(packet_header));
   std::cout << "\nObject Transfer: " << (sizeof(object_transfer));
 
-  net_send_telematry();
+  //net_send_telemetry();
 }
 
 
-void net_send_telematry(void){
+void net_send_telemetry(void){
 
   // Cast packet_header struct over out packet
   packet_header   *head   = (packet_header*)((char *)Global.pack_out->data);
@@ -118,27 +109,38 @@ void net_send_telematry(void){
   // Cast object_transfer struct over out packet after header struct
   object_transfer *object = (object_transfer *)((char *)Global.pack_out->data + sizeof(packet_header));
 
-  strncpy(object->name, Global.net_handle.c_str(),8);
+  strncpy(object->name, Global.net_handle.c_str(),9);
   object->name[9] = '\0';
 
-  strncpy(object->pad, "XOXOXOXOXOXO",8);
+  strncpy(object->pad, "XOXOXOXOXOXO",9);
   object->pad[9] = '\0';
 
-  object->location     = Global.ship.location;
-  object->velocity     = Global.ship.velocity;
-  object->acceleration = Global.ship.acceleration;
+  pack(object->location,    Global.ship.location);
+  pack(object->velocity,    Global.ship.velocity);
+  pack(object->acceleration,Global.ship.acceleration);
 
-  object->attitude     = Global.ship.attitude;
-
-
-//  out->data[0]=1<<4;
-//  strcpy((char *)out->data+1,"FOOOOOO");
-
-    Global.pack_out->len = sizeof(packet_header) + sizeof(object_transfer);
+  pack(object->attitude,    Global.ship.attitude);
 
 
-    if(udpsend(Global.net_socket,0,Global.pack_out)<1)
-       std::cout << "ERROR!/n";
+  Global.pack_out->len = sizeof(packet_header) + sizeof(object_transfer);
+
+
+  if(udpsend(Global.net_socket,0,Global.pack_out)<1)
+     std::cout << "ERROR!/n";
 
 }
 
+
+int net_recieve_thread(void)
+{
+
+  for(;;)
+  {
+    if(udprecv(Global.net_socket, Global.pack_in) == 1)
+       printf(".\n");
+       
+  SDL_Delay(10);
+  }
+
+
+}

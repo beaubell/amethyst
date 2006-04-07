@@ -3,31 +3,46 @@
  *   beau@autolfs.org                                                      *
  ***************************************************************************/
 
-#ifndef AMETHYST_NET_H
-#define AMETHYST_NET_H
+#ifndef NET_H
+#define NET_H
+
+#include <sys/types.h>
+#include <time.h>
 
 #include <amethyst/object.h>
+#include <amethyst/net.h>
 
 
 void net_test(void);
 
-void net_send_telematry(void);
+void net_send_telemetry(void);
+int  net_recieve_thread();
 
 struct packet_header
 {
-    char type;
-    char misc;
-};
+  // Sequence Counters
+  u_int16_t  out_seq;
+  u_int16_t  in_seq;
+
+  // Time
+  //u_int32_t  timestamp;
+
+  // Packet Type
+  u_int16_t  type;    // 1 == object transfer,  2 == chat?  maybe?
+  u_int16_t  misc;    // if type==1,  misc = number of objects
+} __attribute__((__packed__));
+
+
 struct object_transfer
 {
-    char                        name[10];
-    amethyst::Cartesian_Vector  location;
-    amethyst::Cartesian_Vector  velocity;
-    amethyst::Cartesian_Vector  acceleration;
+  char                  name[12];
+  amethyst::vectord_3d  location;
+  amethyst::vectord_3d  velocity;
+  amethyst::vectord_3d  acceleration;
 
-    amethyst::Quaternion        attitude;
+  amethyst::vectord_4d  attitude;
 
-    char                        pad[10];
-};
+  char        pad[12];
+} __attribute__((__packed__));
 
-#endif  /* AMETHYST_NET_H */
+#endif  /* NET_H */

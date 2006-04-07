@@ -57,6 +57,7 @@ __global::__global()
 
 
     //net_server         = "www.stellarnetservices.net";
+    //net_server         = "192.168.1.1";
     net_server         = "localhost";
     net_port           = 23232;
 

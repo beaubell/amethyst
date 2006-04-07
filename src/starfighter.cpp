@@ -17,9 +17,11 @@
 #include <amethyst/orientation.h>
 #include <amethyst/object.h>
 #include <amethyst/physics.h>
+#include <amethyst/utility.h>
 
 #include <stdlib.h>
 #include "SDL/SDL.h"
+#include "SDL/SDL_thread.h"
 #include "SDL/SDL_opengl.h"
 
 #include "global.h"
@@ -440,6 +442,13 @@ static void main_loop()
     // Process Inputs
     process_inputs();
 
+       //print_vector("Location: ", Global.ship.location);
+       //print_vector("Velocity: ", Global.ship.velocity);
+       //print_vector("Accel   : ", Global.ship.acceleration);
+
+    // Send object to server
+    net_send_telemetry();
+
     /* update the screen */
     RenderScene();
     SDL_Delay(time_left());
@@ -450,6 +459,8 @@ static void main_loop()
 
 int main(int argc, char* argv[])
 {
+    SDL_Thread *net_thread;
+
 
     setup_sdl();
 
@@ -457,11 +468,17 @@ int main(int argc, char* argv[])
 
     setup_joystick();
 
-    //net_test();
+    net_test();
 
     load_models();
 
       load_skybox();
+
+      net_thread = SDL_CreateThread((int (*)(void*))net_recieve_thread, NULL);
+      if ( net_thread == NULL ) {
+        fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
+        return 0;
+      }
 
       main_loop();
 
