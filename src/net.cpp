@@ -130,18 +130,49 @@ void net_send_telemetry(void){
 
 }
 
+void net_recv_telemetry(void){
 
-int net_recieve_thread(void)
+  // Cast packet_header struct over out packet
+  packet_header   *head   = (packet_header*)((char *)Global.pack_in->data);
+
+  if (head->type == 1)
+  {
+      Global.net_ships = head->misc;
+
+      for(int i = 0; i < head->type; i++)
+      {
+          // Cast object_transfer struct over out packet after header struct
+          object_transfer *object = (object_transfer *)((char *)Global.pack_in->data + sizeof(packet_header));
+
+          //strncpy(object->name, Global.net_handle.c_str(),9);
+          //object->name[9] = '\0';
+
+          std::cout << object->name << "\n";
+
+          //strncpy(object->pad, "XOXOXOXOXOXO",9);
+          //object->pad[9] = '\0';
+
+          unpack(Global.net_ship[i].location,     object->location);
+          unpack(Global.net_ship[i].velocity,     object->velocity);
+          unpack(Global.net_ship[i].acceleration, object->acceleration);
+
+          unpack(Global.net_ship[i].attitude,     object->attitude);
+      }
+  }
+}
+
+
+int net_start_thread(void)
 {
 
   for(;;)
   {
     net_send_telemetry();
 
-    if(udprecv(Global.net_socket, Global.pack_in) == 1)
-       printf(".\n");
+    while(udprecv(Global.net_socket, Global.pack_in) == 1)
+      net_recv_telemetry();
 
-  SDL_Delay(100);
+    SDL_Delay(75);
   }
 
 

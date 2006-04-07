@@ -16,7 +16,8 @@
 void net_test(void);
 
 void net_send_telemetry(void);
-int  net_recieve_thread();
+void net_recv_telemetry(void);
+int  net_start_thread();
 
 struct packet_header
 {

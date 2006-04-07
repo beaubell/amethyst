@@ -87,6 +87,10 @@ class __global {
       UDPsocket   net_socket;
       UDPpacket   *pack_in, *pack_out;
 
+      // Network ships
+      Object net_ship[5];
+      int    net_ships;
+
 
 };
 

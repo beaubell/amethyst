@@ -61,7 +61,7 @@ __global::__global()
     //net_server         = "localhost";
     net_port           = 23232;
 
-    net_handle         = "Beau-Laptop";
+    net_handle         = "Beau";
 };
 
 __global Global;

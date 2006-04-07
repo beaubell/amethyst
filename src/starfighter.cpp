@@ -207,6 +207,33 @@ void RenderScene(void)
 
     glPopMatrix();
 
+
+    // Draw Network Objects
+    for (int i = 0; i < Global.net_ships; i++)
+    {
+       glPushMatrix();
+
+         Cartesian_Vector *net_p = &Global.net_ship[i].location;
+
+         //Move to ship position
+         glTranslated(net_p->x, net_p->y, net_p->z);
+
+         Quaternion       *net_q = &Global.net_ship[i].attitude;
+
+         double theta = 2 * acos(net_q->w);
+         TODEG(theta);
+
+         //Rotate Ship
+         glRotatef(theta, net_q->x, net_q->y, net_q->z);
+         {
+           GLfloat fDiffLight[] =  { 1.0f, 1.0f, 0.0f };  // Green!!
+           glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
+         }
+         glCallList(Global.dlShip);
+
+       glPopMatrix();
+    }
+
     // Do the buffer Swap
     SDL_GL_SwapBuffers();
 }
@@ -474,7 +501,8 @@ int main(int argc, char* argv[])
 
       load_skybox();
 
-      net_thread = SDL_CreateThread((int (*)(void*))net_recieve_thread, NULL);
+      // Create Net Thread
+      net_thread = SDL_CreateThread((int (*)(void*))net_start_thread, NULL);
       if ( net_thread == NULL ) {
         fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
         return 0;
