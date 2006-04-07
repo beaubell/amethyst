@@ -15,17 +15,17 @@
 
 int udpsend(UDPsocket sock, int channel, UDPpacket *out)
 {
-	if(!SDLNet_UDP_Send(sock, channel, out))
-	{
-		printf("SDLNet_UDP_Send: %s\n",SDLNet_GetError());
-		exit(1);
-	}
-	return(1);
+    if(!SDLNet_UDP_Send(sock, channel, out))
+    {
+        printf("SDLNet_UDP_Send: %s\n",SDLNet_GetError());
+        exit(1);
+    }
+    return(1);
 }
 
 int udprecv(UDPsocket sock, UDPpacket *in)
 {
-	return SDLNet_UDP_Recv(sock, in);
+    return SDLNet_UDP_Recv(sock, in);
 }
 
 
@@ -49,8 +49,8 @@ void net_test(void)
 
   if(SDLNet_ResolveHost(&Global.net_server_ip,Global.net_server.c_str(),Global.net_port)==-1)
   {
-	printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
-	exit(4);
+    printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
+    exit(4);
   }
 
   // open udp client socket
@@ -63,13 +63,13 @@ void net_test(void)
   // allocate max packet
   if(!(Global.pack_out=SDLNet_AllocPacket(65535)))
   {
-	printf("SDLNet_AllocPacket: %s\n",SDLNet_GetError());
-	exit(6);
+    printf("SDLNet_AllocPacket: %s\n",SDLNet_GetError());
+    exit(6);
   }
   if(!(Global.pack_in=SDLNet_AllocPacket(65535)))
   {
-	printf("SDLNet_AllocPacket: %s\n",SDLNet_GetError());
-	exit(6);
+    printf("SDLNet_AllocPacket: %s\n",SDLNet_GetError());
+    exit(6);
   }
 
   // bind server address to channel 0
@@ -136,10 +136,12 @@ int net_recieve_thread(void)
 
   for(;;)
   {
+    net_send_telemetry();
+
     if(udprecv(Global.net_socket, Global.pack_in) == 1)
        printf(".\n");
-       
-  SDL_Delay(10);
+
+  SDL_Delay(100);
   }
 
 

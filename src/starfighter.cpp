@@ -447,7 +447,7 @@ static void main_loop()
        //print_vector("Accel   : ", Global.ship.acceleration);
 
     // Send object to server
-    net_send_telemetry();
+    //net_send_telemetry();
 
     /* update the screen */
     RenderScene();
