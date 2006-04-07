@@ -58,7 +58,10 @@ class Net_Object: public Object
     uint16_t    port;
     char        name[12];
 
+    time_t      updated;
+
     Net_Object *next;
+    Net_Object *prev;
 };
 
 class __global
@@ -76,46 +79,99 @@ class __global
         obj_end   = NULL;
     }
 
+    //  Creates an object and links it into the linked list.
     Net_Object* new_net_object(uint32_t ip, uint16_t port)
     {
         if (obj_end == NULL)
         {
-            obj_start = new Net_Object;
-            obj_end   = obj_start;
+            // Create First Object
+            obj_start       = new Net_Object;
+            obj_start->prev = NULL;
+            obj_end         = obj_start;
         } else
         {
-            obj_end->next =  new Net_Object;
-            obj_end       =  obj_end->next;
+            // Create Object on end
+            obj_end->next       = new Net_Object;
+            obj_end->next->prev = obj_end;
+            obj_end             = obj_end->next;
         }
+
         obj_end->next =  NULL;
 
         obj_end->ip   = ip;
         obj_end->port = port;
         objects++;
 
-        std::cout << "NEW OBJECT CREATED!\n";
+        in_addr ip_struct;
+        ip_struct.s_addr = ip;
+        std::cout << "NEW OBJECT FROM " << inet_ntoa(ip_struct) << "!\n";
 
         return obj_end;
     }
 
-
+    //  Check to see if object based on network ip and port already exists in our list.
     Net_Object* find_net_object(uint32_t ip, uint16_t port)
     {
         Net_Object   *obj1 = obj_start;
 
+        // if obj1 is null, there are no objects so create one and return;
         if(obj1 == NULL) return new_net_object(ip, port);
 
         do
         {
+             // check to see if this is the one
              if((obj1->ip == ip) && (obj1->port == port))
-               return obj1;
+               return obj1;  // Oh teh le3t!  it is.
 
              obj1 = obj1->next;
         }  while (obj1 != NULL);
 
+        // We didn't find our object so lets create one.
         return new_net_object(ip, port);
 
     }
+
+#if 0 
+    //  Check to see if object based on network ip and port already exists in our list.
+    int del_net_object(uint32_t ip, uint16_t port)
+    {
+        Net_Object   *obj1 = obj_start;
+
+        // if obj1 is null, there are no objects so return;
+        if(obj1 == NULL) return 0;
+
+        do
+        {
+             // check to see if this is the one
+             if((obj1->ip == ip) && (obj1->port == port))
+             {
+               // Is this the last object?
+               if(obj1->next == NULL)
+               {
+                  // Point the end to the prev last
+                  obj_end = obj1->prev;
+
+                  // Cap the end
+                  obj1->prev->next = NULL;
+               }
+               if(obj1->prev == NULL)
+               {
+                    obj_start = NULL;
+ 
+               }
+
+               return 1;
+             }
+
+
+             obj1 = obj1->next;
+        }  while (obj1 != NULL);
+
+        // We didn't find our object.
+        return 0;
+
+    }
+#endif
 
 };
 
@@ -129,6 +185,40 @@ bail (const char *on_what) {
     fputs(on_what,stderr);
     fputc('\n',stderr);
     exit(1);
+}
+
+void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_size)
+{
+
+    // Cast packet_header struct over in packet
+    packet_header   *head   = (packet_header*)((char *)dgram);
+
+    // Print header info
+    //printf("Type: %i Misc: %i\n", head->type, head->misc);
+
+    if (head->type == 1)
+    {
+
+         Net_Object *net_obj = Global.find_net_object(ip, port);
+
+         // Cast object_transfer struct over out packet after header struct
+         object_transfer *inc_object = (object_transfer *)((char *)dgram + sizeof(packet_header));
+
+         //Print name and pad
+         //printf("name: %s   pad: %s\n", &inc_object->name, &inc_object->pad);
+         strncpy(net_obj->name, inc_object->name, 12);
+
+         //Unpack data from packets
+         unpack(net_obj->location,     inc_object->location);
+         unpack(net_obj->velocity,     inc_object->velocity);
+         unpack(net_obj->acceleration, inc_object->acceleration);
+
+         unpack(net_obj->attitude,     inc_object->attitude);
+
+         time(&net_obj->updated);
+    }
+
+
 }
 
 
@@ -145,6 +235,9 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
     offset += sizeof(packet_header);
 
     Net_Object   *obj1 = Global.obj_start;
+
+    // No objects,  so just send what we have.
+    if (obj1 == NULL) return offset;
 
     do
     {
@@ -201,12 +294,16 @@ int main(int argc, char** argv)
     int s;                       /* socket */
     char rx_dgram[1500];         /* Recv Buffer */
     char tx_dgram[1500];         /* TX   Bufffer */
-    time_t td;                   /* Current Time and Date */
-    struct tm tm;                /* Date time values */
+//  time_t td;                   /* Current Time and Date */
 
 
-    srvr_addr = "127.0.0.1";
-    //srvr_addr = "192.168.1.1";
+    // Read address from commandline
+    if ( argc >= 2 ) {
+       // Addr on cmdline
+       srvr_addr = argv[1];
+    }  else {
+       srvr_addr = "127.0.0.1";
+    }
 
     // Create Socket
     s = socket(AF_INET, SOCK_DGRAM, 0);
@@ -244,52 +341,24 @@ int main(int argc, char** argv)
        if (z < 0)
            bail("recvfrom(2)");
 
-       //printf("MSG FROM: %s\n", inet_ntoa(adr_clnt.sin_addr));
 
-       // Cast packet_header struct over in packet
-       packet_header   *head   = (packet_header*)((char *)rx_dgram);
+       // Parse that beotch
+       parse_incoming_dgram(adr_clnt.sin_addr.s_addr, adr_clnt.sin_port, rx_dgram, z);
 
-       // Print header info
-       //printf("Type: %i Misc: %i\n", head->type, head->misc);
+       // Expire old objects
+       //expire_objects(30);  // 30 secs
 
-       if (head->type == 1)
-       {
+       // Generate a response
+       int tx_size = build_outgoing_dgram(adr_clnt.sin_addr.s_addr, adr_clnt.sin_port, tx_dgram);
 
-         Net_Object *net_obj = Global.find_net_object(adr_clnt.sin_addr.s_addr, adr_clnt.sin_port);
-
-         // Cast object_transfer struct over out packet after header struct
-         object_transfer *inc_object = (object_transfer *)((char *)rx_dgram + sizeof(packet_header));
-
-         //Print name and pad
-         //printf("name: %s   pad: %s\n", &inc_object->name, &inc_object->pad);
-         strncpy(net_obj->name, inc_object->name, 12);
-
-         //Unpack data from packets
-         unpack(net_obj->location,     inc_object->location);
-         unpack(net_obj->velocity,     inc_object->velocity);
-         unpack(net_obj->acceleration, inc_object->acceleration);
-
-         unpack(net_obj->attitude,     inc_object->attitude);
-
-         //Print recieved info
-         //print_vector("Location: ", net_obj->location);
-         //print_vector("Velocity: ", net_obj->velocity);
-         //print_vector("Accel   : ", net_obj->acceleration);
-
-         //print_vector("Attitude: ", net_obj->attitude);
-
-         int tx_size = build_outgoing_dgram(adr_clnt.sin_addr.s_addr, adr_clnt.sin_port, tx_dgram);
-
-         printf("Size: %i\n", tx_size);
-
-         z = sendto(s,              // Socket
+       // Send Response
+       z = sendto(s,              // Socket
                   tx_dgram,         // The datagram result to snd
                   tx_size,          // Datagram length
                   0,                // Flags: No Options
                   (struct sockaddr *)&adr_clnt,  // Addr
                   len_inet);        // Client address length
 
-       } // if
 
     } // for
 
