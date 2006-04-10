@@ -9,9 +9,9 @@
 #include <amethyst/object.h>
 
 #include <string>
-#include "SDL/SDL.h"
-#include "SDL/SDL_opengl.h"
-#include "SDL/SDL_net.h"
+#include "SDL.h"
+#include "SDL_opengl.h"
+#include "SDL_net.h"
 
 #include "joystick.h"
 

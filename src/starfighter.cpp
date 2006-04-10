@@ -20,9 +20,9 @@
 #include <amethyst/utility.h>
 
 #include <stdlib.h>
-#include "SDL/SDL.h"
-#include "SDL/SDL_thread.h"
-#include "SDL/SDL_opengl.h"
+#include "SDL.h"
+#include "SDL_thread.h"
+#include "SDL_opengl.h"
 
 #include "global.h"
 #include "joystick.h"

@@ -6,7 +6,7 @@
  *   (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)              *
  ***************************************************************************/
 
-#include "SDL/SDL_opengl.h"
+#include "SDL_opengl.h"
 
 typedef struct {
     int width;

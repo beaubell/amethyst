@@ -9,7 +9,7 @@ http://www.righthemisphere.com/
 support@righthemisphere.com
 */
 
-#include "SDL/SDL_opengl.h"
+#include "SDL_opengl.h"
 
 // 107 Verticies
 // 234 Texture Coordinates
