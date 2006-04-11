@@ -6,6 +6,7 @@
 #include "model.h"
 
 #include <math.h>
+#include <string>
 
 #include "global.h"
 #include "texture.h"
@@ -21,8 +22,10 @@ void load_models(void)
     glEndList();
 
 
-    // Load Planet
-    Global.planet_tex = load_image(Global.file_tex_planet.c_str());
+    // Load Planet Texture
+    std::string planet = Global.dir_textures + "/" + Global.file_tex_planet;
+
+    Global.planet_tex = load_image(planet.c_str());
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -32,15 +35,18 @@ void load_models(void)
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
 
+    // Load Planet Model
     Global.planet_mdl = glGenLists(1);
     glNewList(Global.planet_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-    renderSphere(0,0,0,50,100);
+    renderSphere(0,0,0,500,100);
     glEndList();
 
 
     // Load Starfield
-    Global.starfield_tex = load_image(Global.file_tex_starfield.c_str());
+    std::string starfield = Global.dir_textures + "/" + Global.file_tex_starfield;
+
+    Global.starfield_tex = load_image(starfield.c_str());
     glBindTexture(GL_TEXTURE_2D, Global.starfield_tex);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -53,7 +59,7 @@ void load_models(void)
     Global.starfield_mdl = glGenLists(1);
     glNewList(Global.starfield_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.starfield_tex);
-    renderSphere(0,0,0,5000,100);
+    renderSphere(0,0,0,500000,100);
     glEndList();
 
 }

@@ -34,34 +34,27 @@ __global::__global()
     //axis_roll.null         = 1000;
 
     axis_yaw.joystick      = 0;
-    axis_yaw.axis          = 3;
+    axis_yaw.axis          = 2;
     //axis_yaw.null          = 1000;
 
     axis_throttle.joystick = 0;
-    axis_throttle.axis     = 4;
+    axis_throttle.axis     = 3;
     //axis_throttle.null     = 1000;
 
-    dir_home           = "/home/beau";
-    dir_amethyst       = dir_home + "/.amethyst";
-    dir_textures       = dir_amethyst + "/textures";
+    file_tex_planet    = "mars2048.bmp";
+    file_tex_starfield = "space2048.bmp";
 
-    file_tex_planet    = dir_textures + "/mars2048.bmp";
-    file_tex_starfield = dir_textures + "/space2048.bmp";
-
-    file_tex_sb_bk     = dir_textures + "/bk.bmp";
-    file_tex_sb_ft     = dir_textures + "/ft.bmp";
-    file_tex_sb_up     = dir_textures + "/up.bmp";
-    file_tex_sb_dn     = dir_textures + "/dn.bmp";
-    file_tex_sb_rt     = dir_textures + "/rt.bmp";
-    file_tex_sb_lt     = dir_textures + "/lt.bmp";
+    file_tex_sb_bk     = "bk.bmp";
+    file_tex_sb_ft     = "ft.bmp";
+    file_tex_sb_up     = "up.bmp";
+    file_tex_sb_dn     = "dn.bmp";
+    file_tex_sb_rt     = "rt.bmp";
+    file_tex_sb_lt     = "lt.bmp";
 
 
     net_server         = "www.stellarnetservices.net";
-    //net_server         = "192.168.1.1";
-    //net_server         = "localhost";
     net_port           = 23232;
-
-    net_handle         = "Beau";
+    net_handle         = "leetsuace";
 };
 
 __global Global;
