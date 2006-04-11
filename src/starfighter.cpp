@@ -29,6 +29,7 @@
 #include "net.h"
 #include "texture.h"
 #include "model.h"
+#include "config_xml.h"
 //#include "debug.h"
 
 #define WIDTH  1024
@@ -70,6 +71,7 @@ Uint32 time_left(void)
 }
 
 // Called to draw scene
+// Fixme - Put Objects into some sort of linked list
 void RenderScene(void)
 {
     // Get Gobal State
@@ -145,7 +147,7 @@ void RenderScene(void)
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
 
-    //Draw Ship
+    //Draw Your Ship
     glPushMatrix();
 
       glDisable(GL_TEXTURE_2D);
@@ -168,7 +170,7 @@ void RenderScene(void)
     glPopMatrix();
 
 
-    //Draw Ship 2
+    //Draw Static Ship
     glPushMatrix();
 
       //Move to ship position
@@ -193,8 +195,8 @@ void RenderScene(void)
       //Move to ref position
       glTranslatef(100 , 100, 100);
 
-      //Rotate Ship
-      //glRotatef(theta, dir.x, dir.y, dir.z);
+      //Rotate planet on axis
+      //glRotatef(.1, 1, 0, 0);
       {
         GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f };  // Whiteness!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
@@ -487,6 +489,27 @@ static void main_loop()
 int main(int argc, char* argv[])
 {
     SDL_Thread *net_thread;
+
+    Global.dir_home     = getenv ("HOME");
+    Global.dir_amethyst = Global.dir_home + "/.amethyst";
+    Global.dir_textures = Global.dir_amethyst + "/" + "textures";
+
+
+    string config_file  = Global.dir_amethyst + "/" + "config.xml";
+
+
+    // Check for existance of config.xml else fail siliently
+    if(access(config_file.c_str(), F_OK) == 0) {
+
+        // Check for read permission else fail kicking and screaming
+        if(access(config_file.c_str(), R_OK) == 0) {
+            parse_xml_config (config_file.c_str());
+            printf("Reading config file at %s...\n", config_file.c_str());
+        } else {
+            printf("Unable to read config file at %s, permission?\n", config_file.c_str());
+        }
+    }
+
 
 
     setup_sdl();
