@@ -79,21 +79,9 @@ void net_test(void)
         exit(7);
   }
 
-  // request file / expect filesize
-  //out->data[0]=1<<4;
-  //strcpy((char *)out->data+1,"FOOOOOO");
-  //out->len=strlen("FOOOOOO")+2;
-  //if(udpsend(Global.net_socket,0,out,in,200,1)<1)
-  //   exit(9);
-
-
-  //int numsent = SDLNet_UDP_Send(socket, packet.channel, &packet);
-  //std::cout << numsent;
-
   std::cout << "\nPacket Header  : " << (sizeof(packet_header));
   std::cout << "\nObject Transfer: " << (sizeof(object_transfer));
 
-  //net_send_telemetry();
 }
 
 
