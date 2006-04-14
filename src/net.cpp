@@ -103,11 +103,11 @@ void net_send_telemetry(void){
   strncpy(object->pad, "XOXOXOXOXOXO",9);
   object->pad[9] = '\0';
 
-  pack(object->location,    Global.ship.location);
-  pack(object->velocity,    Global.ship.velocity);
-  pack(object->acceleration,Global.ship.acceleration);
+  net_pack(object->location,    Global.ship.location);
+  net_pack(object->velocity,    Global.ship.velocity);
+  net_pack(object->acceleration,Global.ship.acceleration);
 
-  pack(object->attitude,    Global.ship.attitude);
+  net_pack(object->attitude,    Global.ship.attitude);
 
 
   Global.pack_out->len = sizeof(packet_header) + sizeof(object_transfer);
@@ -140,11 +140,11 @@ void net_recv_telemetry(void){
           //strncpy(object->pad, "XOXOXOXOXOXO",9);
           //object->pad[9] = '\0';
 
-          unpack(Global.net_ship[i].location,     object->location);
-          unpack(Global.net_ship[i].velocity,     object->velocity);
-          unpack(Global.net_ship[i].acceleration, object->acceleration);
+          net_unpack(Global.net_ship[i].location,     object->location);
+          net_unpack(Global.net_ship[i].velocity,     object->velocity);
+          net_unpack(Global.net_ship[i].acceleration, object->acceleration);
 
-          unpack(Global.net_ship[i].attitude,     object->attitude);
+          net_unpack(Global.net_ship[i].attitude,     object->attitude);
       }
   }
 }
