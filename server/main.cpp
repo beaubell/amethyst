@@ -209,11 +209,11 @@ void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_siz
          strncpy(net_obj->name, inc_object->name, 12);
 
          //Unpack data from packets
-         unpack(net_obj->location,     inc_object->location);
-         unpack(net_obj->velocity,     inc_object->velocity);
-         unpack(net_obj->acceleration, inc_object->acceleration);
+         net_unpack(net_obj->location,     inc_object->location);
+         net_unpack(net_obj->velocity,     inc_object->velocity);
+         net_unpack(net_obj->acceleration, inc_object->acceleration);
 
-         unpack(net_obj->attitude,     inc_object->attitude);
+         net_unpack(net_obj->attitude,     inc_object->attitude);
 
          time(&net_obj->updated);
     }
@@ -255,11 +255,11 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
              strncpy(out_object->pad, "XOXOXOXOXOXO",9);
              out_object->pad[9] = '\0';
 
-             pack(out_object->location,     obj1->location);
-             pack(out_object->velocity,     obj1->velocity);
-             pack(out_object->acceleration, obj1->acceleration);
+             net_pack(out_object->location,     obj1->location);
+             net_pack(out_object->velocity,     obj1->velocity);
+             net_pack(out_object->acceleration, obj1->acceleration);
 
-             pack(out_object->attitude,     obj1->attitude);
+             net_pack(out_object->attitude,     obj1->attitude);
 
              offset += sizeof(object_transfer);
           }
@@ -278,8 +278,8 @@ int main(int argc, char** argv)
 {
     printf(" amethyst::Cartesian_Vector: %i\n", sizeof(amethyst::Cartesian_Vector));
     printf(" amethyst::Quaternion      : %i\n", sizeof(amethyst::Quaternion));
-
-    printf(" char[12]                  : %i\n", sizeof(char[12]));
+    printf(" float                     : %i\n", sizeof(float));
+    printf(" double                    : %i\n", sizeof(double));
     printf(" vectord_3d                : %i\n", sizeof(vectord_3d));
     printf(" vectord_4d                : %i\n", sizeof(vectord_4d));
 
