@@ -15,6 +15,7 @@
 #include "engine.h"
 #include "object.h"
 #include "physics.h"
+#include "net.h"
 
 #ifdef __GNUG__
 #pragma implementation
@@ -32,6 +33,11 @@ namespace amethyst {
        info_variable_size();
        test_cartsphere_conv(quiet, debug);
        test_engine(quiet, debug);
+
+       unsigned short a = 30356, b;
+       printf("a: %#xh\n",a);
+       b = ntohs(a);
+       printf("b: %#xh\n", b);
   }
 
   bool test_cartsphere_conv(bool quiet, bool debug)

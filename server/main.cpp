@@ -196,7 +196,7 @@ void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_siz
     // Print header info
     //printf("Type: %i Misc: %i\n", head->type, head->misc);
 
-    if (head->type == 1)
+    if (ntohs(head->type) == 1)
     {
 
          Net_Object *net_obj = Global.find_net_object(ip, port);
@@ -224,13 +224,14 @@ void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_siz
 
 int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
 {
-    int  offset = 0;
+    int  offset       = 0;
+    int  object_count = 0;
 
     // Cast packet_header struct over out packet
     packet_header   *head   = (packet_header*)dgram;
 
-    head->type = 1;   // Type of packet  (1 = object transfer)
-    head->misc = 0;   // Misc (Num of objects...)
+    head->type = htons(1);   // Type of packet  (1 = object transfer)
+    //head->misc = 0;   // Misc (Num of objects...)
 
     offset += sizeof(packet_header);
 
@@ -241,10 +242,11 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
 
     do
     {
+
          if((obj1->ip != ip) || (obj1->port != port))
          {
              // Increment object count;
-             head->misc++;
+             object_count++;
 
              // Cast object_transfer struct over out packet after header struct
              object_transfer *out_object = (object_transfer *)(dgram + offset);
@@ -267,7 +269,7 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
          obj1 = obj1->next;
     }  while (obj1 != NULL);
 
-
+    head->misc = htons(object_count);
 
     return offset;
 
