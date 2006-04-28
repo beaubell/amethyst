@@ -34,10 +34,10 @@ namespace amethyst {
        test_cartsphere_conv(quiet, debug);
        test_engine(quiet, debug);
 
-       unsigned short a = 30356, b;
-       printf("a: %#xh\n",a);
-       b = ntohs(a);
-       printf("b: %#xh\n", b);
+//       unsigned short a = 30356, b;
+//       printf("a: %#xh\n",a);
+//       b = ntohs(a);
+//       printf("b: %#xh\n", b);
   }
 
   bool test_cartsphere_conv(bool quiet, bool debug)
