@@ -90,8 +90,8 @@ void net_send_telemetry(void){
   // Cast packet_header struct over out packet
   packet_header   *head   = (packet_header*)((char *)Global.pack_out->data);
 
-  head->type = htons(1);   // Type of packet  (1 = object transfer)
-  head->misc = htons(1);   // Misc (Num of objects...)
+  head->type = SDL_SwapBE16(1);   // Type of packet  (1 = object transfer)
+  head->misc = SDL_SwapBE16(1);   // Misc (Num of objects...)
 
 
   // Cast object_transfer struct over out packet after header struct
@@ -123,9 +123,9 @@ void net_recv_telemetry(void){
   // Cast packet_header struct over out packet
   packet_header   *head   = (packet_header*)((char *)Global.pack_in->data);
 
-  if (ntohs(head->type) == 1)
+  if (SDL_SwapBE16(head->type) == 1)
   {
-      Global.net_ships = ntohs(head->misc);
+      Global.net_ships = SDL_SwapBE16(head->misc);
 
       for(int i = 0; i < Global.net_ships; i++)
       {
