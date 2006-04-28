@@ -49,7 +49,7 @@ namespace amethyst {
       }
       return out.value;
      #else
-      return in.value;
+      return in;
      #endif
   }
 
@@ -66,7 +66,7 @@ namespace amethyst {
       
       return out.value;
      #else
-      return in.value;
+      return in;
      #endif
   }
 
@@ -82,7 +82,7 @@ namespace amethyst {
       }
       return out.value;
      #else
-      return in.value;
+      return in;
      #endif
   }
 
@@ -98,7 +98,7 @@ namespace amethyst {
       }
       return out.value;
      #else
-      return in.value;
+      return in;
      #endif
   }
 
@@ -114,7 +114,7 @@ namespace amethyst {
       }
       return out.value;
      #else
-      return in.value;
+      return in;
      #endif
   }
 
