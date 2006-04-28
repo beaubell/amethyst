@@ -18,6 +18,7 @@
 #include <arpa/inet.h>
 
 #include <iostream>
+#include <list>
 #include "utility.h"
 
 using namespace amethyst;
@@ -59,72 +60,56 @@ class Net_Object: public Object
     char        name[12];
 
     time_t      updated;
-
-    Net_Object *next;
-    Net_Object *prev;
 };
 
 class __global
 {
-    public:
-
-    Net_Object   *obj_start;
-    Net_Object   *obj_end;
-
-    int          objects;
+  public:
+    std::list<Net_Object>           net_object_list;
 
     __global()
     {
-        obj_start = NULL;
-        obj_end   = NULL;
+        // Global state initialization goes here
     }
+
 
     //  Creates an object and links it into the linked list.
     Net_Object* new_net_object(uint32_t ip, uint16_t port)
     {
-        if (obj_end == NULL)
+        Net_Object new_obj;
+
+        new_obj.ip   = ip;
+        new_obj.port = port;
+
+        // Add object to list
+        net_object_list.push_back(new_obj);
+
+        // Display IP address
         {
-            // Create First Object
-            obj_start       = new Net_Object;
-            obj_start->prev = NULL;
-            obj_end         = obj_start;
-        } else
-        {
-            // Create Object on end
-            obj_end->next       = new Net_Object;
-            obj_end->next->prev = obj_end;
-            obj_end             = obj_end->next;
+          in_addr ip_struct;
+          ip_struct.s_addr = ip;
+          std::cout << "NEW OBJECT FROM " << inet_ntoa(ip_struct) << "!\n";
         }
 
-        obj_end->next =  NULL;
-
-        obj_end->ip   = ip;
-        obj_end->port = port;
-        objects++;
-
-        in_addr ip_struct;
-        ip_struct.s_addr = ip;
-        std::cout << "NEW OBJECT FROM " << inet_ntoa(ip_struct) << "!\n";
-
-        return obj_end;
+        return &net_object_list.back();
     }
 
     //  Check to see if object based on network ip and port already exists in our list.
     Net_Object* find_net_object(uint32_t ip, uint16_t port)
     {
-        Net_Object   *obj1 = obj_start;
+        // Check if list is empty, make object if it is, otherwise continue
+        if(net_object_list.empty()) return new_net_object(ip, port);
 
-        // if obj1 is null, there are no objects so create one and return;
-        if(obj1 == NULL) return new_net_object(ip, port);
+        std::list<Net_Object>::iterator obj1 = net_object_list.begin();
 
         do
         {
              // check to see if this is the one
              if((obj1->ip == ip) && (obj1->port == port))
-               return obj1;  // Oh teh le3t!  it is.
+               return &*obj1;  // Oh teh le3t!  it is.
 
-             obj1 = obj1->next;
-        }  while (obj1 != NULL);
+             obj1++;
+        }  while (obj1 != net_object_list.end());
 
         // We didn't find our object so lets create one.
         return new_net_object(ip, port);
@@ -217,8 +202,6 @@ void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_siz
 
          time(&net_obj->updated);
     }
-
-
 }
 
 
@@ -231,14 +214,14 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
     packet_header   *head   = (packet_header*)dgram;
 
     head->type = htons(1);   // Type of packet  (1 = object transfer)
-    //head->misc = 0;   // Misc (Num of objects...)
 
     offset += sizeof(packet_header);
 
-    Net_Object   *obj1 = Global.obj_start;
+    // If no objects,  just send what we have.
+    if (Global.net_object_list.empty()) return offset;
 
-    // No objects,  so just send what we have.
-    if (obj1 == NULL) return offset;
+    //Make an iterator and point it at the start of our net_object list;
+    std::list<Net_Object>::iterator obj1 = Global.net_object_list.begin();
 
     do
     {
@@ -266,8 +249,8 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
              offset += sizeof(object_transfer);
           }
 
-         obj1 = obj1->next;
-    }  while (obj1 != NULL);
+         obj1++;
+    }  while (obj1 != Global.net_object_list.end());
 
     head->misc = htons(object_count);
 
