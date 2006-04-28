@@ -22,8 +22,8 @@
 
 namespace amethyst {
 
-  unsigned short ntohs(const unsigned short &in);
- #define         htons(x) ntohs(x)
+//  unsigned short ntohs(const unsigned short &in);
+// #define         htons(x) ntohs(x)
 
   unsigned int   ntohi(const unsigned int   &in);
  #define         htoni(x) ntohi(x)
@@ -34,8 +34,8 @@ namespace amethyst {
   double         ntohd(const double &in);
  #define         htond(x) ntohd(x)
 
-  long double    ntohd(const long double &in);
- #define         htond(x) ntohd(x)
+  long double    ntohld(const long double &in);
+ #define         htonld(x) ntohld(x)
 
   struct vectorf_3d
   {
