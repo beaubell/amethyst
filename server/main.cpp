@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -19,10 +20,8 @@
 
 #include <iostream>
 #include <list>
-#include "utility.h"
 
 using namespace amethyst;
-
 
 struct packet_header
 {
@@ -66,102 +65,39 @@ class __global
 {
   public:
     std::list<Net_Object>           net_object_list;
-
-    __global()
-    {
-        // Global state initialization goes here
-    }
-
-
-    //  Creates an object and links it into the linked list.
-    Net_Object* new_net_object(uint32_t ip, uint16_t port)
-    {
-        Net_Object new_obj;
-
-        new_obj.ip   = ip;
-        new_obj.port = port;
-
-        // Add object to list
-        net_object_list.push_back(new_obj);
-
-        // Display IP address
-        {
-          in_addr ip_struct;
-          ip_struct.s_addr = ip;
-          std::cout << "NEW OBJECT FROM " << inet_ntoa(ip_struct) << "!\n";
-        }
-
-        return &net_object_list.back();
-    }
-
-    //  Check to see if object based on network ip and port already exists in our list.
-    Net_Object* find_net_object(uint32_t ip, uint16_t port)
-    {
-        // Check if list is empty, make object if it is, otherwise continue
-        if(net_object_list.empty()) return new_net_object(ip, port);
-
-        std::list<Net_Object>::iterator obj1 = net_object_list.begin();
-
-        do
-        {
-             // check to see if this is the one
-             if((obj1->ip == ip) && (obj1->port == port))
-               return &*obj1;  // Oh teh le3t!  it is.
-
-             obj1++;
-        }  while (obj1 != net_object_list.end());
-
-        // We didn't find our object so lets create one.
-        return new_net_object(ip, port);
-
-    }
-
-#if 0 
-    //  Check to see if object based on network ip and port already exists in our list.
-    int del_net_object(uint32_t ip, uint16_t port)
-    {
-        Net_Object   *obj1 = obj_start;
-
-        // if obj1 is null, there are no objects so return;
-        if(obj1 == NULL) return 0;
-
-        do
-        {
-             // check to see if this is the one
-             if((obj1->ip == ip) && (obj1->port == port))
-             {
-               // Is this the last object?
-               if(obj1->next == NULL)
-               {
-                  // Point the end to the prev last
-                  obj_end = obj1->prev;
-
-                  // Cap the end
-                  obj1->prev->next = NULL;
-               }
-               if(obj1->prev == NULL)
-               {
-                    obj_start = NULL;
- 
-               }
-
-               return 1;
-             }
-
-
-             obj1 = obj1->next;
-        }  while (obj1 != NULL);
-
-        // We didn't find our object.
-        return 0;
-
-    }
-#endif
-
+    char  timestamp[50];
 };
+
 
 // Instantiate Global Class
 __global Global;
+
+// Prototypes
+char*       mk_timestamp        (void);
+static void bail                (const char *on_what);
+Net_Object* new_net_object      (uint32_t ip, uint16_t port);
+Net_Object* find_net_object     (uint32_t ip, uint16_t port);
+int         expire_net_objects  (unsigned int expire_offset);
+void        parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_size);
+int         build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram);
+
+
+char * mk_timestamp ()
+{
+    // Get unix time
+    time_t unix_time;
+    time(&unix_time);
+
+    // Convert to tm struct
+    struct tm *tm = localtime(&unix_time);
+
+    // Format time string
+    strftime((char *)&Global.timestamp, sizeof(Global.timestamp), "%D %T - ", tm);
+
+    // Return it
+    return (char *)&Global.timestamp;
+}
+
 
 static void
 bail (const char *on_what) {
@@ -171,6 +107,109 @@ bail (const char *on_what) {
     fputc('\n',stderr);
     exit(1);
 }
+
+
+//  Creates an object and links it into the linked list.
+Net_Object* new_net_object(uint32_t ip, uint16_t port)
+{
+        Net_Object new_obj;
+
+        new_obj.ip   = ip;
+        new_obj.port = port;
+
+        // Add object to list
+        Global.net_object_list.push_back(new_obj);
+
+        // Display IP address
+        {
+          in_addr ip_struct;
+          ip_struct.s_addr = ip;
+          std::cout << mk_timestamp()
+                    <<  "NEW OBJECT FROM "
+                    << inet_ntoa(ip_struct)
+                    << ":"
+                    << ntohs(port)
+                    << "\n";
+        }
+
+        return &Global.net_object_list.back();
+}
+
+
+//  Check to see if object based on network ip and port already exists in our list.
+Net_Object* find_net_object(uint32_t ip, uint16_t port)
+{
+        // Check if list is empty, make object if it is, otherwise continue
+        if(Global.net_object_list.empty()) return new_net_object(ip, port);
+
+        //Make an iterator and point it at the start of our net_object list;
+        std::list<Net_Object>::iterator obj1 = Global.net_object_list.begin();
+
+        do
+        {
+             // check to see if this is the one
+             if((obj1->ip == ip) && (obj1->port == port))
+               return &*obj1;  // Oh teh le3t!  it is.
+
+             obj1++;
+        }  while (obj1 != Global.net_object_list.end());
+
+        // We didn't find our object so lets create one.
+        return new_net_object(ip, port);
+
+}
+
+
+//  Expire objects based on time.
+int expire_net_objects(unsigned int expire_offset)
+{
+        // Check if list is empty, if it is, return 0
+        if(Global.net_object_list.empty()) return 0;
+
+        // Get expipre time
+        time_t expire_time;
+        time(&expire_time);
+        expire_time -= expire_offset;
+
+        int objects_del_count = 0;
+
+        //Make an iterator and point it at the start of our net_object list;
+        std::list<Net_Object>::iterator obj1 = Global.net_object_list.begin();
+
+        do
+        {
+             // check to see if this object is expired
+             if(obj1->updated < expire_time)
+             {
+               // Print Info about object being deleted
+               {
+                  in_addr ip_struct;
+                  ip_struct.s_addr = obj1->ip;
+                  std::cout << mk_timestamp()
+                            << "    OBJECT FROM "
+                            << inet_ntoa(ip_struct)
+                            << ":"
+                            << ntohs(obj1->port)
+                            << " IS EXPIRED\n";
+               }
+
+               // Delete the expired object
+               Global.net_object_list.erase(obj1);
+
+               objects_del_count++;
+
+               // FIXME Must return,  the iterator is now broke.
+               return 1;
+             }
+
+             obj1++;
+
+        }  while (obj1 != Global.net_object_list.end());
+
+        return objects_del_count;
+
+}
+
 
 void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_size)
 {
@@ -184,7 +223,7 @@ void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_siz
     if (ntohs(head->type) == 1)
     {
 
-         Net_Object *net_obj = Global.find_net_object(ip, port);
+         Net_Object *net_obj = find_net_object(ip, port);
 
          // Cast object_transfer struct over out packet after header struct
          object_transfer *inc_object = (object_transfer *)((char *)dgram + sizeof(packet_header));
@@ -201,7 +240,7 @@ void parse_incoming_dgram(uint32_t ip, uint16_t port, char *dgram, int dgram_siz
          net_unpack(net_obj->attitude,     inc_object->attitude);
 
          time(&net_obj->updated);
-    }
+    } // if
 }
 
 
@@ -247,7 +286,7 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
              net_pack(out_object->attitude,     obj1->attitude);
 
              offset += sizeof(object_transfer);
-          }
+          } // if
 
          obj1++;
     }  while (obj1 != Global.net_object_list.end());
@@ -261,15 +300,15 @@ int build_outgoing_dgram(uint32_t ip, uint16_t port, char *dgram)
 
 int main(int argc, char** argv)
 {
-    printf(" amethyst::Cartesian_Vector: %i\n", sizeof(amethyst::Cartesian_Vector));
-    printf(" amethyst::Quaternion      : %i\n", sizeof(amethyst::Quaternion));
-    printf(" float                     : %i\n", sizeof(float));
-    printf(" double                    : %i\n", sizeof(double));
-    printf(" vectord_3d                : %i\n", sizeof(vectord_3d));
-    printf(" vectord_4d                : %i\n", sizeof(vectord_4d));
+    //printf(" amethyst::Cartesian_Vector: %i\n", sizeof(amethyst::Cartesian_Vector));
+    //printf(" amethyst::Quaternion      : %i\n", sizeof(amethyst::Quaternion));
+    //printf(" float                     : %i\n", sizeof(float));
+    //printf(" double                    : %i\n", sizeof(double));
+    //printf(" vectord_3d                : %i\n", sizeof(vectord_3d));
+    //printf(" vectord_4d                : %i\n", sizeof(vectord_4d));
 
-    printf(" packet_header             : %i\n", sizeof(packet_header));
-    printf(" object_transfer           : %i\n", sizeof(object_transfer));
+    //printf(" packet_header             : %i\n", sizeof(packet_header));
+    //printf(" object_transfer           : %i\n", sizeof(object_transfer));
 
     int z;
     char *srvr_addr = NULL;
@@ -279,7 +318,6 @@ int main(int argc, char** argv)
     int s;                       /* socket */
     char rx_dgram[1500];         /* Recv Buffer */
     char tx_dgram[1500];         /* TX   Bufffer */
-//  time_t td;                   /* Current Time and Date */
 
 
     // Read address from commandline
@@ -331,7 +369,7 @@ int main(int argc, char** argv)
        parse_incoming_dgram(adr_clnt.sin_addr.s_addr, adr_clnt.sin_port, rx_dgram, z);
 
        // Expire old objects
-       //expire_objects(30);  // 30 secs
+       expire_net_objects(30);  // 30 secs
 
        // Generate a response
        int tx_size = build_outgoing_dgram(adr_clnt.sin_addr.s_addr, adr_clnt.sin_port, tx_dgram);
