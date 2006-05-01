@@ -200,17 +200,17 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 	
 	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read width from " << pFileName << "." << endl;
-	pImage->width = SDL_Swap32(t);
+	pImage->width = SDL_SwapLE32(t);
 	cout << "width: " << pImage->width << endl;
 	
 	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read height from " << pFileName << "." << endl;
-	pImage->height = SDL_Swap32(t);
+	pImage->height = SDL_SwapLE32(t);
 	cout << "height: " << pImage->height << endl;
 
 	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read plane count from " << pFileName << "." << endl;
-    nNumPlanes = SDL_Swap16(t2);
+    nNumPlanes = SDL_SwapLE16(t2);
 	cout << "nNumPlanes: " << nNumPlanes << endl;
 	
     if( nNumPlanes != 1 )
@@ -219,7 +219,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 
 	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read BPP from " << pFileName << endl;
-    nNumBPP = SDL_Swap16(t2);
+    nNumBPP = SDL_SwapLE16(t2);
 	cout << "nNumBPP: " << nNumBPP << endl;
 
     if( nNumBPP != 24 )
@@ -251,7 +251,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     for (y = 0; y < pImage->height; y ++)
         for (ptr = pImage->data + y * length, x = pImage->width;
              x > 0;
-	     x --, ptr += 3)
+	         x--, ptr += 3)
 	    {
 	    temp   = ptr[0];
 	    ptr[0] = ptr[2];
