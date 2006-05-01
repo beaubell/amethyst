@@ -4,8 +4,11 @@
  ***************************************************************************/
 
 
+#include "SDL_types.h"
 
 #include "SDL_opengl.h"
+#include "SDL_rwops.h"
+#include "SDL_endian.h"
 
 
 #include <amethyst/object.h>
@@ -173,16 +176,6 @@ void skybox (void)
   glEnable(GL_DEPTH_TEST);
 }
 
-
-void fix_endian_func(void* data, int size) {
-        unsigned char* cdata = (unsigned char*) data;
-        int i;
-        for (i=0; i<size/2; i++) {
-            unsigned char temp = cdata[i];
-            cdata[i] = cdata[size-1 - i];
-            cdata[size-1 - i] = temp;
-        }
-}
 //-----------------------------------------------------------------------------
 // Name: getBitmapImageData()
 // Desc: Simply image loader for 24 bit BMP files.
@@ -190,49 +183,43 @@ void fix_endian_func(void* data, int size) {
 //-----------------------------------------------------------------------------
 bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 {
-    FILE *pFile = NULL;
+    SDL_RWops *pFile = NULL;
     unsigned short nNumPlanes;
     unsigned short nNumBPP;
-    int i;
-	int32_t t = 0;
-    unsigned short t2 = 0;
+    Uint32 i;
+	Uint32 t = 0;
+    Uint16 t2 = 0;
 
 	cout << endl;
-	 
-    if( (pFile = fopen(pFileName, "rb") ) == NULL )
+	
+	if( (pFile = SDL_RWFromFile(pFileName, "rb") ) == NULL)
        cout << "ERROR: getBitmapImageData - %s not found " << pFileName << "." << endl;
 
     // Seek forward to width and height info
-    fseek( pFile, 18, SEEK_CUR );
-
-    if( (i = fread(&t, 4, 1, pFile) ) != 1 )
+	SDL_RWseek(pFile, 18, SEEK_CUR);
+	
+	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read width from " << pFileName << "." << endl;
-	fix_endian_func(&t, 4);
-    printf("%08x\n", t);
-	cout << "t: " << t << endl;
-    pImage->width = t;
+	pImage->width = SDL_Swap32(t);
 	cout << "width: " << pImage->width << endl;
 	
-    if( (i = fread(&t, 4, 1, pFile) ) != 1 )
+	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read height from " << pFileName << "." << endl;
-	fix_endian_func(&t, 4);
-    pImage->height = t;
+	pImage->height = SDL_Swap32(t);
 	cout << "height: " << pImage->height << endl;
 
-    if( (fread(&t2, 2, 1, pFile) ) != 1 )
+	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read plane count from " << pFileName << "." << endl;
-	fix_endian_func(&t2, 2);
-    nNumPlanes = t2;
+    nNumPlanes = SDL_Swap16(t2);
 	cout << "nNumPlanes: " << nNumPlanes << endl;
 	
     if( nNumPlanes != 1 )
        cout << "ERROR: getBitmapImageData - Plane count from " << pFileName
             << " is not 1: " << nNumPlanes << "." << endl;
 
-    if( (i = fread(&t2, 2, 1, pFile)) != 1 )
+	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read BPP from " << pFileName << endl;
-	fix_endian_func(&t2, 2);
-    nNumBPP = t2;
+    nNumBPP = SDL_Swap16(t2);
 	cout << "nNumBPP: " << nNumBPP << endl;
 
     if( nNumBPP != 24 )
@@ -240,7 +227,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
             << " is not 24: " << nNumBPP << "." << endl;
 
     // Seek forward to image data
-    fseek( pFile, 24, SEEK_CUR );
+    SDL_RWseek( pFile, 24, SEEK_CUR );
 
     // Calculate the image's total size in bytes. Note how we multiply the
     // result of (width * height) by 3. This is becuase a 24 bit color BMP
@@ -249,7 +236,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 
     pImage->data = (char*) malloc( nTotalImagesize );
 
-    if( (i = fread(pImage->data, 1, nTotalImagesize, pFile) ) != nTotalImagesize )
+    if( (i = SDL_RWread(pFile, pImage->data, 1, nTotalImagesize) ) != nTotalImagesize )
        cout << "ERROR: getBitmapImageData - Couldn't read image data from " << pFileName << "." << endl;
 
     //
@@ -279,5 +266,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
         pImage->data[i+2] = charTemp;
     }
 */
+    SDL_RWclose(pFile);
+	
     return true;
 }
