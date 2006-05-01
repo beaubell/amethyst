@@ -174,6 +174,15 @@ void skybox (void)
 }
 
 
+void fix_endian_func(void* data, int size) {
+        unsigned char* cdata = (unsigned char*) data;
+        int i;
+        for (i=0; i<size/2; i++) {
+            unsigned char temp = cdata[i];
+            cdata[i] = cdata[size-1 - i];
+            cdata[size-1 - i] = temp;
+        }
+}
 //-----------------------------------------------------------------------------
 // Name: getBitmapImageData()
 // Desc: Simply image loader for 24 bit BMP files.
@@ -185,28 +194,46 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     unsigned short nNumPlanes;
     unsigned short nNumBPP;
     int i;
+	int32_t t = 0;
+    unsigned short t2 = 0;
 
+	cout << endl;
+	 
     if( (pFile = fopen(pFileName, "rb") ) == NULL )
        cout << "ERROR: getBitmapImageData - %s not found " << pFileName << "." << endl;
 
     // Seek forward to width and height info
     fseek( pFile, 18, SEEK_CUR );
 
-    if( (i = fread(&pImage->width, 4, 1, pFile) ) != 1 )
+    if( (i = fread(&t, 4, 1, pFile) ) != 1 )
        cout << "ERROR: getBitmapImageData - Couldn't read width from " << pFileName << "." << endl;
-
-    if( (i = fread(&pImage->height, 4, 1, pFile) ) != 1 )
+	fix_endian_func(&t, 4);
+    printf("%08x\n", t);
+	cout << "t: " << t << endl;
+    pImage->width = t;
+	cout << "width: " << pImage->width << endl;
+	
+    if( (i = fread(&t, 4, 1, pFile) ) != 1 )
        cout << "ERROR: getBitmapImageData - Couldn't read height from " << pFileName << "." << endl;
+	fix_endian_func(&t, 4);
+    pImage->height = t;
+	cout << "height: " << pImage->height << endl;
 
-    if( (fread(&nNumPlanes, 2, 1, pFile) ) != 1 )
+    if( (fread(&t2, 2, 1, pFile) ) != 1 )
        cout << "ERROR: getBitmapImageData - Couldn't read plane count from " << pFileName << "." << endl;
-
+	fix_endian_func(&t2, 2);
+    nNumPlanes = t2;
+	cout << "nNumPlanes: " << nNumPlanes << endl;
+	
     if( nNumPlanes != 1 )
        cout << "ERROR: getBitmapImageData - Plane count from " << pFileName
             << " is not 1: " << nNumPlanes << "." << endl;
 
-    if( (i = fread(&nNumBPP, 2, 1, pFile)) != 1 )
+    if( (i = fread(&t2, 2, 1, pFile)) != 1 )
        cout << "ERROR: getBitmapImageData - Couldn't read BPP from " << pFileName << endl;
+	fix_endian_func(&t2, 2);
+    nNumBPP = t2;
+	cout << "nNumBPP: " << nNumBPP << endl;
 
     if( nNumBPP != 24 )
        cout << "ERROR: getBitmapImageData - BPP from " << pFileName
@@ -220,21 +247,37 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     // file will give you 3 bytes per pixel.
     int nTotalImagesize = (pImage->width * pImage->height) * 3;
 
-    pImage->data = (unsigned char*) malloc( nTotalImagesize );
+    pImage->data = (char*) malloc( nTotalImagesize );
 
-    if( (i = fread(pImage->data, nTotalImagesize, 1, pFile) ) != 1 )
+    if( (i = fread(pImage->data, 1, nTotalImagesize, pFile) ) != nTotalImagesize )
        cout << "ERROR: getBitmapImageData - Couldn't read image data from " << pFileName << "." << endl;
 
     //
     // Finally, rearrange BGR to RGB
     //
 
+    int length = (pImage->width * 3); // + 3) & ~3;
+	printf("length: %d\n", length);
+	printf("image size: %d\n", nTotalImagesize);
+	int x, y;
+	char *ptr, temp;
+    for (y = 0; y < pImage->height; y ++)
+        for (ptr = pImage->data + y * length, x = pImage->width;
+             x > 0;
+	     x --, ptr += 3)
+	    {
+	    temp   = ptr[0];
+	    ptr[0] = ptr[2];
+	    ptr[2] = temp;
+	    }
+
+/*
     char charTemp;
     for( i = 0; i < nTotalImagesize; i += 3 ) {
         charTemp = pImage->data[i];
         pImage->data[i] = pImage->data[i+2];
         pImage->data[i+2] = charTemp;
     }
-
+*/
     return true;
 }

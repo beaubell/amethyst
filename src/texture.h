@@ -11,7 +11,7 @@
 typedef struct {
     int width;
     int height;
-    unsigned char *data;
+	char *data;
 } textureImage;
 
 GLuint load_image  (const char *file);
