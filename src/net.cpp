@@ -120,8 +120,12 @@ void net_send_telemetry(void){
 
 void net_recv_telemetry(void){
 
+  int  offset       = 0;
+
   // Cast packet_header struct over out packet
   packet_header   *head   = (packet_header*)((char *)Global.pack_in->data);
+
+  offset += sizeof(packet_header);
 
   if (SDL_SwapBE16(head->type) == 1)
   {
@@ -130,7 +134,7 @@ void net_recv_telemetry(void){
       for(int i = 0; i < Global.net_ships; i++)
       {
           // Cast object_transfer struct over out packet after header struct
-          object_transfer *object = (object_transfer *)((char *)Global.pack_in->data + sizeof(packet_header));
+          object_transfer *object = (object_transfer *)((char *)Global.pack_in->data + offset);
 
           //strncpy(object->name, Global.net_handle.c_str(),9);
           //object->name[9] = '\0';
@@ -145,6 +149,8 @@ void net_recv_telemetry(void){
           net_unpack(Global.net_ship[i].acceleration, object->acceleration);
 
           net_unpack(Global.net_ship[i].attitude,     object->attitude);
+
+          offset += sizeof(object_transfer);
       }
   }
 }
