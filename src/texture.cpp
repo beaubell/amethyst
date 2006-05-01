@@ -243,7 +243,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     // Finally, rearrange BGR to RGB
     //
 
-    int length = (pImage->width * 3); // + 3) & ~3;
+    int length = (pImage->width * 3 + 3) & ~3;
 	printf("length: %d\n", length);
 	printf("image size: %d\n", nTotalImagesize);
 	int x, y;
