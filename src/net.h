@@ -13,7 +13,7 @@
 #include <amethyst/net.h>
 
 
-void net_test(void);
+int setup_network(void);
 
 void net_send_telemetry(void);
 void net_recv_telemetry(void);

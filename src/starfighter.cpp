@@ -488,8 +488,6 @@ static void main_loop()
 
 int main(int argc, char* argv[])
 {
-    SDL_Thread *net_thread;
-
     Global.dir_home     = getenv ("HOME");
     Global.dir_amethyst = Global.dir_home + "/.amethyst";
     Global.dir_textures = Global.dir_amethyst + "/" + "textures";
@@ -518,18 +516,11 @@ int main(int argc, char* argv[])
 
     setup_joystick();
 
-    net_test();
+    setup_network();
 
     load_models();
 
       load_skybox();
-
-      // Create Net Thread
-      net_thread = SDL_CreateThread((int (*)(void*))net_start_thread, NULL);
-      if ( net_thread == NULL ) {
-        fprintf(stderr, "Unable to create thread: %s\n", SDL_GetError());
-        return 0;
-      }
 
       main_loop();
 

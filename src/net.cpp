@@ -7,11 +7,14 @@
 
 #include <iostream>
 #include "SDL_net.h"
+#include "SDL_thread.h"
 
 #include "net.h"
 #include "global.h"
 
 #define ERROR (0xff)
+
+SDL_Thread *net_thread;
 
 int udpsend(UDPsocket sock, int channel, UDPpacket *out)
 {
@@ -29,7 +32,7 @@ int udprecv(UDPsocket sock, UDPpacket *in)
 }
 
 
-void net_test(void)
+int setup_network(void)
 {
 
   std::cout << "Initializing Network...";
@@ -49,38 +52,45 @@ void net_test(void)
 
   if(SDLNet_ResolveHost(&Global.net_server_ip,Global.net_server.c_str(),Global.net_port)==-1)
   {
-    printf("SDLNet_ResolveHost: %s\n",SDLNet_GetError());
-    exit(4);
+     fprintf(stderr, "SDLNet_ResolveHost: %s\n",SDLNet_GetError());
+     return -1;
   }
 
   // open udp client socket
   if(!(Global.net_socket = SDLNet_UDP_Open(0)))
   {
-        printf("SDLNet_UDP_Open: %s\n",SDLNet_GetError());
-        exit(5);
+     fprintf(stderr, "SDLNet_UDP_Open: %s\n",SDLNet_GetError());
+     return -1;
   }
 
-  // allocate max packet
+  // allocate packer buffers
   if(!(Global.pack_out=SDLNet_AllocPacket(65535)))
   {
-    printf("SDLNet_AllocPacket: %s\n",SDLNet_GetError());
-    exit(6);
+     fprintf(stderr, "SDLNet_AllocPacket: %s\n",SDLNet_GetError());
+     return -1;
   }
   if(!(Global.pack_in=SDLNet_AllocPacket(65535)))
   {
-    printf("SDLNet_AllocPacket: %s\n",SDLNet_GetError());
-    exit(6);
+     fprintf(stderr, "SDLNet_AllocPacket: %s\n",SDLNet_GetError());
+     return -1;
   }
 
   // bind server address to channel 0
   if(SDLNet_UDP_Bind(Global.net_socket, 0, &Global.net_server_ip)==-1)
   {
-        printf("SDLNet_UDP_Bind: %s\n",SDLNet_GetError());
-        exit(7);
+     fprintf(stderr, "SDLNet_UDP_Bind: %s\n",SDLNet_GetError());
+     return -1;
   }
 
   std::cout << "\nPacket Header  : " << (sizeof(packet_header));
   std::cout << "\nObject Transfer: " << (sizeof(object_transfer));
+
+  // Start Network Dispatch Thread
+  net_thread = SDL_CreateThread((int (*)(void*))net_start_thread, NULL);
+  if ( net_thread == NULL ) {
+    fprintf(stderr, "Unable to create network thread: %s\n", SDL_GetError());
+    return -1;
+  }
 
 }
 
