@@ -30,6 +30,7 @@
 #include "texture.h"
 #include "model.h"
 #include "config_xml.h"
+#include "stars.h"
 //#include "debug.h"
 
 #define WIDTH  1024
@@ -135,10 +136,11 @@ void RenderScene(void)
     //Sky Box
     {
       glPushMatrix();
-        glDisable(GL_LIGHTING);
-         skybox();
+        //glDisable(GL_LIGHTING);
+         //skybox();
          //glCallList(Global.starfield_mdl);
-        glEnable(GL_LIGHTING);
+         display_stars();
+        //glEnable(GL_LIGHTING);
       glPopMatrix();
     }
 
@@ -190,7 +192,6 @@ void RenderScene(void)
     //Draw sphere at origin
     glPushMatrix();
       glEnable(GL_TEXTURE_2D);
-      glDisable(GL_CULL_FACE);
 
       //Move to ref position
       glTranslatef(100 , 100, 100);
@@ -203,9 +204,11 @@ void RenderScene(void)
       }
       //gluSphere(Global.quadratic,2e1,32,32);\
       //glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-      glCallList(Global.planet_mdl);
-
-      glEnable(GL_CULL_FACE);
+      glDisable(GL_COLOR_MATERIAL);
+      glFrontFace(GL_CW);
+        glCallList(Global.planet_mdl);
+      glFrontFace(GL_CCW);
+      glDisable(GL_COLOR_MATERIAL);
 
     glPopMatrix();
 
@@ -317,16 +320,19 @@ static void setup_opengl()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
 
     // Set up lighting
-    GLfloat fAmbLight[] =   { 0.00f, 0.00f, 0.00f };
-    GLfloat fDiffLight[] =  { 0.0f, 0.0f, 1.0f };  // BLUE!!
+    GLfloat fAmbLight[] =   { 0.00f, 0.00f, 0.00f, 1.00f }; // Black
+    GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
+    GLfloat fSpecLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecLight);
 
     // Set up quadratics
     Global.quadratic = gluNewQuadric();
@@ -517,6 +523,8 @@ int main(int argc, char* argv[])
     setup_joystick();
 
     setup_network();
+
+    load_stars("/home/beau/.amethyst/stars.csv");
 
     load_models();
 
