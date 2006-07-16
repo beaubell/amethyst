@@ -8,6 +8,7 @@
 
 
 void load_stars(const char* file);
-void display_stars();
+void free_stars(void);
+void display_stars(void);
 
 #endif /* STARS_H */
