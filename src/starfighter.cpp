@@ -310,7 +310,18 @@ static void setup_sdl()
 
 static void setup_opengl()
 {
-    cout << "Initializing OpenGL (Part 2)...";
+    cout << "Initializing OpenGL (Part 2)...\n";
+
+    // Get Basic Info About the OpenGL Context
+    printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
+    printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
+    printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
+    printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
+
+    GLint points[2], points_gran;
+    glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, (GLint *)&points);
+    glGetIntegerv(GL_SMOOTH_POINT_SIZE_GRANULARITY, &points_gran);
+    printf("GL_POINT_SIZE = %d/%d  step(%d)\n", points[0], points[1], points_gran);
 
     ChangeSize(WIDTH, HEIGHT);
 
@@ -321,24 +332,26 @@ static void setup_opengl()
     glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
+    glEnable(GL_POINT_SMOOTH);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // Set up lighting
-    GLfloat fAmbLight[] =   { 0.00f, 0.00f, 0.00f, 1.00f }; // Black
+    GLfloat fAmbLight[] =   { 0.05f, 0.05f, 0.05f, 1.00f }; // Darkish
     GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
     GLfloat fSpecLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, fAmbLight);
     glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecLight);
 
+
     // Set up quadratics
     Global.quadratic = gluNewQuadric();
     gluQuadricNormals(Global.quadratic, GLU_SMOOTH);  //Create Smooth Normals
-
-    cout << "YAY!" << endl;
 }
 
 static void process_inputs()
@@ -453,7 +466,7 @@ static void main_loop()
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE:
-                    exit(0);
+                    return;
 
                 case SDLK_KP_PLUS:
 //                    level++;
@@ -477,7 +490,7 @@ static void main_loop()
                 break;
 
              case SDL_QUIT:
-               exit (0);
+               return;
             }
         }
 
@@ -525,7 +538,6 @@ int main(int argc, char* argv[])
     setup_network();
 
     load_stars("/home/beau/.amethyst/stars.csv");
-
     load_models();
 
       load_skybox();
@@ -533,5 +545,6 @@ int main(int argc, char* argv[])
       main_loop();
 
     free_models();
+    free_stars();
     return EXIT_SUCCESS;
 }
