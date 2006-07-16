@@ -59,7 +59,7 @@ GLuint load_image(const char *file) {
     // Tell opengl we want to start playing with texture number assigned to 'texture'
     glBindTexture(GL_TEXTURE_2D, texture);
 
-    // Load 
+    // Load
     //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image->w,image->h,GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
     //glTexImage2D(GL_TEXTURE_2D, 0, 3, test->w, test->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
@@ -128,48 +128,48 @@ void skybox (void)
         glTexCoord2f(0.0f, 0.0f); glVertex3f(x,y,z);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y,z);
         glTexCoord2f(0.0f, 1.0f); glVertex3f(x,y + height, z);
-        glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z); 
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z);
   glEnd();
 
   glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[FRONT_ID]);
-  glBegin(GL_TRIANGLE_STRIP);                   
+  glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x,y,z + length);
         glTexCoord2f(1.0f, 1.0f); glVertex3f(x,y + height, z + length);
         glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z + length);
-        glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z + length);        
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z + length);
   glEnd();
 
   glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[BOTTOM_ID]);
-  glBegin(GL_TRIANGLE_STRIP);                           
+  glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x,y,z);
         glTexCoord2f(1.0f, 1.0f); glVertex3f(x,y,       z + length);
         glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y,z);
-        glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y,z + length);  
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y,z + length);
   glEnd();
 
   glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[TOP_ID]);
-  glBegin(GL_TRIANGLE_STRIP);                                   
+  glBegin(GL_TRIANGLE_STRIP);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(x,y + height,z);
         glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y + height, z + length);
-        glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y + height, z + length);        
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y + height, z + length);
   glEnd();
 
 
   glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[RIGHT_ID]);
-  glBegin(GL_TRIANGLE_STRIP);                           
+  glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z);
         glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z);
         glTexCoord2f(0.0f, 0.0f); glVertex3f(x, y, z + length);
-        glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z + length); 
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z + length);
   glEnd();
 
   glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[LEFT_ID]);
-  glBegin(GL_TRIANGLE_STRIP);                           
+  glBegin(GL_TRIANGLE_STRIP);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y, z + length);
         glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
-        glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z + length); 
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z + length);
   glEnd();
 
   glDepthMask(GL_TRUE);
@@ -190,29 +190,24 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 	Uint32 t = 0;
     Uint16 t2 = 0;
 
-	cout << endl;
-	
 	if( (pFile = SDL_RWFromFile(pFileName, "rb") ) == NULL)
        cout << "ERROR: getBitmapImageData - %s not found " << pFileName << "." << endl;
 
     // Seek forward to width and height info
 	SDL_RWseek(pFile, 18, SEEK_CUR);
-	
+
 	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read width from " << pFileName << "." << endl;
 	pImage->width = SDL_SwapLE32(t);
-	cout << "width: " << pImage->width << endl;
-	
+
 	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read height from " << pFileName << "." << endl;
 	pImage->height = SDL_SwapLE32(t);
-	cout << "height: " << pImage->height << endl;
 
 	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read plane count from " << pFileName << "." << endl;
     nNumPlanes = SDL_SwapLE16(t2);
-	cout << "nNumPlanes: " << nNumPlanes << endl;
-	
+
     if( nNumPlanes != 1 )
        cout << "ERROR: getBitmapImageData - Plane count from " << pFileName
             << " is not 1: " << nNumPlanes << "." << endl;
@@ -220,7 +215,6 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
        cout << "ERROR: getBitmapImageData - Couldn't read BPP from " << pFileName << endl;
     nNumBPP = SDL_SwapLE16(t2);
-	cout << "nNumBPP: " << nNumBPP << endl;
 
     if( nNumBPP != 24 )
        cout << "ERROR: getBitmapImageData - BPP from " << pFileName
@@ -244,8 +238,8 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     //
 
     int length = (pImage->width * 3 + 3) & ~3;
-	printf("length: %d\n", length);
-	printf("image size: %d\n", nTotalImagesize);
+	//printf("length: %d\n", length);
+	//printf("image size: %d\n", nTotalImagesize);
 	int x, y;
 	char *ptr, temp;
     for (y = 0; y < pImage->height; y ++)
@@ -266,7 +260,9 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
         pImage->data[i+2] = charTemp;
     }
 */
+    printf("Loaded BMP %dbit (%dx%d): %s (%d)\n", nNumBPP, pImage->width, pImage->height, pFileName, nTotalImagesize);
+
     SDL_RWclose(pFile);
-	
+
     return true;
 }
