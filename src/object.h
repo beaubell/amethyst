@@ -48,6 +48,7 @@ namespace amethyst {
 
      public:
        Object();
+       Object(const Object&);
        //~Object();
 
        void force_add(Cartesian_Vector force);

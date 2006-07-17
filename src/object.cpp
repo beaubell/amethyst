@@ -8,6 +8,7 @@
 //                                                          - Confucious
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "physics.h"
 #include "object.h"
@@ -25,6 +26,29 @@ Object::Object(){
     next = NULL;
     meta = NULL;
     name = NULL;
+
+    //printf("NEW OBJECT!");
+
+    }
+
+Object::Object(const Object &right){
+
+    mass = right.mass; 
+
+    next = NULL; // FIXME
+    meta = NULL; // FIXME
+
+    location     = right.location;
+    velocity     = right.velocity;
+    acceleration = right.acceleration;
+    force        = right.force;
+
+    attitude     = right.attitude;
+    torque       = right.torque;
+
+    name = (char *)malloc(strlen(right.name));
+
+    strcpy(name, right.name);
 
     //printf("NEW OBJECT!");
 
