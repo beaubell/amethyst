@@ -22,7 +22,7 @@ namespace amethyst {
   
        public:
           Console_Menu_Main();
-          
+         ~Console_Menu_Main(  );
        };
        
   extern Console_Menu_Main consolemain;

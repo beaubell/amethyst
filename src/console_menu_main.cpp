@@ -27,6 +27,10 @@ namespace amethyst {
   {
        add("clear", clear_screen);
        add("test",  full_test);
-       add("testyfull",  full_test);
+  }
+
+  Console_Menu_Main::~Console_Menu_Main()
+  {
+
   }
 }
