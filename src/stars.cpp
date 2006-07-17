@@ -5,6 +5,8 @@
 
 #include <stdio.h>  // fopen, scanf, printf, fclose, feof
 #include <stdlib.h> // malloc
+#include <errno.h>  //
+#include <iostream>
 
 #include <amethyst/physics.h>
 
@@ -43,6 +45,14 @@ static unsigned char spectral_class[7][4] =
 void load_stars(const char* filename)
 {
     float V, BV;
+
+    if (access(filename, R_OK) < 0) {
+       if (errno == ENOENT)
+          printf ("Star file doesn't exist: %s\n", filename);
+       if (errno == EACCES)
+          printf ("Access denied accessing star file: %s\n", filename);
+       return;
+    }
 
     FILE *file = fopen(filename, "r");
     fscanf(file, "%d\n", &entries);
