@@ -7,14 +7,17 @@
 
 #include <iostream>
 #include "SDL_net.h"
-#include "SDL_thread.h"
 
+#include "thread.h"
 #include "net.h"
 #include "global.h"
 
 #define ERROR (0xff)
 
-SDL_Thread *net_thread;
+SF_Thread_Id net_thread;
+int net_thread_stop = 0;
+
+static int net_start_thread(void *data);
 
 int udpsend(UDPsocket sock, int channel, UDPpacket *out)
 {
@@ -83,12 +86,12 @@ int setup_network(void)
      return -1;
   }
 
-  std::cout << "\nPacket Header  : " << (sizeof(packet_header));
-  std::cout << "\nObject Transfer: " << (sizeof(object_transfer));
+  std::cout << "Packet Header  : " << (sizeof(packet_header))  << std::endl;
+  std::cout << "Object Transfer: " << (sizeof(object_transfer))<< std::endl;
 
   // Start Network Dispatch Thread
-  net_thread = SDL_CreateThread((int (*)(void*))net_start_thread, NULL);
-  if ( net_thread == NULL ) {
+  net_thread = thread_create(net_start_thread, NULL, "net_start_thread()", &net_thread_stop);
+  if ( net_thread < 0 ) {
     fprintf(stderr, "Unable to create network thread: %s\n", SDL_GetError());
     return -1;
   }
@@ -167,18 +170,29 @@ void net_recv_telemetry(void){
 }
 
 
-int net_start_thread(void)
+int net_start_thread(void *data)
 {
 
-  for(;;)
+  unsigned int delay_send;
+
+  for(;net_thread_stop >= 0;)
   {
-    net_send_telemetry();
+    if (delay_send > 4);
+    {
+       net_send_telemetry();
+       delay_send = 0;
+    }
 
     while(udprecv(Global.net_socket, Global.pack_in) == 1)
       net_recv_telemetry();
 
-    SDL_Delay(50);
+    SDL_Delay(10);  delay_send++;
   }
 
 
+  // OK, received terminate signal, now cleanup.
+  SDLNet_FreePacket(Global.pack_out);
+  SDLNet_FreePacket(Global.pack_in);
+
+  SDLNet_Quit();
 }

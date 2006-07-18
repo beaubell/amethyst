@@ -41,6 +41,7 @@ __global::__global()
     axis_throttle.axis     = 3;
     //axis_throttle.null     = 1000;
 
+    file_tex_sun       = "sun2048.bmp";
     file_tex_planet    = "mars2048.bmp";
     file_tex_starfield = "space2048.bmp";
 

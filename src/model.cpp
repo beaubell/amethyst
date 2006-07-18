@@ -5,8 +5,8 @@
 
 #include "model.h"
 
-#include <math.h>
-#include <string>
+#include <math.h>    // cosf, sinf
+#include <string>    // std::string
 
 #include "global.h"
 #include "texture.h"
@@ -19,6 +19,27 @@ void load_models(void)
     Global.dlShip = glGenLists(1);
     glNewList(Global.dlShip, GL_COMPILE);
     DrawShip();
+    glEndList();
+
+
+    // Load Sun Texture
+    std::string sun = Global.dir_textures + "/" + Global.file_tex_sun;
+
+    Global.sun_tex = load_image(sun.c_str());
+    glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
+
+    // Load Planet Model
+    Global.sun_mdl = glGenLists(1);
+    glNewList(Global.sun_mdl, GL_COMPILE);
+    glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
+    renderSphere(0,0,0,5000,100);
     glEndList();
 
 
@@ -39,7 +60,7 @@ void load_models(void)
     Global.planet_mdl = glGenLists(1);
     glNewList(Global.planet_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-    renderSphere(0,0,0,50,50);
+    renderSphere(0,0,0,50,100);
     glEndList();
 
 

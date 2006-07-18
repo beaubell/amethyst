@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 #include "SDL.h"
-#include "SDL_thread.h"
 #include "SDL_opengl.h"
 
 #include "global.h"
@@ -31,6 +30,7 @@
 #include "model.h"
 #include "config_xml.h"
 #include "stars.h"
+#include "thread.h"
 //#include "debug.h"
 
 #define WIDTH  1024
@@ -49,6 +49,7 @@ static void setup_sdl(void);
 
 //for debug refresh
 //int ref_count = 0;
+float sun_rot = 0;
 
 Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 {
@@ -76,7 +77,7 @@ Uint32 time_left(void)
 void RenderScene(void)
 {
     // Get Gobal State
-    Cartesian_Vector &position = Global.ship.location;
+    Cartesian_Vector &reference = Global.ship.location;
     Quaternion       &attitude = Global.ship.attitude;
 
     glMatrixMode(GL_MODELVIEW);
@@ -88,18 +89,18 @@ void RenderScene(void)
 
     //Camera
       //Camera initial values
-      Cartesian_Vector raw_pos (0,0,0);
-      Cartesian_Vector raw_view(0,1e10,0);
-      Cartesian_Vector raw_up  (0,0,1e10);
+      Cartesian_Vector raw_pos (0.0f, 0.0f, 0.0f);
+      Cartesian_Vector raw_view(0.0f, 1e10, 0.0f);
+      Cartesian_Vector raw_up  (0.0f, 0.0f, 1e10f);
 
       //Camera location in relation to ship
-      Cartesian_Vector shipoffset(0,-20, 0);
+      Cartesian_Vector shipoffset(0.0f, -20.0f, 2.5f);
 
      {
         // Rotate Camera to ship's orientation
-        Cartesian_Vector real_pos   = (QVRotate(attitude, (shipoffset + raw_pos ))) + position;
-        Cartesian_Vector real_view  = (QVRotate(attitude, (shipoffset + raw_view))) + position;
-        Cartesian_Vector real_up    = (QVRotate(attitude, (shipoffset + raw_up  ))) + position;
+        Cartesian_Vector real_pos   = (QVRotate(attitude, (shipoffset + raw_pos ))); // + position;
+        Cartesian_Vector real_view  = (QVRotate(attitude, (shipoffset + raw_view))); // + position;
+        Cartesian_Vector real_up    = (QVRotate(attitude, (shipoffset + raw_up  ))); // + position;
 
       /*
       if (ref_count >= 15)
@@ -138,14 +139,14 @@ void RenderScene(void)
       glPushMatrix();
         //glDisable(GL_LIGHTING);
          //skybox();
-         //glCallList(Global.starfield_mdl);
+         glCallList(Global.starfield_mdl);
          display_stars();
         //glEnable(GL_LIGHTING);
       glPopMatrix();
     }
 
     //Lights
-    GLfloat lightPos[] = { 00.0f, 00.0f, 1000.0f, 1.0f };
+    GLfloat lightPos[] = { 100.0f, 100.0f, 10000.0f, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
 
@@ -158,7 +159,7 @@ void RenderScene(void)
       TODEG(theta);
 
       //Move to ship position
-      glTranslated(position.x, position.y, position.z);
+      //glTranslated(position.x, position.y, position.z);
 
       //Rotate Ship
       glRotatef(theta, attitude.x, attitude.y, attitude.z);
@@ -176,7 +177,12 @@ void RenderScene(void)
     glPushMatrix();
 
       //Move to ship position
-      glTranslated(0, 40, 3);
+      {
+      Cartesian_Vector static_ship = Cartesian_Vector(0, 40, 3);
+      Cartesian_Vector temp = static_ship - reference;
+      //glTranslated(0, 40, 3);
+      glTranslated(temp.x, temp.y, temp.z);
+      }
 
       //Rotate Ship
       //glRotatef(theta, dir.x, dir.y, dir.z);
@@ -189,12 +195,47 @@ void RenderScene(void)
     glPopMatrix();
 
 
-    //Draw sphere at origin
+    //Draw Sun
+    glPushMatrix();
+      glDisable(GL_LIGHTING);
+      glEnable(GL_TEXTURE_2D);
+
+      //Move to ref position
+      {
+      Cartesian_Vector sun = Cartesian_Vector(100, 100, 10000);
+      Cartesian_Vector temp = sun - reference;
+      glTranslated(temp.x, temp.y, temp.z);
+      //glTranslatef(100 , 100, 10000);
+      }
+
+      //Rotate planet on axis
+      glRotatef(sun_rot, 0, -1, 0);
+      sun_rot = sun_rot + 0.01;
+      {
+        GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f };  // Whiteness!!
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
+      }
+      glDisable(GL_COLOR_MATERIAL);
+      glFrontFace(GL_CW);
+        glCallList(Global.sun_mdl);
+      glFrontFace(GL_CCW);
+      glDisable(GL_COLOR_MATERIAL);
+      glEnable(GL_LIGHTING);
+
+    glPopMatrix();
+
+
+    //Draw Planet
     glPushMatrix();
       glEnable(GL_TEXTURE_2D);
 
       //Move to ref position
-      glTranslatef(100 , 100, 100);
+      {
+      Cartesian_Vector planet = Cartesian_Vector(100, 100, 100);
+      Cartesian_Vector temp = planet - reference;
+      glTranslated(temp.x, temp.y, temp.z);
+      //glTranslatef(100 , 100, 100);
+      }
 
       //Rotate planet on axis
       //glRotatef(.1, 1, 0, 0);
@@ -202,8 +243,6 @@ void RenderScene(void)
         GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f };  // Whiteness!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
       }
-      //gluSphere(Global.quadratic,2e1,32,32);\
-      //glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
       glDisable(GL_COLOR_MATERIAL);
       glFrontFace(GL_CW);
         glCallList(Global.planet_mdl);
@@ -218,10 +257,10 @@ void RenderScene(void)
     {
        glPushMatrix();
 
-         Cartesian_Vector *net_p = &Global.net_ship[i].location;
+         Cartesian_Vector net_p = Global.net_ship[i].location - reference;
 
          //Move to ship position
-         glTranslated(net_p->x, net_p->y, net_p->z);
+         glTranslated(net_p.x, net_p.y, net_p.z);
 
          Quaternion       *net_q = &Global.net_ship[i].attitude;
 
@@ -446,7 +485,7 @@ static void process_inputs()
     for (int i = 0; i < Global.net_ships; i++)
     {
         //Global.net_ship[i].velocity += Global.net_ship[i].acceleration;
-        //Global.net_ship[i].location += Global.net_ship[i].velocity;
+        Global.net_ship[i].location += Global.net_ship[i].velocity;
     }
 
 }
@@ -546,5 +585,9 @@ int main(int argc, char* argv[])
 
     free_models();
     free_stars();
+
+    thread_stop_all();
+
+    SDL_Quit ();
     return EXIT_SUCCESS;
 }

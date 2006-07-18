@@ -115,6 +115,7 @@ void display_stars()
 
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
 
     glBegin(GL_POINTS);
 
@@ -135,5 +136,6 @@ void display_stars()
     glEnd();
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 }

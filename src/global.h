@@ -28,11 +28,13 @@ class __global {
 
       // Model for ship
       GLuint dlShip;          // Display list identifier for the ship
+      GLuint sun_mdl;
       GLuint planet_mdl;
       GLuint starfield_mdl;
 
       // Textures
       //GLuint  texture[1];
+      GLuint sun_tex;
       GLuint planet_tex;
       GLuint starfield_tex;
 
@@ -67,6 +69,7 @@ class __global {
       std::string dir_textures;
 
       // Texture File Paths
+      std::string file_tex_sun;
       std::string file_tex_planet;
       std::string file_tex_starfield;
 
