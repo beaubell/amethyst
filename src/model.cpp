@@ -90,6 +90,9 @@ void load_models(void)
 void free_models(void)
 {
     glDeleteLists(Global.dlShip,1);
+    glDeleteLists(Global.starfield_mdl,1);
+    glDeleteLists(Global.planet_mdl,1);
+    glDeleteLists(Global.sun_mdl,1);
 
 }
 
@@ -134,7 +137,7 @@ void renderSphere( float cx, float cy, float cz, float r, int p )
 
         glBegin( GL_TRIANGLE_STRIP );
         {
-            for( int j = 0; j <= p; ++j )
+            for( int j = p; j >= 0; --j )
             {
                 theta3 = j * TWOPI / p;
 

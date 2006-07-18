@@ -61,6 +61,18 @@ static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 }
 
 
+void setup_static(void)
+{
+  amethyst::Object  temp;
+
+  // PLanet
+  temp.location = amethyst::Cartesian_Vector(100,100,100);
+  temp.meta = (void*)Global.planet_mdl;
+  scene_add_object(temp);
+
+}
+
+
 void ChangeSize(GLsizei w, GLsizei h)
 {
 
@@ -358,6 +370,8 @@ int main(int argc, char* argv[])
 
     load_stars("/home/beau/.amethyst/stars.csv");
     load_models();
+
+    setup_static();
 
       load_skybox();
 
