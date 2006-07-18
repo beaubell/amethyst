@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Beau V.C. Bellamy                               *
- *   beau@autolfs.org                                                      *
+ *   Starfighter network functions                                         *
+ *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
 

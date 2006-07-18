@@ -11,6 +11,8 @@
 #include "global.h"
 #include "texture.h"
 
+#define SPHERE_DETAIL 100
+
 void DrawShip(void);
 
 void load_models(void)
@@ -39,7 +41,7 @@ void load_models(void)
     Global.sun_mdl = glGenLists(1);
     glNewList(Global.sun_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
-    renderSphere(0,0,0,5000,100);
+    renderSphere(0,0,0,5000,SPHERE_DETAIL);
     glEndList();
 
 
@@ -60,7 +62,7 @@ void load_models(void)
     Global.planet_mdl = glGenLists(1);
     glNewList(Global.planet_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-    renderSphere(0,0,0,50,100);
+    renderSphere(0,0,0,50,SPHERE_DETAIL);
     glEndList();
 
 
@@ -117,7 +119,7 @@ void renderSphere( float cx, float cy, float cz, float r, int p )
         p = -p;
 
     // If the sphere is too small, just render a OpenGL point instead.
-    if( p < 4 || r <= 0 ) 
+    if( p < 4 || r <= 0 )
     {
         glBegin( GL_POINTS );
         glVertex3f( cx, cy, cz );

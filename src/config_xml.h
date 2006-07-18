@@ -2,7 +2,7 @@
 #define CONFIG_XML_H
 
 /***************************************************************************
- *   Put Info Here                                                         *
+ *   XML Configuration file functions                                      *
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
