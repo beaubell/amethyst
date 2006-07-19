@@ -60,17 +60,11 @@ void RenderScene(void)
 
   {
         // Rotate Camera to ship's orientation
-    Cartesian_Vector real_pos   = (QVRotate(attitude, (shipoffset + raw_pos ))); // + position;
-    Cartesian_Vector real_view  = (QVRotate(attitude, (shipoffset + raw_view))); // + position;
-    Cartesian_Vector real_up    = (QVRotate(attitude, (shipoffset + raw_up  ))); // + position;
+    Cartesian_Vector real_pos   = (QVRotate(attitude, (shipoffset + raw_pos )));
+    Cartesian_Vector real_view  = (QVRotate(attitude, (shipoffset + raw_view)));
+    Cartesian_Vector real_up    = (QVRotate(attitude, (shipoffset + raw_up  )));
 
-      /*
-    if (ref_count >= 15)
-    {
-    print_camera(real_pos, real_view, real_up);
-    ref_count = 0;
-  } else ref_count++;
-      */
+
 
 
       // Ring buffer (delays camera movement by a few frames)
@@ -135,28 +129,6 @@ void RenderScene(void)
   glPopMatrix();
 
 
-    //Draw Static Ship
-  glPushMatrix();
-
-      //Move to ship position
-  {
-    Cartesian_Vector static_ship = Cartesian_Vector(0, 40, 3);
-    Cartesian_Vector temp = static_ship - reference;
-      //glTranslated(0, 40, 3);
-    glTranslated(temp.x, temp.y, temp.z);
-  }
-
-      //Rotate Ship
-      //glRotatef(theta, dir.x, dir.y, dir.z);
-  {
-    GLfloat fDiffLight[] =  { 0.0f, 1.0f, 0.0f };  // Green!!
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-  }
-  glCallList(Global.dlShip);
-
-  glPopMatrix();
-
-
     //Draw Sun
   glPushMatrix();
   glDisable(GL_LIGHTING);
@@ -173,38 +145,19 @@ void RenderScene(void)
       //Rotate planet on axis
   glRotatef(sun_rot, 0, -1, 0);
   sun_rot = sun_rot + 0.01;
-  {
-    GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f };  // Whiteness!!
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-  }
+
   glDisable(GL_COLOR_MATERIAL);
-  glFrontFace(GL_CW);
-  glCallList(Global.sun_mdl);
-  glFrontFace(GL_CCW);
-  glDisable(GL_COLOR_MATERIAL);
+    glCallList(Global.sun_mdl);
+  glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_LIGHTING);
 
   glPopMatrix();
 
 
-    //Draw Planet
-  //glPushMatrix();
-  //glEnable(GL_TEXTURE_2D);
-
-      //Move to ref position
-  //{
-
-      //Rotate planet on axis
-      //glRotatef(.1, 1, 0, 0);
-  //{
-  //  GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f };  // Whiteness!!
-  //  glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-  //}
-  //glDisable(GL_COLOR_MATERIAL);
-  //glCallList(Global.planet_mdl);
-  //glDisable(GL_COLOR_MATERIAL);
-
-  //glPopMatrix();
+  { // Set light to white
+    GLfloat fDiffLight[] =  { 1.0f, 0.9f, 0.9f };
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
+  }
 
 
   // Draw Objects in List.
@@ -217,8 +170,8 @@ void RenderScene(void)
       glPushMatrix();
         Cartesian_Vector temp = obj1->location - reference;
         glTranslated(temp.x, temp.y, temp.z);
-
-        glCallList((GLint)obj1->meta);
+        //glDisable(GL_COLOR_MATERIAL);
+          glCallList((GLint)obj1->meta);
 
       glPopMatrix();
       obj1++;

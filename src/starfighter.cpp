@@ -65,9 +65,14 @@ void setup_static(void)
 {
   amethyst::Object  temp;
 
-  // PLanet
+  // Planet
   temp.location = amethyst::Cartesian_Vector(100,100,100);
   temp.meta = (void*)Global.planet_mdl;
+  scene_add_object(temp);
+
+  // Static Ship
+  temp.location = Cartesian_Vector(0, 40, 3);
+  temp.meta = (void*)Global.dlShip;
   scene_add_object(temp);
 
 }
@@ -153,6 +158,10 @@ static void setup_opengl()
     glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, (GLint *)&points);
     glGetIntegerv(GL_SMOOTH_POINT_SIZE_GRANULARITY, &points_gran);
     printf("GL_POINT_SIZE = %d/%d  step(%d)\n", points[0], points[1], points_gran);
+
+    GLint MaxSize;
+    glGetIntegerv( GL_MAX_TEXTURE_SIZE, &MaxSize );
+    printf("GL_MAX_TEXTURE_SIZE: %d\n", MaxSize);
 
     ChangeSize(WIDTH, HEIGHT);
 
@@ -373,7 +382,7 @@ int main(int argc, char* argv[])
 
     setup_static();
 
-      load_skybox();
+      //load_skybox();
 
       main_loop();
 
