@@ -9,6 +9,8 @@ http://www.righthemisphere.com/
 support@righthemisphere.com
 */
 
+#include <stdio.h>
+
 #include "SDL_opengl.h"
 
 // 107 Verticies
@@ -251,14 +253,25 @@ static GLfloat textures [234][2] = {
 void DrawShip(void)
     {
     int iFace, iPoint;
-    
+
+    FILE *file = fopen("/home/beau/ship.mdl","w+");
+
     glBegin(GL_TRIANGLES);
         for(iFace = 0; iFace < 156; iFace++)
             for(iPoint = 0; iPoint < 3; iPoint++)
                 {
                 //glTexCoord2fv(textures[face_indicies[iFace][iPoint+6]]);
-                glNormal3fv(normals[face_indicies[iFace][iPoint+3]]);
-                glVertex3fv(vertices[face_indicies[iFace][iPoint]]);
+               // glNormal3fv(normals[face_indicies[iFace][iPoint+3]]);
+               // glVertex3fv(vertices[face_indicies[iFace][iPoint]]);
+                  fprintf(file, "%f,%f", textures[face_indicies[iFace][iPoint+6]][0],
+                                         textures[face_indicies[iFace][iPoint+6]][1]);
+                  fprintf(file, ",%f,%f,%f", normals[face_indicies[iFace][iPoint+3]][0],
+                                             normals[face_indicies[iFace][iPoint+3]][1],
+                                             normals[face_indicies[iFace][iPoint+3]][2]);
+                  fprintf(file, ",%f,%f,%f", vertices[face_indicies[iFace][iPoint]][0],
+                                             vertices[face_indicies[iFace][iPoint]][1],
+                                             vertices[face_indicies[iFace][iPoint]][2]);
+                fprintf(file, "\n");
                 }
     glEnd();
     }
