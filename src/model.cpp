@@ -8,19 +8,23 @@
 #include <math.h>    // cosf, sinf
 #include <string>    // std::string
 
+#include <stdio.h>   // fopen, scanf, printf, fclose, feof
+#include <stdlib.h>  // malloc
+#include <errno.h>   // errno
+#include <iostream>
+
 #include "global.h"
 #include "texture.h"
 
 #define SPHERE_DETAIL 100
 
-void DrawShip(void);
 
 void load_models(void)
 {
     // Load Ship Model
     Global.dlShip = glGenLists(1);
     glNewList(Global.dlShip, GL_COMPILE);
-    DrawShip();
+    load_model_file(Global.dir_models + "/" + "ship.mdl");  // FIXME Temp
     glEndList();
 
 
@@ -166,4 +170,51 @@ void renderSphere( float cx, float cy, float cz, float r, int p )
         }
         glEnd();
     }
+}
+
+
+Model* load_model_file(const std::string &filename)
+{
+    if (access(filename.c_str(), R_OK) < 0) {
+        if (errno == ENOENT)
+            printf ("Model file doesn't exist: %s\n", filename.c_str());
+        if (errno == EACCES)
+            printf ("Access denied accessing model file: %s\n", filename.c_str());
+        return NULL;
+    }
+
+    unsigned int vertices = 0, vertices_t = 0, i = 0;
+    FILE *file = fopen(filename.c_str(), "r");
+
+    fscanf(file, "%d\n", &vertices);
+
+    Model *model = new Model;
+    model->data = new float[vertices * 8];
+
+    //FIXME TEMP
+    glBegin(GL_TRIANGLES);
+
+    vertices_t = vertices * 8;
+
+    for (i = 0; i < vertices, !feof(file); i += 8)
+    {
+        fscanf(file, "%f, %f,",      &model->data[i],   &model->data[i+1]);
+        fscanf(file, "%f, %f, %f,",  &model->data[i+2], &model->data[i+3], &model->data[i+4]);
+        fscanf(file, "%f, %f, %f\n", &model->data[i+5], &model->data[i+6], &model->data[i+7]);
+
+        // FIXME Temporary
+        glTexCoord2fv(&(model->data[i]));
+        glNormal3fv(&model->data[i+2]);
+        glVertex3fv(&(model->data[i+5]));
+    }
+
+    //FIXME TEMP
+    glEnd();
+
+    if (i != vertices_t) {
+        printf("ERROR: Model file appears corrupted: Got (%i), expected (%i)\n", i, vertices_t);
+        vertices = i;
+    }
+
+    return model;
 }

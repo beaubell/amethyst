@@ -67,6 +67,7 @@ class __global {
       std::string dir_home;
       std::string dir_amethyst;
       std::string dir_textures;
+      std::string dir_models;
 
       // Texture File Paths
       std::string file_tex_sun;

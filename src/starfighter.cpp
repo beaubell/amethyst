@@ -350,6 +350,7 @@ int main(int argc, char* argv[])
     Global.dir_home     = getenv ("HOME");
     Global.dir_amethyst = Global.dir_home + "/.amethyst";
     Global.dir_textures = Global.dir_amethyst + "/" + "textures";
+    Global.dir_models   = Global.dir_amethyst + "/" + "models";
 
 
     string config_file  = Global.dir_amethyst + "/" + "config.xml";
