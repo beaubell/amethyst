@@ -4,7 +4,7 @@
    Author: Beau V.C. Bellamy
 */
 
-// Dignity does not consist in possessing honors, but in deserving them. 
+// Dignity does not consist in possessing honors, but in deserving them.
 //                                                             - Aristotle
 
 #include <math.h>
@@ -28,8 +28,8 @@ namespace amethyst {
       Cartesian_Vector vector;
       vector = phys_vector (a, b);
 
-      return sqrt( pow(vector.x,2)+ 
-                   pow(vector.y,2)+ 
+      return sqrt( pow(vector.x,2)+
+                   pow(vector.y,2)+
                    pow(vector.z,2) );
   }
 
@@ -58,21 +58,21 @@ namespace amethyst {
 
   Spherical_Vector phys_alias_transform (const Cartesian_Coord &a)
   {
-    
+
       Cartesian_Vector zero;
       //Spherical_Vector output;
 
       //zero.x = 0;
       //zero.y = 0;
       //zero.z = 0;
-            
+
       //output.r = phys_distance (zero, a);
       //output.a = atan2(a.y, a.x);
       //output.p = acos(a.z/output.r);
-    
+
       double radius = phys_distance (zero, a);
       return Spherical_Vector ( atan2(a.y, a.x), acos(a.z/radius), radius);
-      
+
       //return output;
   }
 
@@ -87,7 +87,7 @@ namespace amethyst {
       //output.z = (a.r)*cos(a.p);
 
       Cartesian_Vector output( (a.r)*cos(a.a)*sin(a.p), (a.r)*sin(a.a)*sin(a.p), (a.r)*cos(a.p) );
-      
+
       return output;
   }
 
@@ -145,7 +145,7 @@ namespace amethyst {
                                         const Cartesian_Vector &v,
                                         const double modifier)
   {
-    
+
       Cartesian_Coord output;
 
       output.x = (a.x + v.x) * modifier;

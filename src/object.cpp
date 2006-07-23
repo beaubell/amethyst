@@ -4,100 +4,103 @@
    Author: Beau V.C. Bellamy
 */
 
-// A superior man is modest in his speech, but exceeds in his actions. 
+// A superior man is modest in his speech, but exceeds in his actions.
 //                                                          - Confucious
 
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 
 #include "physics.h"
 #include "object.h"
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 namespace amethyst {
 
-Object::Object(){
+    Object::Object()
+    {
+        mass = 0;
 
-    mass = 0; 
+        next = NULL;
+        meta = NULL;
 
-    next = NULL;
-    meta = NULL;
-    name = NULL;
-
-    //printf("NEW OBJECT!");
-
-    }
-
-Object::Object(const Object &right){
-
-    mass = right.mass; 
-
-    next = NULL; // FIXME
-    meta = NULL; // FIXME
-
-    location     = right.location;
-    velocity     = right.velocity;
-    acceleration = right.acceleration;
-    force        = right.force;
-
-    attitude     = right.attitude;
-    torque       = right.torque;
-
-    name = (char *)malloc(strlen(right.name));
-
-    strcpy(name, right.name);
-
-    //printf("NEW OBJECT!");
+        //printf("NEW OBJECT!");
 
     }
 
+    Object::Object(const Object &right)
+    {
+        mass = right.mass;
 
-//Object::~Object(){
+        next = NULL;       // FIXME
+        meta = right.meta; // FIXME, Do i want to copy?
 
-    //printf("DEAD OBJECT");
-    //}
+        location     = right.location;
+        velocity     = right.velocity;
+        acceleration = right.acceleration;
+        force        = right.force;
 
+        attitude     = right.attitude;
+        torque       = right.torque;
 
-void Object::force_add(Cartesian_Vector new_force) {
+        name = right.name;
 
-    force += new_force;
+    }
+
+#if 0
+    Object::~Object()
+    {
+
+        //printf("DEAD OBJECT");
+    }
+#endif
+
+    void Object::force_add(Cartesian_Vector new_force)
+    {
+        force += new_force;
     }
 
 
-void Object::force_add(Spherical_Vector sphr_force) {
+    void Object::force_add(Spherical_Vector sphr_force)
+    {
+        Cartesian_Vector new_force = phys_alias_transform (sphr_force);
 
-    Cartesian_Vector new_force = phys_alias_transform (sphr_force);
-
-    force += new_force;
+        force += new_force;
     }
 
 
-void Object::force_clear() {
-
-    force.Zeroize();
-    acceleration.Zeroize();
+    void Object::force_clear()
+    {
+        force.clear();
+        acceleration.clear();
     }
 
 
-void Object::force_apply(void) {
-
-    //velocity = phys_alibi_transform (velocity, acceleration, time);
-    acceleration = force / mass;
+    void Object::force_apply(void)
+    {
+        //velocity = phys_alibi_transform (velocity, acceleration, time);
+        acceleration = force / mass;
     }
 
-void Object::accel_apply(double time) {
 
-    Cartesian_Vector temp(acceleration * time);
-    velocity += temp;
+    void Object::accel_apply(double time)
+    {
+        Cartesian_Vector temp(acceleration * time);
+        velocity += temp;
     }
 
-void Object::velocity_apply(double time) {
 
-    Cartesian_Vector temp(velocity * time);
-    location += temp;
+    void Object::velocity_apply(double time)
+    {
+        Cartesian_Vector temp(velocity * time);
+        location += temp;
+    }
+
+
+    void Object::iterate(double time)
+    {
+        force_apply();
+        accel_apply(time);
+        velocity_apply(time);
     }
 
 }

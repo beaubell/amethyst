@@ -10,12 +10,10 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <string>
+
 #include "vector.h"
 #include "orientation.h"
-
-#ifdef __GNUG__
-#pragma interface
-#endif
 
 
 namespace amethyst {
@@ -23,7 +21,7 @@ namespace amethyst {
 
   struct force {
 
-       // 
+       //
        bool format;
 
        // Vector: direction and magnitude of applied force
@@ -60,12 +58,13 @@ namespace amethyst {
        void force_apply(void);           //
 
        // Calculate velocity from acceleration;
-       void accel_apply(double time);    //time == 1 for 1 second     
+       void accel_apply(double time);    //time == 1 for 1 second
 
        // calculate velocity to determine actual movement
        void velocity_apply(double time); //time == 1 for 1 second
 
-       // it is assumed that center of mass is 0.0x, 0.0y, 0.0z
+       // Apply acceleration and velocity calculations;
+       void iterate(double time);
 
        /* Absolute Mass */
        double mass;
@@ -73,7 +72,7 @@ namespace amethyst {
 
        // location variables
          /* Absolute Location      (in meters from the center of the UNIVERSE!)   */
-         Cartesian_Coord location;
+         Cartesian_Coord  location;
 
          /* Absolute Velocity      (in m s ^ -1) */
          Cartesian_Vector velocity;
@@ -105,8 +104,8 @@ namespace amethyst {
        void *meta;
 
        // let other threads know that this object is presently being modified.
-       bool lock;
-       char *name;
+       bool        lock;
+       std::string name;
        };
 
 } // namespace

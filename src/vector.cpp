@@ -19,27 +19,27 @@ namespace amethyst {
        z = old.z;
        }
 
-  void Cartesian_Vector::Zeroize(void) {
+  void Cartesian_Vector::clear(void) {
 
        x = 0;
        y = 0;
        z = 0;
        }
 
-  double Cartesian_Vector::Magnitude(void) {
+  double Cartesian_Vector::magnitude(void) {
 
        return sqrt(x*x + y*y + z*z);
        }
 
-  void Cartesian_Vector::Normalize(void) {
+  void Cartesian_Vector::normalize(void) {
 
-       double m = Magnitude();
+       double m = magnitude();
        x /= m;
        y /= m;
        z /= m;
        }
 
-  void Cartesian_Vector::Reverse(void) {
+  void Cartesian_Vector::reverse(void) {
 
        x = -x;
        y = -y;
@@ -160,7 +160,7 @@ namespace amethyst {
        r = old.r;
        }
 
-  void Spherical_Vector::zeroize(void) {
+  void Spherical_Vector::clear(void) {
 
        a = 0;
        p = 0;

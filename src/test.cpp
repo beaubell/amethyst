@@ -4,8 +4,8 @@
    Author: Beau V.C. Bellamy
 */
 
-// 
-// 
+//
+//
 
 #include <stdio.h>
 #include <iostream>
@@ -23,7 +23,7 @@
 
 namespace amethyst {
 
-  void full_test(void) 
+  void full_test(void)
   {
        full_test(false, false);
   };
@@ -58,7 +58,7 @@ namespace amethyst {
          else
          {
            printf("FAIL !!! \n");
-           debug = true; 
+           debug = true;
          }
 
        if (!quiet && debug) {
@@ -114,7 +114,7 @@ namespace amethyst {
 
        printf("\nEngine Running...\n");
 
-       for (;;) 
+       for (;;)
        {
            count++;
            count1++;

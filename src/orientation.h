@@ -8,7 +8,7 @@
 
 #include "vector.h"
 
-namespace amethyst { 
+namespace amethyst {
 
   // Euler Data Type and Support Functions
   class Euler {
@@ -48,7 +48,7 @@ namespace amethyst {
        Quaternion(const Quaternion&);
        Quaternion(const Euler&);
 
-       void Normalize(void);
+       void  normalize(void);
 
        Cartesian_Vector GetVector(void);
        Quaternion       Bar(void) { return Quaternion(w, -x, -y, -z); };
