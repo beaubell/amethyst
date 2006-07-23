@@ -18,6 +18,7 @@
 #include <amethyst/object.h>
 #include <amethyst/physics.h>
 #include <amethyst/utility.h>
+#include <amethyst/universe.h>
 
 #include <stdlib.h>
 #include "SDL.h"
@@ -51,6 +52,8 @@ using namespace amethyst;
 
 static void setup_sdl(void);
 
+// Create universe
+Universe universe;
 
 static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 {
@@ -63,17 +66,19 @@ static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 
 void setup_static(void)
 {
-  amethyst::Object  temp;
+    Object *temp;
 
-  // Planet
-  temp.location = amethyst::Cartesian_Vector(100,100,100);
-  temp.meta = (void*)Global.planet_mdl;
-  scene_add_object(temp);
+    // Planet
+    temp = new amethyst::Object;
+    temp->location = amethyst::Cartesian_Vector(100,100,100);
+    temp->meta = (void*)Global.planet_mdl;
+    scene_add_object(temp);
 
-  // Static Ship
-  temp.location = Cartesian_Vector(0, 40, 3);
-  temp.meta = (void*)Global.dlShip;
-  scene_add_object(temp);
+    // Static Ship
+    temp = new amethyst::Object;
+    temp->location = Cartesian_Vector(0, 40, 3);
+    temp->meta = (void*)Global.dlShip;
+    scene_add_object(temp);
 
 }
 
@@ -336,6 +341,9 @@ static void main_loop()
 
     // Process Inputs
     process_inputs();
+
+    // Iterate Physics Engine
+    universe.iterate(.1);
 
     /* update the screen */
     RenderScene();

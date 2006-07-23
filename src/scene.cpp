@@ -20,7 +20,7 @@
 
 using namespace amethyst;
 
-std::list<amethyst::Object>  object_list;
+std::list<amethyst::Object *>  object_list;
 
 float sun_rot = 0;
 
@@ -163,15 +163,15 @@ void RenderScene(void)
   // Draw Objects in List.
   if(!object_list.empty())
   {
-    std::list<amethyst::Object>::iterator obj1 = object_list.begin();
+    std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
 
     do
     {
       glPushMatrix();
-        Cartesian_Vector temp = obj1->location - reference;
+      Cartesian_Vector temp = (*obj1)->location - reference;
         glTranslated(temp.x, temp.y, temp.z);
         //glDisable(GL_COLOR_MATERIAL);
-          glCallList((GLint)obj1->meta);
+        glCallList((GLint)(*obj1)->meta);
 
       glPopMatrix();
       obj1++;
@@ -210,7 +210,7 @@ void RenderScene(void)
 }
 
 
-void scene_add_object(amethyst::Object &newobject)
+void scene_add_object(amethyst::Object *newobject)
 {
     object_list.push_back(newobject);
 

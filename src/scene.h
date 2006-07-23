@@ -10,6 +10,6 @@
 
 void RenderScene(void);
 
-void scene_add_object(amethyst::Object &);
+void scene_add_object(amethyst::Object *);
 
 #endif // SCENE_H
