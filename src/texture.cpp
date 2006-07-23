@@ -63,7 +63,7 @@ GLuint load_image(const char *file) {
     // Load
     //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image->w,image->h,GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
     //glTexImage2D(GL_TEXTURE_2D, 0, 3, test->w, test->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_ARB, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
 
     free (texti->data);
     free (texti);

@@ -24,7 +24,7 @@ class __global {
       __global (void);
 
       // Your Ship
-      Object ship;
+      Object *ship;
 
       // Model for ship
       GLuint dlShip;          // Display list identifier for the ship
@@ -37,9 +37,6 @@ class __global {
       GLuint sun_tex;
       GLuint planet_tex;
       GLuint starfield_tex;
-
-      // Pointer to quadratic
-      GLUquadric *quadratic;
 
       // Field of View
       float   fov;
@@ -62,6 +59,8 @@ class __global {
 
       // Timer
       Uint32 next_time;
+      Uint32 time_ticks;
+      Uint32 time_interval;
 
       // Paths
       std::string dir_home;

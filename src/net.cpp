@@ -101,6 +101,9 @@ int setup_network(void)
 
 void net_send_telemetry(void){
 
+  if(!Global.ship)
+    return;
+
   // Cast packet_header struct over out packet
   packet_header   *head   = (packet_header*)((char *)Global.pack_out->data);
 
@@ -117,11 +120,11 @@ void net_send_telemetry(void){
   strncpy(object->pad, "XOXOXOXOXOXO",9);
   object->pad[9] = '\0';
 
-  net_pack(object->location,    Global.ship.location);
-  net_pack(object->velocity,    Global.ship.velocity);
-  net_pack(object->acceleration,Global.ship.acceleration);
+  net_pack(object->location,    Global.ship->location);
+  net_pack(object->velocity,    Global.ship->velocity);
+  net_pack(object->acceleration,Global.ship->acceleration);
 
-  net_pack(object->attitude,    Global.ship.attitude);
+  net_pack(object->attitude,    Global.ship->attitude);
 
 
   Global.pack_out->len = sizeof(packet_header) + sizeof(object_transfer);

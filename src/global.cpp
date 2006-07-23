@@ -7,19 +7,14 @@
 
 __global::__global()
 {
-    ship.location.x = 10;
-    ship.location.y = 0;
-    ship.location.z = 0;
-
-    ship.attitude.w = 1;
-    ship.attitude.x = 0;
-    ship.attitude.y = 0;
-    ship.attitude.z = 0;
-
     cam_num = 0;
 
     // Field of view (in degrees)
     fov      =     40;
+
+    // Timers
+    time_ticks    = 0;
+    time_interval = 0;
 
     joy_null =   1000;
     joy_max  =  32767;

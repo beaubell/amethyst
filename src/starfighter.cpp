@@ -64,9 +64,19 @@ static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 }
 
 
-void setup_static(void)
+void setup_objects(void)
 {
     Object *temp;
+
+    // Player Ship
+    temp = new amethyst::Object;
+    temp->mass     = 1.0f;
+    temp->location = Cartesian_Vector(0, 0, 0);
+    temp->attitude = Quaternion(1,0,0,0);
+    temp->meta = (void*)Global.dlShip;
+    scene_add_object(temp);
+    universe.object_add(temp);
+    Global.ship = temp;
 
     // Planet
     temp = new amethyst::Object;
@@ -193,20 +203,17 @@ static void setup_opengl()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecLight);
 
-
-    // Set up quadratics
-    Global.quadratic = gluNewQuadric();
-    gluQuadricNormals(Global.quadratic, GLU_SMOOTH);  //Create Smooth Normals
 }
 
 static void process_inputs()
 {
     // Get Global State
-    Cartesian_Vector &position = Global.ship.location;
-    Cartesian_Vector &velocity = Global.ship.velocity;
-    Cartesian_Vector &thrust   = Global.ship.force;
-    Cartesian_Vector &accel    = Global.ship.acceleration;
-    Quaternion       &attitude = Global.ship.attitude;
+    Cartesian_Vector &position = Global.ship->location;
+    Cartesian_Vector &velocity = Global.ship->velocity;
+    Cartesian_Vector &thrust   = Global.ship->force;
+    Cartesian_Vector &accel    = Global.ship->acceleration;
+    Cartesian_Vector &force    = Global.ship->force;
+    Quaternion       &attitude = Global.ship->attitude;
 
     unsigned short   &joy_null = Global.joy_null;
     short            &joy_max  = Global.joy_max;
@@ -251,10 +258,10 @@ static void process_inputs()
         };
 
     if (SDL_JoystickGetButton(Global.joystick[0], 7)) {
-        Global.ship.attitude.w = 1;
-        Global.ship.attitude.x = 0;
-        Global.ship.attitude.y = 0;
-        Global.ship.attitude.z = 0;
+        attitude.w = 1;
+        attitude.x = 0;
+        attitude.y = 0;
+        attitude.z = 0;
         position.clear();
         velocity.clear();
         };
@@ -272,20 +279,15 @@ static void process_inputs()
     attitude.normalize();
 
 
-    //Apply throttle state to thrust vector
+    //Apply throttle state to force vector
     if (throttle != 0) {
 
-        thrust.y = throttle/1000;
+        thrust.y = throttle*10;
         }
 
     // Rotate trust vector to match ship orientation
-    accel = QVRotate(attitude, thrust);
+    force = QVRotate(attitude, thrust);
 
-    // Calculate new velocity from Acceleration vectors
-    velocity += accel;
-
-    // Calculate new position based on velocity
-    position += velocity;
 
     // Process trajectory information for net ships to make them smoother.
     for (int i = 0; i < Global.net_ships; i++)
@@ -343,7 +345,9 @@ static void main_loop()
     process_inputs();
 
     // Iterate Physics Engine
-    universe.iterate(.1);
+    Global.time_interval = SDL_GetTicks() - Global.time_ticks;
+    Global.time_ticks += Global.time_interval;
+    universe.iterate(Global.time_interval / 1000.0);
 
     /* update the screen */
     RenderScene();
@@ -389,7 +393,7 @@ int main(int argc, char* argv[])
     load_stars("/home/beau/.amethyst/stars.csv");
     load_models();
 
-    setup_static();
+    setup_objects();
 
       //load_skybox();
 
