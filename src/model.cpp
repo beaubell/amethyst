@@ -196,14 +196,14 @@ Model* load_model_file(const std::string &filename)
 
     vertices_t = vertices * 8;
 
-    for (i = 0; i < vertices, !feof(file); i += 8)
+    for (i = 0; i < vertices_t, !feof(file); i += 8)
     {
         fscanf(file, "%f, %f,",      &model->data[i],   &model->data[i+1]);
         fscanf(file, "%f, %f, %f,",  &model->data[i+2], &model->data[i+3], &model->data[i+4]);
         fscanf(file, "%f, %f, %f\n", &model->data[i+5], &model->data[i+6], &model->data[i+7]);
 
         // FIXME Temporary
-        glTexCoord2fv(&(model->data[i]));
+        //glTexCoord2fv(&(model->data[i]));
         glNormal3fv(&model->data[i+2]);
         glVertex3fv(&(model->data[i+5]));
     }
