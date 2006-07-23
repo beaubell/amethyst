@@ -34,15 +34,16 @@ namespace amethyst {
        }
 
 
-  void print_object(const Object &obj) {
+    void print_object(const Object &obj)
+    {
 
-       printf("Object Summary: %s\n", obj.name);
-       printf(" Mass         : %#1.16lE\n", obj.mass);
-       print_vector(" Location     :", obj.location);
-       print_vector(" Velocity     :", obj.velocity);
-       print_vector(" Acceleration :", obj.acceleration);
-       print_vector(" Force        :", obj.force);
+         printf("Object Summary: %s\n", obj.name.c_str());
+         printf(" Mass         : %#1.16lE\n", obj.mass);
+         print_vector(" Location     :", obj.location);
+         print_vector(" Velocity     :", obj.velocity);
+         print_vector(" Acceleration :", obj.acceleration);
+         print_vector(" Force        :", obj.force);
 
-       }
+    }
 
 }
