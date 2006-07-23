@@ -219,8 +219,8 @@ static void process_inputs()
     GLfloat xRot     = 0.0f;
     GLfloat zRot     = 0.0f;
     GLfloat throttle = 0.0f;
-    accel.Zeroize();
-    thrust.Zeroize();
+    accel.clear();
+    thrust.clear();
 
     float scaler = 1.0f / (float(joy_max - joy_null));
 
@@ -242,7 +242,7 @@ static void process_inputs()
     if (SDL_JoystickGetButton(Global.joystick[0], 16)) thrust.z -= .001;
 
     if (SDL_JoystickGetButton(Global.joystick[0], 0)) {
-        velocity.Zeroize();
+        velocity.clear();
         };
 
     if (SDL_JoystickGetButton(Global.joystick[0], 7)) {
@@ -250,8 +250,8 @@ static void process_inputs()
         Global.ship.attitude.x = 0;
         Global.ship.attitude.y = 0;
         Global.ship.attitude.z = 0;
-        position.Zeroize();
-        velocity.Zeroize();
+        position.clear();
+        velocity.clear();
         };
 
 
@@ -264,7 +264,7 @@ static void process_inputs()
     Quaternion quat(eul);
 
     attitude *= quat;
-    attitude.Normalize();
+    attitude.normalize();
 
 
     //Apply throttle state to thrust vector

@@ -41,7 +41,7 @@ void load_models(void)
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
         //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
 
-    // Load Planet Model
+    // Load Sun Model
     Global.sun_mdl = glGenLists(1);
     glNewList(Global.sun_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
@@ -86,7 +86,7 @@ void load_models(void)
     Global.starfield_mdl = glGenLists(1);
     glNewList(Global.starfield_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.starfield_tex);
-    renderSphere(0,0,0,500000,100);
+    renderSphere(0,0,0,500000,20);
     glEndList();
 
 }
