@@ -39,8 +39,8 @@ static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 void RenderScene(void)
 {
   // Get Gobal State
-  Cartesian_Vector &reference = Global.ship.location;
-  Quaternion       &attitude = Global.ship.attitude;
+  Cartesian_Vector &reference = Global.ship->location;
+  Quaternion       &attitude  = Global.ship->attitude;
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -106,28 +106,6 @@ void RenderScene(void)
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
 
-    //Draw Your Ship
-  glPushMatrix();
-
-  glDisable(GL_TEXTURE_2D);
-
-  double theta = 2 * acos(attitude.w);
-  TODEG(theta);
-
-      //Move to ship position
-      //glTranslated(position.x, position.y, position.z);
-
-      //Rotate Ship
-  glRotatef(theta, attitude.x, attitude.y, attitude.z);
-
-  { // Set light to blue
-    GLfloat fDiffLight[] =  { 0.0f, 0.0f, 1.0f };
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-  }
-  glCallList(Global.dlShip);
-
-  glPopMatrix();
-
 
     //Draw Sun
   glPushMatrix();
@@ -168,9 +146,22 @@ void RenderScene(void)
     do
     {
       glPushMatrix();
-      Cartesian_Vector temp = (*obj1)->location - reference;
+
+        // Move to object location
+        Cartesian_Vector temp = (*obj1)->location - reference;
         glTranslated(temp.x, temp.y, temp.z);
+
+        // Orient object
+        Quaternion       *q = &(*obj1)->attitude;
+
+        double theta = 2 * acos(q->w);
+        TODEG(theta);
+
+        glRotatef(theta, q->x, q->y, q->z);
+
         //glDisable(GL_COLOR_MATERIAL);
+
+        // Render Object
         glCallList((GLint)(*obj1)->meta);
 
       glPopMatrix();
@@ -212,8 +203,7 @@ void RenderScene(void)
 
 void scene_add_object(amethyst::Object *newobject)
 {
-    object_list.push_back(newobject);
-
-
+    if (newobject)
+      object_list.push_back(newobject);
 
 }
