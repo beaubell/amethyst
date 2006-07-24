@@ -14,7 +14,7 @@
 #pragma interface
 #endif
 
-#define AMETHYST_VER "Amethyst Physics Library (v0.01) - (c) 2003, Beau V.C. Bellamy"
+#define AMETHYST_VER "Amethyst Physics Library (v0.2) - (c) 2006, Beau V.C. Bellamy"
 
 namespace amethyst {
 
