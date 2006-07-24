@@ -50,8 +50,9 @@ namespace amethyst {
 
        void  normalize(void);
 
-       Cartesian_Vector GetVector(void);
-       Quaternion       Bar(void) { return Quaternion(w, -x, -y, -z); };
+       Cartesian_Vector  GetVector(void);
+       Quaternion        Bar(void) { return Quaternion(w, -x, -y, -z); };
+       Quaternion        scale(const double &s);
        //Cartesian_Vector GetAxis(void);
        //void Set_Identity(void);
 

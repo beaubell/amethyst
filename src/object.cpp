@@ -18,7 +18,7 @@ namespace amethyst {
 
     Object::Object()
     {
-        mass = 0;
+        mass = 1;
 
         next = NULL;
         meta = NULL;
@@ -39,8 +39,10 @@ namespace amethyst {
         acceleration = right.acceleration;
         force        = right.force;
 
-        attitude     = right.attitude;
-        torque       = right.torque;
+        // Rotation
+        attitude             = right.attitude;
+        angular_velocity     = right.angular_velocity;
+        angular_acceleration = right.angular_acceleration;
 
         name = right.name;
 
@@ -98,6 +100,16 @@ namespace amethyst {
 
     void Object::iterate(double time)
     {
+
+#if 0
+        // Apply rotation tranformations;
+        Quaternion acc_temp = angular_acceleration * time;
+        angular_velocity *= acc_temp;
+
+        Quaternion vel_temp = angular_velocity * time;
+        attitude         *= vel_temp;
+#endif
+        // Apply location transformations
         force_apply();
         accel_apply(time);
         velocity_apply(time);

@@ -13,10 +13,13 @@ namespace amethyst {
     class Universe
     {
         public:
+            Universe(void);
             //void ~Universe(void);
 
-            void object_add(Object *);
-            void object_del(Object *);
+            bool do_gravity_calc;
+
+            void object_add(      Object *);
+            void object_del(const Object *);
             void object_del_all(void);
 
             unsigned int object_count();

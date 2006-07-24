@@ -87,8 +87,11 @@ namespace amethyst {
          /* Absolute Attitude */
          Quaternion attitude;
 
-         /* Absolute rotation speed, torque vector */
-         Quaternion torque;
+         /* Absolute Angular Velocity */
+         Quaternion angular_velocity;
+
+         /* Absolute Angular Acceleration */
+         Quaternion angular_acceleration;
 
 
        /* Pointer to external forces (Gravity, etc) */

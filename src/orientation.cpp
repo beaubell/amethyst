@@ -68,20 +68,22 @@ namespace amethyst {
        return Cartesian_Vector(x,y,z);
        }
 
-   const Quaternion& Quaternion::operator *= (Quaternion& right) {
 
-       //w *= right.w;
-       //x *= right.x;
-       //y *= right.y;
-       //z *= right.z;
+    Quaternion Quaternion::scale( const double &s)
+    {
+        return Quaternion(w * s, x * s, y * s, z * s);
+    }
 
-       w = (w * right.w) - (x * right.x) - (y * right.y) - (z * right.z);
-       x = (w * right.x) + (x * right.w) + (y * right.z) - (z * right.y);
-       y = (w * right.y) + (y * right.w) + (z * right.x) - (x * right.z);
-       z = (w * right.z) + (z * right.w) + (x * right.y) - (y * right.x);
 
-       return *this;
-   }
+    const Quaternion& Quaternion::operator *= (Quaternion& right)
+    {
+        w = (w * right.w) - (x * right.x) - (y * right.y) - (z * right.z);
+        x = (w * right.x) + (x * right.w) + (y * right.z) - (z * right.y);
+        y = (w * right.y) + (y * right.w) + (z * right.x) - (x * right.z);
+        z = (w * right.z) + (z * right.w) + (x * right.y) - (y * right.x);
+
+        return *this;
+    }
 
 
    const Quaternion operator*(const Quaternion &left, const Quaternion &right) {
