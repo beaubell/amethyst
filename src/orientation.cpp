@@ -112,4 +112,10 @@ namespace amethyst {
                               q.w*v.y + q.x*v.z - q.z*v.x,
                               q.w*v.z + q.y*v.x - q.x*v.y);
        }
+
+    const Quaternion operator*(const Quaternion &q, const double &s)
+    {
+        return Quaternion(q.w * s, q.x * s, q.y * s, q.z * s);
+
+    }
 }

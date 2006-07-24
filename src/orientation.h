@@ -64,6 +64,7 @@ namespace amethyst {
   const Quaternion operator* (const Quaternion &left, const Quaternion &right);
   const Quaternion operator* (const Quaternion &q, const Cartesian_Vector &v);
   const Quaternion operator* (const Cartesian_Vector &v, const Quaternion &q);
+  const Quaternion operator* (const Quaternion &q, const double &s);
 
 }
 #endif  /* AMETHYST_ORIENTATION_H */
