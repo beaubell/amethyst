@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Starfighter scnene rendering functions                                 *
+ *  Starfighter scene rendering functions                                  *
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 

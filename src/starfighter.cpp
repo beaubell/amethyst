@@ -367,6 +367,8 @@ int main(int argc, char* argv[])
 
     string config_file  = Global.dir_amethyst + "/" + "config.xml";
 
+    string stars_file   = Global.dir_amethyst + "/" + "stars.csv";
+
 
     // Check for existance of config.xml else fail siliently
     if(access(config_file.c_str(), F_OK) == 0) {
@@ -390,7 +392,7 @@ int main(int argc, char* argv[])
 
     setup_network();
 
-    load_stars("/home/beau/.amethyst/stars.csv");
+    load_stars(stars_file);
     load_models();
 
     setup_objects();

@@ -42,9 +42,10 @@ static unsigned char spectral_class[7][4] =
 
 
 
-void load_stars(const char* filename)
+void load_stars(std::string &filestr)
 {
     float V, BV;
+    const char *filename = filestr.c_str();
 
     if (access(filename, R_OK) < 0) {
        if (errno == ENOENT)
