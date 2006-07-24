@@ -133,7 +133,7 @@ void RenderScene(void)
 
 
   { // Set light to white
-    GLfloat fDiffLight[] =  { 1.0f, 0.9f, 0.9f };
+    GLfloat fDiffLight[] =  { 1.0f, 0.9f, 0.9f, 1.0f };
     glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
   }
 

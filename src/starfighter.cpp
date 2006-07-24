@@ -72,6 +72,7 @@ void setup_objects(void)
     temp = new amethyst::Object;
     temp->mass     = 1.0f;
     temp->location = Cartesian_Vector(0, 0, 0);
+    temp->velocity = amethyst::Cartesian_Vector(0,100,0);
     temp->attitude = Quaternion(1,0,0,0);
     temp->meta = (void*)Global.dlShip;
     scene_add_object(temp);
@@ -80,9 +81,12 @@ void setup_objects(void)
 
     // Planet
     temp = new amethyst::Object;
+    temp->mass     = 10000000000000000.0f;
     temp->location = amethyst::Cartesian_Vector(100,100,100);
+    //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
     temp->meta = (void*)Global.planet_mdl;
     scene_add_object(temp);
+    universe.object_add(temp);
 
     // Static Ship
     temp = new amethyst::Object;
@@ -391,6 +395,7 @@ int main(int argc, char* argv[])
     setup_joystick();
 
     setup_network();
+
 
     load_stars(stars_file);
     load_models();
