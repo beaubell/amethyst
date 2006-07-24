@@ -297,7 +297,7 @@ static void process_inputs()
     for (int i = 0; i < Global.net_ships; i++)
     {
         //Global.net_ship[i].velocity += Global.net_ship[i].acceleration;
-        Global.net_ship[i].location += Global.net_ship[i].velocity;
+        //Global.net_ship[i].location += Global.net_ship[i].velocity;
     }
 
 }
@@ -327,6 +327,18 @@ static void main_loop()
                 case SDLK_KP_MINUS:
 //                    level--;
 //                    if (level < 0) level=0;
+                    break;
+                case 'd':
+                    print_vector("Location ", Global.ship->location);
+                    print_vector("Velocity ", Global.ship->velocity);
+                    print_vector("Accelera ", Global.ship->acceleration);
+                    printf("Attitude, W: %f, X: %f, Y: %f, Z: %f\n", Global.ship->attitude.w, Global.ship->attitude.x,Global.ship->attitude.y,Global.ship->attitude.z);
+                    break;
+                case 'n':
+                    print_vector("Location ", Global.net_ship[0].location);
+                    print_vector("Velocity ", Global.net_ship[0].velocity);
+                    print_vector("Accelera ", Global.net_ship[0].acceleration);
+                    printf("Attitude, W: %f, X: %f, Y: %f, Z: %f\n", Global.net_ship[0].attitude.w, Global.net_ship[0].attitude.x,Global.net_ship[0].attitude.y,Global.net_ship[0].attitude.z);
                     break;
                 } break;
             case SDL_MOUSEMOTION:
