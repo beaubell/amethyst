@@ -34,7 +34,7 @@
 #include "thread.h"
 #include "scene.h"
 #include "timer.h"
-//#include "debug.h"
+#include "debug.h"
 
 #define WIDTH  1024
 #define HEIGHT 768
@@ -328,17 +328,14 @@ static void main_loop()
 //                    level--;
 //                    if (level < 0) level=0;
                     break;
-                case 'd':
-                    print_vector("Location ", Global.ship->location);
-                    print_vector("Velocity ", Global.ship->velocity);
-                    print_vector("Accelera ", Global.ship->acceleration);
-                    printf("Attitude, W: %f, X: %f, Y: %f, Z: %f\n", Global.ship->attitude.w, Global.ship->attitude.x,Global.ship->attitude.y,Global.ship->attitude.z);
+                case SDLK_d:
+                    print_object(*Global.ship);
                     break;
-                case 'n':
-                    print_vector("Location ", Global.net_ship[0].location);
-                    print_vector("Velocity ", Global.net_ship[0].velocity);
-                    print_vector("Accelera ", Global.net_ship[0].acceleration);
-                    printf("Attitude, W: %f, X: %f, Y: %f, Z: %f\n", Global.net_ship[0].attitude.w, Global.net_ship[0].attitude.x,Global.net_ship[0].attitude.y,Global.net_ship[0].attitude.z);
+                case SDLK_n:
+                    print_object(Global.net_ship[0]);
+                    break;
+                case SDLK_b:
+                    print_trace();
                     break;
                 } break;
             case SDL_MOUSEMOTION:

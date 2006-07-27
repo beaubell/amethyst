@@ -6,7 +6,9 @@
 #include "debug.h"
 
 #include <iostream>
+#include <execinfo.h>
 
+#define MAX_BT 30
 
 void print_vector(char *title, const Cartesian_Vector &vector) {
 
@@ -24,4 +26,31 @@ void print_camera (Cartesian_Vector &real_pos,
         print_vector("real_up      ", real_up);
         //printf("RAW  SQUARE: %f \n", phys_distance(raw_view, raw_up));
         //printf("REAL SQUARE: %f \n", phys_distance(real_view, real_up));
+}
+
+void print_object(Object &obj)
+{
+    print_vector("Location ", obj.location);
+    print_vector("Velocity ", obj.velocity);
+    print_vector("Accelera ", obj.acceleration);
+    printf("Attitude, W: %f, X: %f, Y: %f, Z: %f\n", obj.attitude.w, obj.attitude.x, obj.attitude.y, obj.attitude.z);
+}
+
+
+void print_trace(void)
+{
+    void *array[MAX_BT];
+    size_t size;
+    char **strings;
+    size_t i;
+
+    size = backtrace (array, MAX_BT);
+    strings = backtrace_symbols (array, size);
+
+    printf ("Obtained %zd stack frames.\n", size);
+
+    for (i = 0; i < size; i++)
+        printf ("%s\n", strings[i]);
+
+    free (strings);
 }

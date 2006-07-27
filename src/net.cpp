@@ -96,6 +96,7 @@ int setup_network(void)
     return -1;
   }
 
+  return 0;
 }
 
 
@@ -198,4 +199,6 @@ int net_start_thread(void *data)
   SDLNet_FreePacket(Global.pack_in);
 
   SDLNet_Quit();
+
+  return 0;
 }

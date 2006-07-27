@@ -28,8 +28,8 @@ typedef struct
 } _star_data;
 
 // Storage object for starlist
-_star_data *star;
-int         entries;
+_star_data   *star;
+unsigned int  entries;
 
 static unsigned char spectral_class[7][4] =
 {{'O',156,178,255}, // 30,000 - 60,000 K - Blue
@@ -62,7 +62,7 @@ void load_stars(std::string &filestr)
 
     unsigned int i;
 
-    for (i = 0; i<entries, !feof(file); i++)
+    for (i = 0; !feof(file), i<entries; i++)
     {
        fscanf(file, "%f,%f,%f,%f\n", &star[i].ra, &star[i].de, &star[i].bt, &star[i].vt);
 

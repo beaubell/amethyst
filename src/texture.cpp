@@ -227,7 +227,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     // Calculate the image's total size in bytes. Note how we multiply the
     // result of (width * height) by 3. This is becuase a 24 bit color BMP
     // file will give you 3 bytes per pixel.
-    int nTotalImagesize = (pImage->width * pImage->height) * 3;
+    unsigned int nTotalImagesize = (pImage->width * pImage->height) * 3;
 
     pImage->data = (char*) malloc( nTotalImagesize );
 
