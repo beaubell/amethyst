@@ -6,7 +6,9 @@
 #include "debug.h"
 
 #include <iostream>
-#include <execinfo.h>
+#ifdef HAVE_EXECINFO_H
+  #include <execinfo.h>
+#endif
 
 #define MAX_BT 30
 
@@ -39,6 +41,8 @@ void print_object(Object &obj)
 
 void print_trace(void)
 {
+#ifdef HAVE_EXECINFO_H
+
     void *array[MAX_BT];
     size_t size;
     char **strings;
@@ -53,4 +57,5 @@ void print_trace(void)
         printf ("%s\n", strings[i]);
 
     free (strings);
+#endif
 }
