@@ -7,8 +7,8 @@
 #include "scene.h"
 #include "global.h"
 
-#include "FTGL/FTGL.h"
-#include "FTGL/FTGLPixmapFont.h"
+#include "FTGL.h"
+#include "FTGLPixmapFont.h"
 #include "SDL_opengl.h"
 #include <string>
 
