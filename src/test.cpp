@@ -90,12 +90,12 @@ namespace amethyst {
        b->name = "Object 2 (Earth)";
        b->mass = 1;
        b->location.z = 0;
-       b->location.y = 6378150000;
+       b->location.y = 6378150000.0;
        b->location.x = 0;
 
        c->name = "Object 3";
        c->mass = 7.35e22;
-       c->location.z = 30002378000;
+       c->location.z = 30002378000.0;
        c->location.y = 0;
        c->location.x = 0;
 
