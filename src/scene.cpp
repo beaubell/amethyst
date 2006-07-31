@@ -12,6 +12,7 @@
 
 #include "global.h"
 #include "stars.h"
+#include "hud.h"
 
 #include "scene.h"
 
@@ -196,6 +197,7 @@ void RenderScene(void)
     glPopMatrix();
   }
 
+  display_hud();
     // Do the buffer Swap
   SDL_GL_SwapBuffers();
 }

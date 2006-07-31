@@ -34,6 +34,7 @@
 #include "thread.h"
 #include "scene.h"
 #include "timer.h"
+#include "hud.h"
 #include "debug.h"
 
 #define WIDTH  1024
@@ -70,6 +71,7 @@ void setup_objects(void)
 
     // Player Ship
     temp = new amethyst::Object;
+    temp->name     = "[ ]" + Global.net_handle;
     temp->mass     = 1.0f;
     temp->location = Cartesian_Vector(2.6479986873564962E+02,  2.5088154658693099E+02, 8.8188716221901501E+01);
     temp->velocity = Cartesian_Vector(-2.7992207996826437E+01, 9.1437922883469778E+00, -2.4572578177548952E+01);
@@ -81,6 +83,7 @@ void setup_objects(void)
 
     // Planet
     temp = new amethyst::Object;
+    temp->name     = "-Mars";
     temp->mass     = 10000000000000000.0f;
     temp->location = amethyst::Cartesian_Vector(100,100,100);
     //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
@@ -90,6 +93,7 @@ void setup_objects(void)
 
     // Static Ship
     temp = new amethyst::Object;
+    temp->name     = "-Ship";
     temp->location = Cartesian_Vector(0, 40, 3);
     temp->meta = (void*)Global.dlShip;
     scene_add_object(temp);
@@ -376,7 +380,7 @@ int main(int argc, char* argv[])
     Global.dir_amethyst = Global.dir_home + "/.amethyst";
     Global.dir_textures = Global.dir_amethyst + "/" + "textures";
     Global.dir_models   = Global.dir_amethyst + "/" + "models";
-
+    Global.dir_fonts    = Global.dir_amethyst + "/" + "fonts";
 
     string config_file  = Global.dir_amethyst + "/" + "config.xml";
 
@@ -404,6 +408,8 @@ int main(int argc, char* argv[])
     setup_joystick();
 
     setup_network();
+
+    setup_hud();
 
 
     load_stars(stars_file);

@@ -6,10 +6,13 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
+#include <list>
 #include <amethyst/object.h>
 
 void RenderScene(void);
 
 void scene_add_object(amethyst::Object *);
+
+extern std::list<amethyst::Object *>  object_list;
 
 #endif // SCENE_H

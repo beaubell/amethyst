@@ -154,8 +154,7 @@ void net_recv_telemetry(void){
           // Cast object_transfer struct over out packet after header struct
           object_transfer *object = (object_transfer *)((char *)Global.pack_in->data + offset);
 
-          //strncpy(object->name, Global.net_handle.c_str(),9);
-          //object->name[9] = '\0';
+          Global.net_ship[i].name = "-" + std::string(object->name);
 
           //std::cout << object->name << "\n";
 
