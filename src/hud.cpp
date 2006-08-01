@@ -11,6 +11,7 @@
 #include "FTGLPixmapFont.h"
 #include "SDL_opengl.h"
 #include <string>
+#include <malloc.h>
 
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
@@ -21,7 +22,7 @@ void setup_hud(void)
     std::string fontfile = Global.dir_fonts + "/spacefri.ttf";
     fonts[0] = new FTGLPixmapFont( fontfile.c_str());
 
-    fonts[0]->FaceSize( 16);
+    fonts[0]->FaceSize( 13);
 
 }
 
@@ -68,7 +69,24 @@ void display_hud(void)
 
         glPopMatrix();
     }
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glRasterPos3f(-45.0f, 30.0f,-100.0f);
+    //glWindowPos2f(0,0);
+    //glWindowPos2f(0.0f, 0.0f);
+
+    struct mallinfo mstats = mallinfo();
+    char status[50];
+    snprintf((char*)&status, 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
+    glRasterPos3f(-45.0f, 30.0f,-100.0f);
+    fonts[0]->Render((char *)&status);
+
+    snprintf((char*)&status, 50, "Memmory Blocks Free: %d",mstats.fordblks);
+    glRasterPos3f(-45.0f, 29.0f,-100.0f);
+    fonts[0]->Render((char *)&status);
 
     glEnable( GL_LIGHTING);
     glEnable( GL_DEPTH_TEST);
 }
+/////

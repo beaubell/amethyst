@@ -332,6 +332,9 @@ static void main_loop()
 //                    level--;
 //                    if (level < 0) level=0;
                     break;
+                case SDLK_a:
+                    void *foo = malloc(100000);
+                    break;
                 case SDLK_d:
                     print_object(*Global.ship);
                     break;
