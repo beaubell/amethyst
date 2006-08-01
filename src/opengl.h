@@ -11,4 +11,12 @@
 void setup_opengl(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
 
+void opengl_ext_occlusion_query(void);
+
+extern void (*glBeginQuery)(GLenum target, GLuint id);
+
+extern GLboolean glVersion15;
+extern GLboolean glOcclusionQuerySupported;
+extern GLboolean glOcclusionQueryEnabled;
+
 #endif /* SF_OPENGL_H */

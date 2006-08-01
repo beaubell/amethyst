@@ -6,27 +6,57 @@
 #include "opengl.h"
 
 #include <iostream>
+#include "SDL.h"
+
 #include "global.h"
+
+void (*glBeginQuery)(GLenum target, GLuint id) = NULL;
+
+GLubyte const *glVersion    = NULL;
+GLubyte const *glExtensions = NULL;
+
+GLboolean glVersion15               = GL_FALSE;
+GLboolean glOcclusionQuerySupported = GL_FALSE;
+GLboolean glOcclusionQueryEnabled   = GL_FALSE;
+
 
 void setup_opengl(void)
 {
     std::cout << "Initializing OpenGL (Part 2)...\n";
 
     // Get Basic Info About the OpenGL Context
+    glVersion    = glGetString(GL_VERSION);
+    glExtensions = glGetString(GL_EXTENSIONS);
     printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
-    printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
+    printf("GL_VERSION    = %s\n", glVersion);
     printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
-    printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
+    printf("GL_EXTENSIONS = %s\n", glExtensions);
 
+    // Check for OpenGL version 1.5 through 1.9
+    if ((glVersion[0] == '1') && (glVersion[1] == '.') &&
+        (glVersion[2] >= '5') && (glVersion[2] <= '9'))
+    {
+        glVersion15 = GL_TRUE;
+    }else
+    {
+        glVersion15 = GL_FALSE;
+    }
+
+    // Query point size capabilities
     GLint points[2], points_gran;
     glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, (GLint *)&points);
     glGetIntegerv(GL_SMOOTH_POINT_SIZE_GRANULARITY, &points_gran);
     printf("GL_POINT_SIZE = %d/%d  step(%d)\n", points[0], points[1], points_gran);
 
+    // Query texture size capabilities
     GLint MaxSize;
     glGetIntegerv( GL_MAX_TEXTURE_SIZE, &MaxSize );
     printf("GL_MAX_TEXTURE_SIZE: %d\n", MaxSize);
 
+    // Do opengl extension checks
+    opengl_ext_occlusion_query();
+
+    // Set aspect to default;
     opengl_change_aspect(WIDTH, HEIGHT);
 
     // Black background
@@ -78,4 +108,20 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+}
+
+
+void opengl_ext_occlusion_query(void)
+{
+    if(!glVersion15 && !strstr((const char*)glExtensions, "GL_ARB_occlusion_query"))
+       puts("Occlusion Querys Not Supported.   :-(\n");
+
+
+    if (glVersion15)
+    {
+        glBeginQuery = (void(*)(GLenum,GLuint))SDL_GL_GetProcAddress("glBeginQuery");
+
+
+    }
+
 }
