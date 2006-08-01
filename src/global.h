@@ -15,8 +15,10 @@
 
 #include "joystick.h"
 
-using namespace amethyst;
+#define WIDTH  1024
+#define HEIGHT 768
 
+using namespace amethyst;
 
 class __global {
 

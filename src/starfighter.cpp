@@ -25,6 +25,7 @@
 #include "SDL_opengl.h"
 
 #include "global.h"
+#include "opengl.h"
 #include "joystick.h"
 #include "net.h"
 #include "texture.h"
@@ -37,16 +38,10 @@
 #include "hud.h"
 #include "debug.h"
 
-#define WIDTH  1024
-#define HEIGHT 768
-
 #define TICK_INTERVAL    10
 
 #define TODEG(x)    x = x * 180 / M_PI
 #define TORAD(x)    x = x / 180 * M_PI
-
-
-
 
 using namespace std;
 using namespace amethyst;
@@ -101,32 +96,6 @@ void setup_objects(void)
 }
 
 
-void ChangeSize(GLsizei w, GLsizei h)
-{
-
-        GLfloat fAspect;
-
-        // Prevent a divide by zero, when window is too short
-        // (you cant make a window of zero width).
-        if(h == 0)
-            h = 1;
-
-        glViewport(0, 0, w, h);
-
-        fAspect = (GLfloat)w / (GLfloat)h;
-
-        // Reset the coordinate system before modifying
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-
-        // Set the clipping volume
-        gluPerspective(Global.fov, fAspect, 1.0f, 50000000000.0f);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-}
-
-
 static void setup_sdl()
 {
     const SDL_VideoInfo* video;
@@ -166,52 +135,6 @@ static void setup_sdl()
 
 }
 
-
-static void setup_opengl()
-{
-    cout << "Initializing OpenGL (Part 2)...\n";
-
-    // Get Basic Info About the OpenGL Context
-    printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
-    printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
-    printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
-    printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
-
-    GLint points[2], points_gran;
-    glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, (GLint *)&points);
-    glGetIntegerv(GL_SMOOTH_POINT_SIZE_GRANULARITY, &points_gran);
-    printf("GL_POINT_SIZE = %d/%d  step(%d)\n", points[0], points[1], points_gran);
-
-    GLint MaxSize;
-    glGetIntegerv( GL_MAX_TEXTURE_SIZE, &MaxSize );
-    printf("GL_MAX_TEXTURE_SIZE: %d\n", MaxSize);
-
-    ChangeSize(WIDTH, HEIGHT);
-
-    // Black background
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f );
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glEnable(GL_POINT_SMOOTH);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Set up lighting
-    GLfloat fAmbLight[] =   { 0.05f, 0.05f, 0.05f, 1.00f }; // Darkish
-    GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
-    GLfloat fSpecLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, fAmbLight);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbLight);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecLight);
-
-}
 
 static void process_inputs()
 {
@@ -353,7 +276,7 @@ static void main_loop()
 
             case SDL_VIDEORESIZE:
                   SDL_SetVideoMode( event.resize.w, event.resize.h, 32, SDL_OPENGL |  SDL_RESIZABLE);
-                  ChangeSize(event.resize.w, event.resize.h);
+                  opengl_change_aspect(event.resize.w, event.resize.h);
                 break;
 
              case SDL_QUIT:
