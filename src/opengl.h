@@ -6,7 +6,16 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
-#include <GL/gl.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
+  #include <OpenGL/glext.h>
+  #include <OpenGL/gl.h>
+#else
+  #include <GL/gl.h>
+#endif
 
 void setup_opengl(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
