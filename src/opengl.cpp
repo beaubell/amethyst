@@ -10,7 +10,31 @@
 
 #include "global.h"
 
-void (*glBeginQuery)(GLenum target, GLuint id) = NULL;
+PFNGLWINDOWPOS2DPROC    glWindowPos2d  = NULL;
+PFNGLWINDOWPOS2DVPROC   glWindowPos2dv = NULL;
+PFNGLWINDOWPOS2FPROC    glWindowPos2f  = NULL;
+PFNGLWINDOWPOS2FVPROC   glWindowPos2fv = NULL;
+PFNGLWINDOWPOS2IPROC    glWindowPos2i  = NULL;
+PFNGLWINDOWPOS2IVPROC   glWindowPos2iv = NULL;
+PFNGLWINDOWPOS2SPROC    glWindowPos2s  = NULL;
+PFNGLWINDOWPOS2SVPROC   glWindowPos2sv = NULL;
+PFNGLWINDOWPOS3DPROC    glWindowPos3d  = NULL;
+PFNGLWINDOWPOS3DVPRO    glWindowPos3dv = NULL;
+PFNGLWINDOWPOS3FPROC    glWindowPos3f  = NULL;
+PFNGLWINDOWPOS3FVPROC   glWindowPos3fv = NULL;
+PFNGLWINDOWPOS3IPROC    glWindowPos3i  = NULL;
+PFNGLWINDOWPOS3IVPROC   glWindowPos3iv = NULL;
+PFNGLWINDOWPOS3SPROC    glWindowPos3s  = NULL;
+PFNGLWINDOWPOS3SVPROC   glWindowPos3sv = NULL;
+
+PFNGLGENQUERIESPROC        glGenQueries        = NULL;
+PFNGLDELETEQUERIESPROC     glDeleteQueries     = NULL;
+PFNGLISQUERYPROC           glIsQuery           = NULL;
+PFNGLBEGINQUERYPROC        glBeginQuery        = NULL;
+PFNGLENDQUERYPROC          glEndQuery          = NULL;
+PFNGLGETQUERYIVPROC        glGetQueryiv        = NULL;
+PFNGLGETQUERYOBJECTIVPROC  glGetQueryObjectiv  = NULL;
+PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv = NULL;
 
 GLubyte const *glVersion    = NULL;
 GLubyte const *glExtensions = NULL;
@@ -119,7 +143,7 @@ void opengl_ext_occlusion_query(void)
 
     if (glVersion15)
     {
-        glBeginQuery = (void(*)(GLenum,GLuint))SDL_GL_GetProcAddress("glBeginQuery");
+        glBeginQuery = (PFNGLBEGINQUERYPROC)SDL_GL_GetProcAddress("glBeginQuery");
 
 
     }
