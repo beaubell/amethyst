@@ -11,7 +11,10 @@
 #include "FTGLPixmapFont.h"
 #include "SDL_opengl.h"
 #include <string>
-#include <malloc.h>
+
+#ifdef HAVE_MALLOC_H
+  #include <malloc.h>
+#endif
 
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
@@ -76,6 +79,7 @@ void display_hud(void)
     //glWindowPos2f(0,0);
     //glWindowPos2f(0.0f, 0.0f);
 
+#ifdef HAVE_MALLOC_H
     struct mallinfo mstats = mallinfo();
     char status[50];
     snprintf((char*)&status, 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
@@ -85,6 +89,7 @@ void display_hud(void)
     snprintf((char*)&status, 50, "Memmory Blocks Free: %d",mstats.fordblks);
     glRasterPos3f(-45.0f, 29.0f,-100.0f);
     fonts[0]->Render((char *)&status);
+#endif
 
     glEnable( GL_LIGHTING);
     glEnable( GL_DEPTH_TEST);

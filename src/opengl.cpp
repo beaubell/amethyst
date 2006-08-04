@@ -6,7 +6,6 @@
 #include "opengl.h"
 
 #include <iostream>
-#include "SDL.h"
 
 #include "global.h"
 

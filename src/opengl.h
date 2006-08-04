@@ -14,6 +14,7 @@
 #include "GL/gl.h"
 #include "GL/glext.h"
 
+#include "SDL_opengl.h"
 
 void setup_opengl(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
