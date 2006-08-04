@@ -10,12 +10,10 @@
 #include <config.h>
 #endif
 
-#ifdef HAVE_APPLE_OPENGL_FRAMEWORK
-  #include <OpenGL/glext.h>
-  #include <OpenGL/gl.h>
-#else
-  #include <GL/gl.h>
-#endif
+#define NO_SDL_GLEXT 1
+#include "GL/gl.h"
+#include "GL/glext.h"
+
 
 void setup_opengl(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
