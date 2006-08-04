@@ -11,8 +11,11 @@
 #include <amethyst/object.h>
 
 #include "global.h"
+#include "opengl.h"
 #include "stars.h"
 #include "hud.h"
+
+#include "SDL_opengl.h"
 
 #include "scene.h"
 

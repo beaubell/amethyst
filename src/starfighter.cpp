@@ -21,8 +21,6 @@
 #include <amethyst/universe.h>
 
 #include <stdlib.h>
-#include "SDL.h"
-#include "SDL_opengl.h"
 
 #include "global.h"
 #include "opengl.h"
@@ -37,6 +35,8 @@
 #include "timer.h"
 #include "hud.h"
 #include "debug.h"
+
+// #include "SDL.h"
 
 #define TICK_INTERVAL    10
 

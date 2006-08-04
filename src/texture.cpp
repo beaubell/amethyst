@@ -4,10 +4,9 @@
  *   (c) 2006 Jason A. Guild    (aguild@gmail.com)                         *
  ***************************************************************************/
 
+#include "texture.h"
 
 #include "SDL_types.h"
-
-#include "SDL_opengl.h"
 #include "SDL_rwops.h"
 #include "SDL_endian.h"
 
@@ -19,7 +18,6 @@
 #include <errno.h>
 
 #include "global.h"
-#include "texture.h"
 
 using namespace std;
 using namespace amethyst;

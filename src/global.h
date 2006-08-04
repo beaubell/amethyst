@@ -9,8 +9,7 @@
 #include <amethyst/object.h>
 
 #include <string>
-#include "SDL.h"
-#include "SDL_opengl.h"
+#include "opengl.h"
 #include "SDL_net.h"
 
 #include "joystick.h"
