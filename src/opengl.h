@@ -19,7 +19,6 @@
 void setup_opengl(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
 
-void opengl_ext_occlusion_query(void);
 
 // WindowPOS Function Pointers
 extern PFNGLWINDOWPOS2DPROC  glWindowPos2d;
@@ -49,8 +48,14 @@ extern PFNGLGETQUERYIVPROC        glGetQueryiv;
 extern PFNGLGETQUERYOBJECTIVPROC  glGetQueryObjectiv;
 extern PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv;
 
+extern GLboolean glVersion14;
 extern GLboolean glVersion15;
+extern GLboolean glWindowPosSupported;
+extern GLboolean glWindowPosEnabled;
 extern GLboolean glOcclusionQuerySupported;
 extern GLboolean glOcclusionQueryEnabled;
+
+extern unsigned int screen_x;
+extern unsigned int screen_y;
 
 #endif /* SF_OPENGL_H */

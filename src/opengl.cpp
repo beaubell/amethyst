@@ -38,10 +38,18 @@ PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv = NULL;
 GLubyte const *glVersion    = NULL;
 GLubyte const *glExtensions = NULL;
 
+GLboolean glVersion14               = GL_FALSE;
 GLboolean glVersion15               = GL_FALSE;
+GLboolean glWindowPosSupported      = GL_FALSE;
+GLboolean glWindowPosEnabled        = GL_FALSE;
 GLboolean glOcclusionQuerySupported = GL_FALSE;
 GLboolean glOcclusionQueryEnabled   = GL_FALSE;
 
+unsigned int screen_x = 1024;
+unsigned int screen_y = 640;
+
+static void opengl_ext_window_pos(void);
+static void opengl_ext_occlusion_query(void);
 
 void setup_opengl(void)
 {
@@ -55,14 +63,18 @@ void setup_opengl(void)
     printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
     printf("GL_EXTENSIONS = %s\n", glExtensions);
 
-    // Check for OpenGL version 1.5 through 1.9
+    // Check for OpenGL version 1.4
+    if ((glVersion[0] == '1') && (glVersion[1] == '.') &&
+         (glVersion[2] >= '4') && (glVersion[2] <= '9'))
+    {
+        glVersion14 = GL_TRUE;
+    }
+
+    // Check for OpenGL version 1.5
     if ((glVersion[0] == '1') && (glVersion[1] == '.') &&
         (glVersion[2] >= '5') && (glVersion[2] <= '9'))
     {
         glVersion15 = GL_TRUE;
-    }else
-    {
-        glVersion15 = GL_FALSE;
     }
 
     // Query point size capabilities
@@ -77,6 +89,7 @@ void setup_opengl(void)
     printf("GL_MAX_TEXTURE_SIZE: %d\n", MaxSize);
 
     // Do opengl extension checks
+    opengl_ext_window_pos();
     opengl_ext_occlusion_query();
 
     // Set aspect to default;
@@ -129,22 +142,121 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
     // Set the clipping volume
     gluPerspective(Global.fov, fAspect, 1.0f, 50000000000.0f);
 
+    screen_x = w, screen_y = h;
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
 
+void opengl_ext_window_pos(void)
+{
+    printf("Checking for GLEXT:window_pos...");
+
+    if(!glVersion14 && !strstr((const char*)glExtensions, "GL_ARB_window_pos"))
+        puts("Not Found.  :-(");
+
+    if (glVersion14)
+    {
+        glWindowPos2d  = (PFNGLWINDOWPOS2DPROC)SDL_GL_GetProcAddress("glWindowPos2d");
+        glWindowPos2dv = (PFNGLWINDOWPOS2DVPROC)SDL_GL_GetProcAddress("glWindowPos2dv");
+        glWindowPos2f  = (PFNGLWINDOWPOS2FPROC)SDL_GL_GetProcAddress("glWindowPos2f");
+        glWindowPos2fv = (PFNGLWINDOWPOS2FVPROC)SDL_GL_GetProcAddress("glWindowPos2fv");
+        glWindowPos2i  = (PFNGLWINDOWPOS2IPROC)SDL_GL_GetProcAddress("glWindowPos2i");
+        glWindowPos2iv = (PFNGLWINDOWPOS2IVPROC)SDL_GL_GetProcAddress("glWindowPos2iv");
+        glWindowPos2s  = (PFNGLWINDOWPOS2SPROC)SDL_GL_GetProcAddress("glWindowPos2s");
+        glWindowPos2sv = (PFNGLWINDOWPOS2SVPROC)SDL_GL_GetProcAddress("glWindowPos2sv");
+        glWindowPos3d  = (PFNGLWINDOWPOS3DPROC)SDL_GL_GetProcAddress("glWindowPos3d");
+        glWindowPos3dv = (PFNGLWINDOWPOS3DVPROC)SDL_GL_GetProcAddress("glWindowPos3dv");
+        glWindowPos3f  = (PFNGLWINDOWPOS3FPROC)SDL_GL_GetProcAddress("glWindowPos3f");
+        glWindowPos3fv = (PFNGLWINDOWPOS3FVPROC)SDL_GL_GetProcAddress("glWindowPos3fv");
+        glWindowPos3i  = (PFNGLWINDOWPOS3IPROC)SDL_GL_GetProcAddress("glWindowPos3i");
+        glWindowPos3iv = (PFNGLWINDOWPOS3IVPROC)SDL_GL_GetProcAddress("glWindowPos3iv");
+        glWindowPos3s  = (PFNGLWINDOWPOS3SPROC)SDL_GL_GetProcAddress("glWindowPos3s");
+        glWindowPos3sv = (PFNGLWINDOWPOS3SVPROC)SDL_GL_GetProcAddress("glWindowPos3sv");
+    }else
+    {
+        glWindowPos2d  = (PFNGLWINDOWPOS2DPROC)SDL_GL_GetProcAddress("glWindowPos2dARB");
+        glWindowPos2dv = (PFNGLWINDOWPOS2DVPROC)SDL_GL_GetProcAddress("glWindowPos2dvARB");
+        glWindowPos2f  = (PFNGLWINDOWPOS2FPROC)SDL_GL_GetProcAddress("glWindowPos2fARB");
+        glWindowPos2fv = (PFNGLWINDOWPOS2FVPROC)SDL_GL_GetProcAddress("glWindowPos2fvARB");
+        glWindowPos2i  = (PFNGLWINDOWPOS2IPROC)SDL_GL_GetProcAddress("glWindowPos2iARB");
+        glWindowPos2iv = (PFNGLWINDOWPOS2IVPROC)SDL_GL_GetProcAddress("glWindowPos2ivARB");
+        glWindowPos2s  = (PFNGLWINDOWPOS2SPROC)SDL_GL_GetProcAddress("glWindowPos2sARB");
+        glWindowPos2sv = (PFNGLWINDOWPOS2SVPROC)SDL_GL_GetProcAddress("glWindowPos2svARB");
+        glWindowPos3d  = (PFNGLWINDOWPOS3DPROC)SDL_GL_GetProcAddress("glWindowPos3dARB");
+        glWindowPos3dv = (PFNGLWINDOWPOS3DVPROC)SDL_GL_GetProcAddress("glWindowPos3dvARB");
+        glWindowPos3f  = (PFNGLWINDOWPOS3FPROC)SDL_GL_GetProcAddress("glWindowPos3fARB");
+        glWindowPos3fv = (PFNGLWINDOWPOS3FVPROC)SDL_GL_GetProcAddress("glWindowPos3fvARB");
+        glWindowPos3i  = (PFNGLWINDOWPOS3IPROC)SDL_GL_GetProcAddress("glWindowPos3iARB");
+        glWindowPos3iv = (PFNGLWINDOWPOS3IVPROC)SDL_GL_GetProcAddress("glWindowPos3ivARB");
+        glWindowPos3s  = (PFNGLWINDOWPOS3SPROC)SDL_GL_GetProcAddress("glWindowPos3sARB");
+        glWindowPos3sv = (PFNGLWINDOWPOS3SVPROC)SDL_GL_GetProcAddress("glWindowPos3svARB");
+    }
+
+    if (!glWindowPos2d || !glWindowPos2dv || !glWindowPos2f || !glWindowPos2fv ||
+         !glWindowPos2i || !glWindowPos2iv || !glWindowPos2s || !glWindowPos2sv ||
+         !glWindowPos3d || !glWindowPos3dv || !glWindowPos3f || !glWindowPos3fv ||
+         !glWindowPos3i || !glWindowPos3iv || !glWindowPos3s || !glWindowPos3sv)
+    {
+        puts("Entry Point Failure.  :-(");
+        return;
+    }
+
+    puts("Found.  :-)");
+
+    glWindowPosSupported = GL_TRUE;
+    glWindowPosEnabled   = GL_TRUE;
+}
+
+
 void opengl_ext_occlusion_query(void)
 {
+    printf("Checking for GLEXT:occlussion_query...");
+
     if(!glVersion15 && !strstr((const char*)glExtensions, "GL_ARB_occlusion_query"))
-       puts("Occlusion Querys Not Supported.   :-(\n");
+       puts("Not Found.  :-(");
 
 
     if (glVersion15)
     {
-        glBeginQuery = (PFNGLBEGINQUERYPROC)SDL_GL_GetProcAddress("glBeginQuery");
+        glGenQueries       = (PFNGLGENQUERIESPROC)SDL_GL_GetProcAddress("glGenQueries");
+        glDeleteQueries    = (PFNGLDELETEQUERIESPROC)SDL_GL_GetProcAddress("glDeleteQueries");
+        glIsQuery          = (PFNGLISQUERYPROC)SDL_GL_GetProcAddress("glIsQuery");
+        glBeginQuery       = (PFNGLBEGINQUERYPROC)SDL_GL_GetProcAddress("glBeginQuery");
+        glEndQuery         = (PFNGLENDQUERYPROC)SDL_GL_GetProcAddress("glEndQuery");
+        glGetQueryiv       = (PFNGLGETQUERYIVPROC)SDL_GL_GetProcAddress("glGetQueryiv");
+        glGetQueryObjectiv = (PFNGLGETQUERYOBJECTIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectiv");
+        glGetQueryObjectuiv = (PFNGLGETQUERYOBJECTUIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectuiv");
 
-
+    } else
+    {
+        glGenQueries       = (PFNGLGENQUERIESPROC)SDL_GL_GetProcAddress("glGenQueriesARB");
+        glDeleteQueries    = (PFNGLDELETEQUERIESPROC)SDL_GL_GetProcAddress("glDeleteQueriesARB");
+        glIsQuery          = (PFNGLISQUERYPROC)SDL_GL_GetProcAddress("glIsQueryARB");
+        glBeginQuery       = (PFNGLBEGINQUERYPROC)SDL_GL_GetProcAddress("glBeginQueryARB");
+        glEndQuery         = (PFNGLENDQUERYPROC)SDL_GL_GetProcAddress("glEndQueryARB");
+        glGetQueryiv       = (PFNGLGETQUERYIVPROC)SDL_GL_GetProcAddress("glGetQueryivARB");
+        glGetQueryObjectiv = (PFNGLGETQUERYOBJECTIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectivARB");
+        glGetQueryObjectuiv = (PFNGLGETQUERYOBJECTUIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectuivARB");
     }
 
+    if (!glGenQueries || !glDeleteQueries || !glIsQuery || !glBeginQuery || !glEndQuery ||
+        !glGetQueryiv || !glGetQueryObjectiv || !glGetQueryObjectuiv)
+    {
+        puts("Entry Point Failure.  :-(");
+        return;
+    }
+
+    GLint  queryCounterBits = 0;
+    glGetQueryiv(GL_SAMPLES_PASSED, GL_QUERY_COUNTER_BITS, &queryCounterBits);
+    if (queryCounterBits == 0)
+    {
+        puts("Unusable.  :-(");
+        return;
+    }
+    puts("Found.  :-)");
+
+    glOcclusionQuerySupported = GL_TRUE;
+    glOcclusionQueryEnabled   = GL_TRUE;
 }
