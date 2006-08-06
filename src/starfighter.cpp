@@ -292,12 +292,13 @@ static void main_loop()
     // Iterate Physics Engine
     Global.time_interval = SDL_GetTicks() - Global.time_ticks;
     Global.time_ticks += Global.time_interval;
-    universe.iterate(Global.time_interval / 1000.0);
+    if (Global.time_interval > 0)
+        universe.iterate(Global.time_interval / 1000.0);
 
     /* update the screen */
     RenderScene();
-    SDL_Delay(time_left());
-    Global.next_time += TICK_INTERVAL;
+    //SDL_Delay(time_left());
+    //Global.next_time += TICK_INTERVAL;
     }
 }
 
