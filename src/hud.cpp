@@ -19,11 +19,16 @@
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
 
+static unsigned int frames = 0, benchmark = 0;
+static float fps = 0.0f;
+
 
 void setup_hud(void)
 {
     std::string fontfile = Global.dir_fonts + "/spacefri.ttf";
     fonts[0] = new FTGLPixmapFont( fontfile.c_str());
+
+    printf("Font: %d\n", fonts[0]->Error());
 
     fonts[0]->FaceSize( 13);
 
@@ -72,24 +77,41 @@ void display_hud(void)
 
         glPopMatrix();
     }
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    //glMatrixMode(GL_MODELVIEW);
+    //glLoadIdentity();
 
-    glRasterPos3f(-45.0f, 30.0f,-100.0f);
-    //glWindowPos2f(0,0);
-    //glWindowPos2f(0.0f, 0.0f);
 
 #ifdef HAVE_MALLOC_H
     struct mallinfo mstats = mallinfo();
     char status[50];
     snprintf((char*)&status, 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
-    glRasterPos3f(-45.0f, 30.0f,-100.0f);
+    //glRasterPos3f(-45.0f, 30.0f,-100.0f);
+    glWindowPos2i(10, screen_y - 13);
     fonts[0]->Render((char *)&status);
 
     snprintf((char*)&status, 50, "Memmory Blocks Free: %d",mstats.fordblks);
-    glRasterPos3f(-45.0f, 29.0f,-100.0f);
+    //glRasterPos3f(-45.0f, 29.0f,-100.0f);
+    glWindowPos2i(10, screen_y - 26);
     fonts[0]->Render((char *)&status);
 #endif
+
+
+    if(frames > 200)
+    {
+        unsigned int elapsed = SDL_GetTicks() - benchmark;
+        fps = (float)frames/((float)elapsed/1000.0f);
+        benchmark += elapsed;
+        frames = 0;
+
+    }
+
+    char fpsstring[15];
+    snprintf((char*)&fpsstring, 15, "FPS: %.1f",fps);
+    //glRasterPos3f(-45.0f, 27.0f,-100.0f);
+    glWindowPos2i(10, 10);
+    fonts[0]->Render((char *)&fpsstring);
+    
+    frames++;
 
     glEnable( GL_LIGHTING);
     glEnable( GL_DEPTH_TEST);
