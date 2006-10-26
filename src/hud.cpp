@@ -44,7 +44,6 @@ void display_hud(void)
 
     //glRasterPos2f( 5.0f , 5.0f);
 
-    //fonts[0]->Render("Protocol 7: Engaged!");
     if(!object_list.empty())
     {
         std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
@@ -96,7 +95,7 @@ void display_hud(void)
 #endif
 
 
-    if(frames > 200)
+    if(frames > 100)
     {
         unsigned int elapsed = SDL_GetTicks() - benchmark;
         fps = (float)frames/((float)elapsed/1000.0f);
@@ -108,9 +107,9 @@ void display_hud(void)
     char fpsstring[15];
     snprintf((char*)&fpsstring, 15, "FPS: %.1f",fps);
     //glRasterPos3f(-45.0f, 27.0f,-100.0f);
-    glWindowPos2i(10, 10);
+    glWindowPos2i(10, 4);
     fonts[0]->Render((char *)&fpsstring);
-    
+
     frames++;
 
     glEnable( GL_LIGHTING);
