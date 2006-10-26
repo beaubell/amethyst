@@ -21,9 +21,6 @@ namespace amethyst {
 
   struct force {
 
-       //
-       bool format;
-
        // Vector: direction and magnitude of applied force
        struct vector {
 
@@ -36,6 +33,8 @@ namespace amethyst {
 
        /* location of applied force (0,0,0 = center of gravity = no rotation) */
        Cartesian_Coord      location;
+
+       int format;
        };
 
 
@@ -47,7 +46,7 @@ namespace amethyst {
      public:
        Object();
        Object(const Object&);
-       //~Object();
+       virtual ~Object() {};
 
        void force_add(Cartesian_Vector force);
        void force_add(Spherical_Vector force);
@@ -109,6 +108,8 @@ namespace amethyst {
        // let other threads know that this object is presently being modified.
        bool        lock;
        std::string name;
+
+       Object& operator= (const Object &right);
        };
 
 } // namespace

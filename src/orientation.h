@@ -21,7 +21,7 @@ namespace amethyst {
 
        inline Euler() : x(0), y(0), z(0) {};
        inline Euler(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz){};
-       Euler(const Euler&);
+       Euler(const Euler &right) : x(right.x), y(right.y), z(right.z) {};
 
        //void Set_Identity(void);
 

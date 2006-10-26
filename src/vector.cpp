@@ -12,13 +12,6 @@
 
 namespace amethyst {
 
-  Cartesian_Vector::Cartesian_Vector(const Cartesian_Vector &old) {
-
-       x = old.x;
-       y = old.y;
-       z = old.z;
-       }
-
   void Cartesian_Vector::clear(void) {
 
        x = 0;
@@ -46,14 +39,13 @@ namespace amethyst {
        z = -z;
        }
 
-  //const Cartesian_Vector& Cartesian_Vector::operator = (Cartesian_Vector& vector) {
-
-  //     x = vector.x;
-  //     y = vector.y;
-  //     z = vector.z;
-
-  //     return *this;
-  //     }
+    Cartesian_Vector& Cartesian_Vector::operator = (const Cartesian_Vector& vector)
+    {
+        x = vector.x;
+        y = vector.y;
+        z = vector.z;
+        return *this;
+    }
 
   const Cartesian_Vector& Cartesian_Vector::operator += (Cartesian_Vector& vector) {
 
@@ -148,17 +140,16 @@ namespace amethyst {
       return ((left.x == right.x) && (left.y == right.y) && (left.z == right.z));
       }
 
-  //Spherical_Vector::Spherical_Vector(void){
 
-  //     zeroize();
-  //     }
 
-  Spherical_Vector::Spherical_Vector(const Spherical_Vector &old) {
+      Spherical_Vector& Spherical_Vector::operator=(const Spherical_Vector &right)
+      {
+          a = right.a;
+          p = right.p;
+          r = right.r;
 
-       a = old.a;
-       p = old.p;
-       r = old.r;
-       }
+          return *this;
+      }
 
   void Spherical_Vector::clear(void) {
 

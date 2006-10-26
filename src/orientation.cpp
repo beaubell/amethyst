@@ -9,14 +9,6 @@
 
 namespace amethyst {
 
-  Euler::Euler(const Euler &old) {
-
-       x = old.x;
-       y = old.y;
-       z = old.z;
-       }
-
-
   Quaternion::Quaternion(const Quaternion &old) {
 
        w = old.w;

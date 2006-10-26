@@ -50,7 +50,7 @@
         <ccompiler>kdevgccoptions</ccompiler>
         <cxxcompiler>kdevgppoptions</cxxcompiler>
         <f77compiler>kdevg77options</f77compiler>
-        <cxxflags>-O0 -g3 -Wunused</cxxflags>
+        <cxxflags>-O0 -Wreorder -Wreturn-type -Wunused -Wconversion -Weffc++ -Wpadded -g3</cxxflags>
         <envvars/>
         <topsourcedir></topsourcedir>
         <cppflags></cppflags>

@@ -22,7 +22,8 @@ namespace amethyst {
 
        inline Cartesian_Vector() : x(0), y(0), z(0) {};
        inline Cartesian_Vector(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz){};
-       Cartesian_Vector(const Cartesian_Vector&);
+       Cartesian_Vector(const Cartesian_Vector &right) : x(right.x), y(right.y), z(right.z){};
+       virtual ~Cartesian_Vector(void) {};
 
        void    clear(void);
 
@@ -39,6 +40,7 @@ namespace amethyst {
        const Cartesian_Vector& operator /= (double&);
 
        Cartesian_Vector operator -(void);
+       Cartesian_Vector& operator =(const Cartesian_Vector &right);
   };
 
   typedef Cartesian_Vector Cartesian_Coord;
@@ -68,11 +70,12 @@ namespace amethyst {
 
        inline Spherical_Vector() : a(0), p(0), r(0) {};
        inline Spherical_Vector(const double &aa, const double &pp, const double &rr) : a(aa), p(pp), r(rr) {};
-       Spherical_Vector(const Spherical_Vector&);
+       Spherical_Vector(const Spherical_Vector &right) : a(right.a), p(right.p), r(right.r) {};
+       virtual ~Spherical_Vector(void) {};
 
        void  clear(void);
 
-       //const Spherical_Vector& operator = (Spherical_Vector&);
+       Spherical_Vector& operator = (const Spherical_Vector &right);
 
        const Spherical_Vector& operator += (Spherical_Vector&);
        const Spherical_Vector& operator -= (Spherical_Vector&);
