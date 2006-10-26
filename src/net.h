@@ -19,6 +19,17 @@ void net_send_telemetry(void);
 void net_recv_telemetry(void);
 int  net_start_thread();
 
+#ifdef WIN32
+#define GCC_PACK
+#else
+#define GCC_PACK __attribute__((__packed__))
+#endif
+
+#ifdef WIN32
+#pragma pack(1)
+#define u_int16_t unsigned short
+#endif
+
 struct packet_header
 {
   // Sequence Counters
@@ -31,7 +42,7 @@ struct packet_header
   // Packet Type
   u_int16_t  type;    // 1 == object transfer,  2 == chat?  maybe?
   u_int16_t  misc;    // if type==1,  misc = number of objects
-} __attribute__((__packed__));
+} GCC_PACK;
 
 
 struct object_transfer
@@ -44,6 +55,10 @@ struct object_transfer
   amethyst::vectord_4d  attitude;
 
   char        pad[12];
-} __attribute__((__packed__));
+} GCC_PACK;
+
+#ifdef WIN32
+#pragma pack()
+#endif
 
 #endif  /* NET_H */

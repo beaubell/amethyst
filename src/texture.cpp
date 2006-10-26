@@ -4,6 +4,9 @@
  *   (c) 2006 Jason A. Guild    (aguild@gmail.com)                         *
  ***************************************************************************/
 
+
+#include "file.h"
+
 #include "texture.h"
 
 #include "SDL_types.h"

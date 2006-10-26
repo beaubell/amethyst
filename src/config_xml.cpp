@@ -6,8 +6,8 @@
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
-#include <config_xml.h>
-#include <global.h>
+#include "config_xml.h"
+#include "global.h"
 
 void parse_xml_network (xmlDocPtr doc, xmlNodePtr cur) {
 

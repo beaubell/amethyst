@@ -3,7 +3,9 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
-
+#ifdef WIN32
+ #include <windows.h>
+#endif
 
 #include <iostream>
 #include "SDL_net.h"
@@ -11,8 +13,6 @@
 #include "thread.h"
 #include "net.h"
 #include "global.h"
-
-#define ERROR (0xff)
 
 SF_Thread_Id net_thread;
 int net_thread_stop = 0;
@@ -176,7 +176,7 @@ void net_recv_telemetry(void){
 int net_start_thread(void *data)
 {
 
-  unsigned int delay_send;
+  unsigned int delay_send = 0;
 
   for(;net_thread_stop >= 0;)
   {

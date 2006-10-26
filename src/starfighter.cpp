@@ -35,13 +35,23 @@
 #include "timer.h"
 #include "hud.h"
 #include "debug.h"
+#include "file.h"
 
 // #include "SDL.h"
 
 #define TICK_INTERVAL    10
 
-#define TODEG(x)    x = x * 180 / M_PI
-#define TORAD(x)    x = x / 180 * M_PI
+#ifdef WIN32
+#define M_PI 3.1415926535897932384626433832795f
+#define PROFILE_DIR_ENV "APPDATA"
+#define PROJECT_DIR "Amethyst"
+#else
+#define PROFILE_DIR_ENV "HOME"
+#define PROJECT_DIR ".amethyst"
+#endif
+
+#define TODEG(x)    x = x * 180.0f / M_PI
+#define TORAD(x)    x = x / 180.0f * M_PI
 
 using namespace std;
 using namespace amethyst;
@@ -108,6 +118,8 @@ static void setup_sdl()
     } else cout << "Success!" << endl;
 
     atexit(SDL_Quit);
+
+	SDL_WM_SetCaption("l33t Starfightar Gaem!  Biatch!","Starfighter");
 
     cout << "Initializing Video...";
     video = SDL_GetVideoInfo( );
@@ -305,8 +317,10 @@ static void main_loop()
 
 int main(int argc, char* argv[])
 {
-    Global.dir_home     = getenv ("HOME");
-    Global.dir_amethyst = Global.dir_home + "/.amethyst";
+	//Global.dir_home     = "Z:";
+
+    Global.dir_home     = getenv (PROFILE_DIR_ENV);
+    Global.dir_amethyst = Global.dir_home + "/" + PROJECT_DIR;
     Global.dir_textures = Global.dir_amethyst + "/" + "textures";
     Global.dir_models   = Global.dir_amethyst + "/" + "models";
     Global.dir_fonts    = Global.dir_amethyst + "/" + "fonts";

@@ -19,8 +19,12 @@
 
 #include "scene.h"
 
-#define TODEG(x)    x = x * 180 / M_PI
-#define TORAD(x)    x = x / 180 * M_PI
+#ifdef WIN32
+#define M_PI 3.1415926535897932384626433832795f
+#endif
+
+#define TODEG(x)    x = x * 180.0f / M_PI
+#define TORAD(x)    x = x / 180.0f * M_PI
 
 using namespace amethyst;
 
@@ -200,8 +204,11 @@ void RenderScene(void)
     glPopMatrix();
   }
 
-  display_hud();
-    // Do the buffer Swap
+  // Display HUD if windowpos gl extensions are suported
+  if (glWindowPosSupported && glWindowPosEnabled)
+	display_hud();
+
+  // Do the buffer Swap
   SDL_GL_SwapBuffers();
 }
 

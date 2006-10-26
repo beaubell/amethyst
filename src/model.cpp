@@ -8,7 +8,7 @@
 #include <math.h>    // cosf, sinf
 #include <string>    // std::string
 
-#include <stdio.h>   // fopen, scanf, printf, fclose, feof
+#include "file.h"
 #include <stdlib.h>  // malloc
 #include <errno.h>   // errno
 #include <iostream>

@@ -3,7 +3,7 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
-#include <stdio.h>  // fopen, scanf, printf, fclose, feof
+#include "file.h"
 #include <stdlib.h> // malloc
 #include <errno.h>  //
 #include <iostream>
@@ -70,7 +70,7 @@ void load_stars(std::string &filestr)
 
        // Determine Brightness from Magnitude Data
        V  = star[i].vt - 0.090f * ( star[i].bt - star[i].vt );
-       star[i].alpha = 1 - ( (V-0.2f) /6.0);
+       star[i].alpha = 1.0f - ( (V-0.2f) /6.0f);
 
        // Determine Spectral Class from Magnitude Data
        BV = 0.850f * (star[i].bt-star[i].vt);

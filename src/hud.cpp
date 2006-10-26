@@ -16,6 +16,12 @@
   #include <malloc.h>
 #endif
 
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
+
+#include <stdio.h>
+
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
 
