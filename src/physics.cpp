@@ -15,6 +15,10 @@
 #pragma implementation
 #endif
 
+#ifdef WIN32
+#define M_PI 3.1415926535897932384626433832795f
+#endif
+
 namespace amethyst {
 
   // Big 'G', The gravitational constant, also The constant of proportionality.

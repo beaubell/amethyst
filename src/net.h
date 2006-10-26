@@ -7,18 +7,15 @@
    Author: Beau V.C. Bellamy
 */
 
-// 
-// 
+
 
 #include "object.h"
 
-// Untested macros
-#define ntohll(x) (((_int64)(ntohl((int)((x << 32) >> 32))) << 32) | (unsigned int)ntohl(((int)(x >> 32))))
-#define htonll(x) ntohll(x)
-
-//#ifdef __GNUG__
-//#pragma interface
-//#endif
+#ifdef WIN32
+#define GCC_PACK
+#else
+#define GCC_PACK __attribute__((__packed__))
+#endif
 
 namespace amethyst {
 
@@ -37,13 +34,17 @@ namespace amethyst {
   long double    ntohld(const long double &in);
  #define         htonld(x) ntohld(x)
 
+#ifdef WIN32
+#pragma pack(1)
+#endif
+
   struct vectorf_3d
   {
     public:
       float x;
       float y;
       float z;
-  } __attribute__((__packed__));
+  } GCC_PACK;
 
   struct vectord_3d
   {
@@ -51,7 +52,7 @@ namespace amethyst {
       double x;
       double y;
       double z;
-  } __attribute__((__packed__));
+  } GCC_PACK;
 
   struct vectorf_4d
   {
@@ -60,8 +61,7 @@ namespace amethyst {
       float x;
       float y;
       float z;
-  } __attribute__((__packed__));
-
+  } GCC_PACK;
 
   struct vectord_4d
   {
@@ -70,7 +70,11 @@ namespace amethyst {
       double x;
       double y;
       double z;
-  } __attribute__((__packed__));
+  } GCC_PACK;
+
+#ifdef WIN32
+#pragma pack()
+#endif
 
   // Pack network struct accounting for endianness ,float version
   inline void net_pack(vectorf_3d &left, const Cartesian_Vector &right)
