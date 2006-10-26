@@ -13,10 +13,6 @@
 #include <string>
 #include <vector>
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 namespace amethyst {
 
   typedef int   (*MENU_FUNCTION)    (const std::string &command);

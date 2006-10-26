@@ -4,17 +4,13 @@
    Author: Beau V.C. Bellamy
 */
 
-// 
-// 
+//
+//
 
 #include "console_menu_main.h"
 
 #include "console_io.h"       // for clear_screen
 #include "test.h"             // for library test functions
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 using namespace std;
 
