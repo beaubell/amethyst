@@ -69,10 +69,15 @@ namespace amethyst {
 
     const Quaternion& Quaternion::operator *= (Quaternion& right)
     {
-        w = (w * right.w) - (x * right.x) - (y * right.y) - (z * right.z);
-        x = (w * right.x) + (x * right.w) + (y * right.z) - (z * right.y);
-        y = (w * right.y) + (y * right.w) + (z * right.x) - (x * right.z);
-        z = (w * right.z) + (z * right.w) + (x * right.y) - (y * right.x);
+        double tmp_w = (w * right.w) - (x * right.x) - (y * right.y) - (z * right.z);
+        double tmp_x = (w * right.x) + (x * right.w) + (y * right.z) - (z * right.y);
+        double tmp_y = (w * right.y) + (y * right.w) + (z * right.x) - (x * right.z);
+        double tmp_z = (w * right.z) + (z * right.w) + (x * right.y) - (y * right.x);
+
+        w = tmp_w;
+        x = tmp_x;
+        y = tmp_y;
+        z = tmp_z;
 
         return *this;
     }
