@@ -95,29 +95,6 @@ void setup_opengl(void)
     // Set aspect to default;
     opengl_change_aspect(WIDTH, HEIGHT);
 
-    // Black background
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f );
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glEnable(GL_POINT_SMOOTH);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Set up lighting
-    GLfloat fAmbLight[] =   { 0.05f, 0.05f, 0.05f, 1.00f }; // Darkish
-    GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
-    GLfloat fSpecLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, fAmbLight);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbLight);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecLight);
-
 }
 
 
@@ -143,9 +120,32 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
     gluPerspective(Global.fov, fAspect, 1.0f, 50000000000.0f);
 
     screen_x = w, screen_y = h;
-    
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    // Black background
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f );
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glEnable(GL_POINT_SMOOTH);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Set up lighting
+    GLfloat fAmbLight[] =   { 0.05f, 0.05f, 0.05f, 1.00f }; // Darkish
+    GLfloat fDiffLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
+    GLfloat fSpecLight[] =  { 1.0f, 1.0f, 1.0f, 1.0f };     // White
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, fAmbLight);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecLight);
 }
 
 
