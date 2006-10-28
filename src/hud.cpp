@@ -100,24 +100,25 @@ void display_hud(void)
     glWindowPos2i(10, screen_y - 26);
     fonts[0]->Render((char *)&status);
 #endif
+    char message[100];
 
-    snprintf((char *)&status, 50, "Ship Stats");
+    snprintf((char *)&message, 50, "Ship Stats");
     glWindowPos2i(10, screen_y - 46);
-    fonts[0]->Render((char *)&status);
+    fonts[0]->Render((char *)&message);
 
-    snprintf((char *)&status, 50, " Location - X:%f, Y:%f, Z:%f",Global.ship->location.x, Global.ship->location.y,Global.ship->location.z);
+    snprintf((char *)&message, 50, " Location - X:%f, Y:%f, Z:%f",Global.ship->location.x, Global.ship->location.y,Global.ship->location.z);
     glWindowPos2i(10, screen_y - 56);
-    fonts[0]->Render((char *)&status);
+    fonts[0]->Render((char *)&message);
 
     Quaternion &quat = Global.ship->attitude;
 
-    snprintf((char *)&status, 70, " Attitude - W:%f, X:%f, Y:%f, Z:%f",Global.ship->attitude.w, Global.ship->attitude.x, Global.ship->attitude.y, Global.ship->attitude.z);
+    snprintf((char *)&message, 70, " Attitude - W:%f, X:%f, Y:%f, Z:%f",Global.ship->attitude.w, Global.ship->attitude.x, Global.ship->attitude.y, Global.ship->attitude.z);
     glWindowPos2i(10, screen_y - 66);
-    fonts[0]->Render((char *)&status);
+    fonts[0]->Render((char *)&message);
 
-    snprintf((char *)&status, 50, " Cam: X:%f deg, Y:%f deg",Global.cam_yaw, Global.cam_pitch);
+    snprintf((char *)&message, 50, " Cam: X:%f deg, Y:%f deg",Global.cam_yaw, Global.cam_pitch);
     glWindowPos2i(10, screen_y - 76);
-    fonts[0]->Render((char *)&status);
+    fonts[0]->Render((char *)&message);
 
 
     if(frames > 200)
