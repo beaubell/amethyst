@@ -21,6 +21,7 @@
 #endif
 
 #include <stdio.h>
+#include <math.h> // for quaternion lenth calculation
 
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
@@ -88,7 +89,7 @@ void display_hud(void)
 
 #ifdef HAVE_MALLOC_H
     struct mallinfo mstats = mallinfo();
-    char status[50];
+    char status[100];
     snprintf((char*)&status, 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
     //glRasterPos3f(-45.0f, 30.0f,-100.0f);
     glWindowPos2i(10, screen_y - 13);
@@ -100,8 +101,26 @@ void display_hud(void)
     fonts[0]->Render((char *)&status);
 #endif
 
+    snprintf((char *)&status, 50, "Ship Stats");
+    glWindowPos2i(10, screen_y - 46);
+    fonts[0]->Render((char *)&status);
 
-    if(frames > 100)
+    snprintf((char *)&status, 50, " Location - X:%f, Y:%f, Z:%f",Global.ship->location.x, Global.ship->location.y,Global.ship->location.z);
+    glWindowPos2i(10, screen_y - 56);
+    fonts[0]->Render((char *)&status);
+
+    Quaternion &quat = Global.ship->attitude;
+
+    snprintf((char *)&status, 70, " Attitude - W:%f, X:%f, Y:%f, Z:%f",Global.ship->attitude.w, Global.ship->attitude.x, Global.ship->attitude.y, Global.ship->attitude.z);
+    glWindowPos2i(10, screen_y - 66);
+    fonts[0]->Render((char *)&status);
+
+    snprintf((char *)&status, 50, " Cam: X:%f deg, Y:%f deg",Global.cam_yaw, Global.cam_pitch);
+    glWindowPos2i(10, screen_y - 76);
+    fonts[0]->Render((char *)&status);
+
+
+    if(frames > 200)
     {
         unsigned int elapsed = SDL_GetTicks() - benchmark;
         fps = (float)frames/((float)elapsed/1000.0f);

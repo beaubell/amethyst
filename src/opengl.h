@@ -10,6 +10,10 @@
 #include <config.h>
 #endif
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #define NO_SDL_GLEXT 1
 #include "GL/gl.h"
 #include "GL/glext.h"

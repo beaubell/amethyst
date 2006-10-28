@@ -60,20 +60,33 @@ void RenderScene(void)
     //Camera
       //Camera initial values
   Cartesian_Vector raw_pos (0.0f, 0.0f, 0.0f);
-  Cartesian_Vector raw_view(0.0f, 1e10, 0.0f);
-  Cartesian_Vector raw_up  (0.0f, 0.0f, 1e10f);
+  Cartesian_Vector raw_view(0.0f, 1.0f, 0.0f);
+  Cartesian_Vector raw_up  (0.0f, 0.0f, 1.0f);
 
       //Camera location in relation to ship
   Cartesian_Vector shipoffset(0.0f, -20.0f, 2.5f);
 
   {
-        // Rotate Camera to ship's orientation
-    Cartesian_Vector real_pos   = (QVRotate(attitude, (shipoffset + raw_pos )));
-    Cartesian_Vector real_view  = (QVRotate(attitude, (shipoffset + raw_view)));
-    Cartesian_Vector real_up    = (QVRotate(attitude, (shipoffset + raw_up  )));
+    // Rotate camera based on mouse movement
+    float x = Global.cam_yaw;
+    float y = Global.cam_pitch;
 
+    // Convert to radians
+    float x_rad = (x / 180.0f) * M_PI;
+    float y_rad = (y / 180.0f) * M_PI;
 
+    Quaternion Qz( cos(x_rad/2.0f), 0, 0, sin(x_rad/2.0f));
+    Qz.normalize();
+    Quaternion Qx( cos(y_rad/2.0f), sin(y_rad/2.0f), 0, 0 );
+    Qx.normalize();
 
+    Quaternion new_att = attitude * Qz * Qx;
+    new_att.normalize();
+
+    // Rotate Camera to ship's orientation
+    Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos )));
+    Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
+    Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up  )));
 
       // Ring buffer (delays camera movement by a few frames)
     {
@@ -96,47 +109,38 @@ void RenderScene(void)
     gluLookAt(real_pos.x,  real_pos.y,  real_pos.z,
               real_view.x, real_view.y, real_view.z,
               real_up.x,   real_up.y,   real_up.z);
-  }
+  } // Camera
 
-    //Sky Box
+  //Sky Box
   {
     glPushMatrix();
-        //glDisable(GL_LIGHTING);
-         //skybox();
-    glCallList(Global.starfield_mdl);
-    display_stars();
-        //glEnable(GL_LIGHTING);
+      glCallList(Global.starfield_mdl);
+      display_stars();
     glPopMatrix();
   }
 
-    //Lights
+  //Lights
   GLfloat lightPos[] = { 100.0f, 100.0f, 10000.0f, 1.0f };
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-
-
-    //Draw Sun
+  //Draw Sun
   glPushMatrix();
-  glDisable(GL_LIGHTING);
-  glEnable(GL_TEXTURE_2D);
+    glDisable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    //Move to ref position
+    {
+      Cartesian_Vector sun = Cartesian_Vector(100, 100, 10000);
+      Cartesian_Vector temp = sun - reference;
+      glTranslated(temp.x, temp.y, temp.z);
+    }
 
-      //Move to ref position
-  {
-    Cartesian_Vector sun = Cartesian_Vector(100, 100, 10000);
-    Cartesian_Vector temp = sun - reference;
-    glTranslated(temp.x, temp.y, temp.z);
-      //glTranslatef(100 , 100, 10000);
-  }
-
-      //Rotate planet on axis
-  glRotatef(sun_rot, 0, -1, 0);
-  sun_rot = sun_rot + 0.01;
-
-  glDisable(GL_COLOR_MATERIAL);
+    //Rotate planet on axis
+    glRotatef(sun_rot, 0, -1, 0);
+    sun_rot = sun_rot + 0.01;
+     glDisable(GL_COLOR_MATERIAL);
     glCallList(Global.sun_mdl);
-  glEnable(GL_COLOR_MATERIAL);
-  glEnable(GL_LIGHTING);
-
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_LIGHTING);
   glPopMatrix();
 
 
@@ -150,15 +154,12 @@ void RenderScene(void)
   if(!object_list.empty())
   {
     std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
-
-    do
+     do
     {
       glPushMatrix();
-
         // Move to object location
         Cartesian_Vector temp = (*obj1)->location - reference;
         glTranslated(temp.x, temp.y, temp.z);
-
         // Orient object
         Quaternion       *q = &(*obj1)->attitude;
 
@@ -178,35 +179,32 @@ void RenderScene(void)
 
   }
 
-    // Draw Network Objects
+  // Draw Network Objects
   for (int i = 0; i < Global.net_ships; i++)
   {
     glPushMatrix();
+      Cartesian_Vector net_p = Global.net_ship[i].location - reference;
+      //Move to ship position
+      glTranslated(net_p.x, net_p.y, net_p.z);
+      Quaternion       *net_q = &Global.net_ship[i].attitude;
 
-    Cartesian_Vector net_p = Global.net_ship[i].location - reference;
+      double theta = 2 * acos(net_q->w);
+      TODEG(theta);
 
-         //Move to ship position
-    glTranslated(net_p.x, net_p.y, net_p.z);
-
-    Quaternion       *net_q = &Global.net_ship[i].attitude;
-
-    double theta = 2 * acos(net_q->w);
-    TODEG(theta);
-
-         //Rotate Ship
-    glRotatef(theta, net_q->x, net_q->y, net_q->z);
-    {
-      GLfloat fDiffLight[] =  { 1.0f, 1.0f, 0.0f };  // Green!!
-      glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-    }
-    glCallList(Global.dlShip);
+      //Rotate Ship
+      glRotatef(theta, net_q->x, net_q->y, net_q->z);
+      {
+        GLfloat fDiffLight[] =  { 1.0f, 1.0f, 0.0f };  // Green!!
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
+      }
+      glCallList(Global.dlShip);
 
     glPopMatrix();
   }
 
   // Display HUD if windowpos gl extensions are suported
   if (glWindowPosSupported && glWindowPosEnabled)
-	display_hud();
+    display_hud();
 
   // Do the buffer Swap
   SDL_GL_SwapBuffers();

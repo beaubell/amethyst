@@ -7,7 +7,9 @@
 
 __global::__global()
 {
-    cam_num = 0;
+    cam_num   = 0;
+    cam_yaw   = 0.0f;
+    cam_pitch = 0.0f;
 
     // Field of view (in degrees)
     fov      =     40;
