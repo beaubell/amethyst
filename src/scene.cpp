@@ -47,27 +47,18 @@ static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 void RenderScene(void)
 {
   // Get Gobal State
-  Cartesian_Vector &reference = Global.ship->location;
-  Quaternion       &attitude  = Global.ship->attitude;
+  const Cartesian_Vector &reference = Global.ship->location;
+  const Quaternion       &attitude  = Global.ship->attitude;
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-    // Clear the window with current clearing color
+  // Clear the window with current clearing color
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glPushMatrix();
 
-    //Camera
-      //Camera initial values
-  Cartesian_Vector raw_pos (0.0f, 0.0f, 0.0f);
-  Cartesian_Vector raw_view(0.0f, 1.0f, 0.0f);
-  Cartesian_Vector raw_up  (0.0f, 0.0f, 1.0f);
-
-      //Camera location in relation to ship
-  Cartesian_Vector shipoffset(0.0f, -20.0f, 2.5f);
-
+  //Camera
   {
-    // Rotate camera based on mouse movement
+    // Get Camera Offsets
     float x = Global.cam_yaw;
     float y = Global.cam_pitch;
 
@@ -75,40 +66,48 @@ void RenderScene(void)
     float x_rad = (x / 180.0f) * M_PI;
     float y_rad = (y / 180.0f) * M_PI;
 
+    Quaternion del_att;
+
+    // Ring buffer (delays camera movement by a few frames)
+    {
+        Global.cam_num++;
+        if(Global.cam_num > 8) Global.cam_num = 0;
+        int cam_num = Global.cam_num;
+
+        Global.cam_att[cam_num] = attitude;
+
+        int view_num = cam_num - 7;
+        if(view_num < 0) view_num = view_num + 9;
+        del_att  = Global.cam_att[view_num];
+
+    }
+
     Quaternion Qz( cos(x_rad/2.0f), 0, 0, sin(x_rad/2.0f));
     Qz.normalize();
     Quaternion Qx( cos(y_rad/2.0f), sin(y_rad/2.0f), 0, 0 );
     Qx.normalize();
 
-    Quaternion new_att = attitude * Qz * Qx;
+    Quaternion new_att = del_att * Qz * Qx;
     new_att.normalize();
 
     // Rotate Camera to ship's orientation
-    Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos )));
-    Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
-    Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up  )));
-
-      // Ring buffer (delays camera movement by a few frames)
     {
-      Global.cam_num++;
-      if(Global.cam_num > 8) Global.cam_num = 0;
-      int cam_num = Global.cam_num;
+        Cartesian_Vector raw_pos (0.0f, 0.0f, 0.0f);
+        Cartesian_Vector raw_view(0.0f, 1.0f, 0.0f);
+        Cartesian_Vector raw_up  (0.0f, 0.0f, 1.0f);
 
-      Global.cam_pos[cam_num] = real_pos;
-      Global.cam_view[cam_num] = real_view;
-      Global.cam_up[cam_num] = real_up;
+        //Camera location in relation to ship
+        Cartesian_Vector shipoffset(0.0f, -20.0f, 2.5f);
 
-      int view_num = cam_num - 7;
-      if(view_num < 0) view_num = view_num + 9;
-      real_pos  = Global.cam_pos[view_num];
-      real_view = Global.cam_view[view_num];
-      real_up   = Global.cam_up[view_num];
+        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos )));
+        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
+        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up  )));
+
+        // Apply Camera
+        gluLookAt(real_pos.x,  real_pos.y,  real_pos.z,
+                  real_view.x, real_view.y, real_view.z,
+                  real_up.x,   real_up.y,   real_up.z);
     }
-
-      // Apply Camera
-    gluLookAt(real_pos.x,  real_pos.y,  real_pos.z,
-              real_view.x, real_view.y, real_view.z,
-              real_up.x,   real_up.y,   real_up.z);
   } // Camera
 
   //Sky Box

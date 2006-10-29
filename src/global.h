@@ -55,7 +55,7 @@ class __global {
 
 
       // Camera Ring Buffer
-      Cartesian_Vector cam_pos[10], cam_view[10], cam_up[10];
+      Quaternion cam_att[10];
       int cam_num;
       float cam_yaw;
       float cam_pitch;

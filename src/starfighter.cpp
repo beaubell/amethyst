@@ -66,7 +66,7 @@ void setup_objects(void)
     temp->mass     = 100.0f;
     //temp->location = Cartesian_Vector(2.6479986873564962E+02,  2.5088154658693099E+02, 8.8188716221901501E+01);
     //temp->velocity = Cartesian_Vector(-2.7992207996826437E+01, 9.1437922883469778E+00, -2.4572578177548952E+01);
-    //temp->attitude = Quaternion(0.364095,0.256614,-0.265440,0.855059);
+    temp->attitude = Quaternion(0.000133,0.004793,0.999970,0.006136);
     temp->meta = (void*)Global.dlShip;
     scene_add_object(temp);
     universe.object_add(temp);
@@ -86,6 +86,7 @@ void setup_objects(void)
     temp = new amethyst::Object;
     temp->name     = "-Ship";
     temp->location = Cartesian_Vector(0, 40, 3);
+    temp->attitude = Quaternion(0.000133,0.004793,0.999970,0.006136);
     temp->meta = (void*)Global.dlShip;
     scene_add_object(temp);
 
