@@ -23,12 +23,16 @@
 #include <stdio.h>
 #include <math.h> // for quaternion lenth calculation
 
+// Forward Declarations
+static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
+static void hud_widget_attitude(int x, int y, const Quaternion &reference);
+static void hud_widget_camera(int x, int y);
+
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
 
 static unsigned int frames = 0, benchmark = 0;
 static float fps = 0.0f;
-
 
 void setup_hud(void)
 {
@@ -100,28 +104,21 @@ void display_hud(void)
     glWindowPos2i(10, screen_y - 26);
     fonts[0]->Render((char *)&status);
 #endif
-    char message[100];
 
-    snprintf((char *)&message, 50, "Ship Stats");
     glWindowPos2i(10, screen_y - 46);
-    fonts[0]->Render((char *)&message);
+    fonts[0]->Render((char *)"Ship Stats");
 
-    snprintf((char *)&message, 50, " Location - X:%f, Y:%f, Z:%f",Global.ship->location.x, Global.ship->location.y,Global.ship->location.z);
-    glWindowPos2i(10, screen_y - 56);
-    fonts[0]->Render((char *)&message);
+    // Display Location Information for Ship
+    hud_widget_location(10, screen_y - 56, Global.ship->location);
 
-    Quaternion &quat = Global.ship->attitude;
+    // Display Attitude Information for Ship
+    hud_widget_attitude(10, screen_y - 66, Global.ship->attitude);
 
-    snprintf((char *)&message, 70, " Attitude - W:%f, X:%f, Y:%f, Z:%f",Global.ship->attitude.w, Global.ship->attitude.x, Global.ship->attitude.y, Global.ship->attitude.z);
-    glWindowPos2i(10, screen_y - 66);
-    fonts[0]->Render((char *)&message);
-
-    snprintf((char *)&message, 50, " Cam: X:%f deg, Y:%f deg",Global.cam_yaw, Global.cam_pitch);
-    glWindowPos2i(10, screen_y - 76);
-    fonts[0]->Render((char *)&message);
+    // Display Camera Look Angles
+    hud_widget_camera(10, screen_y - 76);
 
 
-    if(frames > 200)
+    if(frames > 100)
     {
         unsigned int elapsed = SDL_GetTicks() - benchmark;
         fps = (float)frames/((float)elapsed/1000.0f);
@@ -141,4 +138,59 @@ void display_hud(void)
     glEnable( GL_LIGHTING);
     glEnable( GL_DEPTH_TEST);
 }
-/////
+
+
+static void hud_widget_location(int x, int y, const Cartesian_Vector &ref)
+{
+    char buffer[13];
+
+    glWindowPos2i(x, y);
+    fonts[0]->Render(" Location - ");
+
+    snprintf((char *)&buffer, 12, "Z:%f", ref.x);
+    glWindowPos2i(x += 110, y);
+    fonts[0]->Render((char *)&buffer);
+
+    snprintf((char *)&buffer, 12, "Y:%f", ref.y);
+    glWindowPos2i(x += 100, y);
+    fonts[0]->Render((char *)&buffer);
+
+    snprintf((char *)&buffer, 12, "Z:%f", ref.z);
+    glWindowPos2i(x += 100, y);
+    fonts[0]->Render((char *)&buffer);
+}
+
+
+static void hud_widget_attitude(int x, int y, const Quaternion &ref)
+{
+    char buffer[20];
+
+    glWindowPos2i(x, y);
+    fonts[0]->Render((char *)" Attitude - ");
+
+    snprintf((char *)&buffer, 20, "W:%f", ref.w);
+    glWindowPos2i(x += 110, y);
+    fonts[0]->Render((char *)&buffer);
+
+    snprintf((char *)&buffer, 20, "X:%f", ref.x);
+    glWindowPos2i(x += 100, y);
+    fonts[0]->Render((char *)&buffer);
+
+    snprintf((char *)&buffer, 20, "Y:%f", ref.y);
+    glWindowPos2i(x += 100, y);
+    fonts[0]->Render((char *)&buffer);
+
+    snprintf((char *)&buffer, 20, "Z:%f", ref.z);
+    glWindowPos2i(x += 100, y);
+    fonts[0]->Render((char *)&buffer);
+}
+
+
+static void hud_widget_camera(int x, int y) // FIXME
+{
+    char buffer[50];
+
+    snprintf((char *)&buffer, 50, " Cam: X:%f deg, Y:%f deg",Global.cam_yaw, Global.cam_pitch);
+    glWindowPos2i(x, y);
+    fonts[0]->Render((char *)&buffer);
+}
