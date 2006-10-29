@@ -114,14 +114,10 @@ void RenderScene(void)
   //Sky Box
   {
     glPushMatrix();
-      glCallList(Global.starfield_mdl);
+      //glCallList(Global.starfield_mdl);
       display_stars();
     glPopMatrix();
   }
-
-  //Lights
-  GLfloat lightPos[] = { 100.0f, 100.0f, 10000.0f, 1.0f };
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
   //Draw Sun
   glPushMatrix();
@@ -129,9 +125,13 @@ void RenderScene(void)
     glEnable(GL_TEXTURE_2D);
     //Move to ref position
     {
-      Cartesian_Vector sun = Cartesian_Vector(100, 100, 10000);
+      Cartesian_Vector sun = Cartesian_Vector(100, 100, -100000);
       Cartesian_Vector temp = sun - reference;
       glTranslated(temp.x, temp.y, temp.z);
+
+     //Lights
+      GLfloat lightPos[] = { temp.x, temp.y, temp.z, 1.0f };
+      glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
     }
 
     //Rotate planet on axis

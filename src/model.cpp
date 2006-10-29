@@ -66,7 +66,7 @@ void load_models(void)
     Global.planet_mdl = glGenLists(1);
     glNewList(Global.planet_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-    renderSphere(0,0,0,50,SPHERE_DETAIL);
+    renderSphere(0,0,0,6804900.0,SPHERE_DETAIL);
     glEndList();
 
 
