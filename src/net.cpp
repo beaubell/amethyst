@@ -56,7 +56,7 @@ int setup_network(void)
   if(SDLNet_ResolveHost(&Global.net_server_ip,Global.net_server.c_str(),Global.net_port)==-1)
   {
      //fprintf(stderr, "SDLNet_ResolveHost: %s\n",SDLNet_GetError());
-    fprintf(stderr, "ERROR: Unable to resolve host: %s\n", Global.net_server.c_str());
+     fprintf(stderr, "ERROR: Unable to resolve host: %s\n", Global.net_server.c_str());
      return -1;
   }
 

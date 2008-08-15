@@ -10,6 +10,7 @@ __global::__global()
     cam_num   = 0;
     cam_yaw   = 0.0f;
     cam_pitch = 0.0f;
+    cam_zoom  = 20.0f;
 
     // Field of view (in degrees)
     fov      =     40;
@@ -38,9 +39,9 @@ __global::__global()
     axis_throttle.axis     = 3;
     //axis_throttle.null     = 1000;
 
-    file_tex_sun       = "sun512.bmp";
-    file_tex_planet    = "mars512.bmp";
-    file_tex_starfield = "space512.bmp";
+    file_tex_sun       = "sun2048.bmp";
+    file_tex_planet    = "mars2048.bmp";
+    file_tex_starfield = "space2048.bmp";
 
     file_tex_sb_bk     = "bk.bmp";
     file_tex_sb_ft     = "ft.bmp";

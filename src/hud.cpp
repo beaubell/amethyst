@@ -127,8 +127,8 @@ void display_hud(void)
 
     }
 
-    char fpsstring[15];
-    snprintf((char*)&fpsstring, 15, "FPS: %.1f",fps);
+    char fpsstring[30];
+    snprintf((char*)&fpsstring, 30, "FPS: %.1f (Tick: %u )",fps, Global.time_ticks);
     //glRasterPos3f(-45.0f, 27.0f,-100.0f);
     glWindowPos2i(10, 4);
     fonts[0]->Render((char *)&fpsstring);
@@ -190,7 +190,7 @@ static void hud_widget_camera(int x, int y) // FIXME
 {
     char buffer[50];
 
-    snprintf((char *)&buffer, 50, " Cam: X:%f deg, Y:%f deg",Global.cam_yaw, Global.cam_pitch);
+    snprintf((char *)&buffer, 50, " Cam: X:%f deg, Y:%f deg, Z:%fx",Global.cam_yaw, Global.cam_pitch, Global.cam_zoom);
     glWindowPos2i(x, y);
     fonts[0]->Render((char *)&buffer);
 }

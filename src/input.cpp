@@ -71,17 +71,26 @@ int process_inputs()
                 if (event.button.button == SDL_BUTTON_LEFT)
                     mouse_camera = true;
                 break;
+
             case SDL_MOUSEBUTTONUP:
                 if (event.button.button == SDL_BUTTON_LEFT)
                     mouse_camera = false;
+                else if (event.button.button == SDL_BUTTON_WHEELUP)
+                {
+                    Global.cam_zoom /= 1.1;
+                    if (Global.cam_zoom < 10) Global.cam_zoom = 10;
+                }
+                else if (event.button.button == SDL_BUTTON_WHEELDOWN)
+                    Global.cam_zoom *= 1.1;
                 break;
+
             case SDL_MOUSEMOTION:
                 if (mouse_camera)
                 {
-                    Global.cam_yaw -= event.motion.xrel;
+                    Global.cam_yaw -= ((float)event.motion.xrel)/3;
                     if (Global.cam_yaw < -180) Global.cam_yaw += 360;
                     if (Global.cam_yaw >  180) Global.cam_yaw -= 360;
-                    Global.cam_pitch -= event.motion.yrel;
+                    Global.cam_pitch -= ((float)event.motion.yrel)/3;
                     if (Global.cam_pitch < -90) Global.cam_pitch = -90;
                     if (Global.cam_pitch >  90) Global.cam_pitch = 90;
                 }

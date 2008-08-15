@@ -59,6 +59,7 @@ class __global {
       int cam_num;
       float cam_yaw;
       float cam_pitch;
+      float cam_zoom;
 
       // Timer
       Uint32 next_time;

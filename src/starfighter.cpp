@@ -64,6 +64,7 @@ void setup_objects(void)
     temp = new amethyst::Object;
     temp->name     = "[ ]" + Global.net_handle;
     temp->mass     = 100.0f;
+    temp->location = amethyst::Cartesian_Vector(100,5000000,70000000);
     //temp->location = Cartesian_Vector(2.6479986873564962E+02,  2.5088154658693099E+02, 8.8188716221901501E+01);
     //temp->velocity = Cartesian_Vector(-2.7992207996826437E+01, 9.1437922883469778E+00, -2.4572578177548952E+01);
     temp->attitude = Quaternion(0.000133,0.004793,0.999970,0.006136);
@@ -76,7 +77,17 @@ void setup_objects(void)
     temp = new amethyst::Object;
     temp->name     = "-Mars";
     temp->mass     = 6.4185e23;
-    temp->location = amethyst::Cartesian_Vector(100,100,7000000);
+    temp->location = amethyst::Cartesian_Vector(100,100,80000000);
+    //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
+    temp->meta = (void*)Global.planet_mdl;
+    scene_add_object(temp);
+    universe.object_add(temp);
+
+    // Planet
+    temp = new amethyst::Object;
+    temp->name     = "-Mars 2";
+    temp->mass     = 6.4185e23;
+    temp->location = amethyst::Cartesian_Vector(100,10000000,80000000);
     //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
     temp->meta = (void*)Global.planet_mdl;
     scene_add_object(temp);
@@ -120,17 +131,33 @@ static void setup_sdl()
     cout << "Initializing OpenGL (Part 1)...";
 
     /* Set the minimum requirements for the OpenGL window */
-    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
+    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
     if( SDL_SetVideoMode( WIDTH, HEIGHT, video->vfmt->BitsPerPixel, SDL_OPENGL |  SDL_RESIZABLE) == 0 ) {
+    //if( SDL_SetVideoMode( WIDTH, HEIGHT, video->vfmt->BitsPerPixel, SDL_OPENGL |  SDL_FULLSCREEN) == 0 ) {
         fprintf(stderr,
                 "Couldn't set video mode: %s\n", SDL_GetError());
         exit(1);
     } else cout << "Sucess!" << endl;
+
+    int value;
+
+    SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &value);
+    cout << "Video mode: R" << value << ",";
+    SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &value);
+    cout << "G" << value << ",";
+    SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &value);
+    cout << "B" << value << ",";
+    SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &value);
+    cout << "A" << value << "/";
+    SDL_GL_GetAttribute( SDL_GL_DEPTH_SIZE, &value);
+    cout << value << endl;
+
 
 }
 
@@ -191,7 +218,7 @@ int main(int argc, char* argv[])
 
     setup_joystick();
 
-    setup_network();
+    // XXX setup_network();
 
     setup_hud();
 

@@ -97,7 +97,7 @@ void RenderScene(void)
         Cartesian_Vector raw_up  (0.0f, 0.0f, 1.0f);
 
         //Camera location in relation to ship
-        Cartesian_Vector shipoffset(0.0f, -20.0f, 2.5f);
+        Cartesian_Vector shipoffset(0.0f, -Global.cam_zoom, 0.0f);
 
         Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos )));
         Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
@@ -170,7 +170,7 @@ void RenderScene(void)
         //glDisable(GL_COLOR_MATERIAL);
 
         // Render Object
-        glCallList((GLint)(*obj1)->meta);
+        glCallList(reinterpret_cast<unsigned long>((*obj1)->meta));
 
       glPopMatrix();
       obj1++;
