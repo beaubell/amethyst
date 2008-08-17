@@ -19,19 +19,19 @@
 #define SPHERE_DETAIL 100
 
 
-void load_models(void)
+void models_load(void)
 {
     // Load Ship Model
     Global.dlShip = glGenLists(1);
     glNewList(Global.dlShip, GL_COMPILE);
-    load_model_file(Global.dir_models + "/" + "ship.mdl");  // FIXME Temp
+    model_load_file(Global.dir_models + "/" + "ship.mdl");  // FIXME Temp
     glEndList();
 
 
     // Load Sun Texture
     std::string sun = Global.dir_textures + "/" + Global.file_tex_sun;
 
-    Global.sun_tex = load_image(sun.c_str());
+    Global.sun_tex = image_load(sun.c_str());
     glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -45,14 +45,14 @@ void load_models(void)
     Global.sun_mdl = glGenLists(1);
     glNewList(Global.sun_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
-    renderSphere(0,0,0,5000,SPHERE_DETAIL);
+    model_sphere_create(0,0,0,5000,SPHERE_DETAIL);
     glEndList();
 
 
     // Load Planet Texture
     std::string planet = Global.dir_textures + "/" + Global.file_tex_planet;
 
-    Global.planet_tex = load_image(planet.c_str());
+    Global.planet_tex = image_load(planet.c_str());
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -66,14 +66,14 @@ void load_models(void)
     Global.planet_mdl = glGenLists(1);
     glNewList(Global.planet_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-    renderSphere(0,0,0,6804900.0,SPHERE_DETAIL);
+    model_sphere_create(0,0,0,6804900.0,SPHERE_DETAIL);
     glEndList();
 
 
     // Load Starfield
     std::string starfield = Global.dir_textures + "/" + Global.file_tex_starfield;
 
-    Global.starfield_tex = load_image(starfield.c_str());
+    Global.starfield_tex = image_load(starfield.c_str());
     glBindTexture(GL_TEXTURE_2D, Global.starfield_tex);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
@@ -86,12 +86,12 @@ void load_models(void)
     Global.starfield_mdl = glGenLists(1);
     glNewList(Global.starfield_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.starfield_tex);
-    renderSphere(0,0,0,500000,20);
+    model_sphere_create(0,0,0,500000,20);
     glEndList();
 
 }
 
-void free_models(void)
+void models_free(void)
 {
     glDeleteLists(Global.dlShip,1);
     glDeleteLists(Global.starfield_mdl,1);
@@ -100,7 +100,7 @@ void free_models(void)
 
 }
 
-void renderSphere( float cx, float cy, float cz, float r, int p )
+void model_sphere_create( float cx, float cy, float cz, float r, int p )
 {
     const float TWOPI  = 6.28318530717958f;
     const float PIDIV2 = 1.57079632679489f;
@@ -173,7 +173,7 @@ void renderSphere( float cx, float cy, float cz, float r, int p )
 }
 
 
-Model* load_model_file(const std::string &filename)
+Model* model_load_file(const std::string &filename)
 {
     if (access(filename.c_str(), R_OK) < 0) {
         if (errno == ENOENT)

@@ -16,11 +16,11 @@ class Model
     float         *data;
 };
 
-void load_models(void);
-void free_models(void);
+void models_load(void);
+void models_free(void);
 
-Model* load_model_file(const std::string &filename);
+Model* model_load_file(const std::string &filename);
 
-void renderSphere( float cx, float cy, float cz, float r, int p );
+void model_sphere_create( float cx, float cy, float cz, float r, int p );
 
 #endif /* MODEL_H */

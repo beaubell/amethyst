@@ -6,7 +6,7 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
-void setup_hud(void);
-void display_hud(void);
+void hud_setup(void);
+void hud_render(void);
 
 #endif  /* HUD_H */

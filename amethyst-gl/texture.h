@@ -14,10 +14,10 @@ typedef struct {
 	char *data;
 } textureImage;
 
-GLuint load_image  (const char *file);
+GLuint image_load  (const char *file);
 void   load_skybox (void);
 void   skybox (void);
-int    loadBMP(const char *filename, textureImage *texture);
+//int    image_bmp_load(const char *filename, textureImage *texture);
 bool   getBitmapImageData(const char *pFileName, textureImage *pImage );
 
 #endif /* TEXTURE_H */

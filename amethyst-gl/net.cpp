@@ -35,7 +35,7 @@ int udprecv(UDPsocket sock, UDPpacket *in)
 }
 
 
-int setup_network(void)
+int network_setup(void)
 {
 
   std::cout << "Initializing Network...";

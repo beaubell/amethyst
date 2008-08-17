@@ -34,7 +34,7 @@ static FTFont* fonts[6];
 static unsigned int frames = 0, benchmark = 0;
 static float fps = 0.0f;
 
-void setup_hud(void)
+void hud_setup(void)
 {
     std::string fontfile = Global.dir_fonts + "/spacefri.ttf";
     fonts[0] = new FTGLPixmapFont( fontfile.c_str());
@@ -45,7 +45,7 @@ void setup_hud(void)
 
 }
 
-void display_hud(void)
+void hud_render(void)
 {
     Cartesian_Vector &reference = Global.ship->location;
 

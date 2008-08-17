@@ -27,9 +27,22 @@ typedef struct
   float alpha;
 } _star_data;
 
+typedef struct
+{
+  GLubyte r;
+  GLubyte g;
+  GLubyte b;
+  GLubyte a;
+  GLfloat x;
+  GLfloat y;
+  GLfloat z;
+} _star_vertex;
+
 // Storage object for starlist
 _star_data   *star;
+_star_vertex *star_vertex;
 unsigned int  entries;
+
 
 static unsigned char spectral_class[7][4] =
 {{'O',156,178,255}, // 30,000 - 60,000 K - Blue
@@ -42,7 +55,8 @@ static unsigned char spectral_class[7][4] =
 
 
 
-void load_stars(std::string &filestr)
+
+void stars_load(std::string &filestr)
 {
     float V, BV;
     const char *filename = filestr.c_str();
@@ -96,47 +110,52 @@ void load_stars(std::string &filestr)
 
     printf("Loaded %d stars from file: %s\n", entries, filename);
 
-    fclose(file);
-}
-
-
-void free_stars(void)
-{
-    delete[] star;
-    entries = 0;
-}
-
-
-void display_stars()
-{
+    //Create Display List
+    star_vertex = new _star_vertex[entries];
 
     Cartesian_Vector temp;
-
-    glPointSize(2);
-
-    glDisable(GL_LIGHTING);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_DEPTH_TEST);
-
-    glBegin(GL_POINTS);
 
     for (unsigned int i = 0; i<entries; i++)
     {
         temp = phys_alias_transform (Spherical_Vector(star[i].ra, star[i].de, 10000));
 
-        glColor4ub(spectral_class[star[i].type][1],
-                   spectral_class[star[i].type][2],
-                   spectral_class[star[i].type][3],
-                   (unsigned char)(star[i].alpha * 255.0f));
-        glVertex3d(temp.x,temp.y,temp.z);
+        star_vertex[i].r = spectral_class[star[i].type][1];
+        star_vertex[i].g = spectral_class[star[i].type][2];
+        star_vertex[i].b = spectral_class[star[i].type][3];
+        star_vertex[i].a = (unsigned char)(star[i].alpha * 255.0f);
 
-
-
+        star_vertex[i].x = temp.x;
+        star_vertex[i].y = temp.y;
+        star_vertex[i].z = temp.z;
     }
 
-    glEnd();
+    fclose(file);
+}
+
+
+void stars_free(void)
+{
+    delete[] star;
+    delete[] star_vertex;
+    entries = 0;
+}
+
+
+void stars_render()
+{
+    glPointSize(4);
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glInterleavedArrays(GL_C4UB_V3F, 0, star_vertex);
+    glDrawArrays(GL_POINTS, 0 ,entries);
+    glDisableClientState(GL_VERTEX_ARRAY);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
+    glDisableClientState(GL_VERTEX_ARRAY);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 }

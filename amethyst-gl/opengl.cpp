@@ -51,7 +51,7 @@ unsigned int screen_y = 640;
 static void opengl_ext_window_pos(void);
 static void opengl_ext_occlusion_query(void);
 
-void setup_opengl(void)
+void opengl_setup(void)
 {
     std::cout << "Initializing OpenGL (Part 2)...\n";
 

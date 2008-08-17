@@ -44,7 +44,7 @@ static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 
 // Called to draw scene
 // Fixme - Put Objects into some sort of linked list
-void RenderScene(void)
+void scene_render(void)
 {
   // Get Gobal State
   const Cartesian_Vector &reference = Global.ship->location;
@@ -110,11 +110,10 @@ void RenderScene(void)
     }
   } // Camera
 
-  //Sky Box
+  //Stars
   {
     glPushMatrix();
-      //glCallList(Global.starfield_mdl);
-      display_stars();
+      stars_render();
     glPopMatrix();
   }
 
@@ -203,7 +202,7 @@ void RenderScene(void)
 
   // Display HUD if windowpos gl extensions are suported
   if (glWindowPosSupported && glWindowPosEnabled)
-    display_hud();
+    hud_render();
 
   // Do the buffer Swap
   SDL_GL_SwapBuffers();

@@ -36,7 +36,7 @@ GLuint TexIDSkyBox[10];
 #define LEFT_ID 5
 
 // FIXME figure out how to pass errors downstream
-GLuint load_image(const char *file) {
+GLuint image_load(const char *file) {
 
     GLuint texture;
     textureImage *texti;
@@ -83,12 +83,12 @@ void load_skybox (void)
     string tex_sb_rt     = Global.dir_textures + "/" + Global.file_tex_sb_rt;
     string tex_sb_lt     = Global.dir_textures + "/" + Global.file_tex_sb_lt;
 
-    TexIDSkyBox[0] = load_image(tex_sb_bk.c_str());
-    TexIDSkyBox[1] = load_image(tex_sb_ft.c_str());
-    TexIDSkyBox[2] = load_image(tex_sb_dn.c_str());
-    TexIDSkyBox[3] = load_image(tex_sb_up.c_str());
-    TexIDSkyBox[4] = load_image(tex_sb_rt.c_str());
-    TexIDSkyBox[5] = load_image(tex_sb_lt.c_str());
+    TexIDSkyBox[0] = image_load(tex_sb_bk.c_str());
+    TexIDSkyBox[1] = image_load(tex_sb_ft.c_str());
+    TexIDSkyBox[2] = image_load(tex_sb_dn.c_str());
+    TexIDSkyBox[3] = image_load(tex_sb_up.c_str());
+    TexIDSkyBox[4] = image_load(tex_sb_rt.c_str());
+    TexIDSkyBox[5] = image_load(tex_sb_lt.c_str());
 
 
 

@@ -12,6 +12,6 @@ typedef struct {
 } Joy_Axis_Map;
 
 short joystick_axis_norm(short value, unsigned short null);
-void  setup_joystick    (void);
+void  joystick_setup    (void);
 
 #endif /* JOYSTICK_H */

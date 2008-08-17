@@ -50,7 +50,7 @@
 using namespace std;
 using namespace amethyst;
 
-static void setup_sdl(void);
+static void sdl_setup(void);
 
 // Create universe
 Universe universe;
@@ -65,8 +65,6 @@ void setup_objects(void)
     temp->name     = "[ ]" + Global.net_handle;
     temp->mass     = 100.0f;
     temp->location = amethyst::Cartesian_Vector(100,5000000,70000000);
-    //temp->location = Cartesian_Vector(2.6479986873564962E+02,  2.5088154658693099E+02, 8.8188716221901501E+01);
-    //temp->velocity = Cartesian_Vector(-2.7992207996826437E+01, 9.1437922883469778E+00, -2.4572578177548952E+01);
     temp->attitude = Quaternion(0.000133,0.004793,0.999970,0.006136);
     temp->meta = (void*)Global.dlShip;
     scene_add_object(temp);
@@ -104,7 +102,7 @@ void setup_objects(void)
 }
 
 
-static void setup_sdl()
+static void sdl_setup()
 {
     const SDL_VideoInfo* video;
 
@@ -178,7 +176,7 @@ static void main_loop()
         universe.iterate(Global.time_interval / 1000.0);
 
     /* update the screen */
-    RenderScene();
+    scene_render();
     }
 }
 
@@ -212,19 +210,19 @@ int main(int argc, char* argv[])
 
 
 
-    setup_sdl();
+    sdl_setup();
 
-    setup_opengl();
+    opengl_setup();
 
-    setup_joystick();
+    joystick_setup();
 
-    // XXX setup_network();
+    // XXX network_setup();
 
-    setup_hud();
+    hud_setup();
 
 
-    load_stars(stars_file);
-    load_models();
+    stars_load(stars_file);
+    models_load();
 
     setup_objects();
 
@@ -232,8 +230,8 @@ int main(int argc, char* argv[])
 
       main_loop();
 
-    free_models();
-    free_stars();
+    models_free();
+    stars_free();
 
     thread_stop_all();
 

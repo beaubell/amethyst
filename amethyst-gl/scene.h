@@ -9,7 +9,7 @@
 #include <list>
 #include "lib/object.h"
 
-void RenderScene(void);
+void scene_render(void);
 
 void scene_add_object(amethyst::Object *);
 

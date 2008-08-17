@@ -13,7 +13,7 @@
 #include "lib/net.h"
 
 
-int setup_network(void);
+int network_setup(void);
 
 void net_send_telemetry(void);
 void net_recv_telemetry(void);

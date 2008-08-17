@@ -21,7 +21,7 @@ short joystick_axis_norm(short value, unsigned short null)
   return 0;
 }
 
-void setup_joystick()
+void joystick_setup()
 {
     cout << "Initializing Joysticks...";
 

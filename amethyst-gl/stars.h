@@ -8,8 +8,8 @@
 
 #include <string>
 
-void load_stars(std::string &file);
-void free_stars(void);
-void display_stars(void);
+void stars_load(std::string &file);
+void stars_free(void);
+void stars_render(void);
 
 #endif /* STARS_H */
