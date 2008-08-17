@@ -8,7 +8,7 @@
 #include <errno.h>  //
 #include <iostream>
 
-#include <amethyst/physics.h>
+#include "lib/physics.h"
 
 #include "SDL_opengl.h"
 

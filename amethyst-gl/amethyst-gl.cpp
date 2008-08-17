@@ -13,11 +13,11 @@
 
 #include <math.h>
 
-#include <amethyst/vector.h>
-#include <amethyst/orientation.h>
-#include <amethyst/object.h>
-#include <amethyst/physics.h>
-#include <amethyst/universe.h>
+#include "lib/vector.h"
+#include "lib/orientation.h"
+#include "lib/object.h"
+#include "lib/physics.h"
+#include "lib/universe.h"
 
 #include <stdlib.h>
 

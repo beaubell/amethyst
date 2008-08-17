@@ -8,7 +8,7 @@
 #include "global.h"
 #include "debug.h"
 
-#include <amethyst/utility.h>
+#include "lib/utility.h"
 
 #include <math.h>
 

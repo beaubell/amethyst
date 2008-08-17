@@ -6,9 +6,9 @@
 #include <list>
 #include <math.h>
 
-#include <amethyst/vector.h>
-#include <amethyst/orientation.h>
-#include <amethyst/object.h>
+#include "lib/vector.h"
+#include "lib/orientation.h"
+#include "lib/object.h"
 
 #include "global.h"
 #include "opengl.h"

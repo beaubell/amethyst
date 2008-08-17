@@ -9,8 +9,8 @@
 #include <sys/types.h>
 #include <time.h>
 
-#include <amethyst/object.h>
-#include <amethyst/net.h>
+#include "lib/object.h"
+#include "lib/net.h"
 
 
 int setup_network(void);

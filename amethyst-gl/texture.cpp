@@ -14,7 +14,7 @@
 #include "SDL_endian.h"
 
 
-#include <amethyst/object.h>
+#include "lib/object.h"
 #include <iostream>
 
 #include <stdio.h>

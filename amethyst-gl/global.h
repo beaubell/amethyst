@@ -6,7 +6,7 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
-#include <amethyst/object.h>
+#include "lib/object.h"
 
 #include <string>
 #include "opengl.h"

@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 #include <list>
-#include <amethyst/object.h>
+#include "lib/object.h"
 
 void RenderScene(void);
 

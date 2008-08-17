@@ -6,8 +6,8 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
-#include <amethyst/vector.h>
-#include <amethyst/object.h>
+#include "lib/vector.h"
+#include "lib/object.h"
 
 using namespace amethyst;
 
