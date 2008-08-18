@@ -18,8 +18,8 @@ SET(libamethyst_SRCS
   vector.cpp
 )
 
+INCLUDE_DIRECTORIES(
+  ../
+)
+
 ADD_LIBRARY(libamethyst ${libamethyst_SRCS})
-
-#ENABLE_TESTING()
-#ADD_TEST(SimpleTest ${EXECUTABLE_OUTPUT_PATH}/SimpleTest Hello)
-

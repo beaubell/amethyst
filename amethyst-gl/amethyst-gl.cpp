@@ -47,6 +47,21 @@
 #define PROJECT_DIR ".amethyst"
 #endif
 
+#define _QUOTEME(x) #x
+#define QUOTEME(x) _QUOTEME(x)
+
+#ifdef AMETHYST_VERSTR
+ #ifdef AMETHYST_WC_REVISION
+#define AMETHYST_LONG_NAME  Amethyst Space Physics Simulator - AMETHYST_VERSTR (SVN: AMETHYST_WC_REVISION)
+  #else
+  #define AMETHYST_LONG_NAME  Amethyst Space Physics Simulator - AMETHYST_VERSTR
+ #endif
+ #else
+ #define AMETHYST_LONG_NAME  Amethyst Space Physics Simulator
+#endif
+
+#define AMETHSYT_SHORT_NAME Amethyst-GL
+
 using namespace std;
 using namespace amethyst;
 
@@ -115,7 +130,8 @@ static void sdl_setup()
 
     atexit(SDL_Quit);
 
-	SDL_WM_SetCaption("l33t Starfightar Gaem!  Biatch!","Starfighter");
+
+	SDL_WM_SetCaption(QUOTEME(AMETHYST_LONG_NAME),QUOTEME(AMETHSYT_SHORT_NAME));
 
     cout << "Initializing Video...";
     video = SDL_GetVideoInfo( );
@@ -133,6 +149,7 @@ static void sdl_setup()
     SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
     SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
     SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_BUFFER_SIZE, 24 );
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 

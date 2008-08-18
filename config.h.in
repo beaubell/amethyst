@@ -1,0 +1,15 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define AMETHYST_VERSTR Alpha Release
+#cmakedefine AMETHYST_WC_REVISION ${AMETHYST_WC_REVISION}
+
+#cmakedefine WORDS_BIGENDIAN
+
+#cmakedefine SIZEOF_SHORT       ${SIZEOF_SHORT}
+#cmakedefine SIZEOF_INT         ${SIZEOF_INT}
+#cmakedefine SIZEOF_FLOAT       ${SIZEOF_FLOAT}
+#cmakedefine SIZEOF_DOUBLE      ${SIZEOF_DOUBLE}
+#cmakedefine SIZEOF_LONG_DOUBLE ${SIZEOF_LONG_DOUBLE}
+
+#endif
