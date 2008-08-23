@@ -39,7 +39,11 @@ void hud_setup(void)
     std::string fontfile = Global.dir_fonts + "/spacefri.ttf";
     fonts[0] = new FTGLPixmapFont( fontfile.c_str());
 
-    printf("Font: %d\n", fonts[0]->Error());
+    // Check to see if font loaded correctly
+    if(fonts[0]->Error())
+      printf("Font: %s TTF Font did not load!!\n", fontfile.c_str());
+    else
+      printf("Font: %s loaded\n", fontfile.c_str());
 
     fonts[0]->FaceSize( 13);
 

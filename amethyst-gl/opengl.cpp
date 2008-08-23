@@ -215,7 +215,10 @@ void opengl_ext_occlusion_query(void)
     printf("Checking for GLEXT:occlussion_query...");
 
     if(!glVersion15 && !strstr((const char*)glExtensions, "GL_ARB_occlusion_query"))
-       puts("Not Found.  :-(");
+    {
+        puts("Not Found.  :-(");
+        return;
+    }
 
 
     if (glVersion15)
