@@ -17,7 +17,7 @@ class SF_Thread
     int             handle;
     int            (*function)(void *);
     SDL_Thread     *sdl_thread;
-    char           *name;
+    const char     *name;
     int            *control;
 };
 
@@ -54,7 +54,7 @@ __thread_global Thread_Global;
 
 
 
-SF_Thread_Id thread_create(int (*func_ptr)(void *), void *data, char *name, int *control)
+SF_Thread_Id thread_create(int (*func_ptr)(void *), void *data, const char *name, int *control)
 {
    printf("Creating Thread: %s...", name);
 

@@ -59,12 +59,12 @@ void scene_render(void)
   //Camera
   {
     // Get Camera Offsets
-    float x = Global.cam_yaw;
-    float y = Global.cam_pitch;
+    double x = Global.cam_yaw;
+    double y = Global.cam_pitch;
 
     // Convert to radians
-    float x_rad = (x / 180.0f) * M_PI;
-    float y_rad = (y / 180.0f) * M_PI;
+    double x_rad = (double(x) / 180.0) * M_PI;
+    double y_rad = (double(y) / 180.0) * M_PI;
 
     Quaternion del_att;
 
@@ -82,9 +82,9 @@ void scene_render(void)
 
     }
 
-    Quaternion Qz( cos(x_rad/2.0f), 0, 0, sin(x_rad/2.0f));
+    Quaternion Qz( cos(x_rad/2.0), 0, 0, sin(x_rad/2.0));
     Qz.normalize();
-    Quaternion Qx( cos(y_rad/2.0f), sin(y_rad/2.0f), 0, 0 );
+    Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0, 0 );
     Qx.normalize();
 
     Quaternion new_att = del_att * Qz * Qx;
@@ -161,7 +161,7 @@ void scene_render(void)
         // Orient object
         Quaternion       *q = &(*obj1)->attitude;
 
-        double theta = 2 * acos(q->w);
+        double theta = 2.0 * acos(q->w);
         TODEG(theta);
 
         glRotatef(theta, q->x, q->y, q->z);
@@ -186,7 +186,7 @@ void scene_render(void)
       glTranslated(net_p.x, net_p.y, net_p.z);
       Quaternion       *net_q = &Global.net_ship[i].attitude;
 
-      double theta = 2 * acos(net_q->w);
+      double theta = 2.0 * acos(net_q->w);
       TODEG(theta);
 
       //Rotate Ship

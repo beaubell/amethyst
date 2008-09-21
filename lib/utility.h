@@ -19,9 +19,9 @@
 
 namespace amethyst {
 
-  void print_vector(char *title, const Cartesian_Vector &vector);
-  void print_vector(char *title, const Spherical_Vector &vector);
-  void print_vector(char *title, const Quaternion       &vector);
+  void print_vector(const char *title, const Cartesian_Vector &vector);
+  void print_vector(const char *title, const Spherical_Vector &vector);
+  void print_vector(const char *title, const Quaternion       &vector);
   void print_object(const Object &obj);
 
 }

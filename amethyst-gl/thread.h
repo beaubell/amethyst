@@ -12,7 +12,7 @@
 typedef int SF_Thread_Id;
 
 
-SF_Thread_Id  thread_create (int (*func_ptr)(void*), void *data, char *name, int *control);
+SF_Thread_Id  thread_create (int (*func_ptr)(void*), void *data, const char *name, int *control);
 void          thread_stop_all(void);
 
 #endif

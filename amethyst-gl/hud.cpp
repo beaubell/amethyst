@@ -198,3 +198,9 @@ static void hud_widget_camera(int x, int y) // FIXME
     glWindowPos2i(x, y);
     fonts[0]->Render((char *)&buffer);
 }
+
+
+static void hud_widget_control_position()
+{
+    // Draw up 
+}

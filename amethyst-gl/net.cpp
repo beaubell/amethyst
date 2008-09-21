@@ -180,7 +180,7 @@ int net_start_thread(void *data)
 
   for(;net_thread_stop >= 0;)
   {
-    if (delay_send > 4);
+    if (delay_send > 4)
     {
        net_send_telemetry();
        delay_send = 0;

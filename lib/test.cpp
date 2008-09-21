@@ -30,14 +30,16 @@ namespace amethyst {
 
   bool full_test(bool quiet, bool debug)
   {
+       bool success = false;
        info_variable_size();
        test_cartsphere_conv(quiet, debug);
-       test_engine(quiet, debug);
+       success = test_engine(quiet, debug);
 
 //       unsigned short a = 30356, b;
 //       printf("a: %#xh\n",a);
 //       b = ntohs(a);
 //       printf("b: %#xh\n", b);
+       return success;
   }
 
   bool test_cartsphere_conv(bool quiet, bool debug)
@@ -141,6 +143,8 @@ namespace amethyst {
        delete c;
        delete b;
        delete a;
+
+       return 0; //XXX return meaningful success status
   } // test_engine
 
   void info_variable_size(void)

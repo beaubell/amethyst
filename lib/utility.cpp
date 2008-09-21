@@ -17,18 +17,18 @@
 
 namespace amethyst {
 
-  void print_vector(char *title, const Cartesian_Vector &vector) {
+  void print_vector(const char *title, const Cartesian_Vector &vector) {
 
        printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title, vector.x, vector.y, vector.z);
        }
 
 
-  void print_vector(char *title, const Spherical_Vector &vector) {
+  void print_vector(const char *title, const Spherical_Vector &vector) {
 
        printf("%s SV: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title, vector.a, vector.p, vector.r);
        }
 
-  void print_vector(char *title, const Quaternion &vector) {
+  void print_vector(const char *title, const Quaternion &vector) {
 
        printf("%s QU: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title, vector.x, vector.y, vector.z);
        }

@@ -106,7 +106,7 @@ namespace amethyst {
   
   string command_get(void)
   {
-       int    curpos = 0; // Cursor Position
+       unsigned int curpos = 0; // Cursor Position
        int    ret;
        char   one;        // Input Charater
        string buffer;     // Command Buffer
@@ -122,7 +122,7 @@ namespace amethyst {
                  {
                       unsigned int gb = 0;
                       buffer.insert(curpos , 1, one);
-                      for (gb; gb < (buffer.length() - curpos); gb++)
+                      for (; gb < (buffer.length() - curpos); gb++)
                       {
                            cout << buffer[curpos+gb];
                       }
@@ -168,7 +168,7 @@ namespace amethyst {
                                                    cursor_left();
                                                    buffer.erase(curpos -1, 1);
                                                    curpos--;
-                                                   for (int i = 0; i < (buffer.length()-curpos); i++)
+                                                   for (unsigned int i = 0; i < (buffer.length()-curpos); i++)
                                                    {
                                                         cout << buffer[i+curpos];
                                                         gb++;

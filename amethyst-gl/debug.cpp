@@ -12,7 +12,7 @@
 
 #define MAX_BT 30
 
-void print_vector(char *title, const Cartesian_Vector &vector) {
+void print_vector(const char *title, const Cartesian_Vector &vector) {
 
        printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title, vector.x, vector.y, vector.z);
        }
