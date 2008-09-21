@@ -53,6 +53,8 @@ class __global {
       Joy_Axis_Map      axis_yaw;
       Joy_Axis_Map      axis_throttle;
 
+      // Control Surfaces
+      float throttle;
 
       // Camera Ring Buffer
       Quaternion cam_att[10];

@@ -27,6 +27,7 @@
 static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
 static void hud_widget_attitude(int x, int y, const Quaternion &reference);
 static void hud_widget_camera(int x, int y);
+static void hud_widget_indicator_control();
 
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
@@ -121,6 +122,7 @@ void hud_render(void)
     // Display Camera Look Angles
     hud_widget_camera(10, screen_y - 76);
 
+    hud_widget_indicator_control();
 
     if(frames > 100)
     {
@@ -200,7 +202,52 @@ static void hud_widget_camera(int x, int y) // FIXME
 }
 
 
-static void hud_widget_control_position()
+static void hud_widget_indicator_control()
 {
-    // Draw up 
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    GLfloat frame[] = { 1.0f,-0.1f,-0.1f,  1.0f,0.1f,-0.1f,  1.0f,0.1f,0.1f,  1.0f,-0.1f,0.1f,
+                        -1.0f,-0.1f,-0.1f,  -1.0f,0.1f,-0.1f, -1.0f,0.1f,0.1f, -1.0f,-0.1f,0.1f,
+                        -0.1f,1.0f,-0.1f,  0.1f,1.0f,-0.1f,  0.1f,1.0f,0.1f,  -0.1f,1.0f,0.1f,
+                        -0.1f,-1.0f,-0.1f,  0.1f,-1.0f,-0.1f,  0.1f,-1.0f,0.1f,  -0.1f,-1.0f,0.1f,
+                        -0.1f,-0.1f,1.0f, 0.1f,-0.1f,1.0f,  0.1f,0.1f,1.0f,  -0.1f,0.1f,1.0f,
+                        -0.1f,-0.1f,-1.0f, 0.1f,-0.1f,-1.0f,  0.1f,0.1f,-1.0f,  -0.1f,0.1f,-1.0f};
+
+    GLushort xbox[] = {0,1,2,3,0,4,5,6,7,4 ,5,1,2,6,7,3};
+    GLushort ybox[] = {8,9,10,11,8,12,13,14,15,12,13,9,10,14,15,11};
+    GLushort zbox[] = {16,17,18,19,16,20,21,22,23,20,21,17,18,22,23,19};
+
+    GLfloat cframe[] = { 1.0f,-0.1f,-0.1f,  1.0f,0.1f,-0.1f,  1.0f,0.1f,0.1f,  1.0f,-0.1f,0.1f,
+                        -1.0f,-0.1f,-0.1f,  -1.0f,0.1f,-0.1f, -1.0f,0.1f,0.1f, -1.0f,-0.1f,0.1f,
+                        -0.1f,1.0f,-0.1f,  0.1f,1.0f,-0.1f,  0.1f,1.0f,0.1f,  -0.1f,1.0f,0.1f,
+                        -0.1f,-1.0f,-0.1f,  0.1f,-1.0f,-0.1f,  0.1f,-1.0f,0.1f,  -0.1f,-1.0f,0.1f,
+                        -0.1f,-0.1f,1.0f, 0.1f,-0.1f,1.0f,  0.1f,0.1f,1.0f,  -0.1f,0.1f,1.0f,
+                        -0.1f,-0.1f,-1.0f, 0.1f,-0.1f,-1.0f,  0.1f,0.1f,-1.0f,  -0.1f,0.1f,-1.0f};
+
+    float ythrust = Global.throttle;
+    float ythrustp = 0.1f;
+    float ythrustn = -0.1f;
+
+    if (ythrust > 0) { ythrustp = ythrust*0.9f + 0.1f; ythrustn = 0.1f;}
+    if (ythrust < 0) { ythrustn = ythrust*0.9f - 0.1f; ythrustp = -0.1f;}
+
+    cframe[25] = cframe[28] = cframe [31] = cframe [34] = ythrustp;
+    cframe[37] = cframe[40] = cframe [43] = cframe [46] = ythrustn;
+
+    GLushort ythrustbox[] = {11,10,9,8, 9,13,12,8, 10,14,13,9, 11,15,14,10, 8,12,15,11, 12,13,14,15};
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, frame);
+    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, xbox);
+    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, ybox);
+    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, zbox);
+
+    glVertexPointer(3, GL_FLOAT, 0, cframe);
+    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+    glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, ythrustbox);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+
+    glPopAttrib();
 }

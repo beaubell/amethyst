@@ -183,6 +183,7 @@ int process_inputs()
     if (throttle != 0) {
 
         thrust.y = throttle*10000;
+        Global.throttle = throttle;
     }
 
     // Rotate trust vector to match ship orientation
