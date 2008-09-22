@@ -143,7 +143,8 @@ void stars_free(void)
 
 void stars_render()
 {
-    glPointSize(4);
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glPointSize(2);
 
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
@@ -152,10 +153,6 @@ void stars_render()
     glEnableClientState(GL_VERTEX_ARRAY);
     glInterleavedArrays(GL_C4UB_V3F, 0, star_vertex);
     glDrawArrays(GL_POINTS, 0 ,entries);
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
+    glPopAttrib();
 }

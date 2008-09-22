@@ -102,20 +102,20 @@ void models_free(void)
 
 void model_sphere_create( float cx, float cy, float cz, float r, int p )
 {
-    const float TWOPI  = 6.28318530717958f;
-    const float PIDIV2 = 1.57079632679489f;
+    const double TWOPI  = 6.28318530717958647692;
+    const double PIDIV2 = 1.57079632679489661923;
 
-    float theta1 = 0.0;
-    float theta2 = 0.0;
-    float theta3 = 0.0;
+    double theta1 = 0.0;
+    double theta2 = 0.0;
+    double theta3 = 0.0;
 
-    float ex = 0.0f;
-    float ey = 0.0f;
-    float ez = 0.0f;
+    double ex = 0.0f;
+    double ey = 0.0f;
+    double ez = 0.0f;
 
-    float px = 0.0f;
-    float py = 0.0f;
-    float pz = 0.0f;
+    double px = 0.0f;
+    double py = 0.0f;
+    double pz = 0.0f;
 
     // Disallow a negative number for radius.
     if( r < 0 )
@@ -129,7 +129,7 @@ void model_sphere_create( float cx, float cy, float cz, float r, int p )
     if( p < 4 || r <= 0 )
     {
         glBegin( GL_POINTS );
-        glVertex3f( cx, cy, cz );
+        glVertex3d( cx, cy, cz );
         glEnd();
         return;
     }
@@ -152,9 +152,9 @@ void model_sphere_create( float cx, float cy, float cz, float r, int p )
                 py = cy + r * ey;
                 pz = cz + r * ez;
 
-                glNormal3f( ex, ey, ez );
-                glTexCoord2f( -(j/(float)p) , 2*(i+1)/(float)p );
-                glVertex3f( px, py, pz );
+                glNormal3d( ex, ey, ez );
+                glTexCoord2d( -(j/(double)p) , 2*(i+1)/(double)p );
+                glVertex3d( px, py, pz );
 
                 ex = cosf(theta1) * cosf(theta3);
                 ey = sinf(theta1);
@@ -163,9 +163,9 @@ void model_sphere_create( float cx, float cy, float cz, float r, int p )
                 py = cy + r * ey;
                 pz = cz + r * ez;
 
-                glNormal3f( ex, ey, ez );
-                glTexCoord2f( -(j/(float)p), 2*i/(float)p );
-                glVertex3f( px, py, pz );
+                glNormal3d( ex, ey, ez );
+                glTexCoord2d( -(j/(double)p), 2*i/(double)p );
+                glVertex3d( px, py, pz );
             }
         }
         glEnd();

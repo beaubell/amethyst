@@ -82,9 +82,9 @@ void scene_render(void)
 
     }
 
-    Quaternion Qz( cos(x_rad/2.0), 0, 0, sin(x_rad/2.0));
+    Quaternion Qz( cos(x_rad/2.0), 0.0, 0.0, sin(x_rad/2.0));
     Qz.normalize();
-    Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0, 0 );
+    Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0.0, 0.0 );
     Qx.normalize();
 
     Quaternion new_att = del_att * Qz * Qx;
@@ -92,12 +92,12 @@ void scene_render(void)
 
     // Rotate Camera to ship's orientation
     {
-        Cartesian_Vector raw_pos (0.0f, 0.0f, 0.0f);
-        Cartesian_Vector raw_view(0.0f, 1.0f, 0.0f);
-        Cartesian_Vector raw_up  (0.0f, 0.0f, 1.0f);
+        Cartesian_Vector raw_pos (0.0, 0.0, 0.0);
+        Cartesian_Vector raw_view(0.0, 1000.0, 0.0);
+        Cartesian_Vector raw_up  (0.0, 0.0, 1000.0);
 
         //Camera location in relation to ship
-        Cartesian_Vector shipoffset(0.0f, -Global.cam_zoom, 0.0f);
+        Cartesian_Vector shipoffset(0.0, -Global.cam_zoom, 0.0);
 
         Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos )));
         Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
@@ -123,7 +123,7 @@ void scene_render(void)
     glEnable(GL_TEXTURE_2D);
     //Move to ref position
     {
-      Cartesian_Vector sun = Cartesian_Vector(100, 100, -100000);
+      Cartesian_Vector sun = Cartesian_Vector(100.0, 100.0, -100000.0);
       Cartesian_Vector temp = sun - reference;
       glTranslated(temp.x, temp.y, temp.z);
 
@@ -133,7 +133,7 @@ void scene_render(void)
     }
 
     //Rotate planet on axis
-    glRotatef(sun_rot, 0, -1, 0);
+    glRotatef(sun_rot, 0.0f, -1.0f, 0.0f);
     sun_rot = sun_rot + 0.01;
      glDisable(GL_COLOR_MATERIAL);
     glCallList(Global.sun_mdl);
@@ -164,7 +164,7 @@ void scene_render(void)
         double theta = 2.0 * acos(q->w);
         TODEG(theta);
 
-        glRotatef(theta, q->x, q->y, q->z);
+        glRotated(theta, q->x, q->y, q->z);
 
         //glDisable(GL_COLOR_MATERIAL);
 
@@ -190,7 +190,7 @@ void scene_render(void)
       TODEG(theta);
 
       //Rotate Ship
-      glRotatef(theta, net_q->x, net_q->y, net_q->z);
+      glRotated(theta, net_q->x, net_q->y, net_q->z);
       {
         GLfloat fDiffLight[] =  { 1.0f, 1.0f, 0.0f };  // Green!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);

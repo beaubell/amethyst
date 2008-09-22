@@ -235,6 +235,8 @@ static void hud_widget_indicator_control()
 
     GLushort ythrustbox[] = {11,10,9,8, 9,13,12,8, 10,14,13,9, 11,15,14,10, 8,12,15,11, 12,13,14,15};
 
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, frame);
     glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, xbox);
