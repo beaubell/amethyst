@@ -23,8 +23,8 @@
 #define M_PI 3.1415926535897932384626433832795f
 #endif
 
-#define TODEG(x)    x = x * 180.0f / M_PI
-#define TORAD(x)    x = x / 180.0f * M_PI
+#define TODEG(x)    x = x * 180.0 / M_PI
+#define TORAD(x)    x = x / 180.0 * M_PI
 
 using namespace amethyst;
 
@@ -41,23 +41,9 @@ static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
   return t.GetVector();
 }
 
-
-// Called to draw scene
-// Fixme - Put Objects into some sort of linked list
-void scene_render(void)
+void set_camera(const Quaternion &attitude, const double distance)
 {
-  // Get Gobal State
-  const Cartesian_Vector &reference = Global.ship->location;
-  const Quaternion       &attitude  = Global.ship->attitude;
 
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  // Clear the window with current clearing color
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  //Camera
-  {
     // Get Camera Offsets
     double x = Global.cam_yaw;
     double y = Global.cam_pitch;
@@ -97,7 +83,7 @@ void scene_render(void)
         Cartesian_Vector raw_up  (0.0, 0.0, 1000.0);
 
         //Camera location in relation to ship
-        Cartesian_Vector shipoffset(0.0, -Global.cam_zoom, 0.0);
+        Cartesian_Vector shipoffset(0.0, -distance, 0.0);
 
         Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos )));
         Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
@@ -108,7 +94,26 @@ void scene_render(void)
                   real_view.x, real_view.y, real_view.z,
                   real_up.x,   real_up.y,   real_up.z);
     }
-  } // Camera
+
+
+}
+
+
+// Called to draw scene
+// Fixme - Put Objects into some sort of linked list
+void scene_render(void)
+{
+  // Get Gobal State
+  const Cartesian_Vector &reference = Global.ship->location;
+  const Quaternion       &attitude  = Global.ship->attitude;
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  set_camera(attitude, 1.0);
+
+  // Clear the window with current clearing color
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   //Stars
   {
@@ -116,6 +121,10 @@ void scene_render(void)
       stars_render();
     glPopMatrix();
   }
+
+  glLoadIdentity();
+
+  set_camera(attitude, Global.cam_zoom);
 
   //Draw Sun
   glPushMatrix();

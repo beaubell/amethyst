@@ -66,8 +66,29 @@ void models_load(void)
     Global.planet_mdl = glGenLists(1);
     glNewList(Global.planet_mdl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-    model_sphere_create(0,0,0,6804900.0,SPHERE_DETAIL);
+    model_sphere_create(0,0,0,6371000.0,SPHERE_DETAIL);
     glEndList();
+
+    // Load Moon Texture
+    std::string moon = Global.dir_textures + "/" + Global.file_tex_moon;
+
+    Global.moon_tex = image_load(moon.c_str());
+    glBindTexture(GL_TEXTURE_2D, Global.moon_tex);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
+
+    // Load Moon Model
+    Global.moon_mdl = glGenLists(1);
+    glNewList(Global.moon_mdl, GL_COMPILE);
+    glBindTexture(GL_TEXTURE_2D, Global.moon_tex);
+    model_sphere_create(0,0,0,1737100.0,SPHERE_DETAIL);
+    glEndList();
+
 
 
     // Load Starfield

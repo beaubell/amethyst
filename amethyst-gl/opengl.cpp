@@ -117,7 +117,7 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
     glLoadIdentity();
 
     // Set the clipping volume
-    gluPerspective(Global.fov, fAspect, 1.0f, 50000000000.0f);
+    gluPerspective(Global.fov, fAspect, 5.0f, 5e9f);
 
     screen_x = w, screen_y = h;
 
@@ -146,6 +146,10 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
     glLightfv(GL_LIGHT0, GL_AMBIENT, fAmbLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, fSpecLight);
+
+    glDepthFunc(GL_LEQUAL);
+    //glDepthRange(5.0,1e10);
+    glPolygonOffset(1.0,1.0);
 }
 
 

@@ -88,8 +88,8 @@ void setup_objects(void)
 
     // Planet
     temp = new amethyst::Object;
-    temp->name     = "-Mars";
-    temp->mass     = 6.4185e23;
+    temp->name     = "-Earth";
+    temp->mass     = 5.9736e24;
     temp->location = amethyst::Cartesian_Vector(100,100,80000000);
     //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
     temp->meta = (void*)Global.planet_mdl;
@@ -98,11 +98,11 @@ void setup_objects(void)
 
     // Planet
     temp = new amethyst::Object;
-    temp->name     = "-Mars 2";
-    temp->mass     = 6.4185e23;
+    temp->name     = "-Moon";
+    temp->mass     = 7.3477e22;
     temp->location = amethyst::Cartesian_Vector(100,10000000,80000000);
     //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
-    temp->meta = (void*)Global.planet_mdl;
+    temp->meta = (void*)Global.moon_mdl;
     scene_add_object(temp);
     universe.object_add(temp);
 

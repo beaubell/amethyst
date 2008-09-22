@@ -23,11 +23,13 @@
 #include <stdio.h>
 #include <math.h> // for quaternion lenth calculation
 
+#define TODEG(x)    x = x * 180.0 / M_PI
+
 // Forward Declarations
 static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
 static void hud_widget_attitude(int x, int y, const Quaternion &reference);
 static void hud_widget_camera(int x, int y);
-static void hud_widget_indicator_control();
+static void hud_widget_vectorbox(int x, int y, float xaxis, float yaxis, float zaxis);
 
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
@@ -122,7 +124,7 @@ void hud_render(void)
     // Display Camera Look Angles
     hud_widget_camera(10, screen_y - 76);
 
-    hud_widget_indicator_control();
+    hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
 
     if(frames > 100)
     {
@@ -202,54 +204,76 @@ static void hud_widget_camera(int x, int y) // FIXME
 }
 
 
-static void hud_widget_indicator_control()
+static void hud_widget_vectorbox(int x, int y, float xvector, float yvector, float zvector)
 {
+
+    GLfloat frame[] = { 1.0f,-0.1f,-0.1f,  1.0f,0.1f,-0.1f,   1.0f,0.1f,0.1f,   1.0f,-0.1f,0.1f,
+                       -1.0f,-0.1f,-0.1f, -1.0f,0.1f,-0.1f,  -1.0f,0.1f,0.1f,  -1.0f,-0.1f,0.1f,
+                       -0.1f,1.0f,-0.1f,   0.1f,1.0f,-0.1f,   0.1f,1.0f,0.1f,  -0.1f,1.0f,0.1f,
+                       -0.1f,-1.0f,-0.1f,  0.1f,-1.0f,-0.1f,  0.1f,-1.0f,0.1f, -0.1f,-1.0f,0.1f,
+                       -0.1f,-0.1f,1.0f,   0.1f,-0.1f,1.0f,   0.1f,0.1f,1.0f,  -0.1f,0.1f,1.0f,
+                       -0.1f,-0.1f,-1.0f,  0.1f,-0.1f,-1.0f,  0.1f,0.1f,-1.0f, -0.1f,0.1f,-1.0f};
+
+    GLushort xframe[] = {0,1,2,3,0,4,5,6,7,4,5,1,2,6,7,3};
+    GLushort yframe[] = {8,9,10,11,8,12,13,14,15,12,13,9,10,14,15,11};
+    GLushort zframe[] = {16,17,18,19,16,20,21,22,23,20,21,17,18,22,23,19};
+
+    GLfloat cframe[] = { 1.0f,-0.1f,-0.1f,  1.0f,0.1f,-0.1f,   1.0f,0.1f,0.1f,   1.0f,-0.1f,0.1f,
+                        -1.0f,-0.1f,-0.1f, -1.0f,0.1f,-0.1f,  -1.0f,0.1f,0.1f,  -1.0f,-0.1f,0.1f,
+                        -0.1f,1.0f,-0.1f,   0.1f,1.0f,-0.1f,   0.1f,1.0f,0.1f,  -0.1f,1.0f,0.1f,
+                        -0.1f,-1.0f,-0.1f,  0.1f,-1.0f,-0.1f,  0.1f,-1.0f,0.1f, -0.1f,-1.0f,0.1f,
+                        -0.1f,-0.1f,1.0f,   0.1f,-0.1f,1.0f,   0.1f,0.1f,1.0f,  -0.1f,0.1f,1.0f,
+                        -0.1f,-0.1f,-1.0f,  0.1f,-0.1f,-1.0f,  0.1f,0.1f,-1.0f, -0.1f,0.1f,-1.0f};
+
+
+    GLfloat xvectorp,yvectorp,zvectorp = 0.1f;
+    GLfloat xvectorn,yvectorn,zvectorn = -0.1f;
+
+    if (xvector > 0) { xvectorp = xvector*0.9f + 0.1f; xvectorn = 0.1f;}
+    if (xvector < 0) { xvectorn = xvector*0.9f - 0.1f; xvectorp = -0.1f;}
+    if (yvector > 0) { yvectorp = yvector*0.9f + 0.1f; yvectorn = 0.1f;}
+    if (yvector < 0) { yvectorn = yvector*0.9f - 0.1f; yvectorp = -0.1f;}
+    if (zvector > 0) { zvectorp = zvector*0.9f + 0.1f; zvectorn = 0.1f;}
+    if (zvector < 0) { zvectorn = zvector*0.9f - 0.1f; zvectorp = -0.1f;}
+
+    cframe[0]  = cframe[3]  = cframe [6]  = cframe [9]  = xvectorp;
+    cframe[12] = cframe[15] = cframe [18] = cframe [21] = xvectorn;
+    cframe[25] = cframe[28] = cframe [31] = cframe [34] = yvectorp;
+    cframe[37] = cframe[40] = cframe [43] = cframe [46] = yvectorn;
+    cframe[50] = cframe[53] = cframe [56] = cframe [59] = zvectorp;
+    cframe[62] = cframe[65] = cframe [68] = cframe [71] = zvectorn;
+
+    GLushort xvectorbox[] = {3,2,1,0,     1,5,4,0,     2,6,5,1,     3,7,6,2,     0,4,7,3,     4,5,6,7};
+    GLushort yvectorbox[] = {11,10,9,8,   9,13,12,8,   10,14,13,9,  11,15,14,10, 8,12,15,11,  12,13,14,15};
+    GLushort zvectorbox[] = {19,18,17,16, 17,21,20,16, 18,22,21,17, 19,23,22,18, 16,20,23,19, 20,21,22,23};
+
+    //Render Widgit
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    GLfloat frame[] = { 1.0f,-0.1f,-0.1f,  1.0f,0.1f,-0.1f,  1.0f,0.1f,0.1f,  1.0f,-0.1f,0.1f,
-                        -1.0f,-0.1f,-0.1f,  -1.0f,0.1f,-0.1f, -1.0f,0.1f,0.1f, -1.0f,-0.1f,0.1f,
-                        -0.1f,1.0f,-0.1f,  0.1f,1.0f,-0.1f,  0.1f,1.0f,0.1f,  -0.1f,1.0f,0.1f,
-                        -0.1f,-1.0f,-0.1f,  0.1f,-1.0f,-0.1f,  0.1f,-1.0f,0.1f,  -0.1f,-1.0f,0.1f,
-                        -0.1f,-0.1f,1.0f, 0.1f,-0.1f,1.0f,  0.1f,0.1f,1.0f,  -0.1f,0.1f,1.0f,
-                        -0.1f,-0.1f,-1.0f, 0.1f,-0.1f,-1.0f,  0.1f,0.1f,-1.0f,  -0.1f,0.1f,-1.0f};
+    glPushMatrix();
 
-    GLushort xbox[] = {0,1,2,3,0,4,5,6,7,4 ,5,1,2,6,7,3};
-    GLushort ybox[] = {8,9,10,11,8,12,13,14,15,12,13,9,10,14,15,11};
-    GLushort zbox[] = {16,17,18,19,16,20,21,22,23,20,21,17,18,22,23,19};
+    //glMatrixMode(GL_MODELVIEW);
+    //glLoadIdentity();
 
-    GLfloat cframe[] = { 1.0f,-0.1f,-0.1f,  1.0f,0.1f,-0.1f,  1.0f,0.1f,0.1f,  1.0f,-0.1f,0.1f,
-                        -1.0f,-0.1f,-0.1f,  -1.0f,0.1f,-0.1f, -1.0f,0.1f,0.1f, -1.0f,-0.1f,0.1f,
-                        -0.1f,1.0f,-0.1f,  0.1f,1.0f,-0.1f,  0.1f,1.0f,0.1f,  -0.1f,1.0f,0.1f,
-                        -0.1f,-1.0f,-0.1f,  0.1f,-1.0f,-0.1f,  0.1f,-1.0f,0.1f,  -0.1f,-1.0f,0.1f,
-                        -0.1f,-0.1f,1.0f, 0.1f,-0.1f,1.0f,  0.1f,0.1f,1.0f,  -0.1f,0.1f,1.0f,
-                        -0.1f,-0.1f,-1.0f, 0.1f,-0.1f,-1.0f,  0.1f,0.1f,-1.0f,  -0.1f,0.1f,-1.0f};
+    Quaternion       *q = &Global.ship->attitude;
 
-    float ythrust = Global.throttle;
-    float ythrustp = 0.1f;
-    float ythrustn = -0.1f;
+    double theta = 2.0 * acos(q->w);
+    TODEG(theta);
 
-    if (ythrust > 0) { ythrustp = ythrust*0.9f + 0.1f; ythrustn = 0.1f;}
-    if (ythrust < 0) { ythrustn = ythrust*0.9f - 0.1f; ythrustp = -0.1f;}
-
-    cframe[25] = cframe[28] = cframe [31] = cframe [34] = ythrustp;
-    cframe[37] = cframe[40] = cframe [43] = cframe [46] = ythrustn;
-
-    GLushort ythrustbox[] = {11,10,9,8, 9,13,12,8, 10,14,13,9, 11,15,14,10, 8,12,15,11, 12,13,14,15};
-
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+    glRotated(theta, q->x, q->y, q->z);
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, frame);
-    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, xbox);
-    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, ybox);
-    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, zbox);
+    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, xframe);
+    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, yframe);
+    glDrawElements(GL_LINE_STRIP, 16, GL_UNSIGNED_SHORT, zframe);
 
     glVertexPointer(3, GL_FLOAT, 0, cframe);
-    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, ythrustbox);
+    glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, xvectorbox);
+    glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, yvectorbox);
+    glDrawElements(GL_QUADS, 24, GL_UNSIGNED_SHORT, zvectorbox);
 
     glDisableClientState(GL_VERTEX_ARRAY);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-
+    glPopMatrix();
     glPopAttrib();
 }

@@ -23,6 +23,8 @@ __global::__global()
     joy_max  =  32767;
     joy_min  = -32768;
 
+    throttle = 0.1f;
+
     axis_pitch.joystick    = 0;
     axis_pitch.axis        = 1;
     //axis_pitch.null        = 1000;
@@ -40,7 +42,8 @@ __global::__global()
     //axis_throttle.null     = 1000;
 
     file_tex_sun       = "sun2048.bmp";
-    file_tex_planet    = "mars2048.bmp";
+    file_tex_planet    = "earth2048.bmp";
+    file_tex_moon      = "moon512.bmp";
     file_tex_starfield = "space2048.bmp";
 
     file_tex_sb_bk     = "bk.bmp";
