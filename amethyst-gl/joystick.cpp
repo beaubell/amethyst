@@ -1,7 +1,14 @@
-/***************************************************************************
- *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
- *   beau@borealisbroadband.net                                            *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Joystick input setup function definitions
+
+ Authors (c):
+ 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <iostream>
 

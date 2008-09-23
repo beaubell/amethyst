@@ -1,10 +1,17 @@
 #ifndef CONFIG_XML_H
 #define CONFIG_XML_H
 
-/***************************************************************************
- *   XML Configuration file functions                                      *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Main XML Configuration file functions
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 void parse_xml_config(const char *docname);
 

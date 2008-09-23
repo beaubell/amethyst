@@ -1,10 +1,17 @@
 #ifndef MODEL_XML_H
 #define MODEL_XML_H
 
-/***************************************************************************
- *   XML Configuration file functions                                      *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Model XML interface function declarations
+
+ Authors (c):
+ 2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 bool model_xml_load(std::string &name, Model &model);
 

@@ -1,7 +1,14 @@
-/***************************************************************************
- *   Starfighter OpenGL Routines                                           *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - OpenGL setup and processing function implemenations
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "opengl.h"
 

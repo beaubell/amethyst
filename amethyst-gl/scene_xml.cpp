@@ -1,7 +1,14 @@
-/***************************************************************************
- *  XML Configuration file functions                                       *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Scene XML interface function implementations
+
+ Authors (c):
+ 2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
@@ -58,7 +65,7 @@ bool scene_load(std::string &name)
     {
         std::string player_object;
 
-        while (cur != NULL) 
+        while (cur != NULL)
         {
             if ((!xmlStrcmp(cur->name, (const xmlChar *)"player")))
             {

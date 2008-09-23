@@ -1,10 +1,17 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-/***************************************************************************
- *   Model loading and processing function prototypes                      *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Model loading and processing function prototypes
+
+ Authors (c):
+ 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <string>
 #include <list>

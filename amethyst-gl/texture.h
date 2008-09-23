@@ -1,10 +1,18 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-/***************************************************************************
- *   Texture loading and processing function prototypes                    *
- *   (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)              *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Texture loading and processing function prototypes
+
+ Authors (c):
+ 2006      Jason A. Guild    (aguild@gmail.com)
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "opengl.h"
 #include <string>

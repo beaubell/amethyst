@@ -1,10 +1,17 @@
 #ifndef SF_OPENGL_H
 #define SF_OPENGL_H
 
-/***************************************************************************
- *   Starfighter OpenGL Routines                                           *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Network setup and processing function prototypes
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

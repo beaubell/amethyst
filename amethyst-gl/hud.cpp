@@ -1,7 +1,14 @@
-/***************************************************************************
- *  Heads up display function definitions                                  *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Heads up display function definitions
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "hud.h"
 #include "scene.h"

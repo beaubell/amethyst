@@ -1,7 +1,14 @@
-/***************************************************************************
- *   Starfighter network functions                                         *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Network setup and processing function prototypes
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #ifndef NET_H
 #define NET_H

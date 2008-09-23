@@ -2,7 +2,7 @@
  Amethyst-GL
   - Starup / Main Loop Functions
 
- Authors:
+ Authors (c):
  2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
 
  $Revision$
@@ -204,6 +204,7 @@ int main(int argc, char* argv[])
 
     stars_load(stars_file);
     models_load();
+
 
     scene_load(Global.scene);
 

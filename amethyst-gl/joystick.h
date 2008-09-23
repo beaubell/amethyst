@@ -1,10 +1,17 @@
 #ifndef JOYSTICK_H
 #define JOYSTICK_H
 
-/***************************************************************************
- *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
- *   beau@borealisbroadband.net                                            *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Joystick input setup function declarations
+
+ Authors (c):
+ 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 typedef struct {
    int joystick;

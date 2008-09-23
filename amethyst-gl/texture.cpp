@@ -1,9 +1,15 @@
-/***************************************************************************
- *   Texture loading and processing function implimentation                *
- *   (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)              *
- *   (c) 2006 Jason A. Guild    (aguild@gmail.com)                         *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Texture loading and processing function implimentations
 
+ Authors (c):
+ 2006      Jason A. Guild    (aguild@gmail.com)
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "file.h"
 

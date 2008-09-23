@@ -1,10 +1,18 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-/***************************************************************************
- *   Starfighter timing functions                                          *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Timing function prototypes
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
+
 
 #include "SDL.h"
 

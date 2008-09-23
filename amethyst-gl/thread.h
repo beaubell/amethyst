@@ -1,10 +1,18 @@
 #ifndef SF_THREAD_H
 #define SF_THREAD_H
 
-/***************************************************************************
- *  Starfighter Thread Functions                                           *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Thread function prototypes
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
+
 
 
 #define  SF_THREAD_CREATION_FAILED -1;

@@ -1,10 +1,17 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-/***************************************************************************
- *   Global parameters class definition and default values                 *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Global parameters class definition and default values
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "lib/object.h"
 

@@ -1,7 +1,14 @@
-/***************************************************************************
- *  XML Configuration file functions                                       *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Model XML interface function implementations
+
+ Authors (c):
+ 2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <libxml/tree.h>
 #include <libxml/parser.h>
@@ -55,7 +62,7 @@ bool model_xml_load(std::string &name, Model &model)
     // Run through root tree
     {
 
-        while (cur != NULL) 
+        while (cur != NULL)
         {
             if ((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
             {
@@ -109,6 +116,7 @@ bool model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
         xmlFree(temp);
     } else return false;
 
+    // FIXME This should just store the values in a vector list...
     model.dl = glGenLists(1);
     glNewList(model.dl, GL_COMPILE);
     glBindTexture(GL_TEXTURE_2D, model.texture);

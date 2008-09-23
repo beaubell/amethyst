@@ -1,10 +1,17 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-/***************************************************************************
- *  Starfighter Input Routines                                             *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Input function declarations
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 extern bool mouse_camera;
 

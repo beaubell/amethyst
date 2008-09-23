@@ -1,10 +1,17 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-/***************************************************************************
- *   Debuging helper functions protoypes                                   *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Debugging helper functions
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "lib/vector.h"
 #include "lib/object.h"

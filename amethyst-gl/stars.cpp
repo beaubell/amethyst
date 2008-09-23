@@ -1,7 +1,15 @@
-/***************************************************************************
- *   Star Generation Routines                                              *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Scene randering function implementations
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
+
 
 #include "file.h"
 #include <stdlib.h> // malloc

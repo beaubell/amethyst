@@ -1,10 +1,18 @@
 #ifndef STARS_H
 #define STARS_H
 
-/***************************************************************************
- *   Star Generation Routines                                              *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Star generation function declarations
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
+
 
 #include <string>
 

@@ -1,10 +1,17 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-/***************************************************************************
- *   Scene Rendering Functions                                             *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Scene randering function prototypes
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <list>
 #include "lib/object.h"

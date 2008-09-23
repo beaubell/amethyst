@@ -1,7 +1,14 @@
-/***************************************************************************
- *   Model loading and processing function implimentations                 *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Model loading and processing function implementations
+
+ Authors (c):
+ 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "model.h"
 #include "model_xml.h"
