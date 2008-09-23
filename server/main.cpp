@@ -311,7 +311,7 @@ int main(int argc, char** argv)
     //printf(" object_transfer           : %i\n", sizeof(object_transfer));
 
     int z;
-    char *srvr_addr = NULL;
+    const char *srvr_addr = NULL;
     struct sockaddr_in adr_inet; /* AF_INET */
     struct sockaddr_in adr_clnt; /* AF_INET */
     int len_inet;                /* Length */

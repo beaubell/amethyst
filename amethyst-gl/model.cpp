@@ -52,7 +52,7 @@ Model* model_load(std::string &model_name)
     //FIXME XXX else add to list,
     {
         model = new Model;
-        model->dl = NULL;
+        model->dl = 0;
         if (!model_xml_load(model_name, *model))
         {
             delete model;
