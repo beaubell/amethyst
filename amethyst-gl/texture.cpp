@@ -35,6 +35,32 @@ GLuint TexIDSkyBox[10];
 #define RIGHT_ID 4
 #define LEFT_ID 5
 
+GLuint texture_load(std::string &texture_name)
+{
+
+    Texture *texture = NULL;
+
+    //XXX Interate through list then return handle if found
+
+    //XXX else add to list,
+    {
+        texture = new Texture;
+        std::string texture_path = Global.dir_textures + texture_name;
+        texture->gl_id = image_load(texture_path.c_str());
+        //if (!texture_load(texture_name, *texture))
+        //{
+        //    delete model;
+        //    model = NULL;
+        //} else
+        {
+            // XXX Add to licked list.
+        }
+    }
+
+    return texture->gl_id;
+}
+
+
 // FIXME figure out how to pass errors downstream
 GLuint image_load(const char *file) {
 
@@ -71,6 +97,7 @@ GLuint image_load(const char *file) {
     return texture;
 
     }
+
 
 void load_skybox (void)
 {
@@ -177,6 +204,7 @@ void skybox (void)
   glDepthMask(GL_TRUE);
   glEnable(GL_DEPTH_TEST);
 }
+
 
 //-----------------------------------------------------------------------------
 // Name: getBitmapImageData()

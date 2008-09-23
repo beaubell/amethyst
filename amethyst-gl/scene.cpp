@@ -14,6 +14,7 @@
 #include "opengl.h"
 #include "stars.h"
 #include "hud.h"
+#include "model.h"
 
 #include "SDL_opengl.h"
 
@@ -178,7 +179,8 @@ void scene_render(void)
         //glDisable(GL_COLOR_MATERIAL);
 
         // Render Object
-        glCallList(reinterpret_cast<unsigned long>((*obj1)->meta));
+        if((*obj1)->meta)
+           glCallList((reinterpret_cast<Model *>((*obj1)->meta))->dl);
 
       glPopMatrix();
       obj1++;
@@ -204,7 +206,7 @@ void scene_render(void)
         GLfloat fDiffLight[] =  { 1.0f, 1.0f, 0.0f };  // Green!!
         glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
       }
-      glCallList(Global.dlShip);
+      //glCallList(Global.dlShip);  // FIXME XXX NETWORK OBJECTS NEED A MODEL
 
     glPopMatrix();
   }

@@ -7,9 +7,11 @@ SET(amethystgl_SRCS
   input.cpp
   joystick.cpp
   model.cpp
+  model_xml.cpp
   net.cpp
   opengl.cpp
   scene.cpp
+  scene_xml.cpp
   stars.cpp
   texture.cpp
   thread.cpp

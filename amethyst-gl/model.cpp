@@ -4,6 +4,7 @@
  ***************************************************************************/
 
 #include "model.h"
+#include "model_xml.h"
 
 #include <math.h>    // cosf, sinf
 #include <string>    // std::string
@@ -21,12 +22,6 @@
 
 void models_load(void)
 {
-    // Load Ship Model
-    Global.dlShip = glGenLists(1);
-    glNewList(Global.dlShip, GL_COMPILE);
-    model_load_file(Global.dir_models + "/" + "ship.mdl");  // FIXME Temp
-    glEndList();
-
 
     // Load Sun Texture
     std::string sun = Global.dir_textures + "/" + Global.file_tex_sun;
@@ -38,9 +33,6 @@ void models_load(void)
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
-
     // Load Sun Model
     Global.sun_mdl = glGenLists(1);
     glNewList(Global.sun_mdl, GL_COMPILE);
@@ -48,75 +40,34 @@ void models_load(void)
     model_sphere_create(0,0,0,5000,SPHERE_DETAIL);
     glEndList();
 
+}
 
-    // Load Planet Texture
-    std::string planet = Global.dir_textures + "/" + Global.file_tex_planet;
+Model* model_load(std::string &model_name)
+{
 
-    Global.planet_tex = image_load(planet.c_str());
-    glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    Model *model = NULL;
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    //FIXME XXX Interate through list then return handle if found
 
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
+    //FIXME XXX else add to list,
+    {
+        model = new Model;
+        model->dl = NULL;
+        if (!model_xml_load(model_name, *model))
+        {
+            delete model;
+            model = NULL;
+        } else
+        {
+            //FIXME  XXX Add to licked list.
+        }
+    }
 
-    // Load Planet Model
-    Global.planet_mdl = glGenLists(1);
-    glNewList(Global.planet_mdl, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, Global.planet_tex);
-    model_sphere_create(0,0,0,6371000.0,SPHERE_DETAIL);
-    glEndList();
-
-    // Load Moon Texture
-    std::string moon = Global.dir_textures + "/" + Global.file_tex_moon;
-
-    Global.moon_tex = image_load(moon.c_str());
-    glBindTexture(GL_TEXTURE_2D, Global.moon_tex);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
-
-    // Load Moon Model
-    Global.moon_mdl = glGenLists(1);
-    glNewList(Global.moon_mdl, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, Global.moon_tex);
-    model_sphere_create(0,0,0,1737100.0,SPHERE_DETAIL);
-    glEndList();
-
-
-
-    // Load Starfield
-    std::string starfield = Global.dir_textures + "/" + Global.file_tex_starfield;
-
-    Global.starfield_tex = image_load(starfield.c_str());
-    glBindTexture(GL_TEXTURE_2D, Global.starfield_tex);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-        //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 0x812F);
-        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, 0x812F);
-
-    Global.starfield_mdl = glGenLists(1);
-    glNewList(Global.starfield_mdl, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, Global.starfield_tex);
-    model_sphere_create(0,0,0,500000,20);
-    glEndList();
-
+    return model;
 }
 
 void models_free(void)
 {
-    glDeleteLists(Global.dlShip,1);
-    glDeleteLists(Global.starfield_mdl,1);
-    glDeleteLists(Global.planet_mdl,1);
     glDeleteLists(Global.sun_mdl,1);
 
 }

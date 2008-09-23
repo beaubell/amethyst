@@ -1,3 +1,6 @@
+#ifndef UNIVERSE_H
+#define UNIVERSE_H
+
 /***************************************************************************
  *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
  *   beau@borealisbroadband.net                                            *
@@ -32,3 +35,5 @@ namespace amethyst {
     };
 
 }
+
+#endif // UNIVERSE_H

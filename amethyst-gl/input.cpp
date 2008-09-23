@@ -3,6 +3,8 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
+#include <iostream>
+
 #include "input.h"
 
 #include "global.h"
@@ -65,6 +67,9 @@ int process_inputs()
                         break;
                     case SDLK_b:
                         print_trace();
+                        break;
+                    default:
+                        std::cout << "Unhandled keystroke: " << event.key.keysym.sym << std::endl;
                         break;
                 } break;
             case SDL_MOUSEBUTTONDOWN:
@@ -182,7 +187,7 @@ int process_inputs()
     //Apply throttle state to force vector
     if (throttle != 0) {
 
-        thrust.y = throttle*10000;
+        thrust.y = throttle*1e6;
         Global.throttle = throttle;
     }
 

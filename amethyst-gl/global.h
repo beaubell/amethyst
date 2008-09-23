@@ -23,23 +23,18 @@ class __global {
 
    public:
       __global (void);
+      std::string scene;
 
       // Your Ship
       Object *ship;
 
-      // Model for ship
-      GLuint dlShip;          // Display list identifier for the ship
+      // Models // FIXME
       GLuint sun_mdl;
-      GLuint planet_mdl;
-      GLuint moon_mdl;
-      GLuint starfield_mdl;
 
-      // Textures
-      //GLuint  texture[1];
+
+      // Textures // FIXME
       GLuint sun_tex;
-      GLuint planet_tex;
-      GLuint moon_tex;
-      GLuint starfield_tex;
+
 
       // Field of View
       float   fov;
@@ -73,15 +68,13 @@ class __global {
       // Paths
       std::string dir_home;
       std::string dir_amethyst;
+      std::string dir_scene;
       std::string dir_textures;
       std::string dir_models;
       std::string dir_fonts;
 
       // Texture File Paths
       std::string file_tex_sun;
-      std::string file_tex_planet;
-      std::string file_tex_moon;
-      std::string file_tex_starfield;
 
       std::string file_tex_sb_bk;
       std::string file_tex_sb_ft;

@@ -31,6 +31,7 @@
 #include "stars.h"
 #include "thread.h"
 #include "scene.h"
+#include "scene_xml.h"
 #include "timer.h"
 #include "hud.h"
 
@@ -69,52 +70,6 @@ static void sdl_setup(void);
 
 // Create universe
 Universe universe;
-
-
-void setup_objects(void)
-{
-    Object *temp;
-
-    // Player Ship
-    temp = new amethyst::Object;
-    temp->name     = "[ ]" + Global.net_handle;
-    temp->mass     = 100.0f;
-    temp->location = amethyst::Cartesian_Vector(100,5000000,70000000);
-    temp->attitude = Quaternion(0.000133,0.004793,0.999970,0.006136);
-    temp->meta = (void*)Global.dlShip;
-    scene_add_object(temp);
-    universe.object_add(temp);
-    Global.ship = temp;
-
-    // Planet
-    temp = new amethyst::Object;
-    temp->name     = "-Earth";
-    temp->mass     = 5.9736e24;
-    temp->location = amethyst::Cartesian_Vector(100,100,80000000);
-    //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
-    temp->meta = (void*)Global.planet_mdl;
-    scene_add_object(temp);
-    universe.object_add(temp);
-
-    // Planet
-    temp = new amethyst::Object;
-    temp->name     = "-Moon";
-    temp->mass     = 7.3477e22;
-    temp->location = amethyst::Cartesian_Vector(100,10000000,80000000);
-    //temp->velocity = amethyst::Cartesian_Vector(10,0,0);
-    temp->meta = (void*)Global.moon_mdl;
-    scene_add_object(temp);
-    universe.object_add(temp);
-
-    // Static Ship
-    temp = new amethyst::Object;
-    temp->name     = "-Ship";
-    temp->location = Cartesian_Vector(0, 40, 3);
-    temp->attitude = Quaternion(0.000133,0.004793,0.999970,0.006136);
-    temp->meta = (void*)Global.dlShip;
-    scene_add_object(temp);
-
-}
 
 
 static void sdl_setup()
@@ -204,8 +159,9 @@ int main(int argc, char* argv[])
 
     Global.dir_home     = getenv (PROFILE_DIR_ENV);
     Global.dir_amethyst = Global.dir_home + "/" + PROJECT_DIR;
-    Global.dir_textures = Global.dir_amethyst + "/" + "textures";
-    Global.dir_models   = Global.dir_amethyst + "/" + "models";
+    Global.dir_scene    = Global.dir_amethyst + "/" + "scene/";
+    Global.dir_textures = Global.dir_amethyst + "/" + "textures/";
+    Global.dir_models   = Global.dir_amethyst + "/" + "models/";
     Global.dir_fonts    = Global.dir_amethyst + "/" + "fonts";
 
     string config_file  = Global.dir_amethyst + "/" + "config.xml";
@@ -241,7 +197,7 @@ int main(int argc, char* argv[])
     stars_load(stars_file);
     models_load();
 
-    setup_objects();
+    scene_load(Global.scene);
 
       //load_skybox();
 

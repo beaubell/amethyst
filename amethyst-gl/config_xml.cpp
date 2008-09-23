@@ -3,11 +3,15 @@
  *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
  ***************************************************************************/
 
+#include <iostream>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
 
-#include "config_xml.h"
 #include "global.h"
+
+#include "config_xml.h"
+#include "scene_xml.h"
+
 
 void parse_xml_network (xmlDocPtr doc, xmlNodePtr cur) {
 
@@ -117,6 +121,11 @@ void parse_xml_starfighter (xmlDocPtr doc, xmlNodePtr cur) {
       }
       if ((!xmlStrcmp(cur->name, (const xmlChar *)"input"))) {
           parse_xml_input (doc, cur);
+      }
+      if ((!xmlStrcmp(cur->name, (const xmlChar *)"scene"))) {
+          xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+          Global.scene = (char *)key;
+          xmlFree(key);
       }
       cur = cur->next;
     }
