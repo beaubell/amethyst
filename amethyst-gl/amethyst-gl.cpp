@@ -1,7 +1,14 @@
-/***************************************************************************
- *  Starfighter Main/Setup functions                                      *
- *  (c) 2006 Beau V.C. Bellamy (beau@stellarnetservices.net)               *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-GL
+  - Starup / Main Loop Functions
+
+ Authors:
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 
 #ifdef HAVE_CONFIG_H
@@ -69,7 +76,10 @@ using namespace amethyst;
 static void sdl_setup(void);
 
 // Create universe
-Universe universe;
+Universe universe;  //FIXME Move to global?
+
+static void sdl_setup();
+static void main_loop();
 
 
 static void sdl_setup()
@@ -86,7 +96,7 @@ static void sdl_setup()
     atexit(SDL_Quit);
 
 
-	SDL_WM_SetCaption(QUOTEME(AMETHYST_LONG_NAME),QUOTEME(AMETHSYT_SHORT_NAME));
+    SDL_WM_SetCaption(QUOTEME(AMETHYST_LONG_NAME),QUOTEME(AMETHSYT_SHORT_NAME));
 
     cout << "Initializing Video...";
     video = SDL_GetVideoInfo( );
@@ -108,8 +118,8 @@ static void sdl_setup()
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 24 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
 
-    if( SDL_SetVideoMode( WIDTH, HEIGHT, video->vfmt->BitsPerPixel, SDL_OPENGL |  SDL_RESIZABLE) == 0 ) {
-    //if( SDL_SetVideoMode( WIDTH, HEIGHT, video->vfmt->BitsPerPixel, SDL_OPENGL |  SDL_FULLSCREEN) == 0 ) {
+    if( SDL_SetVideoMode( WIDTH, HEIGHT, video->vfmt->BitsPerPixel, SDL_OPENGL |  SDL_RESIZABLE) == 0 )
+    {
         fprintf(stderr,
                 "Couldn't set video mode: %s\n", SDL_GetError());
         exit(1);
@@ -155,7 +165,8 @@ static void main_loop()
 
 int main(int argc, char* argv[])
 {
-	//Global.dir_home     = "Z:";
+    std::cout << QUOTEME(AMETHSYT_SHORT_NAME) << " Starting..." << std::endl;
+    std::cout << " * " << argc-1 << " arguments found on command line." << std::endl;
 
     Global.dir_home     = getenv (PROFILE_DIR_ENV);
     Global.dir_amethyst = Global.dir_home + "/" + PROJECT_DIR;
@@ -165,9 +176,7 @@ int main(int argc, char* argv[])
     Global.dir_fonts    = Global.dir_amethyst + "/" + "fonts";
 
     string config_file  = Global.dir_amethyst + "/" + "config.xml";
-
     string stars_file   = Global.dir_amethyst + "/" + "stars.csv";
-
 
     // Check for existance of config.xml else fail siliently
     if(access(config_file.c_str(), F_OK) == 0) {
@@ -182,14 +191,13 @@ int main(int argc, char* argv[])
     }
 
 
-
     sdl_setup();
 
     opengl_setup();
 
     joystick_setup();
 
-    // XXX network_setup();
+    // FIXME XXX network_setup();
 
     hud_setup();
 
