@@ -142,7 +142,7 @@
 			<File
 				RelativePath=".\model.cpp">
 			</File>
-			<File>
+			<File
 				RelativePath=".\model_xml.cpp">
 			</File>
 			<File
@@ -154,7 +154,7 @@
 			<File
 				RelativePath=".\scene.cpp">
 			</File>
-			<File>
+			<File
 				RelativePath=".\scene_xml.cpp">
 			</File>
 			<File
