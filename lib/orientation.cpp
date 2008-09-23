@@ -25,9 +25,9 @@ namespace amethyst {
        //Qz = [ cos(c/2), (0, 0, sin(c/2))]
 
 
-       Quaternion Qx( cosf(old.x/2.0f), (sinf(old.x/2.0f)), 0, 0 );
-       Quaternion Qy( cosf(old.y/2.0f), 0, (sinf(old.y/2.0f)), 0 );
-       Quaternion Qz( cosf(old.z/2.0f), 0, 0, (sinf(old.z/2.0f)) );
+       Quaternion Qx( cos(old.x/2.0), (sin(old.x/2.0)), 0, 0 );
+       Quaternion Qy( cos(old.y/2.0), 0, (sin(old.y/2.0)), 0 );
+       Quaternion Qz( cos(old.z/2.0), 0, 0, (sin(old.z/2.0)) );
 
        *this = Qz * Qy * Qx;
        //*this = Qx;

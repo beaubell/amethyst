@@ -17,9 +17,6 @@
 bool model_xml_load(std::string &name, Model &model);
 bool model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model);
 bool model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model);
-//bool scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur);
-//bool scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector);
-//bool scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat);
 
 bool model_xml_load(std::string &name, Model &model)
 {
@@ -95,7 +92,8 @@ bool model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
 {
 
     xmlChar *temp;
-    double radius, precision = 0.0;
+    double       radius    = 0.0;
+	unsigned int precision = 0;
 
     temp = xmlGetProp(cur, (const xmlChar *)"radius");
     if (temp)
@@ -107,7 +105,7 @@ bool model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
     temp = xmlGetProp(cur, (const xmlChar *)"precision");
     if (temp)
     {
-        precision = strtod((char *)temp, NULL);
+        precision = atoi((char *)temp);
         xmlFree(temp);
     } else return false;
 

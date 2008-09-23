@@ -23,8 +23,6 @@
 #include <stdio.h>
 #include <math.h> // for quaternion lenth calculation
 
-#define TODEG(x)    x = x * 180.0 / M_PI
-
 // Forward Declarations
 static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
 static void hud_widget_attitude(int x, int y, const Quaternion &reference);
@@ -72,7 +70,7 @@ void hud_render(void)
 
         // Move to object location
             Cartesian_Vector temp = (*obj1)->location - reference;
-            glRasterPos3f(temp.x, temp.y, temp.z);
+            glRasterPos3d(temp.x, temp.y, temp.z);
 
             fonts[0]->Render((*obj1)->name.c_str());
 
@@ -88,7 +86,7 @@ void hud_render(void)
         glPushMatrix();
 
         Cartesian_Vector net_p = Global.net_ship[i].location - reference;
-        glRasterPos3f(net_p.x, net_p.y, net_p.z);
+        glRasterPos3d(net_p.x, net_p.y, net_p.z);
 
         fonts[0]->Render(Global.net_ship[i].name.c_str());
 

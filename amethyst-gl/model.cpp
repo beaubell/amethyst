@@ -72,7 +72,7 @@ void models_free(void)
 
 }
 
-void model_sphere_create( float cx, float cy, float cz, float r, int p )
+void model_sphere_create(const double cx, const double cy, const double cz, double r, int p )
 {
     const double TWOPI  = 6.28318530717958647692;
     const double PIDIV2 = 1.57079632679489661923;
@@ -93,7 +93,7 @@ void model_sphere_create( float cx, float cy, float cz, float r, int p )
     if( r < 0 )
         r = -r;
 
-    // Disallow a negative number for precision.
+	// Disallow a negative number for precision.
     if( p < 0 )
         p = -p;
 
@@ -117,9 +117,9 @@ void model_sphere_create( float cx, float cy, float cz, float r, int p )
             {
                 theta3 = j * TWOPI / p;
 
-                ex = cosf(theta2) * cosf(theta3);
-                ey = sinf(theta2);
-                ez = cosf(theta2) * sinf(theta3);
+                ex = cos(theta2) * cos(theta3);
+                ey = sin(theta2);
+                ez = cos(theta2) * sin(theta3);
                 px = cx + r * ex;
                 py = cy + r * ey;
                 pz = cz + r * ez;
@@ -128,9 +128,9 @@ void model_sphere_create( float cx, float cy, float cz, float r, int p )
                 glTexCoord2d( -(j/(double)p) , 2*(i+1)/(double)p );
                 glVertex3d( px, py, pz );
 
-                ex = cosf(theta1) * cosf(theta3);
-                ey = sinf(theta1);
-                ez = cosf(theta1) * sinf(theta3);
+                ex = cos(theta1) * cos(theta3);
+                ey = sin(theta1);
+                ez = cos(theta1) * sin(theta3);
                 px = cx + r * ex;
                 py = cy + r * ey;
                 pz = cz + r * ez;

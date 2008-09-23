@@ -20,18 +20,11 @@
 
 #include "scene.h"
 
-#ifdef WIN32
-#define M_PI 3.1415926535897932384626433832795f
-#endif
-
-#define TODEG(x)    x = x * 180.0 / M_PI
-#define TORAD(x)    x = x / 180.0 * M_PI
-
 using namespace amethyst;
 
 std::list<amethyst::Object *>  object_list;
 
-float sun_rot = 0;
+double sun_rot = 0;
 
 
 static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
@@ -138,12 +131,12 @@ void scene_render(void)
       glTranslated(temp.x, temp.y, temp.z);
 
      //Lights
-      GLfloat lightPos[] = { temp.x, temp.y, temp.z, 1.0f };
+      GLfloat lightPos[] = {(float)temp.x, (float)temp.y, (float)temp.z, 1.0f };
       glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
     }
 
     //Rotate planet on axis
-    glRotatef(sun_rot, 0.0f, -1.0f, 0.0f);
+    glRotated(sun_rot, 0.0, -1.0, 0.0);
     sun_rot = sun_rot + 0.01;
      glDisable(GL_COLOR_MATERIAL);
     glCallList(Global.sun_mdl);

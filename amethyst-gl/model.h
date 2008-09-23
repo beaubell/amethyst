@@ -32,6 +32,6 @@ Model* model_load(std::string &model);
 
 Model* model_load_file(const std::string &filename);
 
-void model_sphere_create( float cx, float cy, float cz, float r, int p );
+void model_sphere_create(double cx, double cy, double cz, double r, int p );
 
 #endif /* MODEL_H */

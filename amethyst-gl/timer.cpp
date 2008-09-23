@@ -6,6 +6,7 @@
 #include "timer.h"
 #include "global.h"
 
+
 Uint32 time_left(void)
 {
   Uint32 now;

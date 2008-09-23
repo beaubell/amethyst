@@ -124,9 +124,9 @@ void stars_load(std::string &filestr)
         star_vertex[i].b = spectral_class[star[i].type][3];
         star_vertex[i].a = (unsigned char)(star[i].alpha * 255.0f);
 
-        star_vertex[i].x = temp.x;
-        star_vertex[i].y = temp.y;
-        star_vertex[i].z = temp.z;
+        star_vertex[i].x = (float)temp.x;
+        star_vertex[i].y = (float)temp.y;
+        star_vertex[i].z = (float)temp.z;
     }
 
     fclose(file);

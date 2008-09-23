@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "input.h"
-
 #include "global.h"
 #include "debug.h"
 
@@ -14,14 +13,8 @@
 
 #include <math.h>
 
-#define TODEG(x)    x = x * 180.0f / M_PI
-#define TORAD(x)    x = x / 180.0f * M_PI
-
-#ifdef WIN32
-#define M_PI 3.1415926535897932384626433832795f
-#endif
-
 bool mouse_camera = false;
+
 
 static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 {
@@ -82,11 +75,11 @@ int process_inputs()
                     mouse_camera = false;
                 else if (event.button.button == SDL_BUTTON_WHEELUP)
                 {
-                    Global.cam_zoom /= 1.1;
+                    Global.cam_zoom /= 1.1f;
                     if (Global.cam_zoom < 10) Global.cam_zoom = 10;
                 }
                 else if (event.button.button == SDL_BUTTON_WHEELDOWN)
-                    Global.cam_zoom *= 1.1;
+                    Global.cam_zoom *= 1.1f;
                 break;
 
             case SDL_MOUSEMOTION:
@@ -132,10 +125,10 @@ int process_inputs()
 
 
     // Initialize Context Data
-    GLfloat yRot     = 0.0f;
-    GLfloat xRot     = 0.0f;
-    GLfloat zRot     = 0.0f;
-    GLfloat throttle = 0.0f;
+    GLdouble yRot     = 0.0;
+    GLdouble xRot     = 0.0;
+    GLdouble zRot     = 0.0;
+    GLfloat  throttle = 0.0f;
     accel.clear();
     thrust.clear();
 
@@ -188,7 +181,7 @@ int process_inputs()
     if (throttle != 0) {
 
         thrust.y = throttle*1e6;
-        Global.throttle = throttle;
+        Global.throttle = (float)throttle;
     }
 
     // Rotate trust vector to match ship orientation

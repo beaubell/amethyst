@@ -17,6 +17,13 @@
 #define WIDTH  800
 #define HEIGHT 600
 
+#ifdef WIN32
+#define M_PI 3.14159265358979323846
+#endif
+
+#define TODEG(x)    x = x * 180.0 / M_PI
+#define TORAD(x)    x = x / 180.0 * M_PI
+
 using namespace amethyst;
 
 class __global {
