@@ -111,6 +111,8 @@ class __global {
       Object net_ship[5];
       int    net_ships;
 
+      Object reference_object;
+
 
 };
 

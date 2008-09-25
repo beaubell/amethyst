@@ -43,6 +43,23 @@ namespace amethyst
     }
 
 
+    Object* Universe::object_find(std::string name)
+    {
+        if(!object_list.empty())
+        {
+            std::list<Object *>::iterator obj1 = object_list.begin();
+            do
+            {
+                if(name == (*obj1)->name)
+                    return *obj1;
+
+                obj1++;
+            }  while (obj1 != object_list.end());
+        }
+        return NULL;
+    }
+
+
     void Universe::iterate(const double &time)
     {
         if(!object_list.empty())

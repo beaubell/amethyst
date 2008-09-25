@@ -63,6 +63,8 @@ __global::__global()
     net_server         = "www.stellarnetservices.net";
     net_port           = 23232;
     net_handle         = "leetsuace";
+
+    Global.ship        = &Global.reference_object;
 };
 
 __global Global;

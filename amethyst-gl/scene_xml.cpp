@@ -21,11 +21,30 @@
 #include "lib/vector.h"
 
 #include <iostream>
+#include <stdexcept>
+#include <limits>
 
 bool scene_load(std::string &name);
-bool scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur);
+void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object& obj);
 bool scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector);
 bool scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat);
+
+
+class parse_error : public std::runtime_error
+{
+    public:
+      explicit parse_error(const std::string& msg) : std::runtime_error(msg), what_(msg) { }
+
+      virtual const char* what() const throw ()
+        { return what_.c_str(); }
+
+      virtual ~parse_error() throw () {}
+
+    private:
+      std::string what_;
+};
+
+
 
 bool scene_load(std::string &name)
 {
@@ -39,102 +58,120 @@ bool scene_load(std::string &name)
 
     if (doc == NULL)
     {
-        fprintf(stderr,"Document not parsed successfully. \n");
-        return false;
+        throw(std::runtime_error("Error opening scene file: " + path));
     }
 
     cur = xmlDocGetRootElement(doc);
 
     if (cur == NULL)
     {
-        fprintf(stderr,"empty document\n");
         xmlFreeDoc(doc);
-        return false;
+        throw(std::runtime_error("Empty scene file: " + path));
     }
 
-    if (xmlStrcmp(cur->name, (const xmlChar *) "scene"))
+    if (xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("scene") ))
     {
-        fprintf(stderr,"document of wrong type, root node != scene.\n");
         xmlFreeDoc(doc);
-        return false;
+        throw(std::runtime_error("Scene file parse error, root xml node not \"<scene>\": " + path));
     }
 
     cur = cur->xmlChildrenNode;
 
+    std::string player_object;
+
     // Run through root tree
+    while (cur != NULL)
     {
-        std::string player_object;
-
-        while (cur != NULL)
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("player") ))
         {
-            if ((!xmlStrcmp(cur->name, (const xmlChar *)"player")))
+            xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            player_object = reinterpret_cast<char *>(key);
+            xmlFree(key);
+        }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
+        {
+            Object *temp;
+            try
             {
-                xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                player_object = (char *)key;
-                xmlFree(key);
+                temp = new amethyst::Object;
+                scene_xml_parse_object (doc, cur, *temp);
             }
-            if ((!xmlStrcmp(cur->name, (const xmlChar *)"object")))
+            catch (parse_error& e)
             {
-                if (!scene_xml_parse_object (doc, cur)) return false;
+                delete temp;
+                xmlFreeDoc(doc);
+                throw e;
             }
 
-            cur = cur->next;
+            scene_add_object(temp);
+            universe.object_add(temp);
         }
+
+        cur = cur->next;
     }
 
     xmlFreeDoc(doc);
+
+    //Find Player and set
+    Global.ship = universe.object_find(player_object);
+    if (Global.ship == NULL)
+    {
+        Global.ship = &Global.reference_object;
+        throw parse_error("Player object \"" + player_object + "\" is not specified in scene file");
+    }
+
     return true;
 }
 
 
-bool scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur)
+void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object &new_obj)
 {
-    Object *temp = new amethyst::Object;
+    xmlChar *temp;
+
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("name"));
+    if (temp)
+    {
+        new_obj.name = reinterpret_cast<char *>(temp);
+        xmlFree(temp);
+    } else throw(parse_error("object has no name= attribute"));
 
     cur = cur->xmlChildrenNode;
     while (cur != NULL)
     {
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
+
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("model") ))
         {
             xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            temp->name = (char *)key;
+            std::string model_name = reinterpret_cast<char *>(key);
+            new_obj.meta = model_load(model_name);
             xmlFree(key);
         }
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"model")))
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("location") ))
         {
-            xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            std::string model_name = (char *)key;
-            temp->meta = model_load(model_name);
-            xmlFree(key);
-        }
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"location")))
-        {
-            if (!scene_xml_parse_vector(doc, cur, temp->location))
+            if (!scene_xml_parse_vector(doc, cur, new_obj.location))
                 std::cout << "OMFG!!! location!" << std::endl;
         }
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"velocity")))
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("velocity") ))
         {
-            if (!scene_xml_parse_vector(doc, cur, temp->velocity))
+            if (!scene_xml_parse_vector(doc, cur, new_obj.velocity))
                 std::cout << "OMFG!!! velocity!" << std::endl;
         }
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"attitude")))
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("attitude") ))
         {
-            if (!scene_xml_parse_quat(doc, cur, temp->attitude))
+            if (!scene_xml_parse_quat(doc, cur, new_obj.attitude))
                 std::cout << "OMFG!!! orientation!" << std::endl;
         }
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"mass")))
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("mass") ))
         {
             xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            temp->mass = strtod((char *)key, NULL);
+            new_obj.mass = strtod(reinterpret_cast<char *>(key), NULL);
             xmlFree(key);
         }
         cur = cur->next;
     }
 
-    scene_add_object(temp);
-    universe.object_add(temp);
-    Global.ship = temp;
-    return true;
+
+    return;
 }
 
 
@@ -142,26 +179,30 @@ bool scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_V
 {
     xmlChar *temp;
 
-    temp = xmlGetProp(cur, (const xmlChar *)"x");
-    if (temp)
-    {
-        vector.x = strtod((char *)temp, NULL);
-        xmlFree(temp);
-    } else return false;
+    // Corrupt values of vector before assignment in order to catch errors.
+    vector.x = vector.y = vector.z = std::numeric_limits<double>::signaling_NaN();
 
-    temp = xmlGetProp(cur, (const xmlChar *)"y");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("x"));
     if (temp)
     {
-        vector.y = strtod((char *)temp, NULL);
+        vector.x = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
-    } else return false;
+    } else throw(parse_error("x= property not found in vector"));
 
-    temp = xmlGetProp(cur, (const xmlChar *)"z");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("y"));
     if (temp)
     {
-        vector.z = strtod((char *)temp, NULL);
+        vector.y = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
-    } else return false;
+    } else throw(parse_error("y= property not found in vector"));
+
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("z"));
+    if (temp)
+    {
+        vector.z = strtod(reinterpret_cast<char *>(temp), NULL);
+        xmlFree(temp);
+    } else throw(parse_error("z= property not found in vector"));
+
 
     return true;
 }
@@ -171,31 +212,31 @@ bool scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &q
 {
     xmlChar *temp;
 
-    temp = xmlGetProp(cur, (const xmlChar *)"w");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("w"));
     if (temp)
     {
-        quat.w = strtod((char *)temp, NULL);
+        quat.w = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
     } else return false;
 
-    temp = xmlGetProp(cur, (const xmlChar *)"x");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("x"));
     if (temp)
     {
-        quat.x = strtod((char *)temp, NULL);
+        quat.x = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
     } else return false;
 
-    temp = xmlGetProp(cur, (const xmlChar *)"y");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("y"));
     if (temp)
     {
-        quat.y = strtod((char *)temp, NULL);
+        quat.y = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
     } else return false;
 
-    temp = xmlGetProp(cur, (const xmlChar *)"z");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("z"));
     if (temp)
     {
-        quat.z = strtod((char *)temp, NULL);
+        quat.z = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
     } else return false;
 

@@ -17,6 +17,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <stdexcept>
 
 #include <math.h>
 
@@ -184,9 +185,11 @@ int main(int argc, char* argv[])
         // Check for read permission else fail kicking and screaming
         if(access(config_file.c_str(), R_OK) == 0) {
             parse_xml_config (config_file.c_str());
-            printf("Reading config file at %s...\n", config_file.c_str());
+            std::cout << " * Reading config file at "
+                      << config_file << "..." << std::endl;
         } else {
-            printf("Unable to read config file at %s, permission?\n", config_file.c_str());
+            std::cout << " ! Unable to read config file at "
+                      << config_file << ", permission?" << std::endl;
         }
     }
 
@@ -205,8 +208,14 @@ int main(int argc, char* argv[])
     stars_load(stars_file);
     models_load();
 
-
-    scene_load(Global.scene);
+    try // Experimenting with exceptions
+    {
+        scene_load(Global.scene);
+    }
+    catch(std::runtime_error &e)
+    {
+        std::cout << "Non-Fatal Exception: " << e.what() << std::endl;
+    }
 
       //load_skybox();
 
