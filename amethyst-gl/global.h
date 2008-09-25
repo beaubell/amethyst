@@ -8,9 +8,9 @@
  Authors (c):
  2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
 
- $Revision: 151 $
- $LastChangedDate: 2008-09-24 18:20:41 -0800 (Wed, 24 Sep 2008) $
- $LastChangedBy: beau $
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
  ***********************************************************************/
 
 #include "lib/object.h"

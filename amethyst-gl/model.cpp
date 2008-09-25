@@ -5,9 +5,9 @@
  Authors (c):
  2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
 
- $Revision: 152 $
- $LastChangedDate: 2008-09-24 22:27:45 -0800 (Wed, 24 Sep 2008) $
- $LastChangedBy: beau $
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
  ***********************************************************************/
 
 #include "model.h"

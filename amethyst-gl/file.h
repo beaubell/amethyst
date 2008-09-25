@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <io.h>
 
-# ifndef R_OK                   
+# ifndef R_OK
 #  define R_OK  4               /* Test for read permission.  */
 #  define W_OK  2               /* Test for write permission.  */
 #  define X_OK  1               /* Test for execute permission.  */
