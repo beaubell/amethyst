@@ -66,6 +66,7 @@ Model* model_load(std::string &model_name)
             model = NULL;
         } else
         {
+            model->name = model_name;
             //FIXME  XXX Add to licked list.
         }
     }

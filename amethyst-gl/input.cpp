@@ -15,6 +15,7 @@
 #include "input.h"
 #include "global.h"
 #include "debug.h"
+#include "scene_xml.h"
 
 #include "lib/utility.h"
 
@@ -60,7 +61,7 @@ int process_inputs()
                         break;
                     }
                     case SDLK_d:
-                        print_object(*Global.ship);
+                        scene_xml_write("Dump");
                         break;
                     case SDLK_n:
                         print_object(Global.net_ship[0]);

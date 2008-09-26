@@ -21,13 +21,19 @@
 #include "lib/vector.h"
 
 #include <iostream>
+#include <iomanip>
+#include <fstream>
 #include <stdexcept>
 #include <limits>
 
-bool scene_load(std::string &name);
-void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object& obj);
-bool scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector);
-bool scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat);
+using namespace amethyst;
+
+static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object& obj);
+static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector);
+static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat);
+
+static void scene_xml_write_vector(std::ofstream &outfile, const Cartesian_Vector &v, const std::string &vname);
+static void scene_xml_write_quat(std::ofstream &outfile, const Quaternion &q, const std::string &qname);
 
 
 class parse_error : public std::runtime_error
@@ -40,13 +46,11 @@ class parse_error : public std::runtime_error
 
       virtual ~parse_error() throw () {}
 
-    private:
       std::string what_;
 };
 
 
-
-bool scene_load(std::string &name)
+void scene_load(const std::string &name)
 {
 
     std::string path = Global.dir_scene + "scn_" + name + ".xml";
@@ -120,11 +124,11 @@ bool scene_load(std::string &name)
         throw parse_error("Player object \"" + player_object + "\" is not specified in scene file");
     }
 
-    return true;
+    return;
 }
 
 
-void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object &new_obj)
+static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object &new_obj)
 {
     xmlChar *temp;
 
@@ -141,31 +145,57 @@ void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object &new
 
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("model") ))
         {
-            xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            std::string model_name = reinterpret_cast<char *>(key);
-            new_obj.meta = model_load(model_name);
-            xmlFree(key);
+            try
+            {
+                temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                std::string model_name = reinterpret_cast<char *>(temp);
+                new_obj.meta = model_load(model_name);
+            }
+            catch(parse_error &e)
+            {
+                xmlFree(temp);
+                throw e;
+            }
+            xmlFree(temp);
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("location") ))
         {
-            if (!scene_xml_parse_vector(doc, cur, new_obj.location))
-                std::cout << "OMFG!!! location!" << std::endl;
+            try
+            {
+                scene_xml_parse_vector(doc, cur, new_obj.location);
+            }
+            catch(parse_error &e)
+            {
+                throw(parse_error(e.what_ + ": <location> "));
+            }
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("velocity") ))
         {
-            if (!scene_xml_parse_vector(doc, cur, new_obj.velocity))
-                std::cout << "OMFG!!! velocity!" << std::endl;
+            try
+            {
+                scene_xml_parse_vector(doc, cur, new_obj.velocity);
+            }
+            catch(parse_error &e)
+            {
+                throw(parse_error(e.what_ + ": <velocity> "));
+            }
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("attitude") ))
         {
-            if (!scene_xml_parse_quat(doc, cur, new_obj.attitude))
-                std::cout << "OMFG!!! orientation!" << std::endl;
+            try
+            {
+                scene_xml_parse_quat(doc, cur, new_obj.attitude);
+            }
+            catch(parse_error &e)
+            {
+                throw(parse_error(e.what_ + ": <attitude> "));
+            }
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("mass") ))
         {
-            xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            new_obj.mass = strtod(reinterpret_cast<char *>(key), NULL);
-            xmlFree(key);
+            temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            new_obj.mass = strtod(reinterpret_cast<char *>(temp), NULL);
+            xmlFree(temp);
         }
         cur = cur->next;
     }
@@ -175,7 +205,7 @@ void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object &new
 }
 
 
-bool scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector)
+static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector)
 {
     xmlChar *temp;
 
@@ -203,43 +233,104 @@ bool scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_V
         xmlFree(temp);
     } else throw(parse_error("z= property not found in vector"));
 
-
-    return true;
+    return;
 }
 
 
-bool scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat)
+static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat)
 {
     xmlChar *temp;
+
+    // Corrupt values of quat before assignment in order to catch errors.
+    quat.w = quat.x = quat.y = quat.z = std::numeric_limits<double>::signaling_NaN();
 
     temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("w"));
     if (temp)
     {
         quat.w = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
-    } else return false;
+    } else throw(parse_error("w= property not found in vector"));
 
     temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("x"));
     if (temp)
     {
         quat.x = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
-    } else return false;
+    } else throw(parse_error("x= property not found in vector"));
 
     temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("y"));
     if (temp)
     {
         quat.y = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
-    } else return false;
+    } else throw(parse_error("y= property not found in vector"));
 
     temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("z"));
     if (temp)
     {
         quat.z = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
-    } else return false;
+    } else throw(parse_error("z= property not found in vector"));
 
-    return true;
+    return;
+}
+
+
+void scene_xml_write (const std::string &name)
+{
+
+    std::ofstream outfile;
+    std::string   filename = Global.dir_scene + "scn_" + name + ".xml";
+
+    outfile.open(filename.c_str());
+
+    outfile << std::setprecision(30);
+
+    //Begin writing file
+    outfile << "<?xml version=\"1.0\"?>" << std::endl;
+    outfile << "<scene>" << std::endl;
+    outfile << "  <name>" << name << "</name>" << std::endl;
+    outfile << "  <client>" << std::endl;
+    outfile << "    <selected>" << Global.ship->name << "</selected>" << std::endl;
+    outfile << "    <camera yaw=\"" << Global.cam_yaw << "\" pitch=\""
+                                    << Global.cam_pitch << "\" dist=\""
+                                    << Global.cam_zoom << "\" />" << std::endl;
+    outfile << "  </client>" << std::endl;
+
+    if(!object_list.empty())
+    {
+        std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+        do
+        {
+            outfile << "  <object name=\"" << (*obj1)->name << "\">" << std::endl;
+            outfile << "    <model>" << reinterpret_cast<Model *>((*obj1)->meta)->name << "</model>" << std::endl;
+            scene_xml_write_vector(outfile, (*obj1)->location, "location");
+            scene_xml_write_vector(outfile, (*obj1)->velocity, "velocity");
+            scene_xml_write_vector(outfile, (*obj1)->acceleration, "acceleration");
+            scene_xml_write_vector(outfile, (*obj1)->force, "force");
+            scene_xml_write_quat(outfile, (*obj1)->attitude, "attitude");
+            scene_xml_write_quat(outfile, (*obj1)->angular_velocity, "angular_velocity");
+            scene_xml_write_quat(outfile, (*obj1)->angular_acceleration, "angular_acceleration");
+            outfile << "    <mass>" << (*obj1)->mass << "</mass>" << std::endl;
+            outfile << "  </object>" << std::endl;
+
+            obj1++;
+        }  while (obj1 != object_list.end());
+
+    }
+
+    outfile << "</scene>" << std::endl;
+    outfile.close();
+}
+
+
+static void scene_xml_write_vector(std::ofstream &outfile, const Cartesian_Vector &v, const std::string &vname)
+{
+    outfile << "    <" << vname << " x=\"" << v.x << "\" y=\"" << v.y << "\" z=\"" << v.z << "\" />" << std::endl;
+}
+
+static void scene_xml_write_quat(std::ofstream &outfile, const Quaternion &q, const std::string &qname)
+{
+    outfile << "    <" << qname << " w=\"" << q.w << "\" x=\"" << q.x << "\" y=\"" << q.y << "\" z=\"" << q.z << "\" />" << std::endl;
 }
 

@@ -13,6 +13,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
-bool scene_load(std::string &name);
+void scene_load(const std::string &name);
+void scene_xml_write(const std::string &name);
 
 #endif /* SCENE_XML_H */
