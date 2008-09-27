@@ -25,7 +25,7 @@ namespace amethyst {
             void object_del(const Object *);
             void object_del_all(void);
 
-            Object*      object_find(std::string name);
+            Object*      object_find(const std::string &name);
 
             unsigned int object_count();
 

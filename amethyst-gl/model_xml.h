@@ -13,6 +13,6 @@
  $LastChangedBy$
  ***********************************************************************/
 
-bool model_xml_load(std::string &name, Model &model);
+void model_xml_load(std::string &name, Model &model);
 
 #endif /* MODEL_XML_H */

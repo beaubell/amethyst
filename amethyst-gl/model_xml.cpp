@@ -20,12 +20,12 @@
 #include "lib/vector.h"
 
 #include <iostream>
+#include <stdexcept>
 
-bool model_xml_load(std::string &name, Model &model);
-bool model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model);
-bool model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model);
+void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model);
+void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model);
 
-bool model_xml_load(std::string &name, Model &model)
+void model_xml_load(std::string &name, Model &model)
 {
 
     std::string path = Global.dir_models + "mdl_" + name + ".xml";
@@ -37,84 +37,89 @@ bool model_xml_load(std::string &name, Model &model)
 
     if (doc == NULL)
     {
-        fprintf(stderr,"Document not parsed successfully. \n");
-        return false;
+        throw(std::runtime_error("Error opening model file: " + path));
     }
 
     cur = xmlDocGetRootElement(doc);
 
     if (cur == NULL)
     {
-        fprintf(stderr,"empty document\n");
         xmlFreeDoc(doc);
-        return false;
+        throw(std::runtime_error("Empty model file: " + path));
     }
 
-    if (xmlStrcmp(cur->name, (const xmlChar *) "model"))
+    if (xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("model")) )
     {
-        fprintf(stderr,"document of wrong type, root node != scene.\n");
         xmlFreeDoc(doc);
-        return false;
+        throw(std::runtime_error("Scene file parse error, root xml node not \"<model>\": " + path));
     }
 
     cur = cur->xmlChildrenNode;
+    xmlChar *key = NULL;
 
     // Run through root tree
+    try
     {
 
         while (cur != NULL)
         {
-            if ((!xmlStrcmp(cur->name, (const xmlChar *)"name")))
+            if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("name")) )
             {
-                xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                model.name = (char *)key;
+                key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                model.name = reinterpret_cast<char *>(key);
                 xmlFree(key);
             }
-            if ((!xmlStrcmp(cur->name, (const xmlChar *)"texture")))
+            if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("texture")) )
             {
-                xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                std::string texture_name = (char *)key;
+                key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+                std::string texture_name = reinterpret_cast<char *>(key);
                 model.texture = texture_load(texture_name);
                 xmlFree(key);
             }
-            if ((!xmlStrcmp(cur->name, (const xmlChar *)"sphere")))
+            if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("sphere")) )
             {
-                if (!model_xml_parse_sphere (doc, cur, model)) return false;
+                model_xml_parse_sphere (doc, cur, model);
             }
-            if ((!xmlStrcmp(cur->name, (const xmlChar *)"extfile")))
+            if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("extfile")) )
             {
-                if (!model_xml_parse_extfile (doc, cur, model)) return false;
+                model_xml_parse_extfile (doc, cur, model);
             }
 
             cur = cur->next;
         }
     }
+    catch(std::runtime_error &e)
+    {
+        xmlFree(key);
+        xmlFreeDoc(doc);
+        throw e;
+    }
 
     xmlFreeDoc(doc);
-    return true;
+    return;
 }
 
 
-bool model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
+void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
 {
 
     xmlChar *temp;
     double       radius    = 0.0;
-	unsigned int precision = 0;
+    unsigned int precision = 0;
 
-    temp = xmlGetProp(cur, (const xmlChar *)"radius");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("radius"));
     if (temp)
     {
-        radius = strtod((char *)temp, NULL);
+        radius = strtod(reinterpret_cast<char *>(temp), NULL);
         xmlFree(temp);
-    } else return false;
+    } else throw(std::runtime_error("radius= property not found in sphere"));
 
-    temp = xmlGetProp(cur, (const xmlChar *)"precision");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("precision"));
     if (temp)
     {
-        precision = atoi((char *)temp);
+        precision = atoi(reinterpret_cast<char *>(temp));
         xmlFree(temp);
-    } else return false;
+    } else throw(std::runtime_error("precision= property not found in sphere"));
 
     // FIXME This should just store the values in a vector list...
     model.dl = glGenLists(1);
@@ -127,21 +132,21 @@ bool model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
     model_sphere_create(0.0, 0.0, 0.0, radius, precision);
     glEndList();
 
-    return true;
+    return;
 }
 
 
-bool model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model)
+void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model)
 {
 
     xmlChar *temp;
     std::string extfile;
 
-    temp = xmlGetProp(cur, (const xmlChar *)"path");
+    temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("path"));
     if (temp)
     {
-        extfile = (char *)temp;
-    } else return false;
+        extfile = reinterpret_cast<char *>(temp);
+    } else throw(std::runtime_error("path= property not found in extfile"));
 
     std::string filepath = Global.dir_models + extfile;
 
@@ -150,6 +155,6 @@ bool model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model)
     model_load_file(filepath.c_str());
     glEndList();
 
-    return true;
+    return;
 }
 

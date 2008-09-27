@@ -20,11 +20,14 @@
 #include <stdlib.h>  // malloc
 #include <errno.h>   // errno
 #include <iostream>
+#include <stdexcept>
 
 #include "global.h"
 #include "texture.h"
 
 #define SPHERE_DETAIL 100
+
+std::list<Model *>  model_list;
 
 
 void models_load(void)
@@ -49,36 +52,73 @@ void models_load(void)
 
 }
 
+
 Model* model_load(std::string &model_name)
 {
 
     Model *model = NULL;
 
-    //FIXME XXX Interate through list then return handle if found
+    // See if model is already loaded
+    model = model_find(model_name);
 
-    //FIXME XXX else add to list,
+    // If model doesn't already exist, load and add to linked list
+    if(!model)
     {
         model = new Model;
         model->dl = 0;
-        if (!model_xml_load(model_name, *model))
+        try
+        {
+            model_xml_load(model_name, *model);
+        }
+        catch (std::runtime_error &e)
         {
             delete model;
             model = NULL;
-        } else
-        {
-            model->name = model_name;
-            //FIXME  XXX Add to licked list.
+            throw e;
         }
+        model->name = model_name;
+        model_add(model);
     }
 
     return model;
 }
 
+
+void model_add(Model *newmodel)
+{
+    if (newmodel)
+      model_list.push_back(newmodel);
+
+    return;
+}
+
+
+Model* model_find(const std::string &name)
+{
+    if(!model_list.empty())
+    {
+        std::list<Model *>::iterator obj1 = model_list.begin();
+        do
+        {
+            if(name == (*obj1)->name)
+                return *obj1;
+
+            obj1++;
+        }  while (obj1 != model_list.end());
+    }
+    return NULL;
+}
+
+
 void models_free(void)
 {
     glDeleteLists(Global.sun_mdl,1);
 
+    // FIXME ADD MODEL FREEING FUNCTIONS;
+
+    return;
 }
+
 
 void model_sphere_create(const double cx, const double cy, const double cz, double r, int p )
 {
@@ -133,7 +173,7 @@ void model_sphere_create(const double cx, const double cy, const double cz, doub
                 pz = cz + r * ez;
 
                 glNormal3d( ex, ey, ez );
-                glTexCoord2d( -(j/(double)p) , 2*(i+1)/(double)p );
+                glTexCoord2d( -(j/static_cast<double>(p) ) , 2*(i+1)/static_cast<double>(p) );
                 glVertex3d( px, py, pz );
 
                 ex = cos(theta1) * cos(theta3);
@@ -144,7 +184,7 @@ void model_sphere_create(const double cx, const double cy, const double cz, doub
                 pz = cz + r * ez;
 
                 glNormal3d( ex, ey, ez );
-                glTexCoord2d( -(j/(double)p), 2*i/(double)p );
+                glTexCoord2d( -(j/static_cast<double>(p) ), 2*i/static_cast<double>(p) );
                 glVertex3d( px, py, pz );
             }
         }

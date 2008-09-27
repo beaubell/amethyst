@@ -33,9 +33,12 @@ class Model
 extern std::list<Model *>  model_list;
 
 void models_load(void);
+void model_add(Model * newmodel);
+Model* model_find(const std::string &name);
 void models_free(void);
 
 Model* model_load(std::string &model);
+
 
 Model* model_load_file(const std::string &filename);
 

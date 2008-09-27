@@ -43,7 +43,7 @@ namespace amethyst
     }
 
 
-    Object* Universe::object_find(std::string name)
+    Object* Universe::object_find(const std::string &name)
     {
         if(!object_list.empty())
         {
