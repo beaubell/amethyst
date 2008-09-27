@@ -78,6 +78,7 @@ unsigned int screen_y = 640;
 
 static void opengl_ext_window_pos(void);
 static void opengl_ext_occlusion_query(void);
+static void opengl_ext_framebuffer_object(void);
 
 void opengl_setup(void)
 {
@@ -119,6 +120,7 @@ void opengl_setup(void)
     // Do opengl extension checks
     opengl_ext_window_pos();
     opengl_ext_occlusion_query();
+    opengl_ext_framebuffer_object();
 
     // Set aspect to default;
     opengl_change_aspect(WIDTH, HEIGHT);
@@ -181,7 +183,7 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
 }
 
 
-void opengl_ext_window_pos(void)
+static void opengl_ext_window_pos(void)
 {
     printf("Checking for GLEXT:window_pos...");
 
@@ -242,7 +244,7 @@ void opengl_ext_window_pos(void)
 }
 
 
-void opengl_ext_occlusion_query(void)
+static void opengl_ext_occlusion_query(void)
 {
     printf("Checking for GLEXT:occlussion_query...");
 
@@ -297,7 +299,7 @@ void opengl_ext_occlusion_query(void)
 }
 
 
-void opengl_ext_framebuffer_object(void)
+static void opengl_ext_framebuffer_object(void)
 {
     printf("Checking for GLEXT:framebuffer_ojbect...");
 

@@ -78,7 +78,6 @@ extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC    glFramebufferRenderbufferEXT;
 extern PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT;
 extern PFNGLGENERATEMIPMAPEXTPROC             glGenerateMipmapEXT;
 
-//GL_EXT_framebuffer_object
 
 extern GLboolean glVersion14;
 extern GLboolean glVersion15;
