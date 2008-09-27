@@ -22,7 +22,7 @@
 
 #include "lib/object.h"
 #include <iostream>
-
+#include <stdexcept>
 #include <stdio.h>
 #include <errno.h>
 
@@ -41,29 +41,62 @@ GLuint TexIDSkyBox[10];
 #define RIGHT_ID 4
 #define LEFT_ID 5
 
-GLuint texture_load(std::string &texture_name)
+
+std::list<Texture *>  texture_list;
+
+
+GLuint texture_load(const std::string &texture_name)
 {
 
     Texture *texture = NULL;
 
-    //XXX Interate through list then return handle if found
+    texture = texture_find(texture_name);
 
-    //XXX else add to list,
+    if(!texture)
     {
-        texture = new Texture;
-        std::string texture_path = Global.dir_textures + texture_name;
-        texture->gl_id = image_load(texture_path.c_str());
-        //if (!texture_load(texture_name, *texture))
-        //{
-        //    delete model;
-        //    model = NULL;
-        //} else
+        try
         {
-            // XXX Add to licked list.
+            texture = new Texture;
+            std::string texture_path = Global.dir_textures + texture_name;
+            texture->gl_id = image_load(texture_path.c_str());
         }
+        catch(std::runtime_error &e)
+        {
+            delete texture;
+            texture = NULL;
+            throw e;
+        }
+        texture->name = texture_name;
+        texture_add(texture);
     }
 
     return texture->gl_id;
+}
+
+
+void texture_add(Texture *newtexture)
+{
+    if (newtexture)
+      texture_list.push_back(newtexture);
+
+    return;
+}
+
+
+Texture* texture_find(const std::string &name)
+{
+    if(!texture_list.empty())
+    {
+        std::list<Texture *>::iterator obj1 = texture_list.begin();
+        do
+        {
+            if(name == (*obj1)->name)
+                return *obj1;
+
+            obj1++;
+        }  while (obj1 != texture_list.end());
+    }
+    return NULL;
 }
 
 
@@ -81,7 +114,7 @@ GLuint image_load(const char *file) {
        return 0;
     }
 
-    texti = (textureImage *)malloc(sizeof(textureImage));
+    texti = new textureImage;
     getBitmapImageData(file, texti);
 
     // allocate a texture segment and assign value to 'texture'
@@ -264,7 +297,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     // file will give you 3 bytes per pixel.
     unsigned int nTotalImagesize = (pImage->width * pImage->height) * 3;
 
-    pImage->data = (char*) malloc( nTotalImagesize );
+    pImage->data = new char[nTotalImagesize];
 
     if( (i = SDL_RWread(pFile, pImage->data, 1, nTotalImagesize) ) != nTotalImagesize )
        cout << "ERROR: getBitmapImageData - Couldn't read image data from " << pFileName << "." << endl;

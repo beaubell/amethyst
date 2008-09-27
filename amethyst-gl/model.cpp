@@ -34,9 +34,7 @@ void models_load(void)
 {
 
     // Load Sun Texture
-    std::string sun = Global.dir_textures + "/" + Global.file_tex_sun;
-
-    Global.sun_tex = image_load(sun.c_str());
+    Global.sun_tex = texture_load("sun2048.bmp");
     glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
