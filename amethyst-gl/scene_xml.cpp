@@ -28,6 +28,7 @@
 
 using namespace amethyst;
 
+static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected);
 static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object& obj);
 static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector);
 static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat);
@@ -81,16 +82,14 @@ void scene_load(const std::string &name)
 
     cur = cur->xmlChildrenNode;
 
-    std::string player_object;
+    std::string selected_object;
 
     // Run through root tree
     while (cur != NULL)
     {
-        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("player") ))
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("client") ))
         {
-            xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            player_object = reinterpret_cast<char *>(key);
-            xmlFree(key);
+            scene_xml_parse_client (doc, cur, selected_object);
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
         {
@@ -117,11 +116,55 @@ void scene_load(const std::string &name)
     xmlFreeDoc(doc);
 
     //Find Player and set
-    Global.ship = universe.object_find(player_object);
+    Global.ship = universe.object_find(selected_object);
     if (Global.ship == NULL)
     {
         Global.ship = &Global.reference_object;
-        throw parse_error("Player object \"" + player_object + "\" is not specified in scene file");
+        throw parse_error("Selected object \"" + selected_object + "\" is not specified in scene file");
+    }
+
+    return;
+}
+
+
+static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected)
+{
+    xmlChar *temp;
+
+    cur = cur->xmlChildrenNode;
+    while (cur != NULL)
+    {
+
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("selected") ))
+        {
+            xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            selected = reinterpret_cast<char *>(key);
+            xmlFree(key);
+        }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("camera") ))
+        {
+            temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("yaw"));
+            if (temp)
+            {
+                Global.cam_yaw = strtod(reinterpret_cast<char *>(temp), NULL);
+                xmlFree(temp);
+            }
+
+            temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("pitch"));
+            if (temp)
+            {
+                Global.cam_pitch = strtod(reinterpret_cast<char *>(temp), NULL);
+                xmlFree(temp);
+            }
+
+            temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("dist"));
+            if (temp)
+            {
+                Global.cam_zoom = strtod(reinterpret_cast<char *>(temp), NULL);
+                xmlFree(temp);
+            }
+        }
+        cur = cur->next;
     }
 
     return;
@@ -180,6 +223,17 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Obje
                 throw(parse_error(e.what_ + ": <velocity> in <object name=\"" + new_obj.name + "\">"));
             }
         }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("acceleration") ))
+        {
+            try
+            {
+                scene_xml_parse_vector(doc, cur, new_obj.acceleration);
+            }
+            catch(parse_error &e)
+            {
+                throw(parse_error(e.what_ + ": <acceleration> in <object name=\"" + new_obj.name + "\">"));
+            }
+        }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("attitude") ))
         {
             try
@@ -189,6 +243,28 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Obje
             catch(parse_error &e)
             {
                 throw(parse_error(e.what_ + ": <attitude> in <object name=\"" + new_obj.name + "\">"));
+            }
+        }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("angular_velocity") ))
+        {
+            try
+            {
+                scene_xml_parse_quat(doc, cur, new_obj.angular_velocity);
+            }
+            catch(parse_error &e)
+            {
+                throw(parse_error(e.what_ + ": <angular_velocity> in <object name=\"" + new_obj.name + "\">"));
+            }
+        }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("angular_acceleration") ))
+        {
+            try
+            {
+                scene_xml_parse_quat(doc, cur, new_obj.angular_acceleration);
+            }
+            catch(parse_error &e)
+            {
+                throw(parse_error(e.what_ + ": <angular_acceleration> in <object name=\"" + new_obj.name + "\">"));
             }
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("mass") ))
