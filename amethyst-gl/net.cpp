@@ -113,14 +113,15 @@ void net_send_telemetry(void){
     return;
 
   // Cast packet_header struct over out packet
-  packet_header   *head   = (packet_header*)((char *)Global.pack_out->data);
+  packet_header   *head   = reinterpret_cast<packet_header*>(Global.pack_out->data);
 
   head->type = SDL_SwapBE16(1);   // Type of packet  (1 = object transfer)
   head->misc = SDL_SwapBE16(1);   // Misc (Num of objects...)
 
 
   // Cast object_transfer struct over out packet after header struct
-  object_transfer *object = (object_transfer *)((char *)Global.pack_out->data + sizeof(packet_header));
+  object_transfer *object = reinterpret_cast<object_transfer *>
+                             (Global.pack_out->data + sizeof(packet_header));
 
   strncpy(object->name, Global.net_handle.c_str(),9);
   object->name[9] = '\0';
@@ -148,7 +149,7 @@ void net_recv_telemetry(void){
   int  offset       = 0;
 
   // Cast packet_header struct over out packet
-  packet_header   *head   = (packet_header*)((char *)Global.pack_in->data);
+  packet_header   *head   = reinterpret_cast<packet_header*>(Global.pack_in->data);
 
   offset += sizeof(packet_header);
 
@@ -159,7 +160,7 @@ void net_recv_telemetry(void){
       for(int i = 0; i < Global.net_ships; i++)
       {
           // Cast object_transfer struct over out packet after header struct
-          object_transfer *object = (object_transfer *)((char *)Global.pack_in->data + offset);
+          object_transfer *object = reinterpret_cast<object_transfer *>(Global.pack_in->data + offset);
 
           Global.net_ship[i].name = "-" + std::string(object->name);
 

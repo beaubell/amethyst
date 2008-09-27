@@ -65,8 +65,7 @@ void hud_render(void)
     glDisable( GL_DEPTH_TEST);
     glDisable( GL_LIGHTING);
 
-    //glRasterPos2f( 5.0f , 5.0f);
-
+    // Print names on the objects
     if(!object_list.empty())
     {
         std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
@@ -87,7 +86,7 @@ void hud_render(void)
 
     }
 
-        // Draw Network Objects
+    // Print names on network Objects
     for (int i = 0; i < Global.net_ships; i++)
     {
         glPushMatrix();
@@ -99,26 +98,24 @@ void hud_render(void)
 
         glPopMatrix();
     }
-    //glMatrixMode(GL_MODELVIEW);
-    //glLoadIdentity();
 
 
 #ifdef HAVE_MALLOC_H
     struct mallinfo mstats = mallinfo();
     char status[100];
-    snprintf((char*)&status, 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
+    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
     //glRasterPos3f(-45.0f, 30.0f,-100.0f);
     glWindowPos2i(10, screen_y - 13);
-    fonts[0]->Render((char *)&status);
+    fonts[0]->Render(reinterpret_cast<char*>(&status));
 
-    snprintf((char*)&status, 50, "Memmory Blocks Free: %d",mstats.fordblks);
+    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Free: %d",mstats.fordblks);
     //glRasterPos3f(-45.0f, 29.0f,-100.0f);
     glWindowPos2i(10, screen_y - 26);
-    fonts[0]->Render((char *)&status);
+    fonts[0]->Render(reinterpret_cast<char*>(&status));
 #endif
 
     glWindowPos2i(10, screen_y - 46);
-    fonts[0]->Render((char *)"Ship Stats");
+    fonts[0]->Render("Ship Stats");
 
     // Display Location Information for Ship
     hud_widget_location(10, screen_y - 56, Global.ship->location);
@@ -134,17 +131,17 @@ void hud_render(void)
     if(frames > 100)
     {
         unsigned int elapsed = SDL_GetTicks() - benchmark;
-        fps = (float)frames/((float)elapsed/1000.0f);
+        fps = static_cast<float>(frames)/(static_cast<float>(elapsed)/1000.0f);
         benchmark += elapsed;
         frames = 0;
 
     }
 
     char fpsstring[30];
-    snprintf((char*)&fpsstring, 30, "FPS: %.1f (Tick: %u )",fps, Global.time_ticks);
+    snprintf(reinterpret_cast<char*>(&fpsstring), 30, "FPS: %.1f (Tick: %u )",fps, Global.time_ticks);
     //glRasterPos3f(-45.0f, 27.0f,-100.0f);
     glWindowPos2i(10, 4);
-    fonts[0]->Render((char *)&fpsstring);
+    fonts[0]->Render(reinterpret_cast<char*>(&fpsstring));
 
     frames++;
 
@@ -160,17 +157,18 @@ static void hud_widget_location(int x, int y, const Cartesian_Vector &ref)
     glWindowPos2i(x, y);
     fonts[0]->Render(" Location - ");
 
-    snprintf((char *)&buffer, 12, "Z:%f", ref.x);
+    //FIXME convert to use std::string
+    snprintf(reinterpret_cast<char*>(&buffer), 12, "Z:%f", ref.x);
     glWindowPos2i(x += 110, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
-    snprintf((char *)&buffer, 12, "Y:%f", ref.y);
+    snprintf(reinterpret_cast<char*>(&buffer), 12, "Y:%f", ref.y);
     glWindowPos2i(x += 100, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
-    snprintf((char *)&buffer, 12, "Z:%f", ref.z);
+    snprintf(reinterpret_cast<char*>(&buffer), 12, "Z:%f", ref.z);
     glWindowPos2i(x += 100, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 }
 
 
@@ -179,23 +177,24 @@ static void hud_widget_attitude(int x, int y, const Quaternion &ref)
     char buffer[20];
 
     glWindowPos2i(x, y);
-    fonts[0]->Render((char *)" Attitude - ");
+    fonts[0]->Render(" Attitude - ");
 
-    snprintf((char *)&buffer, 20, "W:%f", ref.w);
+    //FIXME convert to use std::string
+    snprintf(reinterpret_cast<char*>(&buffer), 20, "W:%f", ref.w);
     glWindowPos2i(x += 110, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
-    snprintf((char *)&buffer, 20, "X:%f", ref.x);
+    snprintf(reinterpret_cast<char*>(&buffer), 20, "X:%f", ref.x);
     glWindowPos2i(x += 100, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
-    snprintf((char *)&buffer, 20, "Y:%f", ref.y);
+    snprintf(reinterpret_cast<char*>(&buffer), 20, "Y:%f", ref.y);
     glWindowPos2i(x += 100, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
-    snprintf((char *)&buffer, 20, "Z:%f", ref.z);
+    snprintf(reinterpret_cast<char*>(&buffer), 20, "Z:%f", ref.z);
     glWindowPos2i(x += 100, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 }
 
 
@@ -203,9 +202,9 @@ static void hud_widget_camera(int x, int y) // FIXME
 {
     char buffer[50];
 
-    snprintf((char *)&buffer, 50, " Cam: X:%f deg, Y:%f deg, Z:%fx",Global.cam_yaw, Global.cam_pitch, Global.cam_zoom);
+    snprintf(reinterpret_cast<char*>(&buffer), 50, " Cam: X:%f deg, Y:%f deg, Z:%fx",Global.cam_yaw, Global.cam_pitch, Global.cam_zoom);
     glWindowPos2i(x, y);
-    fonts[0]->Render((char *)&buffer);
+    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 }
 
 

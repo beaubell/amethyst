@@ -79,9 +79,9 @@ namespace amethyst {
   // Pack network struct accounting for endianness ,float version
   inline void net_pack(vectorf_3d &left, const Cartesian_Vector &right)
   {
-    left.x = htonf((float)right.x);
-    left.y = htonf((float)right.y);
-    left.z = htonf((float)right.z);
+    left.x = htonf(static_cast<float>(right.x));
+    left.y = htonf(static_cast<float>(right.y));
+    left.z = htonf(static_cast<float>(right.z));
   }
 
   // Pack network struct accounting for endianness ,double version
@@ -94,10 +94,10 @@ namespace amethyst {
 
   inline void net_pack(vectorf_4d &left, const Quaternion &right)
   {
-    left.w = htonf((float)right.w);
-    left.x = htonf((float)right.x);
-    left.y = htonf((float)right.y);
-    left.z = htonf((float)right.z);
+    left.w = htonf(static_cast<float>(right.w));
+    left.x = htonf(static_cast<float>(right.x));
+    left.y = htonf(static_cast<float>(right.y));
+    left.z = htonf(static_cast<float>(right.z));
   }
 
   inline void net_pack(vectord_4d &left, const Quaternion &right)
