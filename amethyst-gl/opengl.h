@@ -59,12 +59,35 @@ extern PFNGLGETQUERYIVPROC        glGetQueryiv;
 extern PFNGLGETQUERYOBJECTIVPROC  glGetQueryObjectiv;
 extern PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv;
 
+// Framebuffer objects "GL_EXT_framebuffer_object"
+extern PFNGLISRENDERBUFFEREXTPROC             glIsRenderbufferEXT;
+extern PFNGLBINDRENDERBUFFEREXTPROC           glBindRenderbufferEXT;
+extern PFNGLDELETERENDERBUFFERSEXTPROC        glDeleteRenderbuffersEXT;
+extern PFNGLGENRENDERBUFFERSEXTPROC           glGenRenderbuffersEXT;
+extern PFNGLRENDERBUFFERSTORAGEEXTPROC        glRenderbufferStorageEXT;
+extern PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC glGetRenderbufferParameterivEXT;
+extern PFNGLISFRAMEBUFFEREXTPROC              glIsFramebufferEXT;
+extern PFNGLBINDFRAMEBUFFEREXTPROC            glBindFramebufferEXT;
+extern PFNGLDELETEFRAMEBUFFERSEXTPROC         glDeleteFramebuffersEXT;
+extern PFNGLGENFRAMEBUFFERSEXTPROC            glGenFramebuffersEXT;
+extern PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC     glCheckFramebufferStatusEXT;
+extern PFNGLFRAMEBUFFERTEXTURE1DEXTPROC       glFramebufferTexture1DEXT;
+extern PFNGLFRAMEBUFFERTEXTURE2DEXTPROC       glFramebufferTexture2DEXT;
+extern PFNGLFRAMEBUFFERTEXTURE3DEXTPROC       glFramebufferTexture3DEXT;
+extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC    glFramebufferRenderbufferEXT;
+extern PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT;
+extern PFNGLGENERATEMIPMAPEXTPROC             glGenerateMipmapEXT;
+
+//GL_EXT_framebuffer_object
+
 extern GLboolean glVersion14;
 extern GLboolean glVersion15;
 extern GLboolean glWindowPosSupported;
 extern GLboolean glWindowPosEnabled;
 extern GLboolean glOcclusionQuerySupported;
 extern GLboolean glOcclusionQueryEnabled;
+extern GLboolean glFramebufferObjectSupported;
+extern GLboolean glFramebufferObjectEnabled;
 
 extern unsigned int screen_x;
 extern unsigned int screen_y;

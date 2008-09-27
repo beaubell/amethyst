@@ -42,6 +42,24 @@ PFNGLGETQUERYIVPROC        glGetQueryiv        = NULL;
 PFNGLGETQUERYOBJECTIVPROC  glGetQueryObjectiv  = NULL;
 PFNGLGETQUERYOBJECTUIVPROC glGetQueryObjectuiv = NULL;
 
+PFNGLISRENDERBUFFEREXTPROC             glIsRenderbufferEXT             = NULL;
+PFNGLBINDRENDERBUFFEREXTPROC           glBindRenderbufferEXT           = NULL;
+PFNGLDELETERENDERBUFFERSEXTPROC        glDeleteRenderbuffersEXT        = NULL;
+PFNGLGENRENDERBUFFERSEXTPROC           glGenRenderbuffersEXT           = NULL;
+PFNGLRENDERBUFFERSTORAGEEXTPROC        glRenderbufferStorageEXT        = NULL;
+PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC glGetRenderbufferParameterivEXT = NULL;
+PFNGLISFRAMEBUFFEREXTPROC              glIsFramebufferEXT              = NULL;
+PFNGLBINDFRAMEBUFFEREXTPROC            glBindFramebufferEXT            = NULL;
+PFNGLDELETEFRAMEBUFFERSEXTPROC         glDeleteFramebuffersEXT         = NULL;
+PFNGLGENFRAMEBUFFERSEXTPROC            glGenFramebuffersEXT            = NULL;
+PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC     glCheckFramebufferStatusEXT     = NULL;
+PFNGLFRAMEBUFFERTEXTURE1DEXTPROC       glFramebufferTexture1DEXT       = NULL;
+PFNGLFRAMEBUFFERTEXTURE2DEXTPROC       glFramebufferTexture2DEXT       = NULL;
+PFNGLFRAMEBUFFERTEXTURE3DEXTPROC       glFramebufferTexture3DEXT       = NULL;
+PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC    glFramebufferRenderbufferEXT    = NULL;
+PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT = NULL;
+PFNGLGENERATEMIPMAPEXTPROC             glGenerateMipmapEXT             = NULL;
+
 GLubyte const *glVersion    = NULL;
 GLubyte const *glExtensions = NULL;
 
@@ -51,6 +69,9 @@ GLboolean glWindowPosSupported      = GL_FALSE;
 GLboolean glWindowPosEnabled        = GL_FALSE;
 GLboolean glOcclusionQuerySupported = GL_FALSE;
 GLboolean glOcclusionQueryEnabled   = GL_FALSE;
+GLboolean glFramebufferObjectSupported = GL_FALSE;
+GLboolean glFramebufferObjectEnabled   = GL_FALSE;
+
 
 unsigned int screen_x = 1024;
 unsigned int screen_y = 640;
@@ -273,4 +294,67 @@ void opengl_ext_occlusion_query(void)
 
     glOcclusionQuerySupported = GL_TRUE;
     glOcclusionQueryEnabled   = GL_TRUE;
+}
+
+
+void opengl_ext_framebuffer_object(void)
+{
+    printf("Checking for GLEXT:framebuffer_ojbect...");
+
+    if(!glVersion15 && !strstr((const char*)glExtensions, "GL_EXT_framebuffer_object"))
+    {
+        puts("Not Found.  :-(");
+        return;
+    }
+
+    glIsRenderbufferEXT              = reinterpret_cast<PFNGLISRENDERBUFFEREXTPROC>
+                                       (SDL_GL_GetProcAddress("glIsRenderbufferEXT"));
+    glBindRenderbufferEXT            = reinterpret_cast<PFNGLBINDRENDERBUFFEREXTPROC>
+                                       (SDL_GL_GetProcAddress("glBindRenderbufferEXT"));
+    glDeleteRenderbuffersEXT         = reinterpret_cast<PFNGLDELETERENDERBUFFERSEXTPROC>
+                                       (SDL_GL_GetProcAddress("glDeleteRenderbuffersEXT"));
+    glGenRenderbuffersEXT            = reinterpret_cast<PFNGLGENRENDERBUFFERSEXTPROC>
+                                       (SDL_GL_GetProcAddress("glGenRenderbuffersEXT"));
+    glRenderbufferStorageEXT         = reinterpret_cast<PFNGLRENDERBUFFERSTORAGEEXTPROC>
+                                       (SDL_GL_GetProcAddress("glRenderbufferStorageEXT"));
+    glGetRenderbufferParameterivEXT  = reinterpret_cast<PFNGLGETRENDERBUFFERPARAMETERIVEXTPROC>
+                                       (SDL_GL_GetProcAddress("glGetRenderbufferParameterivEXT"));
+    glIsFramebufferEXT               = reinterpret_cast<PFNGLISFRAMEBUFFEREXTPROC>
+                                       (SDL_GL_GetProcAddress("glIsFramebufferEXT"));
+    glBindFramebufferEXT             = reinterpret_cast<PFNGLBINDFRAMEBUFFEREXTPROC>
+                                       (SDL_GL_GetProcAddress("glBindFramebufferEXT"));
+    glDeleteFramebuffersEXT          = reinterpret_cast<PFNGLDELETEFRAMEBUFFERSEXTPROC>
+                                       (SDL_GL_GetProcAddress("glDeleteFramebuffersEXT"));
+    glGenFramebuffersEXT             = reinterpret_cast<PFNGLGENFRAMEBUFFERSEXTPROC>
+                                       (SDL_GL_GetProcAddress("glGenFramebuffersEXT"));
+    glCheckFramebufferStatusEXT      = reinterpret_cast<PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC>
+                                       (SDL_GL_GetProcAddress("glCheckFramebufferStatusEXT"));
+    glFramebufferTexture1DEXT        = reinterpret_cast<PFNGLFRAMEBUFFERTEXTURE1DEXTPROC>
+                                       (SDL_GL_GetProcAddress("glFramebufferTexture1DEXT"));
+    glFramebufferTexture2DEXT        = reinterpret_cast<PFNGLFRAMEBUFFERTEXTURE2DEXTPROC>
+                                       (SDL_GL_GetProcAddress("glFramebufferTexture2DEXT"));
+    glFramebufferTexture3DEXT        = reinterpret_cast<PFNGLFRAMEBUFFERTEXTURE3DEXTPROC>
+                                       (SDL_GL_GetProcAddress("glFramebufferTexture3DEXT"));
+    glFramebufferRenderbufferEXT     = reinterpret_cast<PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC>
+                                       (SDL_GL_GetProcAddress("glFramebufferRenderbufferEXT"));
+    glGetFramebufferAttachmentParameterivEXT = reinterpret_cast<PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC>
+                                       (SDL_GL_GetProcAddress("glGetFramebufferAttachmentParameterivEXT"));
+    glGenerateMipmapEXT              = reinterpret_cast<PFNGLGENERATEMIPMAPEXTPROC>
+                                       (SDL_GL_GetProcAddress("glGenerateMipmapEXT"));
+
+    if (!glIsRenderbufferEXT || !glBindRenderbufferEXT || !glDeleteRenderbuffersEXT ||
+        !glGenRenderbuffersEXT || !glRenderbufferStorageEXT || !glGetRenderbufferParameterivEXT ||
+        !glIsFramebufferEXT || !glBindFramebufferEXT || !glDeleteFramebuffersEXT ||
+        !glGenFramebuffersEXT || !glCheckFramebufferStatusEXT || !glFramebufferTexture1DEXT ||
+        !glFramebufferTexture2DEXT || !glFramebufferTexture3DEXT || !glFramebufferRenderbufferEXT ||
+        !glGetFramebufferAttachmentParameterivEXT || !glGenerateMipmapEXT)
+    {
+        puts("Entry Point Failure.  :-(");
+        return;
+    }
+
+    puts("Found.  :-)");
+
+    glFramebufferObjectSupported = GL_TRUE;
+    glFramebufferObjectEnabled   = GL_TRUE;
 }

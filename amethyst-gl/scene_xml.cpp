@@ -166,7 +166,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Obje
             }
             catch(parse_error &e)
             {
-                throw(parse_error(e.what_ + ": <location> "));
+                throw(parse_error(e.what_ + ": <location> in <object name=\"" + new_obj.name + "\">"));
             }
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("velocity") ))
@@ -177,7 +177,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Obje
             }
             catch(parse_error &e)
             {
-                throw(parse_error(e.what_ + ": <velocity> "));
+                throw(parse_error(e.what_ + ": <velocity> in <object name=\"" + new_obj.name + "\">"));
             }
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("attitude") ))
@@ -188,7 +188,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Obje
             }
             catch(parse_error &e)
             {
-                throw(parse_error(e.what_ + ": <attitude> "));
+                throw(parse_error(e.what_ + ": <attitude> in <object name=\"" + new_obj.name + "\">"));
             }
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("mass") ))
