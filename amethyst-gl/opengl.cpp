@@ -60,8 +60,11 @@ PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC    glFramebufferRenderbufferEXT    = NULL;
 PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVEXTPROC glGetFramebufferAttachmentParameterivEXT = NULL;
 PFNGLGENERATEMIPMAPEXTPROC             glGenerateMipmapEXT             = NULL;
 
+GLubyte const *glRenderer   = NULL;
+GLubyte const *glVendor     = NULL;
 GLubyte const *glVersion    = NULL;
 GLubyte const *glExtensions = NULL;
+
 
 GLboolean glVersion14               = GL_FALSE;
 GLboolean glVersion15               = GL_FALSE;
@@ -82,15 +85,17 @@ static void opengl_ext_framebuffer_object(void);
 
 void opengl_setup(void)
 {
-    std::cout << "Initializing OpenGL (Part 2)...\n";
+    std::cout << "Initializing OpenGL (Part 2)..." << std::endl;
 
     // Get Basic Info About the OpenGL Context
+    glRenderer   = glGetString(GL_RENDERER);
+    glVendor     = glGetString(GL_VENDOR);
     glVersion    = glGetString(GL_VERSION);
     glExtensions = glGetString(GL_EXTENSIONS);
-    printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
-    printf("GL_VERSION    = %s\n", glVersion);
-    printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
-    printf("GL_EXTENSIONS = %s\n", glExtensions);
+    std::cout << "GL_RENDERER   = " << glRenderer << std::endl;
+    std::cout << "GL_VERSION    = " << glVersion << std::endl;
+    std::cout << "GL_VENDOR     = " << glVendor << std::endl;
+    std::cout << "GL_EXTENSIONS = " << glExtensions << std::endl;
 
     // Check for OpenGL version 1.4
     if ((glVersion[0] == '1') && (glVersion[1] == '.') &&
@@ -108,14 +113,15 @@ void opengl_setup(void)
 
     // Query point size capabilities
     GLint points[2], points_gran;
-    glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, (GLint *)&points);
+    glGetIntegerv(GL_SMOOTH_POINT_SIZE_RANGE, reinterpret_cast<GLint *>(&points));
     glGetIntegerv(GL_SMOOTH_POINT_SIZE_GRANULARITY, &points_gran);
-    printf("GL_POINT_SIZE = %d/%d  step(%d)\n", points[0], points[1], points_gran);
+    std::cout << "GL_POINT_SIZE = " << points[0] << "/" << points[1]
+              << "  step(" << points_gran << ")" << std::endl;
 
     // Query texture size capabilities
     GLint MaxSize;
     glGetIntegerv( GL_MAX_TEXTURE_SIZE, &MaxSize );
-    printf("GL_MAX_TEXTURE_SIZE: %d\n", MaxSize);
+    std::cout << "GL_MAX_TEXTURE_SIZE: " << MaxSize << std::endl;
 
     // Do opengl extension checks
     opengl_ext_window_pos();
@@ -140,7 +146,7 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
 
     glViewport(0, 0, w, h);
 
-    fAspect = (GLfloat)w / (GLfloat)h;
+    fAspect = static_cast<GLfloat>(w) / static_cast<GLfloat>(h);
 
     // Reset the coordinate system before modifying
     glMatrixMode(GL_PROJECTION);
@@ -185,47 +191,82 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
 
 static void opengl_ext_window_pos(void)
 {
-    printf("Checking for GLEXT:window_pos...");
+    std::cout << "Checking for GLEXT:window_pos...";
 
-    if(!glVersion14 && !strstr((const char*)glExtensions, "GL_ARB_window_pos"))
-        puts("Not Found.  :-(");
+    if(!glVersion14 && !strstr(reinterpret_cast<const char*>(glExtensions), "GL_ARB_window_pos"))
+    {
+        std::cout << "Not Found.  :-(" << std::endl;
+        return;
+    }
 
     if (glVersion14)
     {
-        glWindowPos2d  = (PFNGLWINDOWPOS2DPROC)SDL_GL_GetProcAddress("glWindowPos2d");
-        glWindowPos2dv = (PFNGLWINDOWPOS2DVPROC)SDL_GL_GetProcAddress("glWindowPos2dv");
-        glWindowPos2f  = (PFNGLWINDOWPOS2FPROC)SDL_GL_GetProcAddress("glWindowPos2f");
-        glWindowPos2fv = (PFNGLWINDOWPOS2FVPROC)SDL_GL_GetProcAddress("glWindowPos2fv");
-        glWindowPos2i  = (PFNGLWINDOWPOS2IPROC)SDL_GL_GetProcAddress("glWindowPos2i");
-        glWindowPos2iv = (PFNGLWINDOWPOS2IVPROC)SDL_GL_GetProcAddress("glWindowPos2iv");
-        glWindowPos2s  = (PFNGLWINDOWPOS2SPROC)SDL_GL_GetProcAddress("glWindowPos2s");
-        glWindowPos2sv = (PFNGLWINDOWPOS2SVPROC)SDL_GL_GetProcAddress("glWindowPos2sv");
-        glWindowPos3d  = (PFNGLWINDOWPOS3DPROC)SDL_GL_GetProcAddress("glWindowPos3d");
-        glWindowPos3dv = (PFNGLWINDOWPOS3DVPROC)SDL_GL_GetProcAddress("glWindowPos3dv");
-        glWindowPos3f  = (PFNGLWINDOWPOS3FPROC)SDL_GL_GetProcAddress("glWindowPos3f");
-        glWindowPos3fv = (PFNGLWINDOWPOS3FVPROC)SDL_GL_GetProcAddress("glWindowPos3fv");
-        glWindowPos3i  = (PFNGLWINDOWPOS3IPROC)SDL_GL_GetProcAddress("glWindowPos3i");
-        glWindowPos3iv = (PFNGLWINDOWPOS3IVPROC)SDL_GL_GetProcAddress("glWindowPos3iv");
-        glWindowPos3s  = (PFNGLWINDOWPOS3SPROC)SDL_GL_GetProcAddress("glWindowPos3s");
-        glWindowPos3sv = (PFNGLWINDOWPOS3SVPROC)SDL_GL_GetProcAddress("glWindowPos3sv");
+        glWindowPos2d  = reinterpret_cast<PFNGLWINDOWPOS2DPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2d"));
+        glWindowPos2dv = reinterpret_cast<PFNGLWINDOWPOS2DVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2dv"));
+        glWindowPos2f  = reinterpret_cast<PFNGLWINDOWPOS2FPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2f"));
+        glWindowPos2fv = reinterpret_cast<PFNGLWINDOWPOS2FVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2fv"));
+        glWindowPos2i  = reinterpret_cast<PFNGLWINDOWPOS2IPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2i"));
+        glWindowPos2iv = reinterpret_cast<PFNGLWINDOWPOS2IVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2iv"));
+        glWindowPos2s  = reinterpret_cast<PFNGLWINDOWPOS2SPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2s"));
+        glWindowPos2sv = reinterpret_cast<PFNGLWINDOWPOS2SVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2sv"));
+        glWindowPos3d  = reinterpret_cast<PFNGLWINDOWPOS3DPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3d"));
+        glWindowPos3dv = reinterpret_cast<PFNGLWINDOWPOS3DVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3dv"));
+        glWindowPos3f  = reinterpret_cast<PFNGLWINDOWPOS3FPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3f"));
+        glWindowPos3fv = reinterpret_cast<PFNGLWINDOWPOS3FVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3fv"));
+        glWindowPos3i  = reinterpret_cast<PFNGLWINDOWPOS3IPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3i"));
+        glWindowPos3iv = reinterpret_cast<PFNGLWINDOWPOS3IVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3iv"));
+        glWindowPos3s  = reinterpret_cast<PFNGLWINDOWPOS3SPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3s"));
+        glWindowPos3sv = reinterpret_cast<PFNGLWINDOWPOS3SVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3sv"));
     }else
     {
-        glWindowPos2d  = (PFNGLWINDOWPOS2DPROC)SDL_GL_GetProcAddress("glWindowPos2dARB");
-        glWindowPos2dv = (PFNGLWINDOWPOS2DVPROC)SDL_GL_GetProcAddress("glWindowPos2dvARB");
-        glWindowPos2f  = (PFNGLWINDOWPOS2FPROC)SDL_GL_GetProcAddress("glWindowPos2fARB");
-        glWindowPos2fv = (PFNGLWINDOWPOS2FVPROC)SDL_GL_GetProcAddress("glWindowPos2fvARB");
-        glWindowPos2i  = (PFNGLWINDOWPOS2IPROC)SDL_GL_GetProcAddress("glWindowPos2iARB");
-        glWindowPos2iv = (PFNGLWINDOWPOS2IVPROC)SDL_GL_GetProcAddress("glWindowPos2ivARB");
-        glWindowPos2s  = (PFNGLWINDOWPOS2SPROC)SDL_GL_GetProcAddress("glWindowPos2sARB");
-        glWindowPos2sv = (PFNGLWINDOWPOS2SVPROC)SDL_GL_GetProcAddress("glWindowPos2svARB");
-        glWindowPos3d  = (PFNGLWINDOWPOS3DPROC)SDL_GL_GetProcAddress("glWindowPos3dARB");
-        glWindowPos3dv = (PFNGLWINDOWPOS3DVPROC)SDL_GL_GetProcAddress("glWindowPos3dvARB");
-        glWindowPos3f  = (PFNGLWINDOWPOS3FPROC)SDL_GL_GetProcAddress("glWindowPos3fARB");
-        glWindowPos3fv = (PFNGLWINDOWPOS3FVPROC)SDL_GL_GetProcAddress("glWindowPos3fvARB");
-        glWindowPos3i  = (PFNGLWINDOWPOS3IPROC)SDL_GL_GetProcAddress("glWindowPos3iARB");
-        glWindowPos3iv = (PFNGLWINDOWPOS3IVPROC)SDL_GL_GetProcAddress("glWindowPos3ivARB");
-        glWindowPos3s  = (PFNGLWINDOWPOS3SPROC)SDL_GL_GetProcAddress("glWindowPos3sARB");
-        glWindowPos3sv = (PFNGLWINDOWPOS3SVPROC)SDL_GL_GetProcAddress("glWindowPos3svARB");
+        glWindowPos2d  = reinterpret_cast<PFNGLWINDOWPOS2DPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2dARB"));
+        glWindowPos2dv = reinterpret_cast<PFNGLWINDOWPOS2DVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2dvARB"));
+        glWindowPos2f  = reinterpret_cast<PFNGLWINDOWPOS2FPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2fARB"));
+        glWindowPos2fv = reinterpret_cast<PFNGLWINDOWPOS2FVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2fvARB"));
+        glWindowPos2i  = reinterpret_cast<PFNGLWINDOWPOS2IPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2iARB"));
+        glWindowPos2iv = reinterpret_cast<PFNGLWINDOWPOS2IVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2ivARB"));
+        glWindowPos2s  = reinterpret_cast<PFNGLWINDOWPOS2SPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2sARB"));
+        glWindowPos2sv = reinterpret_cast<PFNGLWINDOWPOS2SVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos2svARB"));
+        glWindowPos3d  = reinterpret_cast<PFNGLWINDOWPOS3DPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3dARB"));
+        glWindowPos3dv = reinterpret_cast<PFNGLWINDOWPOS3DVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3dvARB"));
+        glWindowPos3f  = reinterpret_cast<PFNGLWINDOWPOS3FPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3fARB"));
+        glWindowPos3fv = reinterpret_cast<PFNGLWINDOWPOS3FVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3fvARB"));
+        glWindowPos3i  = reinterpret_cast<PFNGLWINDOWPOS3IPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3iARB"));
+        glWindowPos3iv = reinterpret_cast<PFNGLWINDOWPOS3IVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3ivARB"));
+        glWindowPos3s  = reinterpret_cast<PFNGLWINDOWPOS3SPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3sARB"));
+        glWindowPos3sv = reinterpret_cast<PFNGLWINDOWPOS3SVPROC>
+                         (SDL_GL_GetProcAddress("glWindowPos3svARB"));
     }
 
     if (!glWindowPos2d || !glWindowPos2dv || !glWindowPos2f || !glWindowPos2fv ||
@@ -233,11 +274,11 @@ static void opengl_ext_window_pos(void)
          !glWindowPos3d || !glWindowPos3dv || !glWindowPos3f || !glWindowPos3fv ||
          !glWindowPos3i || !glWindowPos3iv || !glWindowPos3s || !glWindowPos3sv)
     {
-        puts("Entry Point Failure.  :-(");
+        std::cout << "Entry Point Failure.  :-(" << std::endl;
         return;
     }
 
-    puts("Found.  :-)");
+    std::cout << "Found.  :-)" << std::endl;
 
     glWindowPosSupported = GL_TRUE;
     glWindowPosEnabled   = GL_TRUE;
@@ -246,42 +287,58 @@ static void opengl_ext_window_pos(void)
 
 static void opengl_ext_occlusion_query(void)
 {
-    printf("Checking for GLEXT:occlussion_query...");
+    std::cout << "Checking for GLEXT:occlussion_query...";
 
-    if(!glVersion15 && !strstr((const char*)glExtensions, "GL_ARB_occlusion_query"))
+    if(!glVersion15 && !strstr(reinterpret_cast<const char*>(glExtensions), "GL_ARB_occlusion_query"))
     {
-        puts("Not Found.  :-(");
+        std::cout << "Not Found.  :-(" << std::endl;
         return;
     }
 
 
     if (glVersion15)
     {
-        glGenQueries       = (PFNGLGENQUERIESPROC)SDL_GL_GetProcAddress("glGenQueries");
-        glDeleteQueries    = (PFNGLDELETEQUERIESPROC)SDL_GL_GetProcAddress("glDeleteQueries");
-        glIsQuery          = (PFNGLISQUERYPROC)SDL_GL_GetProcAddress("glIsQuery");
-        glBeginQuery       = (PFNGLBEGINQUERYPROC)SDL_GL_GetProcAddress("glBeginQuery");
-        glEndQuery         = (PFNGLENDQUERYPROC)SDL_GL_GetProcAddress("glEndQuery");
-        glGetQueryiv       = (PFNGLGETQUERYIVPROC)SDL_GL_GetProcAddress("glGetQueryiv");
-        glGetQueryObjectiv = (PFNGLGETQUERYOBJECTIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectiv");
-        glGetQueryObjectuiv = (PFNGLGETQUERYOBJECTUIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectuiv");
+        glGenQueries       = reinterpret_cast<PFNGLGENQUERIESPROC>
+                             (SDL_GL_GetProcAddress("glGenQueries"));
+        glDeleteQueries    = reinterpret_cast<PFNGLDELETEQUERIESPROC>
+                             (SDL_GL_GetProcAddress("glDeleteQueries"));
+        glIsQuery          = reinterpret_cast<PFNGLISQUERYPROC>
+                             (SDL_GL_GetProcAddress("glIsQuery"));
+        glBeginQuery       = reinterpret_cast<PFNGLBEGINQUERYPROC>
+                             (SDL_GL_GetProcAddress("glBeginQuery"));
+        glEndQuery         = reinterpret_cast<PFNGLENDQUERYPROC>
+                             (SDL_GL_GetProcAddress("glEndQuery"));
+        glGetQueryiv       = reinterpret_cast<PFNGLGETQUERYIVPROC>
+                             (SDL_GL_GetProcAddress("glGetQueryiv"));
+        glGetQueryObjectiv = reinterpret_cast<PFNGLGETQUERYOBJECTIVPROC>
+                             (SDL_GL_GetProcAddress("glGetQueryObjectiv"));
+        glGetQueryObjectuiv = reinterpret_cast<PFNGLGETQUERYOBJECTUIVPROC>
+                              (SDL_GL_GetProcAddress("glGetQueryObjectuiv"));
 
     } else
     {
-        glGenQueries       = (PFNGLGENQUERIESPROC)SDL_GL_GetProcAddress("glGenQueriesARB");
-        glDeleteQueries    = (PFNGLDELETEQUERIESPROC)SDL_GL_GetProcAddress("glDeleteQueriesARB");
-        glIsQuery          = (PFNGLISQUERYPROC)SDL_GL_GetProcAddress("glIsQueryARB");
-        glBeginQuery       = (PFNGLBEGINQUERYPROC)SDL_GL_GetProcAddress("glBeginQueryARB");
-        glEndQuery         = (PFNGLENDQUERYPROC)SDL_GL_GetProcAddress("glEndQueryARB");
-        glGetQueryiv       = (PFNGLGETQUERYIVPROC)SDL_GL_GetProcAddress("glGetQueryivARB");
-        glGetQueryObjectiv = (PFNGLGETQUERYOBJECTIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectivARB");
-        glGetQueryObjectuiv = (PFNGLGETQUERYOBJECTUIVPROC)SDL_GL_GetProcAddress("glGetQueryObjectuivARB");
+        glGenQueries       = reinterpret_cast<PFNGLGENQUERIESPROC>
+                             (SDL_GL_GetProcAddress("glGenQueriesARB"));
+        glDeleteQueries    = reinterpret_cast<PFNGLDELETEQUERIESPROC>
+                             (SDL_GL_GetProcAddress("glDeleteQueriesARB"));
+        glIsQuery          = reinterpret_cast<PFNGLISQUERYPROC>
+                             (SDL_GL_GetProcAddress("glIsQueryARB"));
+        glBeginQuery       = reinterpret_cast<PFNGLBEGINQUERYPROC>
+                             (SDL_GL_GetProcAddress("glBeginQueryARB"));
+        glEndQuery         = reinterpret_cast<PFNGLENDQUERYPROC>
+                             (SDL_GL_GetProcAddress("glEndQueryARB"));
+        glGetQueryiv       = reinterpret_cast<PFNGLGETQUERYIVPROC>
+                             (SDL_GL_GetProcAddress("glGetQueryivARB"));
+        glGetQueryObjectiv = reinterpret_cast<PFNGLGETQUERYOBJECTIVPROC>
+                             (SDL_GL_GetProcAddress("glGetQueryObjectivARB"));
+        glGetQueryObjectuiv = reinterpret_cast<PFNGLGETQUERYOBJECTUIVPROC>
+                              (SDL_GL_GetProcAddress("glGetQueryObjectuivARB"));
     }
 
     if (!glGenQueries || !glDeleteQueries || !glIsQuery || !glBeginQuery || !glEndQuery ||
         !glGetQueryiv || !glGetQueryObjectiv || !glGetQueryObjectuiv)
     {
-        puts("Entry Point Failure.  :-(");
+        std::cout << "Entry Point Failure.  :-(" << std::endl;
         return;
     }
 
@@ -289,10 +346,10 @@ static void opengl_ext_occlusion_query(void)
     glGetQueryiv(GL_SAMPLES_PASSED, GL_QUERY_COUNTER_BITS, &queryCounterBits);
     if (queryCounterBits == 0)
     {
-        puts("Unusable.  :-(");
+        std::cout << "Unusable.  :-(" << std::endl;
         return;
     }
-    puts("Found.  :-)");
+    std::cout << "Found.  :-)" << std::endl;
 
     glOcclusionQuerySupported = GL_TRUE;
     glOcclusionQueryEnabled   = GL_TRUE;
@@ -301,11 +358,11 @@ static void opengl_ext_occlusion_query(void)
 
 static void opengl_ext_framebuffer_object(void)
 {
-    printf("Checking for GLEXT:framebuffer_ojbect...");
+    std::cout << "Checking for GLEXT:framebuffer_ojbect...";
 
-    if(!glVersion15 && !strstr((const char*)glExtensions, "GL_EXT_framebuffer_object"))
+    if(!glVersion15 && !strstr(reinterpret_cast<const char*>(glExtensions), "GL_EXT_framebuffer_object"))
     {
-        puts("Not Found.  :-(");
+        std::cout << "Not Found.  :-(" << std::endl;
         return;
     }
 
@@ -351,11 +408,11 @@ static void opengl_ext_framebuffer_object(void)
         !glFramebufferTexture2DEXT || !glFramebufferTexture3DEXT || !glFramebufferRenderbufferEXT ||
         !glGetFramebufferAttachmentParameterivEXT || !glGenerateMipmapEXT)
     {
-        puts("Entry Point Failure.  :-(");
+        std::cout << "Entry Point Failure.  :-(" << std::endl;
         return;
     }
 
-    puts("Found.  :-)");
+    std::cout << "Found.  :-)" << std::endl;
 
     glFramebufferObjectSupported = GL_TRUE;
     glFramebufferObjectEnabled   = GL_TRUE;
