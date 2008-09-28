@@ -53,19 +53,28 @@ namespace amethyst {
        Cartesian_Vector  GetVector(void);
        Quaternion        Bar(void) { return Quaternion(w, -x, -y, -z); };
        Quaternion        scale(const double &s);
+       double            length(void);
+       double            dot   (const Quaternion &right) const;
+       void              slerp (const Quaternion &left, Quaternion &right, float t);
        //Cartesian_Vector GetAxis(void);
        //void Set_Identity(void);
 
        //const Quaternion& operator = (Quaternion&);
+       Quaternion operator*(double scale) const;
+       Quaternion operator+(const Quaternion &b) const;
 
        const Quaternion& operator *= (Quaternion&);
+       const Quaternion& operator *= (double);
        //const Quaternion& operator ~  (void) { return Quaternion( w , -x, -y, -z); };
        };
 
   const Quaternion operator* (const Quaternion &left, const Quaternion &right);
   const Quaternion operator* (const Quaternion &q, const Cartesian_Vector &v);
   const Quaternion operator* (const Cartesian_Vector &v, const Quaternion &q);
-  const Quaternion operator* (const Quaternion &q, const double &s);
+  //const Quaternion operator* (const Quaternion &q, const double &s);
+
+  double     dot   (const Quaternion &left, const Quaternion &right);
+
 
 }
 #endif  /* AMETHYST_ORIENTATION_H */

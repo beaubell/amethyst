@@ -57,6 +57,7 @@ int process_inputs()
                         break;
                     case SDLK_a:
                     {
+                        // Leak memory at will, because it's fun and everyone is doing it.
                         void *foo = malloc(100000);
                         break;
                     }

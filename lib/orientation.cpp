@@ -38,16 +38,15 @@ namespace amethyst {
    //}
 
 
-   static double length(Quaternion &quat){
+   double Quaternion::length(){
 
-       return sqrt(quat.x * quat.x + quat.y * quat.y +
-              quat.z * quat.z + quat.w * quat.w);
+       return sqrt(x * x + y * y + z * z + w * w);
        }
 
 
    void Quaternion::normalize(void) {
 
-       double L = length(*this);
+       double L = length();
 
        x /= L;
        y /= L;
@@ -66,6 +65,49 @@ namespace amethyst {
         return Quaternion(w * s, x * s, y * s, z * s);
     }
 
+    double Quaternion::dot(const Quaternion &right) const
+    {
+        return (  w * right.w
+                + x * right.x
+                + y * right.y
+                + z * right.z );
+    }
+
+    void Quaternion::slerp(const Quaternion &left, Quaternion &right, const float t)
+    {
+        double w1, w2;
+
+        //if ( left.length() != 1 ) left.normalize();
+        //if ( right.length() != 1 ) right.normalize();
+
+        double cos_theta = left.dot(right);
+        double theta = acos(cos_theta);
+        double sin_theta = sin(theta);
+
+        if( sin_theta > 0.001 )
+        {
+            w1 = sin((1.0 - t)*theta) / sin_theta;
+            w2 = sin(t * theta) / sin_theta;
+        }
+        else
+        {
+            w1 = 1.f - t;
+            w2 = t;
+        }
+
+        *this = left*w1 + right*w2;
+    }
+
+    Quaternion Quaternion::operator*(double scale) const
+    {
+        return Quaternion(w * scale, x * scale, y * scale, z * scale);
+
+    }
+
+    Quaternion Quaternion::operator+ ( const Quaternion& b ) const
+    {
+        return Quaternion( x + b.x, y + b.y, z + b.z, w + b.w );
+    }
 
     const Quaternion& Quaternion::operator *= (Quaternion& right)
     {
@@ -82,6 +124,14 @@ namespace amethyst {
         return *this;
     }
 
+    const Quaternion& Quaternion::operator *= (double scale)
+    {
+        w = w * scale;
+        x = x * scale;
+        y = y * scale;
+        z = z * scale;
+        return *this;
+    }
 
    const Quaternion operator*(const Quaternion &left, const Quaternion &right) {
 
@@ -112,9 +162,4 @@ namespace amethyst {
                               q.w*v.z + q.y*v.x - q.x*v.y);
        }
 
-    const Quaternion operator*(const Quaternion &q, const double &s)
-    {
-        return Quaternion(q.w * s, q.x * s, q.y * s, q.z * s);
-
-    }
 }

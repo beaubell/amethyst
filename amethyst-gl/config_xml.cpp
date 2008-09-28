@@ -25,19 +25,19 @@ void parse_xml_network (xmlDocPtr doc, xmlNodePtr cur) {
     xmlChar *key;
     cur = cur->xmlChildrenNode;
     while (cur != NULL) {
-      if ((!xmlStrcmp(cur->name, (const xmlChar *)"server"))) {
+      if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("server") )) {
         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-        Global.net_server = (char *)key;
+        Global.net_server = reinterpret_cast<char *>(key);
         xmlFree(key);
       }
-      if ((!xmlStrcmp(cur->name, (const xmlChar *)"port"))) {
+      if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("port") )) {
         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-        Global.net_port = atoi((char *)key);
+        Global.net_port = atoi(reinterpret_cast<char *>(key));
         xmlFree(key);
       }
-      if ((!xmlStrcmp(cur->name, (const xmlChar *)"handle"))) {
+      if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("handle") )) {
         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-        Global.net_handle = (char *)key;
+        Global.net_handle = reinterpret_cast<char *>(key);
         xmlFree(key);
       }
       cur = cur->next;
@@ -53,15 +53,15 @@ Joy_Axis_Map parse_xml_map_joystick (xmlDocPtr doc, xmlNodePtr cur) {
   joy_map.joystick = 0;
   joy_map.axis     = 0;
 
-  att = xmlGetProp(cur, (const xmlChar *)"num");
+  att = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("num"));
   if (att) {
-    joy_map.joystick = atoi((char *)att);
+    joy_map.joystick = atoi(reinterpret_cast<char *>(att));
     xmlFree(att);
   }
 
-  att= xmlGetProp(cur, (const xmlChar *)"axis");
+  att= xmlGetProp(cur, reinterpret_cast<const xmlChar *>("axis"));
   if (att) {
-    joy_map.axis = atoi((char *)att);
+    joy_map.axis = atoi(reinterpret_cast<char *>(att));
     xmlFree(att);
   }
 
@@ -77,7 +77,7 @@ Joy_Axis_Map parse_xml_map_axis (xmlDocPtr doc, xmlNodePtr cur) {
   joy_map.axis     = 0;
 
   while (cur != NULL) {
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"joystick"))) {
+    if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("joystick"))) {
       joy_map = parse_xml_map_joystick(doc, cur);
     }
     cur = cur->next;
@@ -90,16 +90,16 @@ void parse_xml_mapping (xmlDocPtr doc, xmlNodePtr cur) {
 
   cur = cur->xmlChildrenNode;
   while (cur != NULL) {
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"pitch"))) {
+    if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("pitch"))) {
       Global.axis_pitch    = parse_xml_map_axis (doc, cur);
     }
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"roll"))) {
+    if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("roll"))) {
       Global.axis_roll     = parse_xml_map_axis (doc, cur);
     }
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"yaw"))) {
+    if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("yaw"))) {
       Global.axis_yaw      = parse_xml_map_axis (doc, cur);
     }
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"throttle"))) {
+    if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("throttle"))) {
       Global.axis_throttle = parse_xml_map_axis (doc, cur);
     }
     cur = cur->next;
@@ -111,7 +111,7 @@ void parse_xml_input (xmlDocPtr doc, xmlNodePtr cur) {
 
   cur = cur->xmlChildrenNode;
   while (cur != NULL) {
-    if ((!xmlStrcmp(cur->name, (const xmlChar *)"mapping"))) {
+    if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("mapping"))) {
       parse_xml_mapping (doc, cur);
     }
     cur = cur->next;
@@ -123,15 +123,15 @@ void parse_xml_starfighter (xmlDocPtr doc, xmlNodePtr cur) {
 
     cur = cur->xmlChildrenNode;
     while (cur != NULL) {
-      if ((!xmlStrcmp(cur->name, (const xmlChar *)"network"))) {
+      if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("network"))) {
           parse_xml_network (doc, cur);
       }
-      if ((!xmlStrcmp(cur->name, (const xmlChar *)"input"))) {
+      if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("input"))) {
           parse_xml_input (doc, cur);
       }
-      if ((!xmlStrcmp(cur->name, (const xmlChar *)"scene"))) {
+      if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("scene"))) {
           xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-          Global.scene = (char *)key;
+          Global.scene = reinterpret_cast<char *>(key);
           xmlFree(key);
       }
       cur = cur->next;
@@ -160,7 +160,7 @@ void parse_xml_config(const char *docname) {
         return;
     }
 
-    if (xmlStrcmp(cur->name, (const xmlChar *) "amethyst")) {
+    if (xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("amethyst"))) {
         fprintf(stderr,"document of wrong type, root node != amethyst.\n");
         xmlFreeDoc(doc);
         return;
@@ -168,7 +168,7 @@ void parse_xml_config(const char *docname) {
 
     cur = cur->xmlChildrenNode;
     while (cur != NULL) {
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"starfighter"))) {
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("config"))) {
           parse_xml_starfighter (doc, cur);
         }
 
