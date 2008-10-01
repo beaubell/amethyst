@@ -215,6 +215,7 @@ int main(int argc, char* argv[])
     catch(std::runtime_error &e)
     {
         std::cout << "Non-Fatal Exception: " << e.what() << std::endl;
+        throw e;
     }
 
       //load_skybox();

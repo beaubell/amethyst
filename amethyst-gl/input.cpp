@@ -179,11 +179,13 @@ int process_inputs()
     TORAD(yRot);
     TORAD(zRot);
 
-    Euler eul(xRot, yRot, zRot);
+    Euler eul(xRot*10, yRot*10, zRot*10);
     Quaternion quat(eul);
 
-    attitude *= quat;
-    attitude.normalize();
+    Global.ship->angular_acceleration = quat;
+
+    //attitude *= quat;
+    //attitude.normalize();
 
 
     //Apply throttle state to force vector
