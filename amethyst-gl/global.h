@@ -87,9 +87,7 @@ class __global {
       std::string dir_models;
       std::string dir_fonts;
 
-      // Texture File Paths
-      std::string file_tex_sun;
-
+      // Texture File Paths - not used anymore
       std::string file_tex_sb_bk;
       std::string file_tex_sb_ft;
       std::string file_tex_sb_up;

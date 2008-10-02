@@ -26,10 +26,11 @@ INCLUDE_DIRECTORIES(
   ${LIBXML2_INCLUDE_DIR}
   ${SDL_INCLUDE_DIR}
   ${SDLNET_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIR}
 )
 
 
-link_directories (${SDL_LIBRARY})  
+link_directories (${SDL_LIBRARY} ${Boost_LIBRARY_DIRS})  
 ADD_EXECUTABLE(amethyst-gl ${amethystgl_SRCS})
-TARGET_LINK_LIBRARIES(amethyst-gl freetype SDL SDL_net xml2 GL GLU libamethyst libftgl)
+TARGET_LINK_LIBRARIES(amethyst-gl freetype SDL SDL_net xml2 GL GLU libamethyst libftgl ${Boost_THREAD_LIBRARY})
 

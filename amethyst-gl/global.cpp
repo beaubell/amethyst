@@ -50,8 +50,6 @@ __global::__global()
     axis_throttle.axis     = 3;
     //axis_throttle.null     = 1000;
 
-    file_tex_sun       = "sun2048.bmp";
-
     file_tex_sb_bk     = "bk.bmp";
     file_tex_sb_ft     = "ft.bmp";
     file_tex_sb_up     = "up.bmp";
