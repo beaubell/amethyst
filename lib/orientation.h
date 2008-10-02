@@ -57,7 +57,8 @@ namespace amethyst {
        double            dot   (const Quaternion &right) const;
        void              slerp (const Quaternion &left, Quaternion &right, float t);
        //Cartesian_Vector GetAxis(void);
-       //void Set_Identity(void);
+       void              setIdentity(void) {w=1; x=y=z=0; };
+       bool              isIdentity() {return ( w==1 && x==0 && y==0 && z==0); };
 
        //const Quaternion& operator = (Quaternion&);
        Quaternion operator*(double scale) const;

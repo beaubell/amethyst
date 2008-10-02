@@ -91,11 +91,15 @@ namespace amethyst {
         }
         else
         {
-            w1 = 1.f - t;
+            w1 = 1.0 - t;
             w2 = t;
         }
 
         *this = left*w1 + right*w2;
+        //w = (left.w * w1 + right.w * w2);
+        //x = (left.x * w1 + right.x * w2);
+        //y = (left.y * w1 + right.y * w2);
+        //z = (left.z * w1 + right.z * w2);
     }
 
     Quaternion Quaternion::operator*(double scale) const
@@ -106,7 +110,7 @@ namespace amethyst {
 
     Quaternion Quaternion::operator+ ( const Quaternion& b ) const
     {
-        return Quaternion( x + b.x, y + b.y, z + b.z, w + b.w );
+        return Quaternion( w + b.w, x + b.x, y + b.y, z + b.z );
     }
 
     const Quaternion& Quaternion::operator *= (Quaternion& right)

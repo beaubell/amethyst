@@ -101,14 +101,27 @@ namespace amethyst {
     void Object::iterate(double time)
     {
 
-#if 0
-        // Apply rotation tranformations;
-        Quaternion acc_temp = angular_acceleration * time;
-        angular_velocity *= acc_temp;
 
-        Quaternion vel_temp = angular_velocity * time;
-        attitude         *= vel_temp;
-#endif
+        // Apply rotation tranformations;
+        //Quaternion acc_temp;
+        //acc_temp.slerp(Quaternion(), angular_acceleration, time);
+        //angular_velocity *= acc_temp;
+
+        //Quaternion vel_temp;
+        Quaternion future_angvelocity = angular_velocity;
+        future_angvelocity *= angular_acceleration;
+        angular_velocity.slerp(angular_velocity, future_angvelocity, time);
+
+
+        Quaternion future_attitude(attitude);
+        future_attitude *= angular_velocity;
+        Quaternion current_attitude = attitude;
+        attitude.slerp(current_attitude, future_attitude, time);
+
+        //attitude         *= angular_acceleration;
+
+        attitude.normalize();
+
         // Apply location transformations
         force_apply();
         accel_apply(time);
