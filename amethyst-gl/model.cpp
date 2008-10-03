@@ -159,7 +159,7 @@ void model_sphere_create(const double cx, const double cy, const double cz, doub
 
         glBegin( GL_TRIANGLE_STRIP );
         {
-            for( int j = 0; j <= p; ++j )
+            for( int j = p; j >= 0; --j )
             {
                 theta3 = j * TWOPI / p;
 

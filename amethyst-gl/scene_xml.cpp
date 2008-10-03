@@ -388,6 +388,9 @@ void scene_xml_write (const std::string &name)
             scene_xml_write_quat(outfile, (*obj1)->angular_velocity, "angular_velocity");
             scene_xml_write_quat(outfile, (*obj1)->angular_acceleration, "angular_acceleration");
             outfile << "    <mass>" << (*obj1)->mass << "</mass>" << std::endl;
+            outfile << "    <!-- debug info:" << std::endl;
+            outfile << "      displaylist:" << reinterpret_cast<Model *>((*obj1)->meta)->dl << std::endl;
+            outfile << "    -->" << std::endl;
             outfile << "  </object>" << std::endl;
 
             obj1++;

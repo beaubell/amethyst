@@ -169,6 +169,7 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
     glEnable(GL_BLEND);
     glEnable(GL_POINT_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glFrontFace(GL_CCW);
 
     // Set up lighting
     GLfloat fAmbLight[] =   { 0.05f, 0.05f, 0.05f, 1.00f }; // Darkish
