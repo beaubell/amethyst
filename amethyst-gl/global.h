@@ -86,6 +86,7 @@ class __global {
       std::string dir_textures;
       std::string dir_models;
       std::string dir_fonts;
+      std::string dir_shaders;
 
       // Texture File Paths - not used anymore
       std::string file_tex_sb_bk;
@@ -94,6 +95,11 @@ class __global {
       std::string file_tex_sb_dn;
       std::string file_tex_sb_rt;
       std::string file_tex_sb_lt;
+
+      // Shader stuff
+      GLhandleARB shaderProgram;
+      std::string vshader;
+      std::string fshader;
 
       // Network
       std::string net_server;

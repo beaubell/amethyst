@@ -10,6 +10,7 @@ SET(amethystgl_SRCS
   model_xml.cpp
   net.cpp
   opengl.cpp
+  opengl_shader.cpp
   scene.cpp
   scene_xml.cpp
   stars.cpp

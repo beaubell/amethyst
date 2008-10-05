@@ -45,7 +45,7 @@ void parse_xml_network (xmlDocPtr doc, xmlNodePtr cur) {
     return;
 }
 
-Joy_Axis_Map parse_xml_map_joystick (xmlDocPtr doc, xmlNodePtr cur) {
+Joy_Axis_Map parse_xml_map_joystick (xmlDocPtr, xmlNodePtr cur) {
 
   Joy_Axis_Map joy_map;
   xmlChar *att;

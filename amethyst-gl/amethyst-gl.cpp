@@ -31,6 +31,7 @@
 
 #include "global.h"
 #include "opengl.h"
+#include "opengl_shader.h"
 #include "joystick.h"
 #include "net.h"
 #include "texture.h"
@@ -171,13 +172,14 @@ int main(int argc, char* argv[])
 
     Global.dir_home     = getenv (PROFILE_DIR_ENV);
     Global.dir_amethyst = Global.dir_home + "/" + PROJECT_DIR;
-    Global.dir_scene    = Global.dir_amethyst + "/" + "scene/";
-    Global.dir_textures = Global.dir_amethyst + "/" + "textures/";
-    Global.dir_models   = Global.dir_amethyst + "/" + "models/";
-    Global.dir_fonts    = Global.dir_amethyst + "/" + "fonts";
+    Global.dir_scene    = Global.dir_amethyst + "/scene/";
+    Global.dir_textures = Global.dir_amethyst + "/textures/";
+    Global.dir_models   = Global.dir_amethyst + "/models/";
+    Global.dir_shaders  = Global.dir_amethyst + "/shaders/";
+    Global.dir_fonts    = Global.dir_amethyst + "/fonts";
 
-    string config_file  = Global.dir_amethyst + "/" + "config.xml";
-    string stars_file   = Global.dir_amethyst + "/" + "stars.csv";
+    string config_file  = Global.dir_amethyst + "/config.xml";
+    string stars_file   = Global.dir_amethyst + "/stars.csv";
 
     // Check for existance of config.xml else fail siliently
     if(access(config_file.c_str(), F_OK) == 0) {
@@ -217,6 +219,11 @@ int main(int argc, char* argv[])
         std::cout << "Non-Fatal Exception: " << e.what() << std::endl;
         throw e;
     }
+
+    // Load shaders if supported
+    if (glShaderObjectsSupported)
+        load_shader(Global.vshader, Global.fshader);
+
 
       //load_skybox();
 

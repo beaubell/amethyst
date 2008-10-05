@@ -67,6 +67,21 @@ int process_inputs()
                     case SDLK_n:
                         print_object(Global.net_ship[0]);
                         break;
+                    case SDLK_s: // Toggle shaders on and off
+                    {
+                        if(glShaderObjectsSupported)
+                            if(glShaderObjectsEnabled)
+                            {
+                                glShaderObjectsEnabled = false;
+                                glUseProgramObjectARB(0);
+
+                            } else
+                            {
+                                glShaderObjectsEnabled = true;
+                                glUseProgramObjectARB(Global.shaderProgram);
+                            }
+                        break;
+                    }
                     case SDLK_b:
                         print_trace();
                         break;
@@ -94,10 +109,10 @@ int process_inputs()
             case SDL_MOUSEMOTION:
                 if (mouse_camera)
                 {
-                    Global.cam_yaw -= ((float)event.motion.xrel)/3;
+                    Global.cam_yaw -= static_cast<float>(event.motion.xrel)/3;
                     if (Global.cam_yaw < -180) Global.cam_yaw += 360;
                     if (Global.cam_yaw >  180) Global.cam_yaw -= 360;
-                    Global.cam_pitch -= ((float)event.motion.yrel)/3;
+                    Global.cam_pitch -= static_cast<float>(event.motion.yrel)/3;
                     if (Global.cam_pitch < -90) Global.cam_pitch = -90;
                     if (Global.cam_pitch >  90) Global.cam_pitch = 90;
                 }
@@ -192,7 +207,7 @@ int process_inputs()
     if (throttle != 0) {
 
         thrust.y = throttle*1e6;
-        Global.throttle = (float)throttle;
+        Global.throttle = static_cast<float>(throttle);
     }
 
     // Rotate trust vector to match ship orientation

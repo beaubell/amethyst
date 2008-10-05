@@ -65,6 +65,10 @@ void hud_render(void)
     glDisable( GL_DEPTH_TEST);
     glDisable( GL_LIGHTING);
 
+    // Turn off the shader, it consumed so much GPU when rendering text
+    if(glShaderObjectsEnabled)
+            glUseProgramObjectARB(0);
+
     // Print names on the objects
     if(!object_list.empty())
     {
@@ -144,6 +148,10 @@ void hud_render(void)
     fonts[0]->Render(reinterpret_cast<char*>(&fpsstring));
 
     frames++;
+
+    // Turn back on the shader
+    if(glShaderObjectsEnabled)
+            glUseProgramObjectARB(Global.shaderProgram);
 
     glEnable( GL_LIGHTING);
     glEnable( GL_DEPTH_TEST);

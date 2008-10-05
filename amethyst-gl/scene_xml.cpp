@@ -30,6 +30,7 @@ using namespace amethyst;
 
 static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected);
 static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object& obj);
+static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur);
 static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector);
 static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat);
 
@@ -90,6 +91,10 @@ void scene_load(const std::string &name)
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("client") ))
         {
             scene_xml_parse_client (doc, cur, selected_object);
+        }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("shader") ))
+        {
+            scene_xml_parse_shader (doc, cur);
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
         {
@@ -163,6 +168,33 @@ static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &s
                 Global.cam_zoom = strtod(reinterpret_cast<char *>(temp), NULL);
                 xmlFree(temp);
             }
+        }
+        cur = cur->next;
+    }
+
+    return;
+}
+
+
+static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur)
+{
+    xmlChar *temp;
+
+    cur = cur->xmlChildrenNode;
+    while (cur != NULL)
+    {
+
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("vertex") ))
+        {
+            temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            Global.vshader = reinterpret_cast<char *>(temp);
+            xmlFree(temp);
+        }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("fragment") ))
+        {
+            temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
+            Global.fshader = reinterpret_cast<char *>(temp);
+            xmlFree(temp);
         }
         cur = cur->next;
     }
@@ -281,7 +313,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Obje
 }
 
 
-static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector)
+static void scene_xml_parse_vector(xmlDocPtr, xmlNodePtr cur, amethyst::Cartesian_Vector &vector)
 {
     xmlChar *temp;
 
@@ -313,7 +345,7 @@ static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cart
 }
 
 
-static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat)
+static void scene_xml_parse_quat(xmlDocPtr, xmlNodePtr cur, amethyst::Quaternion &quat)
 {
     xmlChar *temp;
 
@@ -372,6 +404,10 @@ void scene_xml_write (const std::string &name)
                                     << Global.cam_pitch << "\" dist=\""
                                     << Global.cam_zoom << "\" />" << std::endl;
     outfile << "  </client>" << std::endl;
+    outfile << "  <shader>" << std::endl;
+    outfile << "    <vertex>" << Global.vshader << "</vertex>" << std::endl;
+    outfile << "    <fragment>" << Global.fshader << "</fragment>" << std::endl;
+    outfile << "  </shader>" << std::endl;
 
     if(!object_list.empty())
     {
