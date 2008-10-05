@@ -31,9 +31,12 @@
 #include <math.h> // for quaternion lenth calculation
 
 // Forward Declarations
+static void hud_widget_object_text(void);
+static void hud_widget_memory(int x, int y);
 static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
 static void hud_widget_attitude(int x, int y, const Quaternion &reference);
 static void hud_widget_camera(int x, int y);
+static void hud_widget_fps(int x, int y);
 static void hud_widget_vectorbox(int x, int y, float xaxis, float yaxis, float zaxis);
 
 static FTFont* fonts[6];
@@ -59,15 +62,51 @@ void hud_setup(void)
 
 void hud_render(void)
 {
-    Cartesian_Vector &reference = Global.ship->location;
+
 
     glColor3f(1.0f,1.0f,1.0f);
     glDisable( GL_DEPTH_TEST);
     glDisable( GL_LIGHTING);
 
-    // Turn off the shader, it consumed so much GPU when rendering text
+    // Turn off the shader, it consumes so much GPU when rendering text
     if(glShaderObjectsEnabled)
             glUseProgramObjectARB(0);
+
+    if (glWindowPosEnabled)
+    {
+        hud_widget_object_text();
+
+        #ifdef HAVE_MALLOC_H
+        hud_widget_memory(10, screen_y - 13);
+        #endif
+
+        glWindowPos2i(10, screen_y - 46);
+        fonts[0]->Render("Ship Stats");
+
+        // Display Location Information for Ship
+        hud_widget_location(10, screen_y - 56, Global.ship->location);
+        // Display Attitude Information for Ship
+        hud_widget_attitude(10, screen_y - 66, Global.ship->attitude);
+        // Display Camera Look Angles
+        hud_widget_camera(10, screen_y - 76);
+        // FPS/Ticks indicator
+        hud_widget_fps(10,4);
+    }
+
+    hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
+
+    // Turn back on the shader
+    if(glShaderObjectsEnabled)
+            glUseProgramObjectARB(Global.shaderProgram);
+
+    glEnable( GL_LIGHTING);
+    glEnable( GL_DEPTH_TEST);
+}
+
+
+static void hud_widget_object_text(void)
+{
+    Cartesian_Vector &reference = Global.ship->location;
 
     // Print names on the objects
     if(!object_list.empty())
@@ -103,59 +142,25 @@ void hud_render(void)
         glPopMatrix();
     }
 
+}
+
 
 #ifdef HAVE_MALLOC_H
+static void hud_widget_memory(int x, int y)
+{
     struct mallinfo mstats = mallinfo();
     char status[100];
     snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
     //glRasterPos3f(-45.0f, 30.0f,-100.0f);
-    glWindowPos2i(10, screen_y - 13);
+    glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
 
     snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Free: %d",mstats.fordblks);
     //glRasterPos3f(-45.0f, 29.0f,-100.0f);
-    glWindowPos2i(10, screen_y - 26);
+    glWindowPos2i(x, y - 13);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
-#endif
-
-    glWindowPos2i(10, screen_y - 46);
-    fonts[0]->Render("Ship Stats");
-
-    // Display Location Information for Ship
-    hud_widget_location(10, screen_y - 56, Global.ship->location);
-
-    // Display Attitude Information for Ship
-    hud_widget_attitude(10, screen_y - 66, Global.ship->attitude);
-
-    // Display Camera Look Angles
-    hud_widget_camera(10, screen_y - 76);
-
-    hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
-
-    if(frames > 100)
-    {
-        unsigned int elapsed = SDL_GetTicks() - benchmark;
-        fps = static_cast<float>(frames)/(static_cast<float>(elapsed)/1000.0f);
-        benchmark += elapsed;
-        frames = 0;
-
-    }
-
-    char fpsstring[30];
-    snprintf(reinterpret_cast<char*>(&fpsstring), 30, "FPS: %.1f (Tick: %u )",fps, Global.time_ticks);
-    //glRasterPos3f(-45.0f, 27.0f,-100.0f);
-    glWindowPos2i(10, 4);
-    fonts[0]->Render(reinterpret_cast<char*>(&fpsstring));
-
-    frames++;
-
-    // Turn back on the shader
-    if(glShaderObjectsEnabled)
-            glUseProgramObjectARB(Global.shaderProgram);
-
-    glEnable( GL_LIGHTING);
-    glEnable( GL_DEPTH_TEST);
 }
+#endif
 
 
 static void hud_widget_location(int x, int y, const Cartesian_Vector &ref)
@@ -213,6 +218,26 @@ static void hud_widget_camera(int x, int y) // FIXME
     snprintf(reinterpret_cast<char*>(&buffer), 50, " Cam: X:%f deg, Y:%f deg, Z:%fx",Global.cam_yaw, Global.cam_pitch, Global.cam_zoom);
     glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
+}
+
+
+static void hud_widget_fps(int x, int y)
+{
+    if(frames > 100)
+    {
+        unsigned int elapsed = SDL_GetTicks() - benchmark;
+        fps = static_cast<float>(frames)/(static_cast<float>(elapsed)/1000.0f);
+        benchmark += elapsed;
+        frames = 0;
+    }
+
+    char fpsstring[30];
+    snprintf(reinterpret_cast<char*>(&fpsstring), 30, "FPS: %.1f (Tick: %u )",fps, Global.time_ticks);
+
+    glWindowPos2i(x, y);
+    fonts[0]->Render(reinterpret_cast<char*>(&fpsstring));
+
+    frames++;
 }
 
 

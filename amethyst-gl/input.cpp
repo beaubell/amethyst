@@ -64,6 +64,15 @@ int process_inputs()
                     case SDLK_d:
                         scene_xml_write("Dump");
                         break;
+                    case SDLK_f:
+                    {
+                        if(glWindowPosSupported)
+                            if(glWindowPosEnabled)
+                                glWindowPosEnabled = false;
+                            else
+                                glWindowPosEnabled = true;
+                        break;
+                    }
                     case SDLK_n:
                         print_object(Global.net_ship[0]);
                         break;

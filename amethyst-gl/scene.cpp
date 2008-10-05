@@ -212,9 +212,8 @@ void scene_render(void)
     glPopMatrix();
   }
 
-  // Display HUD if windowpos gl extensions are suported
-  if (glWindowPosSupported && glWindowPosEnabled)
-    hud_render();
+  // Display HUD
+  hud_render();
 
   // Do the buffer Swap
   SDL_GL_SwapBuffers();
