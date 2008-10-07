@@ -14,6 +14,7 @@
  ***********************************************************************/
 
 #include "lib/object.h"
+#include "lib/universe.h"
 
 #include <string>
 #include "opengl.h"
@@ -37,6 +38,10 @@ class __global {
 
    public:
       __global (void);
+
+      // Physics Engine
+      Universe universe;
+
       std::string scene;
 
       // Your Ship

@@ -112,7 +112,7 @@ void scene_load(const std::string &name)
             }
 
             scene_add_object(temp);
-            universe.object_add(temp);
+            Global.universe.object_add(temp);
         }
 
         cur = cur->next;
@@ -121,7 +121,7 @@ void scene_load(const std::string &name)
     xmlFreeDoc(doc);
 
     //Find Player and set
-    Global.ship = universe.object_find(selected_object);
+    Global.ship = Global.universe.object_find(selected_object);
     if (Global.ship == NULL)
     {
         Global.ship = &Global.reference_object;

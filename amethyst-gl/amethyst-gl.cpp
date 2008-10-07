@@ -76,12 +76,8 @@ using namespace std;
 using namespace amethyst;
 
 static void sdl_setup(void);
-
-// Create universe
-Universe universe;  //FIXME Move to global?
-
-static void sdl_setup();
-static void main_loop();
+static void sdl_setup(void);
+static void main_loop(void);
 
 
 static void sdl_setup()
@@ -146,6 +142,8 @@ static void sdl_setup()
 
 static void main_loop()
 {
+    Universe &universe = Global.universe;
+
     while(1) {
     Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
 

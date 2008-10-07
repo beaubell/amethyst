@@ -77,6 +77,9 @@ int process_inputs()
                                 glWindowPosEnabled = true;
                         break;
                     }
+                    case SDLK_g: // Toggle gravity on and off
+                        Global.universe.do_gravity_calc = !Global.universe.do_gravity_calc;
+                        break;
                     case SDLK_n:
                         scene_target_object_next();
                         break;
