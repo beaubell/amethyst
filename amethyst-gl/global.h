@@ -41,6 +41,8 @@ class __global {
 
       // Your Ship
       Object *ship;
+      // Targeted Ship
+      Object *target;
 
       // Models // FIXME
       GLuint sun_mdl;

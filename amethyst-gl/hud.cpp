@@ -13,11 +13,13 @@
 #include "hud.h"
 #include "scene.h"
 #include "global.h"
+#include "lib/physics.h"
 
 #include "FTGL.h"
 #include "FTGLPixmapFont.h"
 #include "SDL_opengl.h"
 #include <string>
+#include <boost/lexical_cast.hpp>
 
 #ifdef HAVE_MALLOC_H
   #include <malloc.h>
@@ -30,6 +32,8 @@
 #include <stdio.h>
 #include <math.h> // for quaternion lenth calculation
 
+using boost::lexical_cast;
+
 // Forward Declarations
 static void hud_widget_object_text(void);
 static void hud_widget_memory(int x, int y);
@@ -37,6 +41,7 @@ static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
 static void hud_widget_attitude(int x, int y, const Quaternion &reference);
 static void hud_widget_camera(int x, int y);
 static void hud_widget_fps(int x, int y);
+static void hud_widget_select(const int x, const int y);
 static void hud_widget_vectorbox(int x, int y, float xaxis, float yaxis, float zaxis);
 
 static FTFont* fonts[6];
@@ -91,6 +96,8 @@ void hud_render(void)
         hud_widget_camera(10, screen_y - 76);
         // FPS/Ticks indicator
         hud_widget_fps(10,4);
+
+        hud_widget_select(10,40);
     }
 
     hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
@@ -239,6 +246,30 @@ static void hud_widget_fps(int x, int y)
 
     frames++;
 }
+
+
+static void hud_widget_select(const int x, const int y)
+{
+    const amethyst::Object &ship   = *Global.ship;
+    const amethyst::Object &target = *Global.target;
+
+    std::string text = "Selected: " + ship.name;
+    glWindowPos2i(x, y);
+    fonts[0]->Render(text.c_str());
+
+    if((&ship != &target) && (&target != &Global.reference_object))
+    {
+        const double distance = amethyst::phys_distance(ship.location, target.location);
+        text = "Targeted: " + target.name;
+        text += "  Distance: " + lexical_cast<std::string>(distance);
+
+        const amethyst::Cartesian_Vector vector = Cartesian_Vector(target.velocity - ship.velocity);
+        text += "  Speed: " + lexical_cast<std::string>(vector.magnitude());
+        glWindowPos2i(x, y - 13);
+        fonts[0]->Render(text.c_str());
+    }
+}
+
 
 
 static void hud_widget_vectorbox(int x, int y, float xvector, float yvector, float zvector)

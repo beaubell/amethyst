@@ -15,6 +15,7 @@
 #include "input.h"
 #include "global.h"
 #include "debug.h"
+#include "scene.h"
 #include "scene_xml.h"
 
 #include "lib/utility.h"
@@ -64,6 +65,9 @@ int process_inputs()
                     case SDLK_d:
                         scene_xml_write("Dump");
                         break;
+                    case SDLK_e:
+                        scene_select_object_next();
+                        break;
                     case SDLK_f:
                     {
                         if(glWindowPosSupported)
@@ -74,6 +78,9 @@ int process_inputs()
                         break;
                     }
                     case SDLK_n:
+                        scene_target_object_next();
+                        break;
+                    case SDLK_p:
                         print_object(Global.net_ship[0]);
                         break;
                     case SDLK_s: // Toggle shaders on and off

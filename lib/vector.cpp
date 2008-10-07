@@ -19,7 +19,7 @@ namespace amethyst {
        z = 0;
        }
 
-  double Cartesian_Vector::magnitude(void) {
+  double Cartesian_Vector::magnitude(void) const {
 
        return sqrt(x*x + y*y + z*z);
        }

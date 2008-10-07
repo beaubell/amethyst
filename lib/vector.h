@@ -27,7 +27,7 @@ namespace amethyst {
 
        void    clear(void);
 
-       double  magnitude(void);
+       double  magnitude(void) const;
        void    normalize(void);
        void    reverse(void);
 

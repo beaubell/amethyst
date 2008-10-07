@@ -226,3 +226,88 @@ void scene_add_object(amethyst::Object *newobject)
       object_list.push_back(newobject);
 
 }
+
+
+void scene_select_object_next()
+{
+    amethyst::Object* &selected = Global.ship  ;            // Reference to ship pointer
+    amethyst::Object* reference = &Global.reference_object; // Pointer to reference_object
+
+    if(!object_list.empty())
+    {
+        std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+
+        if(reference == selected)
+        {
+            selected = *obj1;
+            return;
+        }
+
+        do
+        {
+            // Find Object
+            if(selected == (*obj1))
+            {
+                obj1++;
+                if (obj1 == object_list.end())
+                {
+                    obj1 = object_list.begin();
+                    selected = *obj1;
+                }
+                else
+                    selected = *obj1;
+                return;
+            }
+
+            obj1++;
+        }  while (obj1 != object_list.end());
+
+    } else
+    {
+        selected = reference;
+    }
+
+}
+
+
+void scene_target_object_next()
+{
+    amethyst::Object* &target   = Global.target;            // Reference to target pointer
+    amethyst::Object* reference = &Global.reference_object; // Pointer to reference_object
+
+    if(!object_list.empty())
+    {
+        std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+
+        if(reference == target)
+        {
+            target = *obj1;
+            return;
+        }
+
+        do
+        {
+            // Find Object
+            if(target == (*obj1))
+            {
+                obj1++;
+                if (obj1 == object_list.end())
+                {
+                    obj1 = object_list.begin();
+                    target = *obj1;
+                }
+                else
+                    target = *obj1;
+                return;
+            }
+
+            obj1++;
+        }  while (obj1 != object_list.end());
+
+    } else
+    {
+        target = reference;
+    }
+
+}
+
