@@ -7,7 +7,7 @@ INCLUDE(./cmake/FindFreetype.cmake)
 FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(SDL)
 FIND_PACKAGE(SDL_net)
-FIND_PACKAGE(Boost 1.34.1 COMPONENTS thread)
+FIND_PACKAGE(Boost 1.34.1 COMPONENTS asio system thread)
 
 #FIND_PACKAGE(Subversion)
 #IF(Subversion_FOUND)
