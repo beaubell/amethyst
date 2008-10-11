@@ -21,6 +21,8 @@
 #include <iostream>
 #include <list>
 
+#include "server.h"
+
 using namespace amethyst;
 
 struct packet_header
@@ -315,10 +317,15 @@ int main(int argc, char** argv)
     struct sockaddr_in adr_inet; /* AF_INET */
     struct sockaddr_in adr_clnt; /* AF_INET */
     int len_inet;                /* Length */
-    int s;                       /* socket */
+    //int s;                       /* socket */
     char rx_dgram[1500];         /* Recv Buffer */
     char tx_dgram[1500];         /* TX   Bufffer */
 
+
+    std::cout << "Starting new-style server" << std::endl;
+    server s("127.0.0.1", "2525", "/home/beau");
+    s.run();
+#if 0
 
     // Read address from commandline
     if ( argc >= 2 ) {
@@ -384,6 +391,6 @@ int main(int argc, char** argv)
 
 
     } // for
-
+#endif
     return 0;
 }
