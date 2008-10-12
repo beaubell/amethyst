@@ -312,6 +312,11 @@ int main(int argc, char** argv)
     //printf(" packet_header             : %i\n", sizeof(packet_header));
     //printf(" object_transfer           : %i\n", sizeof(object_transfer));
 
+    std::cout << "Starting new-style server" << std::endl;
+    server s("127.0.0.1", "2525", "/home/beau/.amethyst-server");
+    s.run();
+
+#if 0
     int z;
     const char *srvr_addr = NULL;
     struct sockaddr_in adr_inet; /* AF_INET */
@@ -321,11 +326,6 @@ int main(int argc, char** argv)
     char rx_dgram[1500];         /* Recv Buffer */
     char tx_dgram[1500];         /* TX   Bufffer */
 
-
-    std::cout << "Starting new-style server" << std::endl;
-    server s("127.0.0.1", "2525", "/home/beau");
-    s.run();
-#if 0
 
     // Read address from commandline
     if ( argc >= 2 ) {

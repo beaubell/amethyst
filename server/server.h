@@ -60,6 +60,9 @@ class server
 
     /// The handler for all incoming requests.
     //request_handler request_handler_;
+
+    /// File Root
+    std::string file_root;
 };
 
 } // namespace amethyst

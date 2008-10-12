@@ -12,6 +12,10 @@
 
 #include "connection.h"
 #include "connection_manager.h"
+#include <boost/crypto/sha2.hpp>
+#include <boost/crypto/message_digest.hpp>
+#include "boost/date_time/local_time/local_time.hpp"
+
 
 namespace amethyst
 {
@@ -85,11 +89,17 @@ void tcp_connection::handle_handshake_read(boost::system::error_code ec)
 void tcp_connection::login_send()
 {
     // Generate hash
-    //client_hash = md5sum(
-    boost::hash<std::string> string_hash;
+    using namespace boost::gregorian;
+    using namespace boost::local_time;
+    using namespace boost::posix_time;
+    boost::crypto::message_digest<boost::crypto::detail::sha256_ctx> sha256;
 
-    client_hash = string_hash("HAHAHAHSHSHDHDHSHS");
+    // Get localtime then get sha256sum of it
+    ptime t(second_clock::local_time());
+    sha256.input(to_simple_string(t));
+    client_hash = sha256.to_string();
 
+    // Construct header
     message_ =  "login " + client_hash + "\r\n";
 
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
