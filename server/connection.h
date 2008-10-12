@@ -36,12 +36,10 @@ class tcp_connection
   : public boost::enable_shared_from_this<tcp_connection>
 {
    public:
-    typedef boost::shared_ptr<tcp_connection> pointer;
-
-    //static pointer create(boost::asio::io_service& io_service)
-    //{
-    //    return pointer(new tcp_connection(io_service));
-    //}
+    tcp_connection(boost::asio::io_service& io_service, connection_manager& manager)
+       : socket_(io_service), connection_manager_(manager), client_login_attempts(0)
+    {
+    }
 
     tcp::socket& socket()
     {
@@ -52,23 +50,42 @@ class tcp_connection
 
     void stop();
 
-    void handle_request_line(boost::system::error_code ec);
+   private:
+    //  Check to see if handshake was sent out properly
+    void handshake_send();
+    void handle_handshake_send(boost::system::error_code ec);
 
-   //private:
-    tcp_connection(boost::asio::io_service& io_service, connection_manager& manager)
-       : socket_(io_service), connection_manager_(manager)
-    {
-    }
+    //  Handle to see if client sent proper data
+    void handshake_read();
+    void handle_handshake_read(boost::system::error_code ec);
+    //  
+    void login_send();
+    void handle_login_send(boost::system::error_code ec);
 
-    void handle_write()
-    {
-    }
+    void login_read();
+    void handle_login_read(boost::system::error_code ec);
+
+    void main_sequence_send();
+    void handle_main_sequence_send(boost::system::error_code ec);
+
+    void main_sequence_read();
+    void handle_main_sequence_read(boost::system::error_code ec);
+
 
     tcp::socket socket_;
     std::string message_;
-    std::string gl_ext;
-    asio::streambuf data_;
+    asio::streambuf in_data_;
     connection_manager& connection_manager_;
+
+    std::string client_prog;
+    std::string client_version;
+    std::string client_host;
+    std::string client_user;
+    std::string client_pass;
+    std::string client_hash;
+    std::string client_glext;
+
+    short client_login_attempts;
 };
 
 typedef boost::shared_ptr<tcp_connection> connection_ptr;
