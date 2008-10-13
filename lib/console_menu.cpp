@@ -53,15 +53,15 @@ namespace amethyst {
        //Parse command string for element bounds
        for(a = 0; a < command.length(); a++)
        {
-            if(command[a] != (char)' ') break;
+            if(command[a] != static_cast<char>(' ')) break;
        }
        for(b = a; b < command.length(); b++)
        {
-            if(command[b] == (char)' ') break;
+            if(command[b] == static_cast<char>(' ')) break;
        }
        for(c = b; c < command.length(); c++)
        {
-            if(command[c] != (char)' ') break;
+            if(command[c] != static_cast<char>(' ')) break;
        }
 
        //Show output for debugging
@@ -112,15 +112,15 @@ namespace amethyst {
        //Parse command string for element bounds
        for(a = 0; a < command.length(); a++)
        {
-            if(command[a] != (char)' ') break;
+            if(command[a] != static_cast<char>(' ')) break;
        }
        for(b = a; b < command.length(); b++)
        {
-            if(command[b] == (char)' ') break;
+            if(command[b] == static_cast<char>(' ')) break;
        }
        for(c = b; c < command.length(); c++)
        {
-            if(command[c] != (char)' ') break;
+            if(command[c] != static_cast<char>(' ')) break;
        }
 
        //Show output for debugging
@@ -164,14 +164,14 @@ namespace amethyst {
        {
             for(b = command.length(); b > 0; b--)
             {
-                 if(command[b] != (char)' ') break;
+                 if(command[b] != static_cast<char>(' ')) break;
             }
             for(a = b; a > 0; a--)
             {
-                 if(command[a] == (char)' ') break;
+                 if(command[a] == static_cast<char>(' ')) break;
             }
 
-            if (command[a] == (char)' ') a++;
+            if (command[a] == static_cast<char>(' ')) a++;
 
             //Show output for debugging
             std::cout << "\nA:" << a << "  B:" << b;

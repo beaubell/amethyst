@@ -66,7 +66,7 @@ namespace amethyst {
 
       out.a[0] = in_ptr->a[1];
       out.a[1] = in_ptr->a[0];
-      
+
       return out.value;
      #else
       return in;

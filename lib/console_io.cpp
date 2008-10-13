@@ -4,8 +4,8 @@
    Author: Beau V.C. Bellamy
 */
 
-// 
-// 
+//
+//
 
 #include <iostream>
 //#include <termios.h>
@@ -23,36 +23,36 @@ namespace amethyst {
 
   void clear_screen(void)
   {
-       cout << (char)27 << "[H" << (char)27 << "[2J"; 
+       cout << static_cast<char>(27) << "[H" << static_cast<char>(27) << "[2J";
   }
-  
-  
+
+
   //int getch(char &c)
   //{
   //     getch(c, true);
   //}
-  
-  
+
+
   int getch(char &c)
   {
        //if ( cin.eof() ) return 0;
        char temp;
-       
+
        c = 0;
        temp = cin.get();
-              
+
        switch (temp)
        {
           case 127: return KEY_BACKSPACE; break;
-          case 27: 
+          case 27:
           {
             temp = cin.get();
-  
+
             switch(temp)
             {
-                 
+
                  case 91 :
-                   { 
+                   {
                       temp = cin.get();
                       switch(temp)
                       {
@@ -98,40 +98,40 @@ namespace amethyst {
                                 }
                                 break;
                              }
-                           
+
                       }
                       break;
                    }
-                 
-            
+
+
             }
           }
           case 9  : return KEY_TAB;       break;
-    
-       }  
-       
+
+       }
+
        c = temp;
        return 0;
   }
-  
+
   void cursor_left (void)
   {
-       cout << (char)27 << (char)91 << (char)68; 
+       cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(68);
   }
-  
+
   void cursor_right(void)
   {
-       cout << (char)27 << (char)91 << (char)67; 
+       cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(67);
   }
-  
+
   void cursor_up   (void)
   {
-       cout << (char)27 << (char)91 << (char)65; 
+       cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(65);
   }
-  
+
   void cursor_down (void)
   {
-       cout << (char)27 << (char)91 << (char)66; 
+       cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(66);
   }
-   
+
 }
