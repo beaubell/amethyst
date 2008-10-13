@@ -26,9 +26,9 @@ void native_to_big_endian(void* vdst, const void* vsrc, int n)
     const int size = sizeof(T);
     for (int i = 0; i < n / size; ++i)
     {
-      dst[i] = (T)src[i * size] << 8 * (size - 1);
+      dst[i] = static_cast<T>(src[i * size]) << 8 * (size - 1);
       for (int j = 1; j < size; ++j)
-        dst[i] |= (T)src[i * size + j]
+        dst[i] |= static_cast<T>(src[i * size + j])
                << 8 * (size - j - 1);
     }
   #else
@@ -47,7 +47,7 @@ void native_to_little_endian(void* vdst, const void* vsrc, int n)
     const int size = sizeof(T);
     for (int i = 0; i < n / size; ++i)
     {
-      dst[i] = (T)src[i * size];
+      dst[i] = static_cast<T>(src[i * size]);
       for (int j = 1; j < size; ++j)
         dst[i] |= (T)src[i * size + j] << 8 * j;
     }
@@ -91,7 +91,7 @@ struct bit_count
   bit_count& operator = (const bit_count& rhs)
   {
     std::memcpy(data_, rhs.data_, sizeof(data_));
-    return *this;    
+    return *this;
   }
 
   void add(T x)

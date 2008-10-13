@@ -1,5 +1,7 @@
 
 
+SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
+
 SET(amethystserver_SRCS
   main.cpp
   connection.cpp
@@ -25,4 +27,5 @@ TARGET_LINK_LIBRARIES(
   libsha2
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_DATE_TIME_LIBRARY}
+  ${Boost_FILESYSTEM_LIBRARY}
 )

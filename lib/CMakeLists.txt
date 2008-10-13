@@ -9,7 +9,6 @@ SET(libamethyst_SRCS
   console_menu.cpp
   console_menu_main.cpp
   engine.cpp
-  main.cpp
   manifest.cpp
   net.cpp
   object.cpp
@@ -19,6 +18,10 @@ SET(libamethyst_SRCS
   universe.cpp
   utility.cpp
   vector.cpp
+)
+
+SET(amethystcmd_SRCS
+  main.cpp
 )
 
 INCLUDE_DIRECTORIES(
@@ -34,11 +37,18 @@ link_directories (
 
 ADD_LIBRARY(libamethyst ${libamethyst_SRCS})
 
+ADD_EXECUTABLE(amethystcmd ${amethystcmd_SRCS})
+
 TARGET_LINK_LIBRARIES(
   libamethyst
   libsha2
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_DATE_TIME_LIBRARY}
   ${Boost_FILESYSTEM_LIBRARY}
+)
+
+TARGET_LINK_LIBRARIES(
+  amethystcmd
+  libamethyst
 )
 

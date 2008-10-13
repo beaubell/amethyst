@@ -18,6 +18,7 @@
 #include <boost/noncopyable.hpp>
 #include "connection.h"
 #include "connection_manager.h"
+#include "manifest.h"
 
 namespace amethyst
 {
@@ -63,6 +64,8 @@ class server
 
     /// File Root
     std::string file_root;
+    /// Manifest
+    lib::filemanifest manifest_;
 };
 
 } // namespace amethyst

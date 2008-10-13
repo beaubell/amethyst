@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
+#include "lib/manifest.h"
 
 using namespace boost;
 using boost::asio::ip::tcp;
@@ -36,8 +37,13 @@ class tcp_connection
   : public boost::enable_shared_from_this<tcp_connection>
 {
    public:
-    tcp_connection(boost::asio::io_service& io_service, connection_manager& manager)
-       : socket_(io_service), connection_manager_(manager), client_login_attempts(0)
+    tcp_connection(boost::asio::io_service& io_service,
+                   connection_manager& manager,
+                   lib::filemanifest& manifest)
+       : socket_(io_service),
+         connection_manager_(manager),
+         manifest_(manifest),
+         client_login_attempts(0)
     {
     }
 
@@ -58,7 +64,7 @@ class tcp_connection
     //  Handle to see if client sent proper data
     void handshake_read();
     void handle_handshake_read(boost::system::error_code ec);
-    //  
+    //
     void login_send();
     void handle_login_send(boost::system::error_code ec);
 
@@ -71,11 +77,14 @@ class tcp_connection
     void main_sequence_read();
     void handle_main_sequence_read(boost::system::error_code ec);
 
+    void manifest_send();
+    void handle_manifest_send(boost::system::error_code ec);
 
     tcp::socket socket_;
     std::string message_;
     asio::streambuf in_data_;
     connection_manager& connection_manager_;
+    lib::filemanifest& manifest_;
 
     std::string client_prog;
     std::string client_version;

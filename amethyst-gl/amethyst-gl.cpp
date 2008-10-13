@@ -19,16 +19,7 @@
 #include <cstdlib>
 #include <stdexcept>
 
-#include <math.h>
-
-#include "lib/vector.h"
-#include "lib/orientation.h"
-#include "lib/object.h"
-#include "lib/physics.h"
-#include "lib/universe.h"
-
-#include <stdlib.h>
-
+#include "amethyst-gl.h"
 #include "global.h"
 #include "opengl.h"
 #include "opengl_shader.h"
@@ -72,8 +63,25 @@
 
 #define AMETHSYT_SHORT_NAME Amethyst-GL
 
-using namespace std;
-using namespace amethyst;
+namespace amethyst
+{
+namespace client
+{
+
+amethyst_gl::amethyst_gl(const std::string &path_root)
+    : manifest_(path_root)
+{
+
+}
+
+} // namespace client
+} // namespace amethyst
+
+
+// bring some standard stuff into our namespace
+using std::cout;
+using std::endl;
+using std::string;
 
 static void sdl_setup(void);
 static void sdl_setup(void);
@@ -165,6 +173,8 @@ static void main_loop()
 
 int main(int argc, char* argv[])
 {
+    using namespace amethyst::client;
+
     std::cout << QUOTEME(AMETHSYT_SHORT_NAME) << " Starting..." << std::endl;
     std::cout << " * " << argc-1 << " arguments found on command line." << std::endl;
 
@@ -178,6 +188,8 @@ int main(int argc, char* argv[])
 
     string config_file  = Global.dir_amethyst + "/config.xml";
     string stars_file   = Global.dir_amethyst + "/stars.csv";
+
+    amethyst_gl client(Global.dir_amethyst);
 
     // Check for existance of config.xml else fail siliently
     if(access(config_file.c_str(), F_OK) == 0) {
@@ -235,3 +247,5 @@ int main(int argc, char* argv[])
     SDL_Quit ();
     return EXIT_SUCCESS;
 }
+
+

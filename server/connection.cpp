@@ -210,10 +210,15 @@ void tcp_connection::handle_main_sequence_read(boost::system::error_code ec)
 
         // FIXME Handle commands
         if (command == "manifest")
-        {}
+        {
+            manifest_send();
+        }
         else if (command == "get")
         {}
-
+        else if (command == "bye")
+        {
+            connection_manager_.stop(shared_from_this());
+        }
 
         boost::asio::async_read_until(socket_, in_data_, "\r\n",
          boost::bind(&tcp_connection::handle_main_sequence_read, shared_from_this(), _1));
@@ -225,5 +230,17 @@ void tcp_connection::handle_main_sequence_read(boost::system::error_code ec)
     }
 }
 
+void tcp_connection::manifest_send()
+{
+    message_ = "Ok. " + lexical_cast<std::string>(manifest_.size()) + "Entries\r\n";
+    for (int count = 0;count < manifest_.size();count++)
+        message_ += manifest_[count].hash + " " + manifest_[count].file
+                 + " " + lexical_cast<std::string>(manifest_[count].size) + "\r\n";
+
+    message_ += "Ok. Client Ready...\r\n";
+    boost::asio::async_write(socket_, boost::asio::buffer(message_),
+     boost::bind(&tcp_connection::handle_main_sequence_send, shared_from_this(), _1));
+
+}
 
 } // namespace amethyst

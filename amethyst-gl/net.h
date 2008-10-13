@@ -1,3 +1,6 @@
+#ifndef AMETHYST_CLIENT_NET_H
+#define AMETHYST_CLIENT_NET_H
+
 /***********************************************************************
  Amethyst-GL
   - Network setup and processing function prototypes
@@ -10,15 +13,28 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#ifndef NET_H
-#define NET_H
-
 #include <sys/types.h>
 #include <time.h>
 
 #include "lib/object.h"
 #include "lib/net.h"
 
+#include "thread.h"
+
+namespace amethyst {
+namespace client {
+
+class network_client
+{
+   public:
+    network_client();
+    void start();
+    void stop();
+
+   private:
+    SF_Thread_Id net_thread;
+
+};
 
 int network_setup(void);
 
@@ -67,5 +83,8 @@ struct object_transfer
 #ifdef WIN32
 #pragma pack()
 #endif
+
+} // namespace client
+} // namespace amethyst
 
 #endif  /* NET_H */

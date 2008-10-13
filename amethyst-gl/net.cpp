@@ -21,6 +21,9 @@
 #include "net.h"
 #include "global.h"
 
+namespace amethyst {
+namespace client {
+
 SF_Thread_Id net_thread;
 int net_thread_stop = 0;
 
@@ -209,3 +212,6 @@ int net_start_thread(void *data)
 
   return 0;
 }
+
+} //namespace client
+} //namespace amethyst

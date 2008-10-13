@@ -35,7 +35,7 @@ class filemanifest
    public:
     filemanifest(void)
     {};
-    filemanifest(std::string &file_root)
+    filemanifest(const std::string &file_root)
     {
         initialize(file_root);
     };

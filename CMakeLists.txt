@@ -7,7 +7,7 @@ INCLUDE(./cmake/FindFreetype.cmake)
 FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(SDL)
 FIND_PACKAGE(SDL_net)
-FIND_PACKAGE(Boost 1.35.0 COMPONENTS asio date_time system thread)
+FIND_PACKAGE(Boost 1.35.0 COMPONENTS asio date_time filesystem system thread)
 
 #FIND_PACKAGE(Subversion)
 #IF(Subversion_FOUND)
@@ -26,7 +26,8 @@ CHECK_TYPE_SIZE("double"      SIZEOF_DOUBLE)
 CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-SET( CMAKE_CXX_FLAGS "-D HAVE_CONFIG_H -g3 -Wall -Wconversion -Wextra -Wold-style-cast") #-Weffc++
+SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -g3 -Wall -Wconversion -Wextra -Wold-style-cast")
+SET( SUPPORT_CXX_FLAGS "-o3")
 
 SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR} lib)

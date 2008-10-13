@@ -21,7 +21,7 @@ server::server(const std::string& address, const std::string& port,
   : io_service_(),
     acceptor_(io_service_),
     connection_manager_(),
-    new_connection_(new tcp_connection(io_service_, connection_manager_)),
+    new_connection_(new tcp_connection(io_service_, connection_manager_, manifest_)),
     file_root(config_root)
 {
     // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
@@ -35,6 +35,9 @@ server::server(const std::string& address, const std::string& port,
     acceptor_.async_accept(new_connection_->socket(),
       boost::bind(&server::handle_accept, this,
       boost::asio::placeholders::error));
+
+    // Get file manifest
+    manifest_.initialize(config_root);
 }
 
 void server::run()
@@ -58,7 +61,7 @@ void server::handle_accept(const boost::system::error_code& e)
   if (!e)
   {
     connection_manager_.start(new_connection_);
-    new_connection_.reset(new tcp_connection(io_service_, connection_manager_));
+    new_connection_.reset(new tcp_connection(io_service_, connection_manager_, manifest_));
     acceptor_.async_accept(new_connection_->socket(),
         boost::bind(&server::handle_accept, this,
           boost::asio::placeholders::error));

@@ -1,4 +1,6 @@
 
+SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
+
 SET(amethystgl_SRCS
   config_xml.cpp
   debug.cpp
