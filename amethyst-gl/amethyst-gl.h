@@ -13,6 +13,7 @@
  ***********************************************************************/
 
 #include "lib/manifest.h"
+#include "net.h"
 
 namespace amethyst
 {
@@ -26,6 +27,7 @@ class amethyst_gl
 
    private:
     lib::filemanifest manifest_;
+    //server_connection connection;
 
 };
 

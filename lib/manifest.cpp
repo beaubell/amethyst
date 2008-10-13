@@ -119,5 +119,29 @@ size_t filemanifest::calculate_sha256 (const boost::filesystem::path &path, std:
 
 }
 
+void filemanifest::push(const std::string &file, const std::string &hash, const size_t &size)
+{
+    fileentry entry = {file, hash, size};
+    filelist_.push_back(entry);
+}
+
+
+void diff(const filemanifest &in, const filemanifest &in2, filemanifest &out)
+{
+    for (int count = 0; count > in.size(); count++)
+    {
+        bool match = false;
+        for (int count2 = 0; count2 > in2.size(); count2++)
+        {
+            if((in[count].file == in2[count2].file) && (in[count].hash == in2[count2].hash))
+              match = true; 
+
+        }
+        if (match == false)
+         out.push(in[count].file, in[count].hash, in[count].size);
+
+    }
+}
+
 } // namespace lib
 } // namespace amethyst

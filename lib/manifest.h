@@ -43,21 +43,26 @@ class filemanifest
     void clear();
     bool initialize(const std::string &fileroot);
 
-    const fileentry &operator[](int pos)
+    const fileentry &operator[](int pos) const
     {
         return filelist_[pos];
     }
 
-    int size()
+    int size() const
     {
         return filelist_.size();
     }
+
+    void push(const std::string &file, const std::string &hash, const size_t &size);
 
    private:
     size_t calculate_sha256 (const boost::filesystem::path &path, std::string &sha256_out);
 
     std::vector<fileentry> filelist_;
 };
+
+// Minus 'in2' from 'in' assign whats left to out 
+void diff(const filemanifest &in, const filemanifest &in2, filemanifest &out);
 
 } // namespace lib
 } // namespace amethyst
