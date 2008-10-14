@@ -69,10 +69,21 @@ namespace client
 {
 
 amethyst_gl::amethyst_gl(const std::string &path_root)
-    : manifest_(path_root)
+    : manifest_(path_root),
+      connection(manifest_)
 {
 
+    connection.start("127.0.0.1", "2525", "beau", "test");
+    net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
 }
+
+void amethyst_gl::start_net()
+{
+    std::cout << "Thread: Starting Network Thread..." << std::endl;
+    connection.run();
+    std::cout << "Thread: Network Thread Terminating, Nothing to do..." << std::endl;
+}
+
 
 } // namespace client
 } // namespace amethyst

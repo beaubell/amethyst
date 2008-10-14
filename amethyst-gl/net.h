@@ -96,52 +96,51 @@ using boost::asio::ip::tcp;
 using boost::asio::ip::udp;
 
 class server_connection
-  : public boost::enable_shared_from_this<server_connection>
+  //: public boost::enable_shared_from_this<server_connection>
 {
    public:
-    server_connection(boost::asio::io_service& io_service,
-                      boost::asio::ip::tcp::endpoint endpoint,
-                      lib::filemanifest& manifest)
-       : socket_(io_service),
-         manifest_(manifest),
-         client_login_attempts(0)
+    server_connection(lib::filemanifest& manifest)
+        : io_service_(),
+          socket_(io_service_),
+          manifest_(manifest)
     {
-
-
     }
 
-    tcp::socket& socket()
-    {
-        return socket_;
-    }
-
-    void start();
+    void start(const std::string &server,
+               const std::string &port,
+               const std::string &user,
+               const std::string &pass);
 
     void stop();
 
-   private:
-    //  Check to see if handshake was sent out properly
-    void handshake_send();
-    void handle_handshake_send(boost::system::error_code ec);
+    void run(); //FIXME Migrate into start and make completely asynchryonous
 
-    //  Handle to see if client sent proper data
+   private:
+    //  Read server header
     void handshake_read();
     void handle_handshake_read(boost::system::error_code ec);
-    //
-    void login_send();
-    void handle_login_send(boost::system::error_code ec);
+
+    //  Send out header
+    void handshake_send();
+    void handle_handshake_send(boost::system::error_code ec);
 
     void login_read();
     void handle_login_read(boost::system::error_code ec);
 
-    void main_sequence_send();
-    void handle_main_sequence_send(boost::system::error_code ec);
+    void login_send();
+    void handle_login_send(boost::system::error_code ec);
 
-    void main_sequence_read();
-    void handle_main_sequence_read(boost::system::error_code ec);
+    //void main_sequence_send();
+    //void handle_main_sequence_send(boost::system::error_code ec);
 
-    void manifest_send();
-    void handle_manifest_send(boost::system::error_code ec);
+    //void main_sequence_read();
+    //void handle_main_sequence_read(boost::system::error_code ec);
+
+    //void manifest_send();
+    //void handle_manifest_send(boost::system::error_code ec);
+
+    /// The io_service used to perform asynchronous operations.
+    boost::asio::io_service io_service_;
 
     tcp::socket socket_;
     std::string message_;
@@ -151,12 +150,10 @@ class server_connection
     std::string server_prog;
     std::string server_version;
     std::string server_host;
-    std::string client_user;
-    std::string client_pass;
-    std::string client_hash;
-    std::string client_glext;
 
-    short client_login_attempts;
+    std::string server_user;
+    std::string server_pass;
+    std::string server_hash;
 };
 
 } // namespace client

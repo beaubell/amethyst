@@ -21,8 +21,176 @@
 #include "net.h"
 #include "global.h"
 
+#include <boost/crypto/sha2.hpp>
+#include <boost/crypto/message_digest.hpp>
+
 namespace amethyst {
 namespace client {
+
+void server_connection::start(const std::string &server,
+                              const std::string &port,
+                              const std::string &user,
+                              const std::string &pass)
+{
+    server_user = user;
+    server_pass = pass;
+
+    std::cout << "Net: Establishing Server Connection" << std::endl;
+
+    // Get a list of endpoints corresponding to the server name.
+    tcp::resolver resolver(io_service_);
+    tcp::resolver::query query(server, port);
+    tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+    tcp::resolver::iterator end;
+
+    // Try each endpoint until we successfully establish a connection.
+    boost::system::error_code error = boost::asio::error::host_not_found;
+    while (error && endpoint_iterator != end)
+    {
+      socket_.close();
+      socket_.connect(*endpoint_iterator++, error);
+    }
+    if (error)
+      throw boost::system::system_error(error);
+
+    std::cout << "Connected!" << std::endl;
+    // Read header from server
+    handshake_read();
+}
+
+void server_connection::stop()
+{
+    std::cout << "Connection terminated" << std::endl;
+    socket_.close();
+}
+
+void server_connection::run()
+{
+    io_service_.run();
+}
+
+void server_connection::handshake_read()
+{
+    // wait for server header
+    boost::asio::async_read_until(socket_, in_data_, "\r\n",
+     boost::bind(&server_connection::handle_handshake_read, this, _1));
+}
+
+void server_connection::handle_handshake_read(boost::system::error_code ec)
+{
+    if (!ec)
+    {
+        std::istream is(&in_data_);
+
+        // Check header
+        is >> server_prog >> server_version >> server_host;
+        is.ignore();
+
+        std::cout << server_prog << server_version << server_host << std::endl;
+
+        // Now send our header;
+        handshake_send();
+    }
+    else if (ec != boost::asio::error::operation_aborted)
+    {
+        //connection_manager_.stop(shared_from_this());
+    }
+}
+
+void server_connection::handshake_send()
+{
+    // Write Header
+    message_ = "Amethyst-GL 0.0.1 %host\r\n";
+    boost::asio::async_write(socket_, boost::asio::buffer(message_),
+      boost::bind(&server_connection::handle_handshake_send, this, _1));
+}
+
+void server_connection::handle_handshake_send(boost::system::error_code ec)
+{
+    if (!ec)
+    {
+        // Now read login prompt FIXME Check to see if client is out-of-date
+        login_read();
+    }
+    else if (ec != boost::asio::error::operation_aborted)
+    {
+        socket_.close();
+    }
+}
+
+void server_connection::login_read()
+{
+    boost::asio::async_read_until(socket_, in_data_, "\r\n",
+     boost::bind(&server_connection::handle_login_read, this, _1));
+
+}
+
+void server_connection::handle_login_read(boost::system::error_code ec)
+{
+    if (!ec)
+    {
+        std::istream is(&in_data_);
+        std::string  login_pmt;
+
+        // Get login prompt or out of date message
+        is >> login_pmt >> server_hash;
+        is.ignore(255);
+
+        if(login_pmt == "NewVersion:")
+        {
+            std::cout << "1 SERVER ERROR: New Version Required: " << server_hash << std::endl;
+            socket_.close();
+            return;
+        }
+
+        login_send();
+    }
+    else if (ec != boost::asio::error::operation_aborted)
+    {
+        std::istream is(&in_data_);
+        std::string  login_pmt;
+
+        // Get login prompt or out of date message
+        is >> login_pmt >> server_hash;
+
+        if(login_pmt == "NewVersion:")
+        {
+            std::cout << "2 SERVER ERROR: New Version Required: " << server_hash << std::endl;
+        }
+
+        socket_.close();
+    }
+}
+
+void server_connection::login_send()
+{
+    // Generate hash
+    boost::crypto::message_digest<boost::crypto::detail::sha256_ctx> sha256;
+
+    sha256.input(server_pass + server_hash);
+    std::string pass_hash = sha256.to_string();
+
+    // Construct header
+    message_ =  server_user + " " + pass_hash + "\r\n";
+
+    boost::asio::async_write(socket_, boost::asio::buffer(message_),
+     boost::bind(&server_connection::handle_login_send, this, _1));
+}
+
+void server_connection::handle_login_send(boost::system::error_code ec)
+{
+    if (!ec)
+    {
+        // ok, now wait for login reply
+        //login_read();
+    }
+    else if (ec != boost::asio::error::operation_aborted)
+    {
+        socket_.close();
+    }
+}
+
+
 
 SF_Thread_Id net_thread;
 int net_thread_stop = 0;

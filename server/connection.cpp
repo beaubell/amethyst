@@ -68,10 +68,10 @@ void tcp_connection::handle_handshake_read(boost::system::error_code ec)
         is.ignore();
 
         // Check version
-        if(!(client_version == "0.1"))
+        if(!(client_version == "0.0.1"))
         {
             // You need to upgrade
-            message_ = "New Version: 0.1 Upgrade now, bitch.\r\n";
+            message_ = "NewVersion: 0.0.1\r\n";
             boost::asio::async_write(socket_, boost::asio::buffer(message_),
              boost::bind(&tcp_connection::stop, shared_from_this()));
             return;

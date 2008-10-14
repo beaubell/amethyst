@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(
   ${SDL_INCLUDE_DIR}
   ${SDLNET_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIR}
+  ../support/
 )
 
 

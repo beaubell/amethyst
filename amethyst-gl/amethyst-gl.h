@@ -15,6 +15,8 @@
 #include "lib/manifest.h"
 #include "net.h"
 
+#include <boost/thread.hpp>
+
 namespace amethyst
 {
 namespace client
@@ -27,7 +29,10 @@ class amethyst_gl
 
    private:
     lib::filemanifest manifest_;
-    //server_connection connection;
+    server_connection connection;
+
+    boost::thread *net_thread;
+    void start_net();
 
 };
 
