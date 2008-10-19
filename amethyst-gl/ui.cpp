@@ -50,7 +50,7 @@ void UI::render(void)
     glLoadIdentity();
 
     glEnable( GL_TEXTURE_2D);
-    glDisable( GL_DEPTH_TEST);
+    //glDisable( GL_DEPTH_TEST);
 
     glColor3f( 1.0, 1.0, 1.0);
     glRasterPos2i( 20 , 20);

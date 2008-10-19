@@ -75,8 +75,8 @@ amethyst_gl::amethyst_gl(const std::string &path_root)
       ui("/spacefri.ttf") //FIXME make not static
 {
 
-    connection.start("127.0.0.1", "2525", "beau", "test");
-    net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
+    //connection.start("127.0.0.1", "2525", "beau", "test");
+    //net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
 }
 
 
