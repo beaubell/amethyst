@@ -60,6 +60,9 @@ class __global {
       // Field of View
       float   fov;
 
+      unsigned int screen_x;
+      unsigned int screen_y;
+
       // Joystick
       int               joysticks;         // Number of joysticks
       SDL_Joystick     *joystick[16];      // Pointers to joysticks
@@ -123,7 +126,6 @@ class __global {
       int    net_ships;
 
       Object reference_object;
-
 
 };
 

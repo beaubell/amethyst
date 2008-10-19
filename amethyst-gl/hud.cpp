@@ -67,7 +67,7 @@ void hud_setup(void)
 
 void hud_render(void)
 {
-
+    unsigned int screen_y = Global.screen_y;
 
     glColor3f(1.0f,1.0f,1.0f);
     glDisable( GL_DEPTH_TEST);

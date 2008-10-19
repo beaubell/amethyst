@@ -68,17 +68,61 @@ namespace amethyst
 namespace client
 {
 
+
 amethyst_gl::amethyst_gl(const std::string &path_root)
     : manifest_(path_root),
-      connection(manifest_)
+      connection(manifest_),
+      ui("/spacefri.ttf") //FIXME make not static
 {
 
     connection.start("127.0.0.1", "2525", "beau", "test");
     net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
 }
 
+
+void amethyst_gl::main_loop()
+{
+    Universe &universe = Global.universe;
+
+    while(1) {
+    Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
+
+    // Process Inputs
+    int status = process_inputs();
+    if (status) return;
+
+    // Iterate Physics Engine
+    Global.time_interval = SDL_GetTicks() - Global.time_ticks;
+    Global.time_ticks += Global.time_interval;
+    if (Global.time_interval > 0)
+        universe.iterate(Global.time_interval / 1000.0);
+
+    /* update the screen */
+    render();
+    }
+}
+
+
+void amethyst_gl::render()
+{
+    // Clear the window with current clearing color
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    scene_render();
+
+    // Display HUD
+    hud_render();
+
+    ui.render();
+
+    // Do the buffer Swap
+    SDL_GL_SwapBuffers();
+}
+
+
 void amethyst_gl::start_net()
 {
+    std::cout << "Net: Handing over control to Netwrok Thread...\n";
     std::cout << "Thread: Starting Network Thread..." << std::endl;
     connection.run();
     std::cout << "Thread: Network Thread Terminating, Nothing to do..." << std::endl;
@@ -96,7 +140,6 @@ using std::string;
 
 static void sdl_setup(void);
 static void sdl_setup(void);
-static void main_loop(void);
 
 
 static void sdl_setup()
@@ -159,27 +202,7 @@ static void sdl_setup()
 }
 
 
-static void main_loop()
-{
-    Universe &universe = Global.universe;
 
-    while(1) {
-    Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
-
-    // Process Inputs
-    int status = process_inputs();
-    if (status) return;
-
-    // Iterate Physics Engine
-    Global.time_interval = SDL_GetTicks() - Global.time_ticks;
-    Global.time_ticks += Global.time_interval;
-    if (Global.time_interval > 0)
-        universe.iterate(Global.time_interval / 1000.0);
-
-    /* update the screen */
-    scene_render();
-    }
-}
 
 
 int main(int argc, char* argv[])
@@ -199,8 +222,6 @@ int main(int argc, char* argv[])
 
     string config_file  = Global.dir_amethyst + "/config.xml";
     string stars_file   = Global.dir_amethyst + "/stars.csv";
-
-    amethyst_gl client(Global.dir_amethyst);
 
     // Check for existance of config.xml else fail siliently
     if(access(config_file.c_str(), F_OK) == 0) {
@@ -222,6 +243,8 @@ int main(int argc, char* argv[])
     opengl_setup();
 
     joystick_setup();
+
+    amethyst_gl client(Global.dir_amethyst);
 
     // FIXME XXX network_setup();
 
@@ -246,9 +269,7 @@ int main(int argc, char* argv[])
         load_shader(Global.vshader, Global.fshader);
 
 
-      //load_skybox();
-
-      main_loop();
+    client.main_loop();
 
     models_free();
     stars_free();

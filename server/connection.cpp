@@ -38,7 +38,7 @@ void tcp_connection::stop()
 void tcp_connection::handshake_send()
 {
     // Write Header
-    message_ = "Amethyst-Server 0.1 %host\r\n";
+    message_ = "Amethyst-Server 0.0.1 %host\r\n";
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
       boost::bind(&tcp_connection::handle_handshake_send, shared_from_this(), _1));
 }
@@ -135,6 +135,18 @@ void tcp_connection::handle_login_read(boost::system::error_code ec)
         // Is login valid?
         is >> client_user >> client_pass;
         is.ignore(255);
+
+        std::cout << "Received Login info: " << client_user << " " << client_pass << std::endl;
+
+        boost::crypto::message_digest<boost::crypto::detail::sha256_ctx> sha256;
+
+        sha256.input("test"+client_hash);
+        std::string hash = sha256.to_string();
+
+        if (hash == client_pass)
+            std::cout << "Login Sucessful!!" << std::endl;
+        else
+            std::cout << "Login Not Sucessful!!" << std::endl;
 
         // check user and pass agianst database;
         if(1)

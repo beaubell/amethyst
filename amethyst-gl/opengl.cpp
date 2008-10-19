@@ -118,10 +118,6 @@ GLboolean glFramebufferObjectEnabled   = GL_FALSE;
 GLboolean glShaderObjectsSupported  = GL_FALSE;
 GLboolean glShaderObjectsEnabled    = GL_FALSE;
 
-
-unsigned int screen_x = 1024;
-unsigned int screen_y = 640;
-
 static void opengl_ext_window_pos(void);
 static void opengl_ext_occlusion_query(void);
 static void opengl_ext_framebuffer_object(void);
@@ -200,7 +196,8 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
     // Set the clipping volume
     gluPerspective(Global.fov, fAspect, 5.0f, 5e9f);
 
-    screen_x = w, screen_y = h;
+    Global.screen_x = w;
+    Global.screen_y = h;
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

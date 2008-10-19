@@ -138,7 +138,4 @@ extern GLboolean glFramebufferObjectEnabled;
 extern GLboolean glShaderObjectsSupported;
 extern GLboolean glShaderObjectsEnabled;
 
-extern unsigned int screen_x;
-extern unsigned int screen_y;
-
 #endif /* SF_OPENGL_H */

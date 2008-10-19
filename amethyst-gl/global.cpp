@@ -24,6 +24,9 @@ __global::__global()
     // Field of view (in degrees)
     fov      =     40;
 
+    screen_x = 1024;
+    screen_y = 640;
+
     // Timers
     time_ticks    = 0;
     time_interval = 0;

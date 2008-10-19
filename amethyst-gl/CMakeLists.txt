@@ -19,6 +19,7 @@ SET(amethystgl_SRCS
   texture.cpp
   thread.cpp
   timer.cpp
+  ui.cpp
   amethyst-gl.cpp
 )
 

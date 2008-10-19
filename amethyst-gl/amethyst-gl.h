@@ -14,6 +14,7 @@
 
 #include "lib/manifest.h"
 #include "net.h"
+#include "ui.h"
 
 #include <boost/thread.hpp>
 
@@ -27,12 +28,18 @@ class amethyst_gl
    public:
     amethyst_gl(const std::string &path_root);
 
+    void main_loop(void);
+    void render   (void);
+
    private:
     lib::filemanifest manifest_;
     server_connection connection;
 
     boost::thread *net_thread;
     void start_net();
+
+    //Universe universe;
+    UI       ui;
 
 };
 

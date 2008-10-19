@@ -114,6 +114,7 @@ void server_connection::handle_handshake_send(boost::system::error_code ec)
     }
     else if (ec != boost::asio::error::operation_aborted)
     {
+        std::cout << "ABORTED!" << std::endl;
         socket_.close();
     }
 }
@@ -138,7 +139,7 @@ void server_connection::handle_login_read(boost::system::error_code ec)
 
         if(login_pmt == "NewVersion:")
         {
-            std::cout << "1 SERVER ERROR: New Version Required: " << server_hash << std::endl;
+            std::cout << "SERVER ERROR: New Version Required: " << server_hash << std::endl;
             socket_.close();
             return;
         }
@@ -147,17 +148,6 @@ void server_connection::handle_login_read(boost::system::error_code ec)
     }
     else if (ec != boost::asio::error::operation_aborted)
     {
-        std::istream is(&in_data_);
-        std::string  login_pmt;
-
-        // Get login prompt or out of date message
-        is >> login_pmt >> server_hash;
-
-        if(login_pmt == "NewVersion:")
-        {
-            std::cout << "2 SERVER ERROR: New Version Required: " << server_hash << std::endl;
-        }
-
         socket_.close();
     }
 }
@@ -182,7 +172,7 @@ void server_connection::handle_login_send(boost::system::error_code ec)
     if (!ec)
     {
         // ok, now wait for login reply
-        //login_read();
+        //manifest_send();
     }
     else if (ec != boost::asio::error::operation_aborted)
     {

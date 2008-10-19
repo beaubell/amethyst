@@ -114,9 +114,6 @@ void scene_render(void)
 
   set_camera(attitude, 1.0);
 
-  // Clear the window with current clearing color
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   //Stars
   {
     glPushMatrix();
@@ -212,11 +209,6 @@ void scene_render(void)
     glPopMatrix();
   }
 
-  // Display HUD
-  hud_render();
-
-  // Do the buffer Swap
-  SDL_GL_SwapBuffers();
 }
 
 
