@@ -23,10 +23,10 @@ namespace amethyst
 namespace client
 {
 
-class amethyst_gl
+class Amethyst_GL
 {
    public:
-    amethyst_gl(const std::string &path_root);
+    Amethyst_GL(const std::string &path_root);
 
     void main_loop(void);
     void render   (void);

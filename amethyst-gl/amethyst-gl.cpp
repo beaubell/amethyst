@@ -69,18 +69,23 @@ namespace client
 {
 
 
-amethyst_gl::amethyst_gl(const std::string &path_root)
+Amethyst_GL::Amethyst_GL(const std::string &path_root)
     : manifest_(path_root),
       connection(manifest_),
       ui("/spacefri.ttf") //FIXME make not static
 {
 
+    /// DONT QUITE START THE NETWORK THREAD JUST YET
     //connection.start("127.0.0.1", "2525", "beau", "test");
     //net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
+
+    /// Create and add FPS widget to UI.
+    UI_Window_ptr win_fps(new UIW_FPS(ui));
+    ui.add(win_fps);
 }
 
 
-void amethyst_gl::main_loop()
+void Amethyst_GL::main_loop()
 {
     Universe &universe = Global.universe;
 
@@ -103,7 +108,7 @@ void amethyst_gl::main_loop()
 }
 
 
-void amethyst_gl::render()
+void Amethyst_GL::render()
 {
     // Clear the window with current clearing color
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -120,7 +125,7 @@ void amethyst_gl::render()
 }
 
 
-void amethyst_gl::start_net()
+void Amethyst_GL::start_net()
 {
     std::cout << "Net: Handing over control to Netwrok Thread...\n";
     std::cout << "Thread: Starting Network Thread..." << std::endl;
@@ -244,7 +249,7 @@ int main(int argc, char* argv[])
 
     joystick_setup();
 
-    amethyst_gl client(Global.dir_amethyst);
+    Amethyst_GL client(Global.dir_amethyst);
 
     // FIXME XXX network_setup();
 

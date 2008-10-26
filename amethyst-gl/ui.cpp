@@ -14,6 +14,8 @@
 #include "global.h"
 
 #include <iostream>
+#include <sstream>
+#include <boost/bind.hpp>
 
 namespace amethyst {
 namespace client {
@@ -23,29 +25,17 @@ UI::UI(const std::string &fontfile)
 {
     const std::string fontpath = Global.dir_fonts + fontfile;
 
-    font = new FTGLTextureFont( fontpath.c_str());
+    font_ = new FTGLTextureFont( fontpath.c_str());
 
-    if(font->Error())
+    if(font_->Error())
       std::cout << "Font: %s TTF Font did not load!!" <<  fontpath << std::endl;
     else
       std::cout << "Font: %s loaded" << fontpath << std::endl;
 
-    static GLuint textureID;
-
-    font->FaceSize( 18);
+    font_->FaceSize( 18);
     //font->Depth(20);
-    font->UseDisplayList(true);
+    font_->UseDisplayList(true);
 
-    //font->CharMap(ft_encoding_unicode);
-/*
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 4, 4, 0, GL_RGB, GL_FLOAT, texture);
-*/
 }
 
 UI::~UI()
@@ -53,7 +43,7 @@ UI::~UI()
     // Delete all wigets
 
     // Delete fonts
-    delete font;
+    delete font_;
 }
 
 void UI::render(void)
@@ -66,8 +56,7 @@ void UI::render(void)
     // Set camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt( 0.0, 0.0, (float)h_win/2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
+    gluLookAt( 0.0f, 0.0f, 1000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
     float light1_ambient[4]  = { 1.0, 1.0, 1.0, 1.0 };
     float light1_diffuse[4]  = { 1.0, 0.9, 0.9, 1.0 };
@@ -102,17 +91,86 @@ void UI::render(void)
     glNormal3f( 0.0, 0.0, 1.0);
     glColor3f( 1.0, 1.0, 1.0);
 
-    glRasterPos2f(-0.40f, 0.35f);
-
-    font->Render("ABCDEFGH");
+    /// Render each window
+    std::for_each(windows_.begin(), windows_.end(),
+       boost::bind(&UI_Window::render, _1, 200, 200));
 
     glPopMatrix();
     glPopAttrib();
 }
 
-//void UI::add();
-//void UI::remove();
+FTFont& UI::get_font()
+{
+    return *font_;
+}
 
+void UI::add(UI_Window_ptr window)
+{
+    windows_.insert(window);
+}
+
+void UI::remove(UI_Window_ptr window)
+{
+    windows_.erase(window);
+}
+
+UI_Window::UI_Window(UI &ui)
+    : font(ui.get_font())
+{
+
+
+}
+
+UI_Window::~UI_Window()
+{
+}
+
+
+UIW_FPS::UIW_FPS(UI &ui)
+    : UI_Window(ui),
+      frames(0),
+      benchmark(0),
+      fps(0.0f)
+{
+}
+
+void UIW_FPS::render(unsigned int x, unsigned int y)
+{
+    std::string fpsstring;
+    if(frames > 100)
+    {
+        unsigned int elapsed = SDL_GetTicks() - benchmark;
+        fps = static_cast<float>(frames)/(static_cast<float>(elapsed)/1000.0f);
+        benchmark += elapsed;
+        frames = 0;
+    }
+
+    std::stringstream temp;
+    std::string temp1;
+    temp.precision(1);
+    temp.setf(std::ios::fixed, std::ios::floatfield);
+    temp << fps;
+
+    temp >> temp1;
+    fpsstring = "FPS: " + temp1;
+
+    //glRasterPos2i(x, y);
+    glTranslatef(x,y,0.0f);
+    font.Render(fpsstring.c_str());
+
+    frames++;
+}
+
+
+UIW_Test::UIW_Test(UI &ui)
+    : UI_Window(ui)
+{
+}
+
+void UIW_Test::render(unsigned int x, unsigned int y)
+{
+
+}
 
 
 } // namespace client
