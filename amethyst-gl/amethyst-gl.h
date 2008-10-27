@@ -31,6 +31,7 @@ class Amethyst_GL
     void main_loop(void);
     void render   (void);
 
+    UI       ui;
    private:
     lib::filemanifest manifest_;
     server_connection connection;
@@ -39,7 +40,6 @@ class Amethyst_GL
     void start_net();
 
     //Universe universe;
-    UI       ui;
 
 };
 

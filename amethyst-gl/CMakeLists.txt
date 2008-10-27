@@ -10,6 +10,7 @@ SET(amethystgl_SRCS
   joystick.cpp
   model.cpp
   model_xml.cpp
+  module.cpp
   net.cpp
   opengl.cpp
   opengl_shader.cpp
@@ -39,3 +40,4 @@ link_directories (${SDL_LIBRARY} ${Boost_LIBRARY_DIRS})
 ADD_EXECUTABLE(amethyst-gl ${amethystgl_SRCS})
 TARGET_LINK_LIBRARIES(amethyst-gl freetype SDL SDL_net xml2 GL GLU libamethyst libftgl ${Boost_THREAD_LIBRARY})
 
+SUBDIRS(modules)

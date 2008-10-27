@@ -126,52 +126,5 @@ UI_Window::~UI_Window()
 }
 
 
-UIW_FPS::UIW_FPS(UI &ui)
-    : UI_Window(ui),
-      frames(0),
-      benchmark(0),
-      fps(0.0f)
-{
-}
-
-void UIW_FPS::render(unsigned int x, unsigned int y)
-{
-    std::string fpsstring;
-    if(frames > 100)
-    {
-        unsigned int elapsed = SDL_GetTicks() - benchmark;
-        fps = static_cast<float>(frames)/(static_cast<float>(elapsed)/1000.0f);
-        benchmark += elapsed;
-        frames = 0;
-    }
-
-    std::stringstream temp;
-    std::string temp1;
-    temp.precision(1);
-    temp.setf(std::ios::fixed, std::ios::floatfield);
-    temp << fps;
-
-    temp >> temp1;
-    fpsstring = "FPS: " + temp1;
-
-    //glRasterPos2i(x, y);
-    glTranslatef(x,y,0.0f);
-    font.Render(fpsstring.c_str());
-
-    frames++;
-}
-
-
-UIW_Test::UIW_Test(UI &ui)
-    : UI_Window(ui)
-{
-}
-
-void UIW_Test::render(unsigned int x, unsigned int y)
-{
-
-}
-
-
 } // namespace client
 } // namespace amethyst

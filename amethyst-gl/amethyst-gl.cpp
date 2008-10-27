@@ -27,6 +27,7 @@
 #include "net.h"
 #include "texture.h"
 #include "model.h"
+#include "module.h"
 #include "config_xml.h"
 #include "stars.h"
 #include "thread.h"
@@ -70,9 +71,9 @@ namespace client
 
 
 Amethyst_GL::Amethyst_GL(const std::string &path_root)
-    : manifest_(path_root),
-      connection(manifest_),
-      ui("/spacefri.ttf") //FIXME make not static
+    : ui("/spacefri.ttf"), //FIXME make not static
+      manifest_(path_root),
+      connection(manifest_)
 {
 
     /// DONT QUITE START THE NETWORK THREAD JUST YET
@@ -80,8 +81,18 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     //net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
 
     /// Create and add FPS widget to UI.
-    UI_Window_ptr win_fps(new UIW_FPS(ui));
-    ui.add(win_fps);
+    //UI_Window_ptr win_fps(new UIW_FPS(ui));
+    //ui.add(win_fps);
+
+    /// Load FPS Widget module and start it
+    //module_manager.load("uiwfps");
+    //module_manager.start("uiwfps", *this);
+
+    module_manager.load("uiw_test");
+    module_manager.start("uiw_test", *this);
+
+    module_manager.start("BOO!", *this);
+
 }
 
 
@@ -224,6 +235,7 @@ int main(int argc, char* argv[])
     Global.dir_models   = Global.dir_amethyst + "/models/";
     Global.dir_shaders  = Global.dir_amethyst + "/shaders/";
     Global.dir_fonts    = Global.dir_amethyst + "/fonts";
+    Global.dir_modules = Global.dir_amethyst + "/modules/";
 
     string config_file  = Global.dir_amethyst + "/config.xml";
     string stars_file   = Global.dir_amethyst + "/stars.csv";
@@ -280,6 +292,10 @@ int main(int argc, char* argv[])
     stars_free();
 
     thread_stop_all();
+
+    module_manager.stop_all();
+
+    module_manager.unload_all();
 
     SDL_Quit ();
     return EXIT_SUCCESS;

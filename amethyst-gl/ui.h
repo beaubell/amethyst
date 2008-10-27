@@ -61,26 +61,6 @@ class UI_Window
 };
 
 
-class UIW_FPS : public UI_Window
-{
-   public:
-    UIW_FPS(UI &ui);
-    void render(unsigned int x, unsigned int y);
-
-   private:
-    unsigned int frames;
-    unsigned int benchmark;
-    float fps;
-};
-
-
-class UIW_Test : public UI_Window
-{
-   public:
-    UIW_Test(UI &ui);
-    void render(unsigned int x, unsigned int y);
-};
-
 } // namespace client
 } // namespace amethyst
 
