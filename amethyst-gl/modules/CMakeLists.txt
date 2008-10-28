@@ -2,7 +2,7 @@
 
 SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
 
-SET(moduiwfps_SRCS
+SET(mod_uiw_fps_SRCS
   mod_uiw_fps.cpp
 )
 
@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(uiwfps MODULE ${moduiwfps_SRCS})
+ADD_LIBRARY(uiw_fps MODULE ${mod_uiw_fps_SRCS})
 ADD_LIBRARY(uiw_test MODULE ${mod_uiw_test_SRCS})
 
 #TARGET_LINK_LIBRARIES(

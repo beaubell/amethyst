@@ -53,7 +53,7 @@ class UI_Window
     UI_Window(UI &ui);
     virtual ~UI_Window();
 
-    virtual void render(unsigned int x, unsigned int y) = 0;
+    virtual void render(float min_x, float max_x, float min_y, float max_y) = 0;
 
    protected:
     FTFont &font;

@@ -84,14 +84,12 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     //UI_Window_ptr win_fps(new UIW_FPS(ui));
     //ui.add(win_fps);
 
-    /// Load FPS Widget module and start it
-    //module_manager.load("uiwfps");
-    //module_manager.start("uiwfps", *this);
+    /// Load Test UI modules and start it
+    if (module_manager.load("uiw_test"))
+        module_manager.start("uiw_test", *this);
 
-    module_manager.load("uiw_test");
-    module_manager.start("uiw_test", *this);
-
-    module_manager.start("BOO!", *this);
+    if  (module_manager.load("uiw_fps"))
+        module_manager.start("uiw_fps", *this);
 
 }
 
@@ -293,7 +291,7 @@ int main(int argc, char* argv[])
 
     thread_stop_all();
 
-    module_manager.stop_all();
+    //module_manager.stop_all();
 
     module_manager.unload_all();
 

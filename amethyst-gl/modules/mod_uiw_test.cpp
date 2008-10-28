@@ -11,8 +11,6 @@
  ***********************************************************************/
 
 #include "../amethyst-gl.h"
-//#include "../ui.h"
-//#include "SDL.h"
 
 #include <iostream>
 
@@ -28,12 +26,10 @@ namespace module {
 static const std::string module_name = "uiw_test";
 static const std::string module_version = "0.0.1";
 
-//static Module_ptr    module;
 static UI_Window_ptr window;
 static bool          module_active = false;
 
-Amethyst_GL         *agl;
-
+static Amethyst_GL*            agl = NULL;
 
 
 /// UI_Window class derivative
@@ -42,7 +38,7 @@ class UIW_Test : public UI_Window
    public:
     UIW_Test(UI &ui);
     ~UIW_Test();
-    void render(unsigned int x, unsigned int y);
+    void render(float min_x, float max_x, float min_y, float max_y);
 
    private:
 };
@@ -59,9 +55,46 @@ UIW_Test::~UIW_Test()
 }
 
 
-void UIW_Test::render(unsigned int x, unsigned int y)
+void UIW_Test::render(float min_x, float max_x, float min_y, float max_y)
 {
-    /// Render Test
+    GLfloat frame[] = 
+        { 100.0f,100.0f,0.0f,  -100.0f,100.0f,0.0f,  -100.0f,-100.0f,0.0f,  100.0f,-100.0f,0.0f,
+          200.0f,200.0f,0.0f,  -200.0f,200.0f,0.0f,  -200.0f,-200.0f,0.0f,  200.0f,-200.0f,0.0f,
+          300.0f,300.0f,0.0f,  -300.0f,300.0f,0.0f,  -300.0f,-300.0f,0.0f,  300.0f,-300.0f,0.0f,
+          400.0f,400.0f,0.0f,  -400.0f,400.0f,0.0f,  -400.0f,-400.0f,0.0f,  400.0f,-400.0f,0.0f,
+          500.0f,500.0f,0.0f,  -500.0f,500.0f,0.0f,  -500.0f,-500.0f,0.0f,  500.0f,-500.0f,0.0f,
+          750.0f,750.0f,0.0f,  -750.0f,750.0f,0.0f,  -750.0f,-750.0f,0.0f,  750.0f,-750.0f,0.0f};
+
+    GLushort frame_idx[] = {0,1,2,3,0, 4,5,6,7,4, 8,9,10,11,8,
+                            12,13,14,15,12, 16,17,18,19,16, 20,21,22,23,20};
+
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, frame);
+    for (int i = 0; i < 6; i++)
+        glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx + i*5);
+
+    glDisableClientState(GL_VERTEX_ARRAY);
+
+    for (int i = 1; i < 6; i++)
+    {
+        glPushMatrix();
+        glTranslatef(static_cast<float>(i)*100.0f,0.0f,0.0f);
+
+        std::string temp = "x:" + lexical_cast<std::string>(i*100);
+        font.Render(temp.c_str());
+        glPopMatrix();
+    }
+
+    for (int i = 1; i < 6; i++)
+    {
+        glPushMatrix();
+        glTranslatef(0.0f,static_cast<float>(i)*100.0f,0.0f);
+
+        std::string temp = "y:" + lexical_cast<std::string>(i*100);
+        font.Render(temp.c_str());
+        glPopMatrix();
+    }
+
 }
 
 } // namespace module
@@ -114,10 +147,10 @@ void init(void)
 
 void fini(void)
 {
-    std::cout << "Module: " << module_name << " Shutting Down..." << std::endl;
-    //module_manager.unreg(module);
+    //std::cout << "Module s: " << module_name << " Shutting Down..." << std::endl;
+    // FIXME: module_name gets corrupted at this point...  Need to figure out why...
 
-    //module.reset();
+    std::cout << "Module Shutting Down..." << std::endl;
 }
 
 /// Module Entry Points
@@ -125,21 +158,37 @@ extern "C" bool mod_start(Amethyst_GL &agl_temp)
 {
     std::cout << "Module: " << module_name << " Activating..." << std::endl;
 
-    agl = &agl_temp;
+    if (module_active == false)
+    {
+        agl = &agl_temp;
 
-    window = UI_Window_ptr(new UIW_Test(agl->ui));
-    agl->ui.add(window);
+        window = UI_Window_ptr(new UIW_Test(agl->ui));
+        agl->ui.add(window);
 
-    return true; // FIXME - Return something meaningful
+        module_active = true;
+        return true;
+    }
+
+    std::cout << "Module Error: " << module_name << " Already Activated!" << std::endl;
+    return false;
 }
 
 extern "C" bool mod_stop()
 {
     std::cout << "Module: " << module_name << " Deactivating..." << std::endl;
-    agl->ui.remove(window);
-    window.reset();
 
-    return true; // FIXME - Return something meaningful
+    if(module_active == true)
+    {
+        assert(agl != NULL);
+        agl->ui.remove(window);
+        window.reset();
+
+        module_active = false;
+        return true;
+    }
+
+    std::cout << "Module Error: " << module_name << " Already Deactivated!" << std::endl;
+    return false;
 }
 
 extern "C" const std::string& mod_get_name()

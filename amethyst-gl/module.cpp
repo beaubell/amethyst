@@ -14,6 +14,7 @@
 #include "global.h"
 
 #include <boost/bind.hpp>
+#include <exception>
 
 #ifdef WIN32
 #include <windows.h>
@@ -30,7 +31,12 @@ static const std::string blank("NULL");
 /// Module Class Functions
 Module::Module(const std::string &module_name, const std::string &module_path)
     : name_(module_name),
-      path_(module_path)
+      path_(module_path),
+      mod_start_(NULL),
+      mod_stop_(NULL),
+      mod_get_name_(NULL),
+      mod_get_version_(NULL),
+      mod_is_active_(NULL)
 {
     std::cout << "Loading Module: " <<  module_path << std::endl;
 
@@ -38,10 +44,12 @@ Module::Module(const std::string &module_name, const std::string &module_path)
     #ifdef WIN32
     LoadLibrary (module_path.c_str());
     #else
-    dl_handle_ = dlopen(path_.c_str(), RTLD_NOW | RTLD_LOCAL);
-    std::cout << dlerror() << std::endl;
+    dl_handle_ = dlopen(path_.c_str(), RTLD_LAZY);
 
-    /// if dl_handle == NULL, Throw()
+    if (!dl_handle_) {
+        std::cerr << "Cannot open library: " << dlerror() << '\n';
+        throw( std::runtime_error(dlerror()) );
+    }
     #endif
 
     /// Getting Entry Points
@@ -54,6 +62,8 @@ Module::Module(const std::string &module_name, const std::string &module_path)
     mod_get_version_ = reinterpret_cast<Mod_Get_Version_Func>(dlsym(dl_handle_, "mod_get_version"));
     mod_is_active_   = reinterpret_cast<Mod_Is_Active_Func>  (dlsym(dl_handle_, "mod_is_active"));
     #endif
+
+    std::cout << "Reg Func: " << (mod_start_ ? "*" : "-") << std::endl;
 }
 
 Module::~Module()
@@ -123,6 +133,7 @@ void Module_Manager::unreg(Module_ptr module)
 
 void Module_Manager::start(const std::string &name,Amethyst_GL &agl)
 {
+    std::cerr << "Finding Module, " << name << ", to Start." << std::endl;
     /// Find Module name "name"
     std::set<Module_ptr>::iterator mod =
             std::find_if(modules_.begin(), modules_.end(),  (bind(&Module::name, _1) == name) );
@@ -131,7 +142,7 @@ void Module_Manager::start(const std::string &name,Amethyst_GL &agl)
     if(mod != modules_.end())
         (*mod)->start(agl);
     else
-        std::cout << "Starting Module Failed: Module, " << name << ", not found!" << std::endl;
+        std::cerr << "Starting Module Failed: Module, " << name << ", not found!" << std::endl;
 
 }
 
@@ -177,6 +188,8 @@ bool Module_Manager::load(const std::string &module_name)
     }
     catch (...)
     {
+        std::cout << "ERROR: Module, " << module_path << ", Failed to Load!" << std::endl;
+        return false;
     }
 
     modules_.insert(module);

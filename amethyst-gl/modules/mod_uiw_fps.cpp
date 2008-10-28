@@ -20,67 +20,32 @@
 #include "windows.h"
 #endif
 
-#if 0
 namespace amethyst {
 namespace client {
 namespace module {
 
-#ifndef WIN32
-void __attribute__ ((constructor)) init(void);
-void __attribute__ ((destructor)) fini(void);
-#endif
+/// Module Static Objects
+static const std::string module_name = "uiw_fps";
+static const std::string module_version = "0.0.1";
+
+static UI_Window_ptr window;
+static bool          module_active = false;
+
+static Amethyst_GL*            agl = NULL;
+
 
 /// UI_Window class derivative
 class UIW_FPS : public UI_Window
 {
    public:
     UIW_FPS(UI &ui);
-    void render(unsigned int x, unsigned int y);
+    void render(float min_x, float max_x, float min_y, float max_y);
 
    private:
     unsigned int frames;
     unsigned int benchmark;
     float fps;
 };
-
-/// Module Static Objects
-static const std::string module_name = "uiwfps";
-static Module_ptr module(new Module(module_name));
-
-static UI_Window_ptr window;
-
-/// Module function prototypes
-static void start(Amethyst_GL &agl);
-static void stop(Amethyst_GL &agl);
-
-void init(void)
-{
-    std::cout << "Loading Module: " << module_name << std::endl;
-
-    module->reg_start(&start);
-    module->reg_stop(&stop);
-
-    module_manager.reg(module);
-}
-
-
-void fini(void)
-{
-    module_manager.unreg(module);
-}
-
-static void start(Amethyst_GL &agl)
-{
-    window = UI_Window_ptr(new UIW_FPS(agl.ui));
-    agl.ui.add(window);
-
-}
-
-static void stop(Amethyst_GL &agl)
-{
-    agl.ui.remove(window);
-    window.reset();
-}
 
 UIW_FPS::UIW_FPS(UI &ui)
     : UI_Window(ui),
@@ -90,7 +55,7 @@ UIW_FPS::UIW_FPS(UI &ui)
 {
 }
 
-void UIW_FPS::render(unsigned int x, unsigned int y)
+void UIW_FPS::render(float min_x, float max_x, float min_y, float max_y)
 {
     std::string fpsstring;
     if(frames > 100)
@@ -110,9 +75,10 @@ void UIW_FPS::render(unsigned int x, unsigned int y)
     temp >> temp1;
     fpsstring = "FPS: " + temp1;
 
-    //glRasterPos2i(x, y);
-    glTranslatef(x,y,0.0f);
+    glPushMatrix();
+    glTranslatef(min_x,min_y,0.0f);
     font.Render(fpsstring.c_str());
+    glPopMatrix();
 
     frames++;
 }
@@ -120,6 +86,10 @@ void UIW_FPS::render(unsigned int x, unsigned int y)
 } // namespace module
 } // namespace client
 } // namespace amethyst
+
+using namespace amethyst;
+using namespace amethyst::client;
+using namespace amethyst::client::module;
 
 
 /// Windows Specific Module Initiators
@@ -141,7 +111,82 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
     return false;
 }
 #else
-//void __attribute__ ((constructor)) amethyst::client::module::init(void);
-//void __attribute__ ((destructor)) amethyst::client::module::fini(void);
+void __attribute__ ((constructor)) init(void);
+void __attribute__ ((destructor)) fini(void);
 #endif
-#endif
+
+/// Main Initiators
+void init(void)
+{
+    std::cout << "Module: " << module_name << " Initializing..." << std::endl;
+
+    //module = Module_ptr(new Module(module_name));
+
+    //module->reg_start(&start);
+    //module->reg_stop(&stop);
+
+    //module_manager.reg(module);
+}
+
+
+void fini(void)
+{
+    //std::cout << "Module s: " << module_name << " Shutting Down..." << std::endl;
+    // FIXME: module_name gets corrupted at this point...  Need to figure out why...
+
+    std::cout << "Module Shutting Down..." << std::endl;
+}
+
+
+/// Module Entry Points
+extern "C" bool mod_start(Amethyst_GL &agl_temp)
+{
+    std::cout << "Module: " << module_name << " Activating..." << std::endl;
+
+    if (module_active == false)
+    {
+        agl = &agl_temp;
+
+        window = UI_Window_ptr(new UIW_FPS(agl->ui));
+        agl->ui.add(window);
+
+        module_active = true;
+        return true;
+    }
+
+    std::cout << "Module Error: " << module_name << " Already Activated!" << std::endl;
+    return false;
+}
+
+extern "C" bool mod_stop()
+{
+    std::cout << "Module: " << module_name << " Deactivating..." << std::endl;
+
+    if(module_active == true)
+    {
+        assert(agl != NULL);
+        agl->ui.remove(window);
+        window.reset();
+
+        module_active = false;
+        return true;
+    }
+
+    std::cout << "Module Error: " << module_name << " Already Deactivated!" << std::endl;
+    return false;
+}
+
+extern "C" const std::string& mod_get_name()
+{
+    return module_name;
+}
+
+extern "C" const std::string& mod_get_version()
+{
+    return module_version;
+}
+
+extern "C" bool mod_is_active()
+{
+    return module_active;
+}

@@ -17,6 +17,8 @@
 #include <sstream>
 #include <boost/bind.hpp>
 
+#include <cmath>
+
 namespace amethyst {
 namespace client {
 
@@ -32,7 +34,7 @@ UI::UI(const std::string &fontfile)
     else
       std::cout << "Font: %s loaded" << fontpath << std::endl;
 
-    font_->FaceSize( 18);
+    font_->FaceSize( 13);
     //font->Depth(20);
     font_->UseDisplayList(true);
 
@@ -51,12 +53,12 @@ void UI::render(void)
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glPushMatrix();
 
-    int w_win = Global.screen_y; int h_win = Global.screen_x;
+    int h_win = Global.screen_y; int w_win = Global.screen_x;
 
     // Set camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt( 0.0f, 0.0f, 1000.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    gluLookAt( 0.0f, 0.0f, h_win*1.4, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
     float light1_ambient[4]  = { 1.0, 1.0, 1.0, 1.0 };
     float light1_diffuse[4]  = { 1.0, 0.9, 0.9, 1.0 };
@@ -89,11 +91,11 @@ void UI::render(void)
     glDisable( GL_DEPTH_TEST);
 
     glNormal3f( 0.0, 0.0, 1.0);
-    glColor3f( 1.0, 1.0, 1.0);
+    glColor4f( 1.0, 1.0, 1.0, 1.0);
 
     /// Render each window
     std::for_each(windows_.begin(), windows_.end(),
-       boost::bind(&UI_Window::render, _1, 200, 200));
+       boost::bind(&UI_Window::render, _1, -w_win/2, w_win/2, -h_win/2, h_win/2));
 
     glPopMatrix();
     glPopAttrib();
