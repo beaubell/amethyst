@@ -21,6 +21,7 @@
 #include "SDL_net.h"
 
 #include "joystick.h"
+#include "log.h"
 
 #define WIDTH  800
 #define HEIGHT 600
@@ -128,6 +129,7 @@ class __global {
 
       Object reference_object;
 
+      amethyst::client::Log    log;
 };
 
 // Tell all c files that Global is instantiated somewhere externally

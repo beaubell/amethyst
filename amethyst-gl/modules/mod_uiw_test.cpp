@@ -57,20 +57,21 @@ UIW_Test::~UIW_Test()
 
 void UIW_Test::render(float min_x, float max_x, float min_y, float max_y)
 {
-    GLfloat frame[] = 
+    GLfloat frame[] =
         { 100.0f,100.0f,0.0f,  -100.0f,100.0f,0.0f,  -100.0f,-100.0f,0.0f,  100.0f,-100.0f,0.0f,
           200.0f,200.0f,0.0f,  -200.0f,200.0f,0.0f,  -200.0f,-200.0f,0.0f,  200.0f,-200.0f,0.0f,
           300.0f,300.0f,0.0f,  -300.0f,300.0f,0.0f,  -300.0f,-300.0f,0.0f,  300.0f,-300.0f,0.0f,
           400.0f,400.0f,0.0f,  -400.0f,400.0f,0.0f,  -400.0f,-400.0f,0.0f,  400.0f,-400.0f,0.0f,
           500.0f,500.0f,0.0f,  -500.0f,500.0f,0.0f,  -500.0f,-500.0f,0.0f,  500.0f,-500.0f,0.0f,
-          750.0f,750.0f,0.0f,  -750.0f,750.0f,0.0f,  -750.0f,-750.0f,0.0f,  750.0f,-750.0f,0.0f};
+          750.0f,750.0f,0.0f,  -750.0f,750.0f,0.0f,  -750.0f,-750.0f,0.0f,  750.0f,-750.0f,0.0f,
+         1000.0f,1000.0f,0.0f, -1000.0f,1000.0f,0.0f, -1000.0f,-1000.0f,0.0f, 1000.0f,-1000.0f,0.0f};
 
-    GLushort frame_idx[] = {0,1,2,3,0, 4,5,6,7,4, 8,9,10,11,8,
-                            12,13,14,15,12, 16,17,18,19,16, 20,21,22,23,20};
+    GLushort frame_idx[] = {0,1,2,3,0,      4,5,6,7,4,  8,9,10,11,8,  12,13,14,15,12,
+                            16,17,18,19,16,  20,21,22,23,20,  24,25,26,27,24};
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, frame);
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 7; i++)
         glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx + i*5);
 
     glDisableClientState(GL_VERTEX_ARRAY);

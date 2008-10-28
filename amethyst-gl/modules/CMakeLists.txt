@@ -10,6 +10,10 @@ SET(mod_uiw_test_SRCS
   mod_uiw_test.cpp
 )
 
+SET(mod_uiw_log_SRCS
+  mod_uiw_log.cpp
+)
+
 INCLUDE_DIRECTORIES(
   ${amethystgl_SOURCE_DIR}
   ${Amethyst_SOURCE_DIR}
@@ -18,6 +22,7 @@ INCLUDE_DIRECTORIES(
 
 ADD_LIBRARY(uiw_fps MODULE ${mod_uiw_fps_SRCS})
 ADD_LIBRARY(uiw_test MODULE ${mod_uiw_test_SRCS})
+ADD_LIBRARY(uiw_log MODULE ${mod_uiw_log_SRCS})
 
 #TARGET_LINK_LIBRARIES(
 #  uiwfps

@@ -15,6 +15,7 @@
 #include "lib/manifest.h"
 #include "net.h"
 #include "ui.h"
+#include "log.h"
 
 #include <boost/thread.hpp>
 

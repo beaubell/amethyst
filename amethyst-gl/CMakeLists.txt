@@ -8,6 +8,7 @@ SET(amethystgl_SRCS
   hud.cpp
   input.cpp
   joystick.cpp
+  log.cpp
   model.cpp
   model_xml.cpp
   module.cpp

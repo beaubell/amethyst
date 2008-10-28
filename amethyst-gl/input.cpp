@@ -20,6 +20,7 @@
 
 #include "lib/utility.h"
 
+#include <boost/lexical_cast.hpp>
 #include <math.h>
 
 bool mouse_camera = false;
@@ -105,7 +106,7 @@ int process_inputs()
                         print_trace();
                         break;
                     default:
-                        std::cout << "Unhandled keystroke: " << event.key.keysym.sym << std::endl;
+                        Global.log.add("Unhandled keystroke: " + boost::lexical_cast<std::string>(event.key.keysym.sym));
                         break;
                 } break;
             case SDL_MOUSEBUTTONDOWN:
