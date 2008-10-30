@@ -50,28 +50,29 @@ UIW_Log::UIW_Log(UI &ui)
 {
 }
 
-void UIW_Log::render(float min_x, float max_x, float min_y, float max_y)
+void UIW_Log::render(const float min_x, const float max_x, const float min_y, const float max_y)
 {
     glPushMatrix();
     if(agl)
     {
-        int max_size = 20;
+        int max_size = 10;
         int start    = 0;
         int length   = Global.log.log().size();
 
         if (length > max_size)
             start = length - max_size;
 
-        glTranslatef(max_x - 500, min_y + (static_cast<float>(max_size)*14.0f), 0.0f);
+        glPushMatrix();
+        glTranslatef(max_x - 500.0f, min_y + (static_cast<float>(max_size+1)*14.0f), 0.0f);
         font.Render("Message Log:");
-        float adv = font.Advance("Message Log:") - 3.0f;
-        glTranslatef(-adv, -15.0f, 0.0f);
+        glPopMatrix();
 
         for(int i = start; i < length; i++)
         {
+            glPushMatrix();
+            glTranslatef(max_x - 490.0f, min_y + (static_cast<float>(length-i)*14.0f), 0.0f);
             font.Render(Global.log.log()[i].c_str());
-            adv = font.Advance(Global.log.log()[i].c_str()) - 3.0f;
-            glTranslatef(-adv, -15.0f, 0.0f);
+            glPopMatrix();
         }
 
     }
