@@ -15,26 +15,27 @@
 #include <boost/bind.hpp>
 
 namespace amethyst {
+namespace server {
 
 
-void connection_manager::start(connection_ptr c)
+void Connection_Manager::start(connection_ptr c)
 {
     connections_.insert(c);
     c->start();
 }
 
-void connection_manager::stop(connection_ptr c)
+void Connection_Manager::stop(connection_ptr c)
 {
     connections_.erase(c);
     c->stop();
 }
 
-void connection_manager::stop_all()
+void Connection_Manager::stop_all()
 {
     std::for_each(connections_.begin(), connections_.end(),
-       boost::bind(&tcp_connection::stop, _1));
+       boost::bind(&TCP_Connection::stop, _1));
     connections_.clear();
 }
 
-
+} // namespace server
 } // namespace amethyst

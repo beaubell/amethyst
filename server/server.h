@@ -20,18 +20,17 @@
 #include "connection_manager.h"
 #include "manifest.h"
 
-namespace amethyst
-{
+namespace amethyst {
+namespace server {
 
 
-
-class server
+class Server
   : private boost::noncopyable
 {
    public:
     /// Construct the server to listen on the specified TCP address and port, and
     /// serve up files from the given directory.
-    explicit server(const std::string& address, const std::string& port,
+    explicit Server(const std::string& address, const std::string& port,
         const std::string& file_root);
 
     /// Run the server's io_service loop.
@@ -54,7 +53,7 @@ class server
     boost::asio::ip::tcp::acceptor acceptor_;
 
     /// The connection manager which owns all live connections.
-    connection_manager connection_manager_;
+    Connection_Manager connection_manager_;
 
     /// The next connection to be accepted.
     connection_ptr new_connection_;
@@ -68,5 +67,7 @@ class server
     lib::filemanifest manifest_;
 };
 
+} // namespace server
 } // namespace amethyst
-#endif
+
+#endif // AMETHYST_SERVER_SERVER_H

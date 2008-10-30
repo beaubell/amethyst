@@ -27,18 +27,18 @@ using namespace boost;
 using boost::asio::ip::tcp;
 using boost::asio::ip::udp;
 
-namespace amethyst
-{
+namespace amethyst {
+namespace server {
 
-class connection_manager;
+class Connection_Manager;
 
 
-class tcp_connection
-  : public boost::enable_shared_from_this<tcp_connection>
+class TCP_Connection
+  : public boost::enable_shared_from_this<TCP_Connection>
 {
    public:
-    tcp_connection(boost::asio::io_service& io_service,
-                   connection_manager& manager,
+    TCP_Connection(boost::asio::io_service& io_service,
+                   Connection_Manager& manager,
                    lib::filemanifest& manifest)
        : socket_(io_service),
          connection_manager_(manager),
@@ -83,7 +83,7 @@ class tcp_connection
     tcp::socket socket_;
     std::string message_;
     asio::streambuf in_data_;
-    connection_manager& connection_manager_;
+    Connection_Manager& connection_manager_;
     lib::filemanifest& manifest_;
 
     std::string client_prog;
@@ -97,8 +97,9 @@ class tcp_connection
     short client_login_attempts;
 };
 
-typedef boost::shared_ptr<tcp_connection> connection_ptr;
+typedef boost::shared_ptr<TCP_Connection> connection_ptr;
 
+} // namespace server
 } // Namespace amethyst
 
 #endif

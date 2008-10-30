@@ -17,11 +17,11 @@
 #include "boost/date_time/local_time/local_time.hpp"
 
 
-namespace amethyst
-{
+namespace amethyst {
+namespace server {
 
 
-void tcp_connection::start()
+void TCP_Connection::start()
 {
     std::cout << "Connection Started" << std::endl;
 
@@ -29,27 +29,27 @@ void tcp_connection::start()
     handshake_send();
 }
 
-void tcp_connection::stop()
+void TCP_Connection::stop()
 {
     std::cout << "Connection terminated" << std::endl;
     socket_.close();
 }
 
-void tcp_connection::handshake_send()
+void TCP_Connection::handshake_send()
 {
     // Write Header
     message_ = "Amethyst-Server 0.0.1 %host\r\n";
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-      boost::bind(&tcp_connection::handle_handshake_send, shared_from_this(), _1));
+      boost::bind(&TCP_Connection::handle_handshake_send, shared_from_this(), _1));
 }
 
-void tcp_connection::handle_handshake_send(boost::system::error_code ec)
+void TCP_Connection::handle_handshake_send(boost::system::error_code ec)
 {
     if (!ec)
     {
         // Header went out fine, now wait for client to send header.
         boost::asio::async_read_until(socket_, in_data_, "\r\n",
-         boost::bind(&tcp_connection::handle_handshake_read, shared_from_this(), _1));
+         boost::bind(&TCP_Connection::handle_handshake_read, shared_from_this(), _1));
     }
     else if (ec != boost::asio::error::operation_aborted)
     {
@@ -57,7 +57,7 @@ void tcp_connection::handle_handshake_send(boost::system::error_code ec)
     }
 }
 
-void tcp_connection::handle_handshake_read(boost::system::error_code ec)
+void TCP_Connection::handle_handshake_read(boost::system::error_code ec)
 {
     if (!ec)
     {
@@ -73,7 +73,7 @@ void tcp_connection::handle_handshake_read(boost::system::error_code ec)
             // You need to upgrade
             message_ = "NewVersion: 0.0.1\r\n";
             boost::asio::async_write(socket_, boost::asio::buffer(message_),
-             boost::bind(&tcp_connection::stop, shared_from_this()));
+             boost::bind(&TCP_Connection::stop, shared_from_this()));
             return;
         }
 
@@ -86,7 +86,7 @@ void tcp_connection::handle_handshake_read(boost::system::error_code ec)
     }
 }
 
-void tcp_connection::login_send()
+void TCP_Connection::login_send()
 {
     // Generate hash
     using namespace boost::gregorian;
@@ -103,10 +103,10 @@ void tcp_connection::login_send()
     message_ =  "login " + client_hash + "\r\n";
 
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-     boost::bind(&tcp_connection::handle_login_send, shared_from_this(), _1));
+     boost::bind(&TCP_Connection::handle_login_send, shared_from_this(), _1));
 }
 
-void tcp_connection::handle_login_send(boost::system::error_code ec)
+void TCP_Connection::handle_login_send(boost::system::error_code ec)
 {
     if (!ec)
     {
@@ -119,14 +119,14 @@ void tcp_connection::handle_login_send(boost::system::error_code ec)
     }
 }
 
-void tcp_connection::login_read()
+void TCP_Connection::login_read()
 {
     boost::asio::async_read_until(socket_, in_data_, "\r\n",
-     boost::bind(&tcp_connection::handle_login_read, shared_from_this(), _1));
+     boost::bind(&TCP_Connection::handle_login_read, shared_from_this(), _1));
 
 }
 
-void tcp_connection::handle_login_read(boost::system::error_code ec)
+void TCP_Connection::handle_login_read(boost::system::error_code ec)
 {
     if (!ec)
     {
@@ -163,7 +163,7 @@ void tcp_connection::handle_login_read(boost::system::error_code ec)
             // Too many login attempts
             message_ = "Error: Login attempts exceeded.\r\n";
             boost::asio::async_write(socket_, boost::asio::buffer(message_),
-             boost::bind(&tcp_connection::stop, shared_from_this()));
+             boost::bind(&TCP_Connection::stop, shared_from_this()));
             return;
         }
         else
@@ -179,15 +179,15 @@ void tcp_connection::handle_login_read(boost::system::error_code ec)
 }
 
 
-void tcp_connection::main_sequence_send()
+void TCP_Connection::main_sequence_send()
 {
     message_ = "Ok. Client Ready...\r\n";
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-     boost::bind(&tcp_connection::handle_main_sequence_send, shared_from_this(), _1));
+     boost::bind(&TCP_Connection::handle_main_sequence_send, shared_from_this(), _1));
 
 }
 
-void tcp_connection::handle_main_sequence_send(boost::system::error_code ec)
+void TCP_Connection::handle_main_sequence_send(boost::system::error_code ec)
 {
 if (!ec)
     {
@@ -201,13 +201,13 @@ if (!ec)
 
 }
 
-void tcp_connection::main_sequence_read()
+void TCP_Connection::main_sequence_read()
 {
     boost::asio::async_read_until(socket_, in_data_, "\r\n",
-     boost::bind(&tcp_connection::handle_main_sequence_read, shared_from_this(), _1));
+     boost::bind(&TCP_Connection::handle_main_sequence_read, shared_from_this(), _1));
 }
 
-void tcp_connection::handle_main_sequence_read(boost::system::error_code ec)
+void TCP_Connection::handle_main_sequence_read(boost::system::error_code ec)
 {
     if (!ec)
     {
@@ -233,7 +233,7 @@ void tcp_connection::handle_main_sequence_read(boost::system::error_code ec)
         }
 
         boost::asio::async_read_until(socket_, in_data_, "\r\n",
-         boost::bind(&tcp_connection::handle_main_sequence_read, shared_from_this(), _1));
+         boost::bind(&TCP_Connection::handle_main_sequence_read, shared_from_this(), _1));
 
     }
     else if (ec != boost::asio::error::operation_aborted)
@@ -242,7 +242,7 @@ void tcp_connection::handle_main_sequence_read(boost::system::error_code ec)
     }
 }
 
-void tcp_connection::manifest_send()
+void TCP_Connection::manifest_send()
 {
     message_ = "Ok. " + lexical_cast<std::string>(manifest_.size()) + "Entries\r\n";
     for (int count = 0;count < manifest_.size();count++)
@@ -251,8 +251,9 @@ void tcp_connection::manifest_send()
 
     message_ += "Ok. Client Ready...\r\n";
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-     boost::bind(&tcp_connection::handle_main_sequence_send, shared_from_this(), _1));
+     boost::bind(&TCP_Connection::handle_main_sequence_send, shared_from_this(), _1));
 
 }
 
+} // namespace server
 } // namespace amethyst

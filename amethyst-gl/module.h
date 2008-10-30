@@ -23,11 +23,6 @@
 namespace amethyst {
 namespace client {
 
-typedef bool               (*Mod_Start_Func)    (Amethyst_GL &);
-typedef bool               (*Mod_Stop_Func)     ();
-typedef const std::string& (*Mod_Get_Name_Func)   ();
-typedef const std::string& (*Mod_Get_Version_Func)();
-typedef bool               (*Mod_Is_Active_Func)  ();
 
 class Module
 {
@@ -42,6 +37,12 @@ class Module
     const std::string& name();
 
     bool is_active();
+
+    typedef bool               (*Mod_Start_Func)    (Amethyst_GL &);
+    typedef bool               (*Mod_Stop_Func)     ();
+    typedef const std::string& (*Mod_Get_Name_Func)   ();
+    typedef const std::string& (*Mod_Get_Version_Func)();
+    typedef bool               (*Mod_Is_Active_Func)  ();
 
    private:
     std::string name_;

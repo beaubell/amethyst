@@ -24,6 +24,7 @@
 #include "server.h"
 
 using namespace amethyst;
+using namespace amethyst::server;
 
 struct packet_header
 {
@@ -313,7 +314,7 @@ int main(int argc, char** argv)
     //printf(" object_transfer           : %i\n", sizeof(object_transfer));
 
     std::cout << "Starting new-style server" << std::endl;
-    server s("", "2525", "/home/beau/.amethyst-server");
+    Server s("", "2525", "/home/beau/.amethyst-server");
     s.run();
 
 #if 0

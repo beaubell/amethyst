@@ -13,15 +13,15 @@
 #include "server.h"
 #include <boost/bind.hpp>
 
-namespace amethyst
-{
+namespace amethyst {
+namespace server {
 
-server::server(const std::string& address, const std::string& port,
+Server::Server(const std::string& address, const std::string& port,
     const std::string& config_root)
   : io_service_(),
     acceptor_(io_service_),
     connection_manager_(),
-    new_connection_(new tcp_connection(io_service_, connection_manager_, manifest_)),
+    new_connection_(new TCP_Connection(io_service_, connection_manager_, manifest_)),
     file_root(config_root)
 {
     // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
@@ -33,14 +33,14 @@ server::server(const std::string& address, const std::string& port,
     acceptor_.bind(endpoint);
     acceptor_.listen();
     acceptor_.async_accept(new_connection_->socket(),
-      boost::bind(&server::handle_accept, this,
+      boost::bind(&Server::handle_accept, this,
       boost::asio::placeholders::error));
 
     // Get file manifest
     manifest_.initialize(config_root);
 }
 
-void server::run()
+void Server::run()
 {
     // The io_service::run() call will block until all asynchronous operations
     // have finished. While the server is running, there is always at least one
@@ -49,26 +49,26 @@ void server::run()
     io_service_.run();
 }
 
-void server::stop()
+void Server::stop()
 {
   // Post a call to the stop function so that server::stop() is safe to call
   // from any thread.
-  io_service_.post(boost::bind(&server::handle_stop, this));
+  io_service_.post(boost::bind(&Server::handle_stop, this));
 }
 
-void server::handle_accept(const boost::system::error_code& e)
+void Server::handle_accept(const boost::system::error_code& e)
 {
   if (!e)
   {
     connection_manager_.start(new_connection_);
-    new_connection_.reset(new tcp_connection(io_service_, connection_manager_, manifest_));
+    new_connection_.reset(new TCP_Connection(io_service_, connection_manager_, manifest_));
     acceptor_.async_accept(new_connection_->socket(),
-        boost::bind(&server::handle_accept, this,
+        boost::bind(&Server::handle_accept, this,
           boost::asio::placeholders::error));
   }
 }
 
-void server::handle_stop()
+void Server::handle_stop()
 {
   // The server is stopped by cancelling all outstanding asynchronous
   // operations. Once all operations have finished the io_service::run() call
@@ -78,4 +78,5 @@ void server::handle_stop()
 }
 
 
+} // namespace server
 } // namespace amethyst

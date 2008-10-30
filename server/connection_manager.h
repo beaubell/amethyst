@@ -18,12 +18,12 @@
 #include <boost/noncopyable.hpp>
 #include "connection.h"
 
-namespace amethyst
-{
+namespace amethyst {
+namespace server {
 
 /// Manages open connections so that they may be cleanly stopped when the server
 /// needs to shut down.
-class connection_manager
+class Connection_Manager
   : private boost::noncopyable
 {
    public:
@@ -41,6 +41,7 @@ class connection_manager
     std::set<connection_ptr> connections_;
 };
 
+} // namespace server
 } // namespace amethyst
 
 #endif // AMETHYST_SERVER_CONNECTION_MANAGER_HPP
