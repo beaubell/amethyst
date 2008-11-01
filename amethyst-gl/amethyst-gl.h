@@ -15,6 +15,7 @@
 #include "lib/manifest.h"
 #include "net.h"
 #include "ui.h"
+#include "input.h"
 #include "log.h"
 
 #include <boost/thread.hpp>
@@ -23,6 +24,7 @@ namespace amethyst
 {
 namespace client
 {
+
 
 class Amethyst_GL
 {
@@ -33,9 +35,10 @@ class Amethyst_GL
     void render   (void);
 
     UI       ui;
+    Input    input;
    private:
     lib::filemanifest manifest_;
-    server_connection connection;
+    Server_Connection connection;
 
     boost::thread *net_thread;
     void start_net();

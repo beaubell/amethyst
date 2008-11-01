@@ -72,6 +72,7 @@ namespace client
 
 Amethyst_GL::Amethyst_GL(const std::string &path_root)
     : ui("/spacefri.ttf"), //FIXME make not static
+      input(),
       manifest_(path_root),
       connection(manifest_)
 {
@@ -105,7 +106,7 @@ void Amethyst_GL::main_loop()
     Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
 
     // Process Inputs
-    int status = process_inputs();
+    int status = input.process_inputs();
     if (status) return;
 
     // Iterate Physics Engine

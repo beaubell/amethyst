@@ -27,7 +27,7 @@
 namespace amethyst {
 namespace client {
 
-void server_connection::start(const std::string &server,
+void Server_Connection::start(const std::string &server,
                               const std::string &port,
                               const std::string &user,
                               const std::string &pass)
@@ -58,25 +58,25 @@ void server_connection::start(const std::string &server,
     handshake_read();
 }
 
-void server_connection::stop()
+void Server_Connection::stop()
 {
     std::cout << "Connection terminated" << std::endl;
     socket_.close();
 }
 
-void server_connection::run()
+void Server_Connection::run()
 {
     io_service_.run();
 }
 
-void server_connection::handshake_read()
+void Server_Connection::handshake_read()
 {
     // wait for server header
     boost::asio::async_read_until(socket_, in_data_, "\r\n",
-     boost::bind(&server_connection::handle_handshake_read, this, _1));
+     boost::bind(&Server_Connection::handle_handshake_read, this, _1));
 }
 
-void server_connection::handle_handshake_read(boost::system::error_code ec)
+void Server_Connection::handle_handshake_read(boost::system::error_code ec)
 {
     if (!ec)
     {
@@ -97,15 +97,15 @@ void server_connection::handle_handshake_read(boost::system::error_code ec)
     }
 }
 
-void server_connection::handshake_send()
+void Server_Connection::handshake_send()
 {
     // Write Header
     message_ = "Amethyst-GL 0.0.1 %host\r\n";
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-      boost::bind(&server_connection::handle_handshake_send, this, _1));
+      boost::bind(&Server_Connection::handle_handshake_send, this, _1));
 }
 
-void server_connection::handle_handshake_send(boost::system::error_code ec)
+void Server_Connection::handle_handshake_send(boost::system::error_code ec)
 {
     if (!ec)
     {
@@ -119,14 +119,14 @@ void server_connection::handle_handshake_send(boost::system::error_code ec)
     }
 }
 
-void server_connection::login_read()
+void Server_Connection::login_read()
 {
     boost::asio::async_read_until(socket_, in_data_, "\r\n",
-     boost::bind(&server_connection::handle_login_read, this, _1));
+     boost::bind(&Server_Connection::handle_login_read, this, _1));
 
 }
 
-void server_connection::handle_login_read(boost::system::error_code ec)
+void Server_Connection::handle_login_read(boost::system::error_code ec)
 {
     if (!ec)
     {
@@ -152,7 +152,7 @@ void server_connection::handle_login_read(boost::system::error_code ec)
     }
 }
 
-void server_connection::login_send()
+void Server_Connection::login_send()
 {
     // Generate hash
     boost::crypto::message_digest<boost::crypto::detail::sha256_ctx> sha256;
@@ -164,10 +164,10 @@ void server_connection::login_send()
     message_ =  server_user + " " + pass_hash + "\r\n";
 
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-     boost::bind(&server_connection::handle_login_send, this, _1));
+     boost::bind(&Server_Connection::handle_login_send, this, _1));
 }
 
-void server_connection::handle_login_send(boost::system::error_code ec)
+void Server_Connection::handle_login_send(boost::system::error_code ec)
 {
     if (!ec)
     {

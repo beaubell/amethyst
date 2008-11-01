@@ -1,0 +1,8 @@
+
+Modules need to export the following functions
+bool start(Amethyst_GL &);
+bool stop(Amethyst_GL &);
+
+const std::string& mod_get_name();
+const std::string& mod_get_version();
+bool               mod_is_active();

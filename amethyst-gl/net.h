@@ -95,11 +95,11 @@ using namespace boost;
 using boost::asio::ip::tcp;
 using boost::asio::ip::udp;
 
-class server_connection
+class Server_Connection
   //: public boost::enable_shared_from_this<server_connection>
 {
    public:
-    server_connection(lib::filemanifest& manifest)
+    Server_Connection(lib::filemanifest& manifest)
         : io_service_(),
           socket_(io_service_),
           manifest_(manifest)

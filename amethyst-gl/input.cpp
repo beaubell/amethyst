@@ -23,28 +23,41 @@
 #include <boost/lexical_cast.hpp>
 #include <math.h>
 
-bool mouse_camera = false;
+namespace amethyst {
+namespace client {
 
 
 static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
 {
     Quaternion t;
 
-    t = (q*v)*q.Bar();
+    t = (q * v) * q.Bar();
     return t.GetVector();
 }
 
 
-int process_inputs()
+Input::Input()
+    : kb_alt(false),
+      kb_ctrl(false),
+      kb_shift(false),
+      mouse_camera(false)
+{
+}
+
+
+int Input::process_inputs()
 {
     SDL_Event event;
 
     /* process pending events */
-    while( SDL_PollEvent( &event ) ) {
+    while (SDL_PollEvent(&event))
+    {
 
-        switch( event.type ) {
+        switch (event.type)
+        {
             case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
+                switch (event.key.keysym.sym)
+                {
                     case SDLK_ESCAPE:
                         return 1;
 
@@ -71,8 +84,8 @@ int process_inputs()
                         break;
                     case SDLK_f:
                     {
-                        if(glWindowPosSupported)
-                            if(glWindowPosEnabled)
+                        if (glWindowPosSupported)
+                            if (glWindowPosEnabled)
                                 glWindowPosEnabled = false;
                             else
                                 glWindowPosEnabled = true;
@@ -89,13 +102,14 @@ int process_inputs()
                         break;
                     case SDLK_s: // Toggle shaders on and off
                     {
-                        if(glShaderObjectsSupported)
-                            if(glShaderObjectsEnabled)
+                        if (glShaderObjectsSupported)
+                            if (glShaderObjectsEnabled)
                             {
                                 glShaderObjectsEnabled = false;
                                 glUseProgramObjectARB(0);
 
-                            } else
+                            }
+                            else
                             {
                                 glShaderObjectsEnabled = true;
                                 glUseProgramObjectARB(Global.shaderProgram);
@@ -108,7 +122,8 @@ int process_inputs()
                     default:
                         Global.log.add("Unhandled keystroke: " + boost::lexical_cast<std::string>(event.key.keysym.sym));
                         break;
-                } break;
+                }
+                break;
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
                     mouse_camera = true;
@@ -129,17 +144,17 @@ int process_inputs()
             case SDL_MOUSEMOTION:
                 if (mouse_camera)
                 {
-                    Global.cam_yaw -= static_cast<float>(event.motion.xrel)/3;
+                    Global.cam_yaw -= static_cast<float>(event.motion.xrel) / 3;
                     if (Global.cam_yaw < -180) Global.cam_yaw += 360;
                     if (Global.cam_yaw >  180) Global.cam_yaw -= 360;
-                    Global.cam_pitch -= static_cast<float>(event.motion.yrel)/3;
+                    Global.cam_pitch -= static_cast<float>(event.motion.yrel) / 3;
                     if (Global.cam_pitch < -90) Global.cam_pitch = -90;
                     if (Global.cam_pitch >  90) Global.cam_pitch = 90;
                 }
                 break;
 
             case SDL_VIDEORESIZE:
-                SDL_SetVideoMode( event.resize.w, event.resize.h, 32, SDL_OPENGL |  SDL_RESIZABLE);
+                SDL_SetVideoMode(event.resize.w, event.resize.h, 32, SDL_OPENGL |  SDL_RESIZABLE);
                 opengl_change_aspect(event.resize.w, event.resize.h);
                 break;
 
@@ -179,14 +194,14 @@ int process_inputs()
     float scaler = 1.0f / (float(joy_max - joy_null));
 
     // Get Inputs
-    yRot     = float(joystick_axis_norm (SDL_JoystickGetAxis(
-            Global.joystick[joy_roll.joystick],     joy_roll.axis),     joy_null) * scaler);
-    xRot     = float(joystick_axis_norm (SDL_JoystickGetAxis(
-            Global.joystick[joy_pitch.joystick],    joy_pitch.axis),    joy_null) * scaler);
+    yRot     = float(joystick_axis_norm(SDL_JoystickGetAxis(
+                                            Global.joystick[joy_roll.joystick],     joy_roll.axis),     joy_null) * scaler);
+    xRot     = float(joystick_axis_norm(SDL_JoystickGetAxis(
+                                            Global.joystick[joy_pitch.joystick],    joy_pitch.axis),    joy_null) * scaler);
     zRot     = -float(joystick_axis_norm(SDL_JoystickGetAxis(
-            Global.joystick[joy_yaw.joystick],      joy_yaw.axis),      joy_null) * scaler);
+                                             Global.joystick[joy_yaw.joystick],      joy_yaw.axis),      joy_null) * scaler);
     throttle = -float(joystick_axis_norm(SDL_JoystickGetAxis(
-            Global.joystick[joy_throttle.joystick], joy_throttle.axis), joy_null) * scaler);
+                                             Global.joystick[joy_throttle.joystick], joy_throttle.axis), joy_null) * scaler);
 
 
     if (SDL_JoystickGetButton(Global.joystick[0], 15)) thrust.x += .001;
@@ -195,11 +210,13 @@ int process_inputs()
     if (SDL_JoystickGetButton(Global.joystick[0], 14)) thrust.z += .001;
     if (SDL_JoystickGetButton(Global.joystick[0], 16)) thrust.z -= .001;
 
-    if (SDL_JoystickGetButton(Global.joystick[0], 0)) {
+    if (SDL_JoystickGetButton(Global.joystick[0], 0))
+    {
         velocity.clear();
     };
 
-    if (SDL_JoystickGetButton(Global.joystick[0], 7)) {
+    if (SDL_JoystickGetButton(Global.joystick[0], 7))
+    {
         attitude.w = 1;
         attitude.x = 0;
         attitude.y = 0;
@@ -224,9 +241,10 @@ int process_inputs()
 
 
     //Apply throttle state to force vector
-    if (throttle != 0) {
+    if (throttle != 0)
+    {
 
-        thrust.y = throttle*1e6;
+        thrust.y = throttle * 1e6;
         Global.throttle = static_cast<float>(throttle);
     }
 
@@ -244,3 +262,6 @@ int process_inputs()
     return 0;
 
 }
+
+} // namespace client
+} // namespace amethyst
