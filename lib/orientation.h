@@ -77,5 +77,8 @@ namespace amethyst {
   double     dot   (const Quaternion &left, const Quaternion &right);
 
 
+/// Rotate vector around a unit quaternion
+Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v);
+
 }
 #endif  /* AMETHYST_ORIENTATION_H */

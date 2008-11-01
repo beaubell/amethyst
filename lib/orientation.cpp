@@ -166,4 +166,13 @@ namespace amethyst {
                               q.w*v.z + q.y*v.x - q.x*v.y);
        }
 
+
+Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
+{
+    Quaternion t;
+
+    t = (q * v) * q.Bar();
+    return t.GetVector();
+}
+
 }
