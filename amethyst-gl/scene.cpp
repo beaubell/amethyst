@@ -35,14 +35,6 @@ std::list<amethyst::Object *>  object_list;
 double sun_rot = 0;
 
 
-static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
-{
-  Quaternion t;
-
-  t = (q*v)*q.Bar();
-  return t.GetVector();
-}
-
 void set_camera(const Quaternion &attitude, const double distance)
 {
 

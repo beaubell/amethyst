@@ -106,7 +106,7 @@ void Amethyst_GL::main_loop()
     Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
 
     // Process Inputs
-    int status = input.process_inputs();
+    int status = input.process_events();
     if (status) return;
 
     // Iterate Physics Engine
@@ -260,8 +260,6 @@ int main(int argc, char* argv[])
     sdl_setup();
 
     opengl_setup();
-
-    joystick_setup();
 
     Amethyst_GL client(Global.dir_amethyst);
 

@@ -65,11 +65,7 @@ class __global {
       unsigned int screen_y;
 
       // Joystick
-      int               joysticks;         // Number of joysticks
       SDL_Joystick     *joystick[16];      // Pointers to joysticks
-      unsigned short    joy_null;          // Null zone for joystick axeses
-      short             joy_max;           // Max value for joystick axeses
-      short             joy_min;           // Min value for joystick axeses
       Joy_Axis_Map      axis_pitch;
       Joy_Axis_Map      axis_roll;
       Joy_Axis_Map      axis_yaw;

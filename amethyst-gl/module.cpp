@@ -209,5 +209,5 @@ void Module_Manager::unload_all(void)
 /// Module Manager Instantiated
 Module_Manager module_manager;
 
-}
-}
+} //namespace client
+} //namespace amethyst

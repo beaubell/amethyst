@@ -83,11 +83,7 @@ class Module_Manager
 /// All modules are required to register with the module manager
 extern Module_Manager module_manager;
 
-/// Module loading/unloading routines;
-bool load_module(const std::string &module_name);
-bool unload_modules(const std::string &module_name);
-
-}
-}
+} //namespace client
+} //namespace amethyst
 
 #endif // AMETHYST_CLIENT_MODULE_H

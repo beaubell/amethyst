@@ -27,15 +27,6 @@ namespace amethyst {
 namespace client {
 
 
-static Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
-{
-    Quaternion t;
-
-    t = (q * v) * q.Bar();
-    return t.GetVector();
-}
-
-
 Input::Input()
     : kb_alt(false),
       kb_ctrl(false),
@@ -45,7 +36,7 @@ Input::Input()
 }
 
 
-int Input::process_inputs()
+int Input::process_events()
 {
     SDL_Event event;
 
@@ -56,106 +47,29 @@ int Input::process_inputs()
         switch (event.type)
         {
             case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                    case SDLK_ESCAPE:
-                        return 1;
-
-                    case SDLK_KP_PLUS:
-//                    level++;
-//                    if (level > 5) level=5;
-                        break;
-
-                    case SDLK_KP_MINUS:
-//                    level--;
-//                    if (level < 0) level=0;
-                        break;
-                    case SDLK_a:
-                    {
-                        // Leak memory at will, because it's fun and everyone is doing it.
-                        void *foo = malloc(100000);
-                        break;
-                    }
-                    case SDLK_d:
-                        scene_xml_write("Dump");
-                        break;
-                    case SDLK_e:
-                        scene_select_object_next();
-                        break;
-                    case SDLK_f:
-                    {
-                        if (glWindowPosSupported)
-                            if (glWindowPosEnabled)
-                                glWindowPosEnabled = false;
-                            else
-                                glWindowPosEnabled = true;
-                        break;
-                    }
-                    case SDLK_g: // Toggle gravity on and off
-                        Global.universe.do_gravity_calc = !Global.universe.do_gravity_calc;
-                        break;
-                    case SDLK_n:
-                        scene_target_object_next();
-                        break;
-                    case SDLK_p:
-                        print_object(Global.net_ship[0]);
-                        break;
-                    case SDLK_s: // Toggle shaders on and off
-                    {
-                        if (glShaderObjectsSupported)
-                            if (glShaderObjectsEnabled)
-                            {
-                                glShaderObjectsEnabled = false;
-                                glUseProgramObjectARB(0);
-
-                            }
-                            else
-                            {
-                                glShaderObjectsEnabled = true;
-                                glUseProgramObjectARB(Global.shaderProgram);
-                            }
-                        break;
-                    }
-                    case SDLK_b:
-                        print_trace();
-                        break;
-                    default:
-                        Global.log.add("Unhandled keystroke: " + boost::lexical_cast<std::string>(event.key.keysym.sym));
-                        break;
-                }
+                if(event_keydown(event.key))
+                    return 1;
                 break;
+
+            case SDL_KEYUP:
+                if(event_keyup(event.key))
+                    return 1;
+                break;
+
             case SDL_MOUSEBUTTONDOWN:
-                if (event.button.button == SDL_BUTTON_LEFT)
-                    mouse_camera = true;
+                event_mouse_buttondown(event.button);
                 break;
 
             case SDL_MOUSEBUTTONUP:
-                if (event.button.button == SDL_BUTTON_LEFT)
-                    mouse_camera = false;
-                else if (event.button.button == SDL_BUTTON_WHEELUP)
-                {
-                    Global.cam_zoom /= 1.1f;
-                    if (Global.cam_zoom < 10) Global.cam_zoom = 10;
-                }
-                else if (event.button.button == SDL_BUTTON_WHEELDOWN)
-                    Global.cam_zoom *= 1.1f;
+                event_mouse_buttonup(event.button);
                 break;
 
             case SDL_MOUSEMOTION:
-                if (mouse_camera)
-                {
-                    Global.cam_yaw -= static_cast<float>(event.motion.xrel) / 3;
-                    if (Global.cam_yaw < -180) Global.cam_yaw += 360;
-                    if (Global.cam_yaw >  180) Global.cam_yaw -= 360;
-                    Global.cam_pitch -= static_cast<float>(event.motion.yrel) / 3;
-                    if (Global.cam_pitch < -90) Global.cam_pitch = -90;
-                    if (Global.cam_pitch >  90) Global.cam_pitch = 90;
-                }
+                event_mouse_motion(event.motion);
                 break;
 
             case SDL_VIDEORESIZE:
-                SDL_SetVideoMode(event.resize.w, event.resize.h, 32, SDL_OPENGL |  SDL_RESIZABLE);
-                opengl_change_aspect(event.resize.w, event.resize.h);
+                event_video_resize(event.resize);
                 break;
 
             case SDL_QUIT:
@@ -163,6 +77,7 @@ int Input::process_inputs()
         }
     }
 
+    // FIXME Move Joystick stuff into a separte function
 
     // Get Global State
     Cartesian_Vector &position = Global.ship->location;
@@ -172,9 +87,9 @@ int Input::process_inputs()
     Cartesian_Vector &force    = Global.ship->force;
     Quaternion       &attitude = Global.ship->attitude;
 
-    unsigned short   &joy_null = Global.joy_null;
-    short            &joy_max  = Global.joy_max;
-    short            &joy_min  = Global.joy_min;
+    unsigned short   &joy_null = js.joy_null;
+    short            &joy_max  = js.joy_max;
+    short            &joy_min  = js.joy_min;
 
     Joy_Axis_Map     &joy_pitch    = Global.axis_pitch;
     Joy_Axis_Map     &joy_roll     = Global.axis_roll;
@@ -226,6 +141,7 @@ int Input::process_inputs()
     };
 
 
+    // FIXME Move rotation and throttle functions to the object itself.
     //Ship Rotation
     TORAD(xRot);
     TORAD(yRot);
@@ -262,6 +178,160 @@ int Input::process_inputs()
     return 0;
 
 }
+
+
+int Input::event_keydown(const SDL_KeyboardEvent &key)
+{
+    switch (key.keysym.sym)
+    {
+        case SDLK_ESCAPE:
+            return 1;
+
+        case SDLK_KP_PLUS:
+//          level++;
+//          if (level > 5) level=5;
+            break;
+
+        case SDLK_KP_MINUS:
+//          level--;
+//          if (level < 0) level=0;
+            break;
+
+        case SDLK_a:
+        {
+            // Leak memory at will, because it's fun and everyone is doing it.
+            void *foo = malloc(100000);
+            break;
+        }
+
+        case SDLK_d:
+            scene_xml_write("Dump");
+            break;
+
+        case SDLK_e:
+            scene_select_object_next();
+            break;
+
+        case SDLK_f:
+        {
+            if (glWindowPosSupported)
+                if (glWindowPosEnabled)
+                    glWindowPosEnabled = false;
+                else
+                    glWindowPosEnabled = true;
+            break;
+        }
+
+        case SDLK_g: // Toggle gravity on and off
+            Global.universe.do_gravity_calc = !Global.universe.do_gravity_calc;
+            break;
+
+        case SDLK_n:
+            scene_target_object_next();
+            break;
+
+        case SDLK_p:
+            print_object(Global.net_ship[0]);
+            break;
+
+        case SDLK_s: // Toggle shaders on and off
+        {
+            if (glShaderObjectsSupported)
+                if (glShaderObjectsEnabled)
+                {
+                    glShaderObjectsEnabled = false;
+                    glUseProgramObjectARB(0);
+                }
+                else
+                {
+                    glShaderObjectsEnabled = true;
+                    glUseProgramObjectARB(Global.shaderProgram);
+                }
+             break;
+        }
+
+        case SDLK_b:
+             print_trace();
+             break;
+
+        default:
+             std::string log = "Unhandled keystroke: " + boost::lexical_cast<std::string>(key.keysym.sym);
+             Global.log.add(log);
+             break;
+    } // switch
+
+    return 0;
+
+}
+
+
+int Input::event_keyup(const SDL_KeyboardEvent &key)
+{
+    switch (key.keysym.sym)
+    {
+        case SDLK_RSHIFT:
+        case SDLK_LSHIFT:
+            // Do something
+            break;
+
+        default:
+            break;
+    }
+
+    return 0;
+}
+
+
+int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
+{
+    if (mouse_camera)
+    {
+        Global.cam_yaw -= static_cast<float>(motion.xrel) / 3;
+        if (Global.cam_yaw < -180) Global.cam_yaw += 360;
+        if (Global.cam_yaw >  180) Global.cam_yaw -= 360;
+        Global.cam_pitch -= static_cast<float>(motion.yrel) / 3;
+        if (Global.cam_pitch < -90) Global.cam_pitch = -90;
+        if (Global.cam_pitch >  90) Global.cam_pitch = 90;
+    }
+
+    return 0;
+}
+
+
+int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
+{
+    if (button.button == SDL_BUTTON_LEFT)
+        mouse_camera = true;
+
+    return 0;
+}
+
+
+int Input::event_mouse_buttonup(const SDL_MouseButtonEvent &button)
+{
+    if (button.button == SDL_BUTTON_LEFT)
+        mouse_camera = false;
+    else if (button.button == SDL_BUTTON_WHEELUP)
+    {
+        Global.cam_zoom /= 1.1f;
+        if (Global.cam_zoom < 10) Global.cam_zoom = 10;
+    }
+    else if (button.button == SDL_BUTTON_WHEELDOWN)
+        Global.cam_zoom *= 1.1f;
+
+    return 0;
+}
+
+
+int Input::event_video_resize(const SDL_ResizeEvent &resize)
+{
+    SDL_SetVideoMode(resize.w, resize.h, 32, SDL_OPENGL |  SDL_RESIZABLE);
+
+    opengl_change_aspect(resize.w, resize.h);
+
+    return 0;
+}
+
 
 } // namespace client
 } // namespace amethyst

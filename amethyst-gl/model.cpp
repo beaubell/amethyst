@@ -204,9 +204,14 @@ Model* model_load_file(const std::string &filename)
     unsigned int vertices = 0, vertices_t = 0, i = 0;
     FILE *file = fopen(filename.c_str(), "r");
 
+    if(!file)
+        throw(std::runtime_error("Failed to open model file"));
+
     fscanf(file, "%d\n", &vertices);
 
     Model *model = new Model;
+
+    // FIXME This gets leaked eventually
     model->data = new float[vertices * 8];
 
     //FIXME TEMP
@@ -233,6 +238,8 @@ Model* model_load_file(const std::string &filename)
         printf("ERROR: Model file appears corrupted: Got (%i), expected (%i)\n", i, vertices_t);
         vertices = i;
     }
+
+    fclose(file);
 
     return model;
 }

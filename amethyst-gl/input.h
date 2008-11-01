@@ -13,6 +13,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "joystick.h"
 
 namespace amethyst {
 namespace client {
@@ -23,12 +24,49 @@ class Input
    public:
     Input();
 
-    int process_inputs(void);
+    int process_events(void);
+
+    Joystick js;
 
    private:
-    /// Process Keyboard key down
-    /// Process Keyboard key up
-    /// Process
+    /// Process Keyboard Key Down/Up
+    int event_keydown(const SDL_KeyboardEvent &key);
+    int event_keyup(const SDL_KeyboardEvent &key);
+
+    /// Process Mouse Motion
+    int event_mouse_motion(const SDL_MouseMotionEvent &motion);
+
+    /// Process Mouse Button Down/Up
+    int event_mouse_buttondown(const SDL_MouseButtonEvent &button);
+    int event_mouse_buttonup(const SDL_MouseButtonEvent &button);
+
+    /// Process Joystick Axis Motion
+    int event_joy_axismotion(const SDL_JoyAxisEvent &jaxis);
+
+    /// Process Joystick Ball Motion
+    int event_joy_ballmotion(const SDL_JoyBallEvent &jball);
+
+    /// Process Joystick Hat Motion
+    int event_joy_hatmotion(const SDL_JoyHatEvent &jhat);
+
+    /// Process Joystick Button Down/Up
+    int event_joy_buttondown(const SDL_JoyButtonEvent &jbutton);
+    int event_joy_buttonup(const SDL_JoyButtonEvent &jbutton);
+
+    /// Process Video Resize
+    int event_video_resize(const SDL_ResizeEvent &resize);
+
+    /// Process Video Expose
+    int event_video_expose(const SDL_ExposeEvent &expose);
+
+    /// Process Quit
+    int event_quit(const SDL_QuitEvent &quit);
+
+    /// Process User Event
+    int event_user(const SDL_UserEvent &user);
+
+    /// Process Window Manager Events
+    int event_wm(const SDL_SysWMEvent &syswm);
 
     /// flag for when alt key is held down.
     bool kb_alt;

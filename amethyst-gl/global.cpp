@@ -31,10 +31,6 @@ __global::__global()
     time_ticks    = 0;
     time_interval = 0;
 
-    joy_null =   5000;
-    joy_max  =  32767;
-    joy_min  = -32768;
-
     throttle = 0.1f;
 
     axis_pitch.joystick    = 0;
