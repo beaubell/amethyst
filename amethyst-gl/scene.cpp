@@ -102,8 +102,8 @@ void set_camera(const Quaternion &attitude, const double distance)
 void scene_render(void)
 {
   // Get Gobal State
-  const Cartesian_Vector &reference = Global.ship->location;
-  const Quaternion       &attitude  = Global.ship->attitude;
+  const Cartesian_Vector &reference = Global.obj_view->location;
+  const Quaternion       &attitude  = Global.obj_view->attitude;
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -218,7 +218,7 @@ void scene_add_object(Object *newobject)
 
 void scene_select_object_next()
 {
-    Object* &selected = Global.ship  ;            // Reference to ship pointer
+    Object* &selected = Global.obj_view  ;            // Reference to ship pointer
     Object* reference = &Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
@@ -260,7 +260,7 @@ void scene_select_object_next()
 
 void scene_target_object_next()
 {
-    Object* &target   = Global.target;            // Reference to target pointer
+    Object* &target   = Global.obj_target;            // Reference to target pointer
     Object* reference = &Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
@@ -295,6 +295,48 @@ void scene_target_object_next()
     } else
     {
         target = reference;
+    }
+
+}
+
+void scene_control_ship_next()
+{
+    Ship* &control  = Global.ship;            // Reference to control ship
+    Ship* reference = &Global.reference_ship; // Pointer to reference_ship
+
+    if(!object_list.empty())
+    {
+        std::set<Ship_ptr>::iterator obj1 = Global.ships.begin();
+
+        if(reference == control)
+        {
+            control = get_pointer(*obj1);
+            return;
+        }
+
+        do
+        {
+            // Find Object
+            if(control == get_pointer(*obj1))
+            {
+                obj1++;
+                if (obj1 == Global.ships.end())
+                {
+                    //obj1 = Global.ships.begin();
+                    //control = get_pointer(*obj1);
+                    control = reference;
+                }
+                else
+                    control = get_pointer(*obj1);
+                return;
+            }
+
+            obj1++;
+        }  while (obj1 != Global.ships.end());
+
+    } else
+    {
+        control = reference;
     }
 
 }

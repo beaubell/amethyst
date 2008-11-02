@@ -51,7 +51,7 @@ namespace lib {
         return *this;
     }
 
-  const Cartesian_Vector& Cartesian_Vector::operator += (Cartesian_Vector& vector) {
+  const Cartesian_Vector& Cartesian_Vector::operator += (const Cartesian_Vector& vector) {
 
        x += vector.x;
        y += vector.y;
@@ -60,7 +60,7 @@ namespace lib {
        return *this;
        }
 
-  const Cartesian_Vector& Cartesian_Vector::operator -= (Cartesian_Vector& vector) {
+  const Cartesian_Vector& Cartesian_Vector::operator -= (const Cartesian_Vector& vector) {
 
        x -= vector.x;
        y -= vector.y;
@@ -69,7 +69,7 @@ namespace lib {
        return *this;
        }
 
-  const Cartesian_Vector& Cartesian_Vector::operator *= (double& number) {
+  const Cartesian_Vector& Cartesian_Vector::operator *= (const double& number) {
 
        x *= number;
        y *= number;
@@ -78,7 +78,7 @@ namespace lib {
        return *this;
        }
 
-  const Cartesian_Vector& Cartesian_Vector::operator /= (double& number) {
+  const Cartesian_Vector& Cartesian_Vector::operator /= (const double& number) {
 
        x /= number;
        y /= number;

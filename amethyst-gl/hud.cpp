@@ -119,7 +119,7 @@ void hud_render(void)
 
 static void hud_widget_object_text(void)
 {
-    Cartesian_Vector &reference = Global.ship->location;
+    Cartesian_Vector &reference = Global.obj_view->location;
 
     // Print names on the objects
     if(!object_list.empty())
@@ -256,22 +256,27 @@ static void hud_widget_fps(int x, int y)
 
 static void hud_widget_select(const int x, const int y)
 {
-    const Object &ship   = *Global.ship;
-    const Object &target = *Global.target;
+    const Ship     &ship = *Global.ship;
+    const Object   &view = *Global.obj_view;
+    const Object &target = *Global.obj_target;
 
-    std::string text = "Selected: " + ship.name;
+    std::string text = "Piloting: " + ship.name;
     glWindowPos2i(x, y);
     fonts[0]->Render(text.c_str());
 
-    if((&ship != &target) && (&target != &Global.reference_object))
+    text = "Viewing : " + view.name;
+    glWindowPos2i(x, y - 13);
+    fonts[0]->Render(text.c_str());
+
+    if((&view != &target) && (&target != &Global.reference_object))
     {
-        const double distance = lib::phys_distance(ship.location, target.location);
+        const double distance = lib::phys_distance(view.location, target.location);
         text = "Targeted: " + target.name;
         text += "  Distance: " + lexical_cast<std::string>(distance);
 
-        const Cartesian_Vector vector = Cartesian_Vector(target.velocity - ship.velocity);
+        const Cartesian_Vector vector = Cartesian_Vector(target.velocity - view.velocity);
         text += "  Speed: " + lexical_cast<std::string>(vector.magnitude());
-        glWindowPos2i(x, y - 13);
+        glWindowPos2i(x, y - 26);
         fonts[0]->Render(text.c_str());
     }
 }

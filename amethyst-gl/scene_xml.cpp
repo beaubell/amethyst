@@ -19,6 +19,8 @@
 #include "global.h"
 
 #include "lib/vector.h"
+#include "lib/object.h"
+#include "lib/ship.h"
 
 #include <iostream>
 #include <iomanip>
@@ -29,11 +31,14 @@
 namespace amethyst {
 namespace client {
 
-using lib::Object;
 using lib::Cartesian_Vector;
+using lib::Object;
+using lib::Ship;
+using lib::Ship_ptr;
 
 static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected);
 static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object& obj);
+static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship_ptr ship);
 static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur);
 static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, Cartesian_Vector &vector);
 static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, Quaternion &quat);
@@ -88,6 +93,7 @@ void scene_load(const std::string &name)
     cur = cur->xmlChildrenNode;
 
     std::string selected_object;
+    std::string selected_ship;
 
     // Run through root tree
     while (cur != NULL)
@@ -118,17 +124,35 @@ void scene_load(const std::string &name)
             scene_add_object(temp);
             Global.universe.object_add(temp);
         }
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("ship") ))
+        {
+            lib::Ship_ptr temp;
+            try
+            {
+                temp = Ship_ptr(new Ship());
+                scene_xml_parse_ship (doc, cur, temp);
+            }
+            catch (parse_error& e)
+            {
+                temp.reset();
+                xmlFreeDoc(doc);
+                throw e;
+            }
 
+            scene_add_object(get_pointer(temp));
+            Global.ships.insert(temp);
+            Global.universe.object_add(get_pointer(temp));
+        }
         cur = cur->next;
     }
 
     xmlFreeDoc(doc);
 
     //Find Player and set
-    Global.ship = Global.universe.object_find(selected_object);
-    if (Global.ship == NULL)
+    Global.obj_view = Global.universe.object_find(selected_object);
+    if (Global.obj_view == NULL)
     {
-        Global.ship = &Global.reference_object;
+        Global.obj_view = &Global.reference_object;
         throw parse_error("Selected object \"" + selected_object + "\" is not specified in scene file");
     }
 
@@ -308,6 +332,32 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object &new_ob
             temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             new_obj.mass = strtod(reinterpret_cast<char *>(temp), NULL);
             xmlFree(temp);
+        }
+        cur = cur->next;
+    }
+
+
+    return;
+}
+
+
+static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship_ptr new_ship)
+{
+    xmlChar *temp;
+
+    cur = cur->xmlChildrenNode;
+    while (cur != NULL)
+    {
+        if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
+        {
+            try
+            {
+                scene_xml_parse_object(doc, cur, *new_ship);
+            }
+            catch(parse_error &e)
+            {
+                throw(parse_error(e.what_ + ": <object> in <ship>"));
+            }
         }
         cur = cur->next;
     }

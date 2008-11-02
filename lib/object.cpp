@@ -60,13 +60,13 @@ namespace lib {
     }
 #endif
 
-    void Object::force_add(Cartesian_Vector new_force)
+    void Object::force_add(const Cartesian_Vector &new_force)
     {
         force += new_force;
     }
 
 
-    void Object::force_add(Spherical_Vector sphr_force)
+    void Object::force_add(const Spherical_Vector &sphr_force)
     {
         Cartesian_Vector new_force = phys_alias_transform (sphr_force);
 
@@ -88,21 +88,21 @@ namespace lib {
     }
 
 
-    void Object::accel_apply(double time)
+    void Object::accel_apply(const double &time)
     {
         Cartesian_Vector temp(acceleration * time);
         velocity += temp;
     }
 
 
-    void Object::velocity_apply(double time)
+    void Object::velocity_apply(const double &time)
     {
         Cartesian_Vector temp(velocity * time);
         location += temp;
     }
 
 
-    void Object::iterate(double time)
+    void Object::iterate(const double &time)
     {
 
 

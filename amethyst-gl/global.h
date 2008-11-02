@@ -14,9 +14,11 @@
  ***********************************************************************/
 
 #include "lib/object.h"
+#include "lib/ship.h"
 #include "lib/universe.h"
 
 #include <string>
+#include <set>
 #include "opengl.h"
 #include "SDL_net.h"
 
@@ -37,6 +39,8 @@ namespace amethyst {
 namespace client {
 
 using lib::Object;
+using lib::Ship;
+using lib::Ship_ptr;
 using lib::Universe;
 using lib::Quaternion;
 
@@ -51,9 +55,13 @@ class __global {
       std::string scene;
 
       // Your Ship
-      Object *ship;
-      // Targeted Ship
-      Object *target;
+      Ship *ship;
+
+      // Targeted Object
+      Object *obj_target;
+
+      // Viewed Object
+      Object *obj_view;
 
       // Models // FIXME
       GLuint sun_mdl;
@@ -129,8 +137,11 @@ class __global {
       int    net_ships;
 
       Object reference_object;
+      Ship   reference_ship;
 
       Log    log;
+
+      std::set<Ship_ptr> ships;
 };
 
 // Tell all c files that Global is instantiated somewhere externally

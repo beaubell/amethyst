@@ -71,6 +71,10 @@ int Input::process_events()
                 event_mouse_motion(event.motion);
                 break;
 
+            case SDL_JOYAXISMOTION:
+                event_joy_axismotion(event.jaxis);
+                break;
+
             case SDL_VIDEORESIZE:
                 event_video_resize(event.resize);
                 break;
@@ -78,107 +82,6 @@ int Input::process_events()
             case SDL_QUIT:
                 return 1;
         }
-    }
-
-    // FIXME Move Joystick stuff into a separte function
-    using lib::Cartesian_Vector;
-    using lib::Quaternion;
-    using lib::Euler;
-
-    // Get Global State
-    Cartesian_Vector &position = Global.ship->location;
-    Cartesian_Vector &velocity = Global.ship->velocity;
-    Cartesian_Vector &thrust   = Global.ship->force;
-    Cartesian_Vector &accel    = Global.ship->acceleration;
-    Cartesian_Vector &force    = Global.ship->force;
-    Quaternion       &attitude = Global.ship->attitude;
-
-    unsigned short   &joy_null = js.joy_null;
-    short            &joy_max  = js.joy_max;
-    short            &joy_min  = js.joy_min;
-
-    Joy_Axis_Map     &joy_pitch    = Global.axis_pitch;
-    Joy_Axis_Map     &joy_roll     = Global.axis_roll;
-    Joy_Axis_Map     &joy_yaw      = Global.axis_yaw;
-    Joy_Axis_Map     &joy_throttle = Global.axis_throttle;
-
-
-
-    // Initialize Context Data
-    GLdouble yRot     = 0.0;
-    GLdouble xRot     = 0.0;
-    GLdouble zRot     = 0.0;
-    GLfloat  throttle = 0.0f;
-    accel.clear();
-    thrust.clear();
-
-    float scaler = 1.0f / (float(joy_max - joy_null));
-
-    // Get Inputs
-    yRot     = float(joystick_axis_norm(SDL_JoystickGetAxis(
-                                            Global.joystick[joy_roll.joystick],     joy_roll.axis),     joy_null) * scaler);
-    xRot     = float(joystick_axis_norm(SDL_JoystickGetAxis(
-                                            Global.joystick[joy_pitch.joystick],    joy_pitch.axis),    joy_null) * scaler);
-    zRot     = -float(joystick_axis_norm(SDL_JoystickGetAxis(
-                                             Global.joystick[joy_yaw.joystick],      joy_yaw.axis),      joy_null) * scaler);
-    throttle = -float(joystick_axis_norm(SDL_JoystickGetAxis(
-                                             Global.joystick[joy_throttle.joystick], joy_throttle.axis), joy_null) * scaler);
-
-
-    if (SDL_JoystickGetButton(Global.joystick[0], 15)) thrust.x += .001;
-    if (SDL_JoystickGetButton(Global.joystick[0], 17)) thrust.x -= .001;
-
-    if (SDL_JoystickGetButton(Global.joystick[0], 14)) thrust.z += .001;
-    if (SDL_JoystickGetButton(Global.joystick[0], 16)) thrust.z -= .001;
-
-    if (SDL_JoystickGetButton(Global.joystick[0], 0))
-    {
-        velocity.clear();
-    };
-
-    if (SDL_JoystickGetButton(Global.joystick[0], 7))
-    {
-        attitude.w = 1;
-        attitude.x = 0;
-        attitude.y = 0;
-        attitude.z = 0;
-        position.clear();
-        velocity.clear();
-    };
-
-
-    // FIXME Move rotation and throttle functions to the object itself.
-    //Ship Rotation
-    TORAD(xRot);
-    TORAD(yRot);
-    TORAD(zRot);
-
-    Euler eul(xRot*10, yRot*10, zRot*10);
-    Quaternion quat(eul);
-
-    Global.ship->angular_acceleration = quat;
-
-    //attitude *= quat;
-    //attitude.normalize();
-
-
-    //Apply throttle state to force vector
-    if (throttle != 0)
-    {
-
-        thrust.y = throttle * 1e6;
-        Global.throttle = static_cast<float>(throttle);
-    }
-
-    // Rotate trust vector to match ship orientation
-    force = QVRotate(attitude, thrust);
-
-
-    // Process trajectory information for net ships to make them smoother.
-    for (int i = 0; i < Global.net_ships; i++)
-    {
-        //Global.net_ship[i].velocity += Global.net_ship[i].acceleration;
-        //Global.net_ship[i].location += Global.net_ship[i].velocity;
     }
 
     return 0;
@@ -242,6 +145,10 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
         }
         case SDLK_b:
             print_trace();
+            break;
+
+        case SDLK_c:
+            scene_control_ship_next();
             break;
 
         case SDLK_d:
@@ -377,6 +284,44 @@ int Input::event_mouse_buttonup(const SDL_MouseButtonEvent &button)
     return 0;
 }
 
+
+int Input::event_joy_axismotion(const SDL_JoyAxisEvent &jaxis)
+{
+    unsigned char  js    = jaxis.which;
+    unsigned char  axis  = jaxis.axis;
+    signed   short value = jaxis.value;
+
+    float norm_value = 0.0f;
+
+    if (value < -5000)
+        norm_value = static_cast<float>(value+5000) / 32768.0f;
+
+    if (value > 5000)
+        norm_value = static_cast<float>(value-5000) / 32768.0f;
+
+    if(axis == Global.axis_pitch.axis)
+    {
+        std::cout << "Pitch Norm: " << boost::lexical_cast<std::string>(norm_value) << std::endl;
+        if (Global.ship)
+            Global.ship->set_att_thrust_pitch(norm_value);
+    }
+    else if (axis == Global.axis_roll.axis)
+    {
+        if (Global.ship)
+            Global.ship->set_att_thrust_roll(norm_value);
+    }
+    else if(axis == Global.axis_yaw.axis)
+    {
+        if (Global.ship)
+            Global.ship->set_att_thrust_yaw(-norm_value);
+    }
+    else if(axis == Global.axis_throttle.axis)
+    {
+        if (Global.ship)
+            Global.ship->set_throttle(-norm_value);
+    }
+
+}
 
 int Input::event_video_resize(const SDL_ResizeEvent &resize)
 {

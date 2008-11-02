@@ -52,8 +52,8 @@ namespace lib {
        Object(const Object&);
        virtual ~Object() {};
 
-       void force_add(Cartesian_Vector force);
-       void force_add(Spherical_Vector force);
+       void force_add(const Cartesian_Vector &force);
+       void force_add(const Spherical_Vector &force);
 
        void force_clear();
 
@@ -61,13 +61,13 @@ namespace lib {
        void force_apply(void);           //
 
        // Calculate velocity from acceleration;
-       void accel_apply(double time);    //time == 1 for 1 second
+       void accel_apply(const double &time);    //time == 1 for 1 second
 
        // calculate velocity to determine actual movement
-       void velocity_apply(double time); //time == 1 for 1 second
+       void velocity_apply(const double &time); //time == 1 for 1 second
 
        // Apply acceleration and velocity calculations;
-       void iterate(double time);
+       virtual void iterate(const double &time);
 
        /* Absolute Mass */
        double mass;

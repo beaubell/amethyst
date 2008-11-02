@@ -26,6 +26,7 @@ void scene_render(void);
 void scene_add_object(Object *);
 void scene_select_object_next();
 void scene_target_object_next();
+void scene_control_ship_next();
 
 extern std::list<Object *>  object_list;
 

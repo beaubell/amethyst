@@ -38,10 +38,10 @@ namespace lib {
 
        //const Cartesian_Vector& operator = (Cartesian_Vector&);
 
-       const Cartesian_Vector& operator += (Cartesian_Vector&);
-       const Cartesian_Vector& operator -= (Cartesian_Vector&);
-       const Cartesian_Vector& operator *= (double&);
-       const Cartesian_Vector& operator /= (double&);
+       const Cartesian_Vector& operator += (const Cartesian_Vector&);
+       const Cartesian_Vector& operator -= (const Cartesian_Vector&);
+       const Cartesian_Vector& operator *= (const double&);
+       const Cartesian_Vector& operator /= (const double&);
 
        Cartesian_Vector operator -(void);
        Cartesian_Vector& operator =(const Cartesian_Vector &right);

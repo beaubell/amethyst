@@ -13,6 +13,7 @@ SET(libamethyst_SRCS
   object.cpp
   orientation.cpp
   physics.cpp
+  ship.cpp
   test.cpp
   universe.cpp
   utility.cpp

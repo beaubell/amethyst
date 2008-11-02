@@ -64,8 +64,11 @@ __global::__global()
     net_port           = 23232;
     net_handle         = "leetsuace";
 
-    ship               = &Global.reference_object;
-    target             = &Global.reference_object;
+    ship               = &Global.reference_ship;
+    obj_target         = &Global.reference_object;
+    obj_view           = &Global.reference_object;
+
+    reference_ship.name = "Nothing";
 };
 
 __global Global;
