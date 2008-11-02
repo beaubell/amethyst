@@ -27,7 +27,8 @@ CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -g3 -Wall -Wconversion -Wextra -Wold-style-cast")
-SET( SUPPORT_CXX_FLAGS "-o3")
+#SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -o3")
+SET( SUPPORT_CXX_FLAGS "-O3")
 
 SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR} lib)

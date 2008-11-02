@@ -28,9 +28,12 @@ namespace client {
 
 
 Input::Input()
-    : kb_alt(false),
-      kb_ctrl(false),
-      kb_shift(false),
+    : kb_lalt(false),
+      kb_ralt(false),
+      kb_lctrl(false),
+      kb_rctrl(false),
+      kb_lshift(false),
+      kb_rshift(false),
       mouse_camera(false)
 {
 }
@@ -187,6 +190,30 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
         case SDLK_ESCAPE:
             return 1;
 
+        case SDLK_LALT:
+            kb_lalt = true;
+            break;
+
+        case SDLK_RALT:
+            kb_ralt = true;
+            break;
+
+        case SDLK_LCTRL:
+            kb_lctrl = true;
+            break;
+
+        case SDLK_RCTRL:
+            kb_rctrl = true;
+            break;
+
+        case SDLK_LSHIFT:
+            kb_lshift = true;
+            break;
+
+        case SDLK_RSHIFT:
+            kb_rshift = true;
+            break;
+
         case SDLK_KP_PLUS:
 //          level++;
 //          if (level > 5) level=5;
@@ -199,10 +226,20 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
 
         case SDLK_a:
         {
+            /// Ctrl A
+            if(kb_lctrl || kb_rctrl)
+            {
+                std::string log = "ALT CTRL Works!";
+                Global.log.add(log);
+            }
+            else
             // Leak memory at will, because it's fun and everyone is doing it.
-            void *foo = malloc(100000);
+                void *foo = malloc(100000);
             break;
         }
+        case SDLK_b:
+            print_trace();
+            break;
 
         case SDLK_d:
             scene_xml_write("Dump");
@@ -250,10 +287,6 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
              break;
         }
 
-        case SDLK_b:
-             print_trace();
-             break;
-
         default:
              std::string log = "Unhandled keystroke: " + boost::lexical_cast<std::string>(key.keysym.sym);
              Global.log.add(log);
@@ -269,9 +302,28 @@ int Input::event_keyup(const SDL_KeyboardEvent &key)
 {
     switch (key.keysym.sym)
     {
-        case SDLK_RSHIFT:
+        case SDLK_LALT:
+            kb_lalt = false;
+            break;
+
+        case SDLK_RALT:
+            kb_ralt = false;
+            break;
+
+        case SDLK_LCTRL:
+            kb_lctrl = false;
+            break;
+
+        case SDLK_RCTRL:
+            kb_rctrl = false;
+            break;
+
         case SDLK_LSHIFT:
-            // Do something
+            kb_lshift = false;
+            break;
+
+        case SDLK_RSHIFT:
+            kb_rshift = false;
             break;
 
         default:

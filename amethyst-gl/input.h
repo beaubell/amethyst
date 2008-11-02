@@ -69,13 +69,16 @@ class Input
     int event_wm(const SDL_SysWMEvent &syswm);
 
     /// flag for when alt key is held down.
-    bool kb_alt;
+    bool kb_lalt;
+    bool kb_ralt;
 
     /// flag for when ctrl key is held down.
-    bool kb_ctrl;
+    bool kb_lctrl;
+    bool kb_rctrl;
 
     /// flag for when shift key is held down.
-    bool kb_shift;
+    bool kb_lshift;
+    bool kb_rshift;
 
     /// Flag for when mouse movement is controlling the camera.
     bool mouse_camera;
