@@ -16,6 +16,7 @@
 #endif
 
 namespace amethyst {
+namespace lib{
 
   void print_vector(const char *title, const Cartesian_Vector &vector) {
 
@@ -46,4 +47,5 @@ namespace amethyst {
 
     }
 
-}
+} // namespace lib
+} // namespace amethyst

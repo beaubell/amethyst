@@ -1,13 +1,17 @@
-#ifndef AMETHYST_NET_H
-#define AMETHYST_NET_H
+#ifndef AMETHYST_LIB_NET_H
+#define AMETHYST_LIB_NET_H
 
-/*
-   Granularized Linear Physics Engine, Declarations
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+/***********************************************************************
+ Amethyst-lib
+  - Network support functions
 
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
 
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "object.h"
 
@@ -18,6 +22,7 @@
 #endif
 
 namespace amethyst {
+namespace lib {
 
 //  unsigned short ntohs(const unsigned short &in);
 // #define         htons(x) ntohs(x)
@@ -138,6 +143,7 @@ namespace amethyst {
      left.z = ntohd(right.z);
   }
 
-}
+} // namespace lib
+} // namespace amethyst
 
-#endif /* AMETHYST_NET_H */
+#endif /* AMETHYST_LIB_NET_H */

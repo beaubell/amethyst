@@ -8,7 +8,6 @@ SET(libamethyst_SRCS
   console_io.cpp
   console_menu.cpp
   console_menu_main.cpp
-  engine.cpp
   manifest.cpp
   net.cpp
   object.cpp

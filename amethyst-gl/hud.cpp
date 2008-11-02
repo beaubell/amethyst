@@ -32,7 +32,13 @@
 #include <stdio.h>
 #include <math.h> // for quaternion lenth calculation
 
+namespace amethyst {
+namespace client {
+
+using lib::Cartesian_Vector;
+using lib::Quaternion;
 using boost::lexical_cast;
+
 
 // Forward Declarations
 static void hud_widget_object_text(void);
@@ -118,7 +124,7 @@ static void hud_widget_object_text(void)
     // Print names on the objects
     if(!object_list.empty())
     {
-        std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+        std::list<Object *>::iterator obj1 = object_list.begin();
 
         do
         {
@@ -250,8 +256,8 @@ static void hud_widget_fps(int x, int y)
 
 static void hud_widget_select(const int x, const int y)
 {
-    const amethyst::Object &ship   = *Global.ship;
-    const amethyst::Object &target = *Global.target;
+    const Object &ship   = *Global.ship;
+    const Object &target = *Global.target;
 
     std::string text = "Selected: " + ship.name;
     glWindowPos2i(x, y);
@@ -259,11 +265,11 @@ static void hud_widget_select(const int x, const int y)
 
     if((&ship != &target) && (&target != &Global.reference_object))
     {
-        const double distance = amethyst::phys_distance(ship.location, target.location);
+        const double distance = lib::phys_distance(ship.location, target.location);
         text = "Targeted: " + target.name;
         text += "  Distance: " + lexical_cast<std::string>(distance);
 
-        const amethyst::Cartesian_Vector vector = Cartesian_Vector(target.velocity - ship.velocity);
+        const Cartesian_Vector vector = Cartesian_Vector(target.velocity - ship.velocity);
         text += "  Speed: " + lexical_cast<std::string>(vector.magnitude());
         glWindowPos2i(x, y - 13);
         fonts[0]->Render(text.c_str());
@@ -345,3 +351,6 @@ static void hud_widget_vectorbox(int x, int y, float xvector, float yvector, flo
     glPopMatrix();
     glPopAttrib();
 }
+
+} // namespace client
+} // namespace amethyst

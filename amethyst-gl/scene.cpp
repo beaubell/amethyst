@@ -28,9 +28,13 @@
 
 #include "scene.h"
 
-using namespace amethyst;
+namespace amethyst {
+namespace client {
 
-std::list<amethyst::Object *>  object_list;
+using lib::Object;
+using lib::Cartesian_Vector;
+
+std::list<Object *>  object_list;
 
 double sun_rot = 0;
 
@@ -151,7 +155,7 @@ void scene_render(void)
   // Draw Objects in List.
   if(!object_list.empty())
   {
-    std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+    std::list<Object *>::iterator obj1 = object_list.begin();
      do
     {
       glPushMatrix();
@@ -204,7 +208,7 @@ void scene_render(void)
 }
 
 
-void scene_add_object(amethyst::Object *newobject)
+void scene_add_object(Object *newobject)
 {
     if (newobject)
       object_list.push_back(newobject);
@@ -214,12 +218,12 @@ void scene_add_object(amethyst::Object *newobject)
 
 void scene_select_object_next()
 {
-    amethyst::Object* &selected = Global.ship  ;            // Reference to ship pointer
-    amethyst::Object* reference = &Global.reference_object; // Pointer to reference_object
+    Object* &selected = Global.ship  ;            // Reference to ship pointer
+    Object* reference = &Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
     {
-        std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+        std::list<Object *>::iterator obj1 = object_list.begin();
 
         if(reference == selected)
         {
@@ -256,12 +260,12 @@ void scene_select_object_next()
 
 void scene_target_object_next()
 {
-    amethyst::Object* &target   = Global.target;            // Reference to target pointer
-    amethyst::Object* reference = &Global.reference_object; // Pointer to reference_object
+    Object* &target   = Global.target;            // Reference to target pointer
+    Object* reference = &Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
     {
-        std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+        std::list<Object *>::iterator obj1 = object_list.begin();
 
         if(reference == target)
         {
@@ -295,3 +299,5 @@ void scene_target_object_next()
 
 }
 
+} // namespace amethyst
+} // namespace client

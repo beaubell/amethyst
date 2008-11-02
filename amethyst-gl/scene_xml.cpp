@@ -26,13 +26,17 @@
 #include <stdexcept>
 #include <limits>
 
-using namespace amethyst;
+namespace amethyst {
+namespace client {
+
+using lib::Object;
+using lib::Cartesian_Vector;
 
 static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected);
-static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object& obj);
+static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object& obj);
 static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur);
-static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, amethyst::Cartesian_Vector &vector);
-static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, amethyst::Quaternion &quat);
+static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, Cartesian_Vector &vector);
+static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, Quaternion &quat);
 
 static void scene_xml_write_vector(std::ofstream &outfile, const Cartesian_Vector &v, const std::string &vname);
 static void scene_xml_write_quat(std::ofstream &outfile, const Quaternion &q, const std::string &qname);
@@ -101,7 +105,7 @@ void scene_load(const std::string &name)
             Object *temp;
             try
             {
-                temp = new amethyst::Object;
+                temp = new Object;
                 scene_xml_parse_object (doc, cur, *temp);
             }
             catch (parse_error& e)
@@ -203,7 +207,7 @@ static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur)
 }
 
 
-static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Object &new_obj)
+static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object &new_obj)
 {
     xmlChar *temp;
 
@@ -313,7 +317,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, amethyst::Obje
 }
 
 
-static void scene_xml_parse_vector(xmlDocPtr, xmlNodePtr cur, amethyst::Cartesian_Vector &vector)
+static void scene_xml_parse_vector(xmlDocPtr, xmlNodePtr cur, Cartesian_Vector &vector)
 {
     xmlChar *temp;
 
@@ -345,7 +349,7 @@ static void scene_xml_parse_vector(xmlDocPtr, xmlNodePtr cur, amethyst::Cartesia
 }
 
 
-static void scene_xml_parse_quat(xmlDocPtr, xmlNodePtr cur, amethyst::Quaternion &quat)
+static void scene_xml_parse_quat(xmlDocPtr, xmlNodePtr cur, Quaternion &quat)
 {
     xmlChar *temp;
 
@@ -411,7 +415,7 @@ void scene_xml_write (const std::string &name)
 
     if(!object_list.empty())
     {
-        std::list<amethyst::Object *>::iterator obj1 = object_list.begin();
+        std::list<Object *>::iterator obj1 = object_list.begin();
         do
         {
             outfile << "  <object name=\"" << (*obj1)->name << "\">" << std::endl;
@@ -449,3 +453,5 @@ static void scene_xml_write_quat(std::ofstream &outfile, const Quaternion &q, co
     outfile << "    <" << qname << " w=\"" << q.w << "\" x=\"" << q.x << "\" y=\"" << q.y << "\" z=\"" << q.z << "\" />" << std::endl;
 }
 
+} // namespace amethyst
+} // namespace client

@@ -22,6 +22,9 @@
 #include <iostream>
 #include <stdexcept>
 
+namespace amethyst {
+namespace client {
+
 void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model);
 void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model);
 
@@ -158,3 +161,5 @@ void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model)
     return;
 }
 
+} // namespace amethyst
+} // namespace client

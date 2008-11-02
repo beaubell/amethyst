@@ -1,5 +1,5 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef AMETHYST_CLIENT_SCENE_H
+#define AMETHYST_CLIENT_SCENE_H
 
 /***********************************************************************
  Amethyst-GL
@@ -16,16 +16,20 @@
 #include <list>
 #include "lib/object.h"
 
+namespace amethyst {
+namespace client {
+
+using lib::Object;
+
 void scene_render(void);
 
-void scene_add_object(amethyst::Object *);
+void scene_add_object(Object *);
 void scene_select_object_next();
 void scene_target_object_next();
 
-extern std::list<amethyst::Object *>  object_list;
+extern std::list<Object *>  object_list;
 
-#include "lib/universe.h"
+} // namespace client
+} // namespace amethyst
 
-extern amethyst::Universe universe;
-
-#endif // SCENE_H
+#endif // AMETHYST_CLIENT_SCENE_H

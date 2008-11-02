@@ -16,6 +16,9 @@
 
 #include "global.h"
 
+namespace amethyst {
+namespace client {
+
 PFNGLWINDOWPOS2DPROC    glWindowPos2d  = NULL;
 PFNGLWINDOWPOS2DVPROC   glWindowPos2dv = NULL;
 PFNGLWINDOWPOS2FPROC    glWindowPos2f  = NULL;
@@ -572,3 +575,6 @@ static void opengl_arb_shader_objects(void)
     glShaderObjectsSupported = GL_TRUE;
     glShaderObjectsEnabled   = GL_FALSE;
 }
+
+} // namespace amethyst
+} // namespace client

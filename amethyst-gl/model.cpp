@@ -27,6 +27,9 @@
 
 #define SPHERE_DETAIL 100
 
+namespace amethyst {
+namespace client {
+
 std::list<Model *>  model_list;
 
 
@@ -243,3 +246,6 @@ Model* model_load_file(const std::string &filename)
 
     return model;
 }
+
+} // namespace client
+} // namespace amethyst

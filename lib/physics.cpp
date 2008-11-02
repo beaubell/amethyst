@@ -1,11 +1,14 @@
-/*
-   Physics Subroutines, Definitions
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+/***********************************************************************
+ Amethyst-lib
+  - Physics Functions, Implementations
 
-// Dignity does not consist in possessing honors, but in deserving them.
-//                                                             - Aristotle
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <math.h>
 
@@ -21,6 +24,7 @@
 #endif
 
 namespace amethyst {
+namespace lib {
 
   // Big 'G', The gravitational constant, also The constant of proportionality.
   double G = 6.672e-11;     // N m^2 kg^-2
@@ -160,4 +164,5 @@ namespace amethyst {
       return output;
   }
 
-} // namespace
+} // namespace lib
+} // namespace amethyst

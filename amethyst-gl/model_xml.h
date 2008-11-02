@@ -1,5 +1,5 @@
-#ifndef MODEL_XML_H
-#define MODEL_XML_H
+#ifndef AMETHYST_CLIENT_MODEL_XML_H
+#define AMETHYST_CLIENT_MODEL_XML_H
 
 /***********************************************************************
  Amethyst-GL
@@ -13,6 +13,12 @@
  $LastChangedBy$
  ***********************************************************************/
 
+namespace amethyst {
+namespace client {
+
 void model_xml_load(std::string &name, Model &model);
 
-#endif /* MODEL_XML_H */
+} // namespace client
+} // namespace amethyst
+
+#endif /* AMETHYST_CLIENT_MODEL_XML_H */

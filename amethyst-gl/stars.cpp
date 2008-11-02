@@ -22,7 +22,12 @@
 
 #include "stars.h"
 
-using namespace amethyst;
+namespace amethyst {
+namespace client {
+
+using lib::Cartesian_Vector;
+using lib::Spherical_Vector;
+
 
 typedef struct
 {
@@ -125,7 +130,7 @@ void stars_load(std::string &filestr)
 
     for (unsigned int i = 0; i<entries; i++)
     {
-        temp = phys_alias_transform (Spherical_Vector(star[i].ra, star[i].de, 10000));
+        temp = lib::phys_alias_transform (Spherical_Vector(star[i].ra, star[i].de, 10000));
 
         star_vertex[i].r = spectral_class[star[i].type][1];
         star_vertex[i].g = spectral_class[star[i].type][2];
@@ -164,3 +169,6 @@ void stars_render()
 
     glPopAttrib();
 }
+
+} // namespace client
+} // namespace amethyst

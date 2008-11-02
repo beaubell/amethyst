@@ -1,5 +1,5 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#ifndef AMETHYST_CLIENT_TEXTURE_H
+#define AMETHYST_CLIENT_TEXTURE_H
 
 /***********************************************************************
  Amethyst-GL
@@ -17,6 +17,9 @@
 #include "opengl.h"
 #include <string>
 #include <list>
+
+namespace amethyst {
+namespace client {
 
 typedef struct {
     int width;
@@ -46,4 +49,7 @@ void   skybox (void);
 //int    image_bmp_load(const char *filename, textureImage *texture);
 bool   getBitmapImageData(const char *pFileName, textureImage *pImage );
 
-#endif /* TEXTURE_H */
+} // namespace client
+} // namespace amethyst
+
+#endif /* AMETHYST_CLIENT_TEXTURE_H */

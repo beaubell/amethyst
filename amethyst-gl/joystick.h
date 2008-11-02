@@ -1,5 +1,5 @@
-#ifndef JOYSTICK_H
-#define JOYSTICK_H
+#ifndef AMETHYST_CLIENT_JOYSTICK_H
+#define AMETHYST_CLIENT_JOYSTICK_H
 
 /***********************************************************************
  Amethyst-GL
@@ -46,4 +46,4 @@ class Joystick
 } // namespace client
 } // namespace amethyst
 
-#endif /* JOYSTICK_H */
+#endif /* AMETHYST_CLIENT_JOYSTICK_H */

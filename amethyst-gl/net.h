@@ -78,11 +78,11 @@ struct packet_header
 struct object_transfer
 {
   char                  name[12];
-  amethyst::vectord_3d  location;
-  amethyst::vectord_3d  velocity;
-  amethyst::vectord_3d  acceleration;
+  lib::vectord_3d  location;
+  lib::vectord_3d  velocity;
+  lib::vectord_3d  acceleration;
 
-  amethyst::vectord_4d  attitude;
+  lib::vectord_4d  attitude;
 
   char        pad[12];
 } GCC_PACK;

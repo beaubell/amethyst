@@ -12,9 +12,9 @@
 #include "console_io.h"       // for clear_screen
 #include "test.h"             // for library test functions
 
-using namespace std;
-
 namespace amethyst {
+
+  using namespace lib;
 
   //Instantiate Main Console Menu
   Console_Menu_Main consolemain;

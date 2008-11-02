@@ -1,14 +1,17 @@
-/*
-   Library Version Information, Declarations
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+#ifndef AMETHYST_LIB_VERSION_H
+#define AMETHYST_LIB_VERSION_H
 
-// 
-// 
+/***********************************************************************
+ Amethyst-lib
+  - Library Version Information
 
-#ifndef VESRION_H
-#define VESRION_H
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #ifdef __GNUG__
 #pragma interface

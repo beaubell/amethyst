@@ -1,5 +1,5 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef AMETHYST_CLIENT_GLOBAL_H
+#define AMETHYST_CLIENT_GLOBAL_H
 
 /***********************************************************************
  Amethyst-GL
@@ -33,7 +33,12 @@
 #define TODEG(x)    x = x * 180.0 / M_PI
 #define TORAD(x)    x = x / 180.0 * M_PI
 
-using namespace amethyst;
+namespace amethyst {
+namespace client {
+
+using lib::Object;
+using lib::Universe;
+using lib::Quaternion;
 
 class __global {
 
@@ -125,11 +130,13 @@ class __global {
 
       Object reference_object;
 
-      amethyst::client::Log    log;
+      Log    log;
 };
 
 // Tell all c files that Global is instantiated somewhere externally
 extern __global Global;
 
+} // namespace client
+} // namespace amethyst
 
-#endif /* GLOBAL_H */
+#endif /* AMETHYST_CLIENT_GLOBAL_H */

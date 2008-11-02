@@ -1,14 +1,17 @@
-/* 
-   Physics Subroutines, Declarations
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+#ifndef AMETHYST_LIB_PHYSICS_H
+#define AMETHYST_LIB_PHYSICS_H
 
-// Life is really simple, but we insist on making it complicated.
-//                                                      - Confucious
+/***********************************************************************
+ Amethyst-lib
+  - Physics Functions, Declarations
 
-#ifndef AMETHYST_PHYSICS_H
-#define AMETHYST_PHYSICS_H
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "object.h"
 
@@ -17,11 +20,13 @@
 #endif
 
 namespace amethyst {
+namespace lib {
+
 // Constants
 
   // Gravitational Constant, Defined in physics.cpp   (6.672E-11)
   extern double G;
-  
+
   // Speed of Light        , Defined in physics.cpp   (2.99792458E8 meters per second)
   extern double C;
 
@@ -65,5 +70,7 @@ namespace amethyst {
                                         const Cartesian_Vector &v,
                                         double modifier);
 
-}
-#endif  /* AMETHYST_PHYSICS_H */
+} // namespace lib
+} // namespace amethyst
+
+#endif  /* AMETHYST_LIB_PHYSICS_H */

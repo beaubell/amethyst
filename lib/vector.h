@@ -1,16 +1,20 @@
-/*
-   Vector Classes, Declarations
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+#ifndef AMETHYST_LIB_VECTOR_H
+#define AMETHYST_LIB_VECTOR_H
 
-//
-//
+/***********************************************************************
+ Amethyst-lib
+  - Vector Class Objects Declarations
 
-#ifndef AMETHYST_VECTOR_H
-#define AMETHYST_VECTOR_H
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 namespace amethyst {
+namespace lib {
 
   // Cartesian_Vector Data Type and Support Functions
   class Cartesian_Vector {
@@ -93,6 +97,7 @@ namespace amethyst {
   //const Spherical_Vector& operator= (const Spherical_Vector &left, const Cartesian_Vector &right);
   //const Cartesian_Vector& operator= (const Cartesian_Vector &left, const Spherical_Vector &right);
 
-}
+} // namespace lib
+} // namespace amethyst
 
-#endif /* AMETHYST_VECTOR_H */
+#endif /* AMETHYST_LIB_VECTOR_H */

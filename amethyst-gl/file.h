@@ -1,5 +1,5 @@
-#ifndef FILE_H
-#define FILE_H
+#ifndef AMETHYST_CLIENT_FILE_H
+#define AMETHYST_CLIENT_FILE_H
 
 /***************************************************************************
  *   FILE Routines                                                         *
@@ -21,4 +21,4 @@
 
 #include <stdio.h>  // fopen, scanf, printf, fclose, feof
 
-#endif /* FILE_H */
+#endif /* AMETHYST_CLIENT_FILE_H */

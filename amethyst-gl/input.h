@@ -1,5 +1,5 @@
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef AMETHYST_CLIENT_INPUT_H
+#define AMETHYST_CLIENT_INPUT_H
 
 /***********************************************************************
  Amethyst-GL
@@ -89,4 +89,4 @@ class Input
 } // namespace client
 } // namespace amethyst
 
-#endif /* INPUT_H */
+#endif /* AMETHYST_CLIENT_INPUT_H */

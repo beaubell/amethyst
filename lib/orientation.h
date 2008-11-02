@@ -1,14 +1,22 @@
-/***************************************************************************
- *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
- *   beau@borealisbroadband.net                                            *
- ***************************************************************************/
+#ifndef AMETHYST_LIB_ORIENTATION_H
+#define AMETHYST_LIB_ORIENTATION_H
 
-#ifndef AMETHYST_ORIENTATION_H
-#define AMETHYST_ORIENTATION_H
+/***********************************************************************
+ Amethyst-lib
+  - Orientation Class Objects Declarations
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include "vector.h"
 
 namespace amethyst {
+namespace lib {
 
   // Euler Data Type and Support Functions
   class Euler {
@@ -80,5 +88,7 @@ namespace amethyst {
 /// Rotate vector around a unit quaternion
 Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v);
 
-}
-#endif  /* AMETHYST_ORIENTATION_H */
+} // namespace lib
+} // namespace amethyst
+
+#endif  /* AMETHYST_LIB_ORIENTATION_H */

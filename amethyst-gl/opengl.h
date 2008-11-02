@@ -1,5 +1,5 @@
-#ifndef SF_OPENGL_H
-#define SF_OPENGL_H
+#ifndef AMETHYST_CLIENT_OPENGL_H
+#define AMETHYST_CLIENT_OPENGL_H
 
 /***********************************************************************
  Amethyst-GL
@@ -26,6 +26,9 @@
 #include "GL/glext.h"
 
 #include "SDL_opengl.h"
+
+namespace amethyst {
+namespace client {
 
 void opengl_setup(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
@@ -138,4 +141,7 @@ extern GLboolean glFramebufferObjectEnabled;
 extern GLboolean glShaderObjectsSupported;
 extern GLboolean glShaderObjectsEnabled;
 
-#endif /* SF_OPENGL_H */
+} // namespace amethyst
+} // namespace client
+
+#endif /* AMETHYST_CLIENT_OPENGL_H */

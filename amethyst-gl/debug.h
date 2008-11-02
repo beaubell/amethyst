@@ -1,5 +1,5 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef AMETHYST_CLIENT_DEBUG_H
+#define AMETHYST_CLIENT_DEBUG_H
 
 /***********************************************************************
  Amethyst-GL
@@ -16,7 +16,10 @@
 #include "lib/vector.h"
 #include "lib/object.h"
 
-using namespace amethyst;
+namespace amethyst {
+namespace client {
+
+using lib::Object;
 
 #if 0
 void print_vector(char *title, const Cartesian_Vector &vector);
@@ -25,9 +28,12 @@ void print_camera(Cartesian_Vector &real_pos,
                   Cartesian_Vector &real_up);
 #endif
 
-void print_object(amethyst::Object &obj);
+void print_object(Object &obj);
 
 void print_trace(void);
 
-#endif /* GLOBAL_H */
+} // namespace client
+} // namespace amethyst;
+
+#endif /* AMETHYST_CLIENT_DEBUG_H */
 

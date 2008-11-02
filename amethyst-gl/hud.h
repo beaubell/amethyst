@@ -1,5 +1,5 @@
-#ifndef HUD_H
-#define HUD_H
+#ifndef AMETHYST_CLIENT_HUD_H
+#define AMETHYST_CLIENT_HUD_H
 
 /***********************************************************************
  Amethyst-GL
@@ -13,7 +13,13 @@
  $LastChangedBy$
  ***********************************************************************/
 
+namespace amethyst {
+namespace client {
+
 void hud_setup(void);
 void hud_render(void);
 
-#endif  /* HUD_H */
+} // namespace client
+} // namespace amethyst
+
+#endif  /* AMETHYST_CLIENT_HUD_H */

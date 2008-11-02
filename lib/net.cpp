@@ -1,7 +1,15 @@
-/***************************************************************************
- *   Copyright (C) 2006 by Beau V.C. Bellamy                               *
- *   beau@stellarnetservices.net                                            *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-lib
+  - Network support functions
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
+
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -14,6 +22,7 @@
 #endif
 
 namespace amethyst {
+namespace lib {
 
   union shortchar {
      unsigned short value;
@@ -121,4 +130,5 @@ namespace amethyst {
      #endif
   }
 
-} // namespace
+} // namespace lib
+} // namespace amethyst

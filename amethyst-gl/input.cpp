@@ -81,6 +81,9 @@ int Input::process_events()
     }
 
     // FIXME Move Joystick stuff into a separte function
+    using lib::Cartesian_Vector;
+    using lib::Quaternion;
+    using lib::Euler;
 
     // Get Global State
     Cartesian_Vector &position = Global.ship->location;

@@ -28,8 +28,8 @@
 
 #include "global.h"
 
-using namespace std;
-using namespace amethyst;
+namespace amethyst {
+namespace client {
 
 extern __global Global;
 GLuint TexIDSkyBox[10];
@@ -142,12 +142,12 @@ void load_skybox (void)
 {
     int i=1;
 
-    string tex_sb_bk     = Global.dir_textures + "/" + Global.file_tex_sb_bk;
-    string tex_sb_ft     = Global.dir_textures + "/" + Global.file_tex_sb_ft;
-    string tex_sb_up     = Global.dir_textures + "/" + Global.file_tex_sb_up;
-    string tex_sb_dn     = Global.dir_textures + "/" + Global.file_tex_sb_dn;
-    string tex_sb_rt     = Global.dir_textures + "/" + Global.file_tex_sb_rt;
-    string tex_sb_lt     = Global.dir_textures + "/" + Global.file_tex_sb_lt;
+    std::string tex_sb_bk     = Global.dir_textures + "/" + Global.file_tex_sb_bk;
+    std::string tex_sb_ft     = Global.dir_textures + "/" + Global.file_tex_sb_ft;
+    std::string tex_sb_up     = Global.dir_textures + "/" + Global.file_tex_sb_up;
+    std::string tex_sb_dn     = Global.dir_textures + "/" + Global.file_tex_sb_dn;
+    std::string tex_sb_rt     = Global.dir_textures + "/" + Global.file_tex_sb_rt;
+    std::string tex_sb_lt     = Global.dir_textures + "/" + Global.file_tex_sb_lt;
 
     TexIDSkyBox[0] = image_load(tex_sb_bk.c_str());
     TexIDSkyBox[1] = image_load(tex_sb_ft.c_str());
@@ -260,34 +260,34 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     Uint16 t2 = 0;
 
 	if( (pFile = SDL_RWFromFile(pFileName, "rb") ) == NULL)
-       cout << "ERROR: getBitmapImageData - %s not found " << pFileName << "." << endl;
+       std::cout << "ERROR: getBitmapImageData - %s not found " << pFileName << "." << std::endl;
 
     // Seek forward to width and height info
 	SDL_RWseek(pFile, 18, SEEK_CUR);
 
 	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
-       cout << "ERROR: getBitmapImageData - Couldn't read width from " << pFileName << "." << endl;
+       std::cout << "ERROR: getBitmapImageData - Couldn't read width from " << pFileName << "." << std::endl;
 	pImage->width = SDL_SwapLE32(t);
 
 	if ( ( i = SDL_RWread(pFile, &t, 4, 1) ) != 1)
-       cout << "ERROR: getBitmapImageData - Couldn't read height from " << pFileName << "." << endl;
+       std::cout << "ERROR: getBitmapImageData - Couldn't read height from " << pFileName << "." << std::endl;
 	pImage->height = SDL_SwapLE32(t);
 
 	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
-       cout << "ERROR: getBitmapImageData - Couldn't read plane count from " << pFileName << "." << endl;
+       std::cout << "ERROR: getBitmapImageData - Couldn't read plane count from " << pFileName << "." << std::endl;
     nNumPlanes = SDL_SwapLE16(t2);
 
     if( nNumPlanes != 1 )
-       cout << "ERROR: getBitmapImageData - Plane count from " << pFileName
-            << " is not 1: " << nNumPlanes << "." << endl;
+       std::cout << "ERROR: getBitmapImageData - Plane count from " << pFileName
+            << " is not 1: " << nNumPlanes << "." << std::endl;
 
 	if ( ( i = SDL_RWread(pFile, &t2, 2, 1) ) != 1)
-       cout << "ERROR: getBitmapImageData - Couldn't read BPP from " << pFileName << endl;
+       std::cout << "ERROR: getBitmapImageData - Couldn't read BPP from " << pFileName << std::endl;
     nNumBPP = SDL_SwapLE16(t2);
 
     if( nNumBPP != 24 )
-       cout << "ERROR: getBitmapImageData - BPP from " << pFileName
-            << " is not 24: " << nNumBPP << "." << endl;
+       std::cout << "ERROR: getBitmapImageData - BPP from " << pFileName
+            << " is not 24: " << nNumBPP << "." << std::endl;
 
     // Seek forward to image data
     SDL_RWseek( pFile, 24, SEEK_CUR );
@@ -300,7 +300,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     pImage->data = new char[nTotalImagesize];
 
     if( (i = SDL_RWread(pFile, pImage->data, 1, nTotalImagesize) ) != nTotalImagesize )
-       cout << "ERROR: getBitmapImageData - Couldn't read image data from " << pFileName << "." << endl;
+       std::cout << "ERROR: getBitmapImageData - Couldn't read image data from " << pFileName << "." << std::endl;
 
     //
     // Finally, rearrange BGR to RGB
@@ -335,3 +335,6 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 
     return true;
 }
+
+} // namespace client
+} // namespace amethyst

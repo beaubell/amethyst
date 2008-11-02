@@ -18,6 +18,8 @@
 
 #include <list>
 
+namespace amethyst {
+namespace client {
 
 class SF_Thread
 {
@@ -117,3 +119,6 @@ void thread_stop_all(void)
     return;
 
 }
+
+} // namespace client
+} // namespace amethyst

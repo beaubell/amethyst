@@ -23,8 +23,10 @@
 
 #include "server.h"
 
-using namespace amethyst;
+using namespace amethyst::lib;
 using namespace amethyst::server;
+using namespace amethyst;
+
 
 struct packet_header
 {

@@ -1,13 +1,21 @@
-/***************************************************************************
- *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
- *   beau@borealisbroadband.net                                            *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst-lib
+  - Orientation Class Objects Implementation
+
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
  #include <math.h>
  #include "object.h"
  #include "orientation.h"
 
 namespace amethyst {
+namespace lib {
 
   Quaternion::Quaternion(const Quaternion &old) {
 
@@ -175,4 +183,5 @@ Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
     return t.GetVector();
 }
 
-}
+} // namespace lib
+} // namespace amethyst

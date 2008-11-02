@@ -14,6 +14,9 @@
 
 #include "global.h"
 
+namespace amethyst {
+namespace client {
+
 __global::__global()
 {
     cam_num   = 0;
@@ -66,3 +69,6 @@ __global::__global()
 };
 
 __global Global;
+
+} // namespace client
+} // namespace amethyst

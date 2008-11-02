@@ -10,8 +10,8 @@
 #include <list>
 #include <iostream>
 
-namespace amethyst
-{
+namespace amethyst {
+namespace lib {
 
     Universe::Universe(void)
     {
@@ -137,5 +137,5 @@ namespace amethyst
 
     } // Iterate()
 
-
-}
+} // namespace lib
+} // namespace amethyst

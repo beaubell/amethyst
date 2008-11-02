@@ -19,6 +19,11 @@
 
 #define MAX_BT 30
 
+namespace amethyst {
+namespace client {
+
+using lib::Cartesian_Vector;
+
 void print_vector(const char *title, const Cartesian_Vector &vector) {
 
        printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title, vector.x, vector.y, vector.z);
@@ -66,3 +71,6 @@ void print_trace(void)
     free (strings);
 #endif
 }
+
+} // namespace client
+} // namespace amethyst

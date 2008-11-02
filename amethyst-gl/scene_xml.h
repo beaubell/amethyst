@@ -1,5 +1,5 @@
-#ifndef SCENE_XML_H
-#define SCENE_XML_H
+#ifndef AMETHYST_CLIENT_SCENE_XML_H
+#define AMETHYST_CLIENT_SCENE_XML_H
 
 /***********************************************************************
  Amethyst-GL
@@ -13,7 +13,13 @@
  $LastChangedBy$
  ***********************************************************************/
 
+namespace amethyst {
+namespace client {
+
 void scene_load(const std::string &name);
 void scene_xml_write(const std::string &name);
 
-#endif /* SCENE_XML_H */
+} // namespace amethyst
+} // namespace client
+
+#endif /* AMETHYST_CLIENT_SCENE_XML_H */

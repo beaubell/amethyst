@@ -1,5 +1,5 @@
-#ifndef STARS_H
-#define STARS_H
+#ifndef AMETHYST_CLIENT_STARS_H
+#define AMETHYST_CLIENT_STARS_H
 
 /***********************************************************************
  Amethyst-GL
@@ -16,8 +16,14 @@
 
 #include <string>
 
+namespace amethyst {
+namespace client {
+
 void stars_load(std::string &file);
 void stars_free(void);
 void stars_render(void);
 
-#endif /* STARS_H */
+} // namespace client
+} // namespace amethyst
+
+#endif /* AMETHYST_CLIENT_STARS_H */

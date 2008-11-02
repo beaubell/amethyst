@@ -1,5 +1,5 @@
-#ifndef SF_THREAD_H
-#define SF_THREAD_H
+#ifndef AMETHYST_CLIENT_THREAD_H
+#define AMETHYST_CLIENT_THREAD_H
 
 /***********************************************************************
  Amethyst-GL
@@ -13,7 +13,8 @@
  $LastChangedBy$
  ***********************************************************************/
 
-
+namespace amethyst {
+namespace client {
 
 #define  SF_THREAD_CREATION_FAILED -1;
 
@@ -23,4 +24,7 @@ typedef int SF_Thread_Id;
 SF_Thread_Id  thread_create (int (*func_ptr)(void*), void *data, const char *name, int *control);
 void          thread_stop_all(void);
 
-#endif
+} // namespace client
+} // namespace amethyst
+
+#endif /* AMETHYST_CLIENT_THREAD_H */

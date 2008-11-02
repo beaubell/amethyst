@@ -14,6 +14,8 @@
 #include "timer.h"
 #include "global.h"
 
+namespace amethyst {
+namespace client {
 
 Uint32 time_left(void)
 {
@@ -25,3 +27,6 @@ Uint32 time_left(void)
   else
     return Global.next_time - now;
 }
+
+} // namespace client
+} // namespace amethyst

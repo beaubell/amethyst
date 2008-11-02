@@ -12,6 +12,7 @@
 
 
 namespace amethyst {
+namespace lib {
 
     class Universe
     {
@@ -36,6 +37,7 @@ namespace amethyst {
 
     };
 
-}
+} // namespace lib
+} // namespace amethyst
 
 #endif // UNIVERSE_H

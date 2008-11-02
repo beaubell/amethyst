@@ -1,5 +1,5 @@
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef AMETHYST_CLIENT_TIMER_H
+#define AMETHYST_CLIENT_TIMER_H
 
 /***********************************************************************
  Amethyst-GL
@@ -16,6 +16,12 @@
 
 #include "SDL.h"
 
+namespace amethyst {
+namespace client {
+
 Uint32 time_left(void);
 
-#endif // TIMER_H
+} // namespace client
+} // namespace amethyst
+
+#endif // AMETHYST_CLIENT_TIMER_H

@@ -1,5 +1,5 @@
-#ifndef OPENGL_SHADER_H
-#define OPENGL_SHADER_H
+#ifndef AMETHYST_CLIENT_OPENGL_SHADER_H
+#define AMETHYST_CLIENT_OPENGL_SHADER_H
 
 /***********************************************************************
  Amethyst-GL
@@ -15,8 +15,13 @@
 
 #include <string>
 
+namespace amethyst {
+namespace client {
+
 void load_shader(const std::string &name, const std::string &name);
 void apply_shader();
 
+} // namespace amethyst
+} // namespace client
 
-#endif // OPENGL_SHADER_H
+#endif // AMETHYST_CLIENT_OPENGL_SHADER_H

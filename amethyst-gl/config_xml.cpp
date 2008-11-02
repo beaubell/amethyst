@@ -19,6 +19,8 @@
 #include "config_xml.h"
 #include "scene_xml.h"
 
+namespace amethyst {
+namespace client {
 
 void parse_xml_network (xmlDocPtr doc, xmlNodePtr cur) {
 
@@ -178,3 +180,6 @@ void parse_xml_config(const char *docname) {
     xmlFreeDoc(doc);
     return;
 }
+
+} // namespace client
+} // namespace amethyst

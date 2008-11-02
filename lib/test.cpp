@@ -1,11 +1,14 @@
-/*
-   Physics Library Performance Test Functions, Definitions
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+/***********************************************************************
+ Amethyst-lib
+  - Library Test Functions, Implementations
 
-//
-//
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <stdio.h>
 #include <iostream>
@@ -22,6 +25,7 @@
 #endif
 
 namespace amethyst {
+namespace lib {
 
   void full_test(void)
   {
@@ -161,4 +165,5 @@ namespace amethyst {
        std::cout << " long double:  " << sizeof(long double) * 8 << std::endl;
   }
 
-} // Namespace Amethyst
+} // namespace lib
+} // namespace amethyst

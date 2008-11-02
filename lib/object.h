@@ -1,14 +1,17 @@
-/*
-   Physics Object, Declarations
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+#ifndef AMETHYST_LIB_OBJECT_H
+#define AMETHYST_LIB_OBJECT_H
 
-// The cautious seldom err.
-//                 - Confucious
+/***********************************************************************
+ Amethyst-lib
+  - Physics Object Class Declarations
 
-#ifndef OBJECT_H
-#define OBJECT_H
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <string>
 
@@ -17,6 +20,7 @@
 
 
 namespace amethyst {
+namespace lib {
 
 
   struct force {
@@ -112,7 +116,8 @@ namespace amethyst {
        Object& operator= (const Object &right);
        };
 
-} // namespace
+} // namespace lib
+} // namespace amethyst
 
 #endif /* OBJECT_H */
 

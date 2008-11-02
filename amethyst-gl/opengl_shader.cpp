@@ -21,6 +21,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+namespace amethyst {
+namespace client {
+
 static char *textFileRead(const char *fn);
 void printInfoLog(GLhandleARB obj);
 
@@ -142,3 +145,5 @@ void printInfoLog(GLhandleARB obj)
     }
 }
 
+} // namespace amethyst
+} // namespace client

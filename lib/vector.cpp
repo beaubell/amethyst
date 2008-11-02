@@ -1,16 +1,20 @@
-/*
-   Vector Classes, Definitions
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+/***********************************************************************
+ Amethyst-lib
+  - Vector Class Objects Implementations
 
-//
-//
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <math.h>
 #include "vector.h"
 
 namespace amethyst {
+namespace lib {
 
   void Cartesian_Vector::clear(void) {
 
@@ -158,4 +162,5 @@ namespace amethyst {
        r = 0;
        }
 
-}
+} // namespace lib
+} // namespace amethyst

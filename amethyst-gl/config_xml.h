@@ -1,5 +1,5 @@
-#ifndef CONFIG_XML_H
-#define CONFIG_XML_H
+#ifndef AMETHYST_CLIENT_CONFIG_XML_H
+#define AMETHYST_CLIENT_CONFIG_XML_H
 
 /***********************************************************************
  Amethyst-GL
@@ -13,6 +13,12 @@
  $LastChangedBy$
  ***********************************************************************/
 
+namespace amethyst {
+namespace client {
+
 void parse_xml_config(const char *docname);
 
-#endif /* CONFIG_XML_H */
+} // namespace client
+} // namespace amethyst
+
+#endif /* AMETHYST_CLIENT_CONFIG_XML_H */

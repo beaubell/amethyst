@@ -1,11 +1,14 @@
-/*
-   Physics Object, Definitions
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+/***********************************************************************
+ Amethyst-lib
+  - Physics Object Class Implementation
 
-// A superior man is modest in his speech, but exceeds in his actions.
-//                                                          - Confucious
+ Authors (c):
+ 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+
+ $Revision$
+ $LastChangedDate$
+ $LastChangedBy$
+ ***********************************************************************/
 
 #include <stdlib.h>
 #include <string>
@@ -15,6 +18,7 @@
 
 
 namespace amethyst {
+namespace lib {
 
     Object::Object()
     {
@@ -128,4 +132,5 @@ namespace amethyst {
         velocity_apply(time);
     }
 
-}
+} // namespace lib
+} // namespace amethyst

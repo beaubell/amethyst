@@ -1,5 +1,5 @@
-#ifndef MODEL_H
-#define MODEL_H
+#ifndef AMETHYST_CLIENT_MODEL_H
+#define AMETHYST_CLIENT_MODEL_H
 
 /***********************************************************************
  Amethyst-GL
@@ -17,6 +17,9 @@
 #include <list>
 
 #include "texture.h"
+
+namespace amethyst {
+namespace client {
 
 class Model
 {
@@ -44,4 +47,7 @@ Model* model_load_file(const std::string &filename);
 
 void model_sphere_create(double cx, double cy, double cz, double r, int p );
 
-#endif /* MODEL_H */
+} // namespace client
+} // namsspace amethyst
+
+#endif /* AMETHYST_CLIENT_MODEL_H */
