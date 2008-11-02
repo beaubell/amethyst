@@ -55,7 +55,7 @@ void Ship::iterate(const double &time)
     thrust_.clear();
     thrust_.y = throttle_pos_ * scale_throttle;
 
-    force = QVRotate(attitude, thrust_);
+    force += QVRotate(attitude, thrust_);
 
     Object::iterate(time);
 }

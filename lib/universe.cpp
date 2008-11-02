@@ -123,7 +123,7 @@ namespace lib {
 
             }
 
-            // Calculate Movement (and Attitude when it's ready)
+            // Calculate Movement and Attitude
             obj1 = object_list.begin();
 
             do
