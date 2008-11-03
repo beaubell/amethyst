@@ -156,6 +156,15 @@ void scene_load(const std::string &name)
         throw parse_error("Selected object \"" + selected_object + "\" is not specified in scene file");
     }
 
+    if(Global.obj_view != &Global.reference_object)
+        Global.ship = dynamic_cast<Ship*>(Global.obj_view);
+
+    if(Global.ship == NULL)
+    {
+        Global.log.add("Object: " + Global.obj_view->name + ", is not pilotable.");
+        Global.ship = &Global.reference_ship;
+    }
+
     return;
 }
 
