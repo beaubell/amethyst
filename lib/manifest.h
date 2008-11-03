@@ -15,7 +15,7 @@
 
 #include <string>
 #include <list>
-#include "boost/filesystem.hpp"
+#include <boost/filesystem.hpp>
 
 namespace amethyst
 {
@@ -48,7 +48,7 @@ class filemanifest
         return filelist_[pos];
     }
 
-    int size() const
+    size_t size() const
     {
         return filelist_.size();
     }

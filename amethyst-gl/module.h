@@ -13,12 +13,23 @@
  $LastChangedBy$
  ***********************************************************************/
 
+
+#ifdef WIN32
+ #ifndef _WIN32_WINNT
+  #define _WIN32_WINNT 0x0501
+ #endif
+#endif
+
 #include "amethyst-gl.h"
 
 #include <string>
 #include <set>
 
 #include <boost/shared_ptr.hpp>
+
+#ifdef WIN32
+#include "file.h"
+#endif
 
 namespace amethyst {
 namespace client {
@@ -55,7 +66,11 @@ class Module
     Mod_Get_Version_Func mod_get_version_;
     Mod_Is_Active_Func   mod_is_active_;
 
+    #ifdef WIN32
+    HMODULE dl_handle_;
+    #else 
     void *dl_handle_;
+    #endif
 };
 
 typedef boost::shared_ptr<Module> Module_ptr;

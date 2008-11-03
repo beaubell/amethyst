@@ -1,16 +1,25 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libamethyst", ".\lib\libamethyst.vcproj", "{601F238B-0BC6-4595-AB35-A6AD52CE4522}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libamethyst", "lib\libamethyst.vcproj", "{601F238B-0BC6-4595-AB35-A6AD52CE4522}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "amethyst-gl", ".\amethyst-gl\amethyst-gl.vcproj", "{1D1CFFFC-A673-4090-A2CB-AF0A416B890E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Amethyst-GL", "amethyst-gl\amethyst-gl.vcproj", "{1D1CFFFC-A673-4090-A2CB-AF0A416B890E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{601F238B-0BC6-4595-AB35-A6AD52CE4522} = {601F238B-0BC6-4595-AB35-A6AD52CE4522}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "amethyst-server", ".\server\amethyst-server.vcproj", "{CD5E45E9-446D-4FE6-B52F-80DFE63F312B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "amethyst-server", "server\amethyst-server.vcproj", "{CD5E45E9-446D-4FE6-B52F-80DFE63F312B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{601F238B-0BC6-4595-AB35-A6AD52CE4522} = {601F238B-0BC6-4595-AB35-A6AD52CE4522}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsha2", "support\boost\crypto\libsha2.vcproj", "{2F90229E-B6C0-4A0E-9148-5483FB13FA52}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mod_uiw_log", "amethyst-gl\modules\mod_uiw_log.vcproj", "{55962ED9-2D00-474A-BC4C-8565647E495E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1D1CFFFC-A673-4090-A2CB-AF0A416B890E} = {1D1CFFFC-A673-4090-A2CB-AF0A416B890E}
 	EndProjectSection
 EndProject
 Global
@@ -33,6 +42,14 @@ Global
 		{CD5E45E9-446D-4FE6-B52F-80DFE63F312B}.Debug.Build.0 = Debug|Win32
 		{CD5E45E9-446D-4FE6-B52F-80DFE63F312B}.Release.ActiveCfg = Release|Win32
 		{CD5E45E9-446D-4FE6-B52F-80DFE63F312B}.Release.Build.0 = Release|Win32
+		{2F90229E-B6C0-4A0E-9148-5483FB13FA52}.Debug.ActiveCfg = Release|Win32
+		{2F90229E-B6C0-4A0E-9148-5483FB13FA52}.Debug.Build.0 = Release|Win32
+		{2F90229E-B6C0-4A0E-9148-5483FB13FA52}.Release.ActiveCfg = Release|Win32
+		{2F90229E-B6C0-4A0E-9148-5483FB13FA52}.Release.Build.0 = Release|Win32
+		{55962ED9-2D00-474A-BC4C-8565647E495E}.Debug.ActiveCfg = Debug|Win32
+		{55962ED9-2D00-474A-BC4C-8565647E495E}.Debug.Build.0 = Debug|Win32
+		{55962ED9-2D00-474A-BC4C-8565647E495E}.Release.ActiveCfg = Release|Win32
+		{55962ED9-2D00-474A-BC4C-8565647E495E}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

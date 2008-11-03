@@ -16,9 +16,7 @@
 #include <boost/bind.hpp>
 #include <exception>
 
-#ifdef WIN32
-#include <windows.h>
-#else
+#ifndef WIN32
 #include <dlfcn.h>
 #endif
 
@@ -42,7 +40,11 @@ Module::Module(const std::string &module_name, const std::string &module_path)
 
     /// Loading Module
     #ifdef WIN32
-    LoadLibrary (module_path.c_str());
+    dl_handle_ = LoadLibrary (module_path.c_str());
+	if (dl_handle_ == NULL) {
+        std::cerr << "Cannot open library: " << module_path << '\n';
+        throw( std::runtime_error(module_path.c_str()) );
+	}
     #else
     dl_handle_ = dlopen(path_.c_str(), RTLD_LAZY);
 
@@ -72,7 +74,7 @@ Module::~Module()
         mod_stop_();
 
     #ifdef WIN32
-    LoadLibrary (module_path.c_str());
+    FreeLibrary(dl_handle_);
     #else
     if (dl_handle_)
         dlclose(dl_handle_);

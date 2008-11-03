@@ -10,9 +10,9 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#ifdef WIN32
- #include <windows.h>
-#endif
+//#ifdef WIN32
+// #include <windows.h>
+//#endif
 
 #include <iostream>
 #include "SDL_net.h"

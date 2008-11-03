@@ -87,6 +87,8 @@ using namespace amethyst;
 using namespace amethyst::client;
 using namespace amethyst::client::module;
 
+void init(void);
+void fini(void);
 
 /// Windows Specific Module Initiators
 #ifdef WIN32
@@ -94,13 +96,13 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
     {
-        amethyst::client::module::init();
+        init();
         return true;
     }
 
     if (fdwReason == DLL_PROCESS_DETACH)
     {
-        amethyst::client::module::fini();
+        fini();
         return true;
     }
 

@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="Amethyst-GL"
 	ProjectGUID="{1D1CFFFC-A673-4090-A2CB-AF0A416B890E}"
+	RootNamespace="Amethyst-GL"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\lib;..\;&quot;Z:\src\win32\libxml2-2.6.26\include&quot;;Z:\src\win32\FTGL\include;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;&quot;Z:\src\win32\SDL-1.2.11\include&quot;;&quot;Z:\src\win32\SDL_net-1.2.6\include&quot;"
+				AdditionalIncludeDirectories="&quot;E:\Program Files\Boost\boost_1_36_0&quot;;..\support;..\lib;..\;&quot;Z:\src\win32\libxml2-2.6.26\include&quot;;Z:\src\win32\FTGL\include;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;&quot;Z:\src\win32\SDL-1.2.11\include&quot;;&quot;Z:\src\win32\SDL_net-1.2.6\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -32,10 +33,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib SDL_net.lib libxml2.lib ftgl_dynamic_MT_d.lib libamethyst.lib OpenGL32.lib GlU32.lib"
-				OutputFile="$(OutDir)/Amethyst-GL.exe"
+				AdditionalDependencies="SDL.lib SDLmain.lib SDL_net.lib libxml2.lib ftgl_dynamic_MT_d.lib libamethyst.lib libsha2.lib OpenGL32.lib GlU32.lib"
+				OutputFile="$(SolutionDir)..\Bin\$(ProjectName)-Debug.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\lib\Release;&quot;Z:\src\win32\SDL_net-1.2.6\lib&quot;;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;Z:\src\win32\FTGL\win32_vcpp\build"
+				AdditionalLibraryDirectories="..\support\boost\crypto\Release;&quot;E:\Program Files\Boost\boost_1_36_0\lib&quot;;..\lib\Release;&quot;Z:\src\win32\SDL_net-1.2.6\lib&quot;;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;Z:\src\win32\FTGL\win32_vcpp\build"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/amethyst-gl.pdb"
 				SubSystem="1"
@@ -140,16 +141,25 @@
 				RelativePath=".\joystick.cpp">
 			</File>
 			<File
+				RelativePath=".\log.cpp">
+			</File>
+			<File
 				RelativePath=".\model.cpp">
 			</File>
 			<File
 				RelativePath=".\model_xml.cpp">
 			</File>
 			<File
+				RelativePath=".\module.cpp">
+			</File>
+			<File
 				RelativePath=".\net.cpp">
 			</File>
 			<File
 				RelativePath=".\opengl.cpp">
+			</File>
+			<File
+				RelativePath=".\opengl_shader.cpp">
 			</File>
 			<File
 				RelativePath=".\scene.cpp">
@@ -168,6 +178,9 @@
 			</File>
 			<File
 				RelativePath=".\timer.cpp">
+			</File>
+			<File
+				RelativePath=".\ui.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -196,7 +209,16 @@
 				RelativePath=".\joystick.h">
 			</File>
 			<File
+				RelativePath=".\log.h">
+			</File>
+			<File
 				RelativePath=".\model.h">
+			</File>
+			<File
+				RelativePath=".\model_xml.h">
+			</File>
+			<File
+				RelativePath=".\module.h">
 			</File>
 			<File
 				RelativePath=".\net.h">
@@ -205,7 +227,16 @@
 				RelativePath=".\opengl.h">
 			</File>
 			<File
+				RelativePath=".\opengl_shader.h">
+			</File>
+			<File
+				RelativePath=".\resource.h">
+			</File>
+			<File
 				RelativePath=".\scene.h">
+			</File>
+			<File
+				RelativePath=".\scene_xml.h">
 			</File>
 			<File
 				RelativePath=".\stars.h">
@@ -219,11 +250,17 @@
 			<File
 				RelativePath=".\timer.h">
 			</File>
+			<File
+				RelativePath=".\ui.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+			<File
+				RelativePath=".\Amethyst-GL.rc">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

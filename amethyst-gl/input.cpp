@@ -321,6 +321,7 @@ int Input::event_joy_axismotion(const SDL_JoyAxisEvent &jaxis)
             Global.ship->set_throttle(-norm_value);
     }
 
+	return 0;
 }
 
 int Input::event_video_resize(const SDL_ResizeEvent &resize)

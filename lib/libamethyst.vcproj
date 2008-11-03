@@ -59,7 +59,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="Z:\src\win32\amethyst\include\amethyst"
+				AdditionalIncludeDirectories="..\support;&quot;E:\Program Files\boost\boost_1_36_0&quot;;Z:\src\win32\amethyst\include\amethyst"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;AMETHYST_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -98,10 +98,13 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\engine.cpp">
+				RelativePath=".\ship.cpp">
 			</File>
 			<File
 				RelativePath=".\main.cpp">
+			</File>
+			<File
+				RelativePath=".\manifest.cpp">
 			</File>
 			<File
 				RelativePath=".\net.cpp">
@@ -148,7 +151,10 @@
 				RelativePath=".\console_menu_main.h">
 			</File>
 			<File
-				RelativePath=".\engine.h">
+				RelativePath=".\ship.h">
+			</File>
+			<File
+				RelativePath=".\manifest.h">
 			</File>
 			<File
 				RelativePath=".\net.h">
