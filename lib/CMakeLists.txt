@@ -9,6 +9,7 @@ SET(libamethyst_SRCS
   console_menu.cpp
   console_menu_main.cpp
   manifest.cpp
+  matrix.cpp
   net.cpp
   object.cpp
   orientation.cpp
