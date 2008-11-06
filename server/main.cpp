@@ -316,7 +316,7 @@ int main(int argc, char** argv)
     //printf(" object_transfer           : %i\n", sizeof(object_transfer));
 
     std::cout << "Starting new-style server" << std::endl;
-    Server s("", "2525", "/home/beau/.amethyst-server");
+    Server s("", "23232", "/home/beau/.amethyst-server");
     s.run();
 
 #if 0

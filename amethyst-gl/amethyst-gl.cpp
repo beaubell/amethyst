@@ -78,7 +78,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
 {
 
     /// DONT QUITE START THE NETWORK THREAD JUST YET
-    //connection.start("127.0.0.1", "2525", "beau", "test");
+    //connection.start("127.0.0.1", "23232", "beau", "test");
     //net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
 
     /// Create and add FPS widget to UI.
