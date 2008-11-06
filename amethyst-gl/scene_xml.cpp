@@ -352,7 +352,6 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object &new_ob
 
 static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship_ptr new_ship)
 {
-    xmlChar *temp;
 
     cur = cur->xmlChildrenNode;
     while (cur != NULL)

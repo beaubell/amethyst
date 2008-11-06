@@ -17,6 +17,7 @@
 #include "utility.h"
 #include "universe.h"
 #include "object.h"
+#include "ship.h"
 #include "physics.h"
 #include "net.h"
 
@@ -154,15 +155,18 @@ namespace lib {
   void info_variable_size(void)
   {
        std::cout << "\nINFO: Variable sizes\n";
-       std::cout << " bool       :  " << sizeof(bool) * 8        << std::endl;
-       std::cout << " char       :  " << sizeof(char) * 8        << std::endl;
-       std::cout << " short      :  " << sizeof(short) * 8       << std::endl;
-       std::cout << " int        :  " << sizeof(int) * 8         << std::endl;
-       std::cout << " long       :  " << sizeof(long) * 8        << std::endl;
-       std::cout << " long long  :  " << sizeof(long long) * 8   << std::endl;
-       std::cout << " float      :  " << sizeof(float) * 8       << std::endl;
-       std::cout << " double     :  " << sizeof(double) * 8      << std::endl;
-       std::cout << " long double:  " << sizeof(long double) * 8 << std::endl;
+       std::cout << " bool       :  " << sizeof(bool)            << std::endl;
+       std::cout << " char       :  " << sizeof(char)            << std::endl;
+       std::cout << " short      :  " << sizeof(short)           << std::endl;
+       std::cout << " int        :  " << sizeof(int)             << std::endl;
+       std::cout << " long       :  " << sizeof(long)            << std::endl;
+       std::cout << " long long  :  " << sizeof(long long)       << std::endl;
+       std::cout << " float      :  " << sizeof(float)           << std::endl;
+       std::cout << " double     :  " << sizeof(double)          << std::endl;
+       std::cout << " lib:Vector :  " << sizeof(Cartesian_Vector)<< std::endl;
+       std::cout << " lib:Quat   :  " << sizeof(Quaternion)      << std::endl;
+       std::cout << " lib::Object:  " << sizeof(Object)          << std::endl;
+       std::cout << " lib::Ship  :  " << sizeof(Ship)            << std::endl;
   }
 
 } // namespace lib
