@@ -99,7 +99,7 @@ class Server_Connection
   //: public boost::enable_shared_from_this<server_connection>
 {
    public:
-    Server_Connection(lib::filemanifest& manifest)
+    Server_Connection(lib::FileManifest& manifest)
         : io_service_(),
           socket_(io_service_),
           manifest_(manifest)
@@ -145,7 +145,7 @@ class Server_Connection
     tcp::socket socket_;
     std::string message_;
     asio::streambuf in_data_;
-    lib::filemanifest& manifest_;
+    lib::FileManifest& manifest_;
 
     std::string server_prog;
     std::string server_version;

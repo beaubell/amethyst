@@ -37,7 +37,7 @@ class Amethyst_GL
     UI       ui;
     Input    input;
    private:
-    lib::filemanifest manifest_;
+    lib::FileManifest manifest_;
     Server_Connection connection;
 
     boost::thread *net_thread;

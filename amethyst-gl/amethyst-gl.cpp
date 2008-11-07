@@ -73,7 +73,7 @@ namespace client
 Amethyst_GL::Amethyst_GL(const std::string &path_root)
     : ui("/spacefri.ttf"), //FIXME make not static
       input(),
-      manifest_(path_root),
+      manifest_(),
       connection(manifest_)
 {
 

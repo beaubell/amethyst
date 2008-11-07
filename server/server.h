@@ -64,7 +64,7 @@ class Server
     /// File Root
     std::string file_root;
     /// Manifest
-    lib::filemanifest manifest_;
+    lib::FileManifest manifest_;
 };
 
 } // namespace server

@@ -28,14 +28,14 @@ typedef struct
     std::string hash;
     size_t size;
 
-} fileentry;
+} FileEntry;
 
-class filemanifest
+class FileManifest
 {
    public:
-    filemanifest(void)
+    FileManifest(void)
     {};
-    filemanifest(const std::string &file_root)
+    FileManifest(const std::string &file_root)
     {
         initialize(file_root);
     };
@@ -43,7 +43,7 @@ class filemanifest
     void clear();
     bool initialize(const std::string &fileroot);
 
-    const fileentry &operator[](int pos) const
+    const FileEntry &operator[](int pos) const
     {
         return filelist_[pos];
     }
@@ -58,11 +58,11 @@ class filemanifest
    private:
     size_t calculate_sha256 (const boost::filesystem::path &path, std::string &sha256_out);
 
-    std::vector<fileentry> filelist_;
+    std::vector<FileEntry> filelist_;
 };
 
-// Minus 'in2' from 'in' assign whats left to out 
-void diff(const filemanifest &in, const filemanifest &in2, filemanifest &out);
+// Minus 'in2' from 'in' assign whats left to out
+void diff(const FileManifest &in, const FileManifest &in2, FileManifest &out);
 
 } // namespace lib
 } // namespace amethyst

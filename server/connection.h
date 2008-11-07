@@ -39,7 +39,7 @@ class TCP_Connection
    public:
     TCP_Connection(boost::asio::io_service& io_service,
                    Connection_Manager& manager,
-                   lib::filemanifest& manifest)
+                   lib::FileManifest& manifest)
        : socket_(io_service),
          connection_manager_(manager),
          manifest_(manifest),
@@ -84,7 +84,7 @@ class TCP_Connection
     std::string message_;
     asio::streambuf in_data_;
     Connection_Manager& connection_manager_;
-    lib::filemanifest& manifest_;
+    lib::FileManifest& manifest_;
 
     std::string client_prog;
     std::string client_version;

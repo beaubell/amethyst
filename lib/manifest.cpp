@@ -22,7 +22,7 @@ namespace amethyst
 namespace lib
 {
 
-bool filemanifest::initialize(const std::string &file_root)
+bool FileManifest::initialize(const std::string &file_root)
 {
     using boost::filesystem::path;
     using boost::filesystem::directory_iterator;
@@ -58,7 +58,7 @@ bool filemanifest::initialize(const std::string &file_root)
 
                     filesize = calculate_sha256(sub_itr->path(), sha2);
 
-                    fileentry entry = {sub_path, sha2, filesize};
+                    FileEntry entry = {sub_path, sha2, filesize};
                     filelist_.push_back(entry);
 
                     std::cout << sub_path << std::endl;
@@ -76,7 +76,7 @@ bool filemanifest::initialize(const std::string &file_root)
 
             filesize = calculate_sha256(itr->path(), sha2);
 
-            fileentry entry = {rt_path, sha2, filesize};
+            FileEntry entry = {rt_path, sha2, filesize};
             filelist_.push_back(entry);
 
             std::cout << rt_path << std::endl;
@@ -86,7 +86,7 @@ bool filemanifest::initialize(const std::string &file_root)
     return true;
 }
 
-size_t filemanifest::calculate_sha256 (const boost::filesystem::path &path, std::string &sha256_out)
+size_t FileManifest::calculate_sha256 (const boost::filesystem::path &path, std::string &sha256_out)
 {
     // Load file
     std::string strpath = path.string();
@@ -119,14 +119,14 @@ size_t filemanifest::calculate_sha256 (const boost::filesystem::path &path, std:
 
 }
 
-void filemanifest::push(const std::string &file, const std::string &hash, const size_t &size)
+void FileManifest::push(const std::string &file, const std::string &hash, const size_t &size)
 {
-    fileentry entry = {file, hash, size};
+    FileEntry entry = {file, hash, size};
     filelist_.push_back(entry);
 }
 
 
-void diff(const filemanifest &in, const filemanifest &in2, filemanifest &out)
+void diff(const FileManifest &in, const FileManifest &in2, FileManifest &out)
 {
     for (int count = 0; count > in.size(); count++)
     {
@@ -134,7 +134,7 @@ void diff(const filemanifest &in, const filemanifest &in2, filemanifest &out)
         for (int count2 = 0; count2 > in2.size(); count2++)
         {
             if((in[count].file == in2[count2].file) && (in[count].hash == in2[count2].hash))
-              match = true; 
+              match = true;
 
         }
         if (match == false)
