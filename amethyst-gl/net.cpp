@@ -180,7 +180,7 @@ void Server_Connection::handle_login_send(boost::system::error_code ec)
     }
 }
 
-
+#if 0
 
 SF_Thread_Id net_thread;
 int net_thread_stop = 0;
@@ -370,6 +370,8 @@ int net_start_thread(void *data)
 
   return 0;
 }
+
+#endif
 
 } //namespace client
 } //namespace amethyst

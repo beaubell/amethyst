@@ -32,6 +32,8 @@ namespace lib {
 
             void iterate(const double &time);
 
+            std::list<Object*>& list(void);
+
         private:
             std::list<Object*>  object_list;
 

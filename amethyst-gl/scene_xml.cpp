@@ -19,8 +19,7 @@
 #include "global.h"
 
 #include "lib/vector.h"
-#include "lib/object.h"
-#include "lib/ship.h"
+#include "scene_object.h"
 
 #include <iostream>
 #include <iomanip>
@@ -108,10 +107,10 @@ void scene_load(const std::string &name)
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
         {
-            Object *temp;
+            Scene_Object *temp;
             try
             {
-                temp = new Object;
+                temp = new Scene_Object;
                 scene_xml_parse_object (doc, cur, *temp);
             }
             catch (parse_error& e)
@@ -126,10 +125,10 @@ void scene_load(const std::string &name)
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("ship") ))
         {
-            lib::Ship_ptr temp;
+            Scene_Ship_ptr temp;
             try
             {
-                temp = Ship_ptr(new Ship());
+                temp = Scene_Ship_ptr(new Scene_Ship());
                 scene_xml_parse_ship (doc, cur, temp);
             }
             catch (parse_error& e)
@@ -473,7 +472,7 @@ void scene_xml_write (const std::string &name)
 
     if(!object_list.empty())
     {
-        std::list<Object *>::iterator obj1 = object_list.begin();
+        std::list<Object *>::iterator obj1 = Global.universe.list().begin();
         do
         {
             outfile << "  <object name=\"" << (*obj1)->name << "\">" << std::endl;
@@ -492,7 +491,7 @@ void scene_xml_write (const std::string &name)
             outfile << "  </object>" << std::endl;
 
             obj1++;
-        }  while (obj1 != object_list.end());
+        }  while (obj1 != Global.universe.list().end());
 
     }
 

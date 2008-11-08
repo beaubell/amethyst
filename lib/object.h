@@ -17,6 +17,7 @@
 
 #include "vector.h"
 #include "orientation.h"
+#include "matrix.h"
 
 
 namespace amethyst {

@@ -13,8 +13,8 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#include "lib/object.h"
-#include "lib/ship.h"
+#include "scene_object.h"
+//#include "lib/ship.h"
 #include "lib/universe.h"
 
 #include <string>
@@ -38,9 +38,9 @@
 namespace amethyst {
 namespace client {
 
-using lib::Object;
-using lib::Ship;
-using lib::Ship_ptr;
+//using lib::Object;
+//using lib::Ship;
+//using lib::Ship_ptr;
 using lib::Universe;
 using lib::Quaternion;
 
@@ -55,13 +55,13 @@ class __global {
       std::string scene;
 
       // Your Ship
-      Ship *ship;
+      lib::Ship *ship;
 
       // Targeted Object
-      Object *obj_target;
+      lib::Object *obj_target;
 
       // Viewed Object
-      Object *obj_view;
+      lib::Object *obj_view;
 
       // Models // FIXME
       GLuint sun_mdl;
@@ -133,15 +133,16 @@ class __global {
       UDPpacket   *pack_in, *pack_out;
 
       // Network ships
-      Object net_ship[5];
-      int    net_ships;
+      //Scene_Object net_ship[5];
+      //int          net_ships;
 
-      Object reference_object;
-      Ship   reference_ship;
+      // Reference Objects
+      Scene_Object reference_object;
+      Scene_Ship   reference_ship;
 
       Log    log;
 
-      std::set<Ship_ptr> ships;
+      std::set<Scene_Ship_ptr> ships;
 };
 
 // Tell all c files that Global is instantiated somewhere externally

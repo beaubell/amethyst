@@ -31,10 +31,10 @@
 namespace amethyst {
 namespace client {
 
-using lib::Object;
+//using lib::Object;
 using lib::Cartesian_Vector;
 
-std::list<Object *>  object_list;
+std::list<Scene_Object_Base *>  object_list;
 
 double sun_rot = 0;
 
@@ -155,33 +155,16 @@ void scene_render(void)
   // Draw Objects in List.
   if(!object_list.empty())
   {
-    std::list<Object *>::iterator obj1 = object_list.begin();
-     do
+    std::list<Scene_Object_Base *>::iterator obj1 = object_list.begin();
+    do
     {
-      glPushMatrix();
-        // Move to object location
-        Cartesian_Vector temp = (*obj1)->location - reference;
-        glTranslated(temp.x, temp.y, temp.z);
-        // Orient object
-        Quaternion       *q = &(*obj1)->attitude;
-
-        double theta = 2.0 * acos(q->w);
-        TODEG(theta);
-
-        glRotated(theta, q->x, q->y, q->z);
-
-        //glDisable(GL_COLOR_MATERIAL);
-
-        // Render Object
-        if((*obj1)->meta)
-           glCallList((reinterpret_cast<Model *>((*obj1)->meta))->dl);
-
-      glPopMatrix();
-      obj1++;
+        (*obj1)->render(reference);
+        obj1++;
     }  while (obj1 != object_list.end());
 
   }
 
+#if 0
   // Draw Network Objects
   for (int i = 0; i < Global.net_ships; i++)
   {
@@ -204,11 +187,12 @@ void scene_render(void)
 
     glPopMatrix();
   }
+#endif
 
 }
 
 
-void scene_add_object(Object *newobject)
+void scene_add_object(Scene_Object_Base *newobject)
 {
     if (newobject)
       object_list.push_back(newobject);
@@ -218,12 +202,12 @@ void scene_add_object(Object *newobject)
 
 void scene_select_object_next()
 {
-    Object* &selected = Global.obj_view  ;            // Reference to ship pointer
-    Object* reference = &Global.reference_object; // Pointer to reference_object
+    lib::Object* &selected = Global.obj_view  ;            // Reference to ship pointer
+    lib::Object* reference = &Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
     {
-        std::list<Object *>::iterator obj1 = object_list.begin();
+        std::list<lib::Object *>::iterator obj1 = Global.universe.list().begin();
 
         if(reference == selected)
         {
@@ -237,9 +221,9 @@ void scene_select_object_next()
             if(selected == (*obj1))
             {
                 obj1++;
-                if (obj1 == object_list.end())
+                if (obj1 == Global.universe.list().end())
                 {
-                    obj1 = object_list.begin();
+                    obj1 = Global.universe.list().begin();
                     selected = *obj1;
                 }
                 else
@@ -248,7 +232,7 @@ void scene_select_object_next()
             }
 
             obj1++;
-        }  while (obj1 != object_list.end());
+        }  while (obj1 != Global.universe.list().end());
 
     } else
     {
@@ -260,12 +244,12 @@ void scene_select_object_next()
 
 void scene_target_object_next()
 {
-    Object* &target   = Global.obj_target;            // Reference to target pointer
-    Object* reference = &Global.reference_object; // Pointer to reference_object
+    lib::Object* &target   = Global.obj_target;            // Reference to target pointer
+    lib::Object* reference = &Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
     {
-        std::list<Object *>::iterator obj1 = object_list.begin();
+        std::list<lib::Object *>::iterator obj1 = Global.universe.list().begin();
 
         if(reference == target)
         {
@@ -279,9 +263,9 @@ void scene_target_object_next()
             if(target == (*obj1))
             {
                 obj1++;
-                if (obj1 == object_list.end())
+                if (obj1 == Global.universe.list().end())
                 {
-                    obj1 = object_list.begin();
+                    obj1 = Global.universe.list().begin();
                     target = *obj1;
                 }
                 else
@@ -290,7 +274,7 @@ void scene_target_object_next()
             }
 
             obj1++;
-        }  while (obj1 != object_list.end());
+        }  while (obj1 != Global.universe.list().end());
 
     } else
     {
@@ -301,12 +285,12 @@ void scene_target_object_next()
 
 void scene_control_ship_next()
 {
-    Ship* &control  = Global.ship;            // Reference to control ship
-    Ship* reference = &Global.reference_ship; // Pointer to reference_ship
+    lib::Ship* &control  = Global.ship;            // Reference to control ship
+    lib::Ship* reference = &Global.reference_ship; // Pointer to reference_ship
 
     if(!object_list.empty())
     {
-        std::set<Ship_ptr>::iterator obj1 = Global.ships.begin();
+        std::set<Scene_Ship_ptr>::iterator obj1 = Global.ships.begin();
 
         if(reference == control)
         {

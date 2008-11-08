@@ -137,5 +137,10 @@ namespace lib {
 
     } // Iterate()
 
+    std::list<Object*>& Universe::list(void)
+    {
+        return object_list;
+
+    }
 } // namespace lib
 } // namespace amethyst

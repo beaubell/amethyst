@@ -124,7 +124,7 @@ static void hud_widget_object_text(void)
     // Print names on the objects
     if(!object_list.empty())
     {
-        std::list<Object *>::iterator obj1 = object_list.begin();
+        std::list<lib::Object *>::iterator obj1 = Global.universe.list().begin();
 
         do
         {
@@ -138,10 +138,11 @@ static void hud_widget_object_text(void)
 
             glPopMatrix();
             obj1++;
-        }  while (obj1 != object_list.end());
+        }  while (obj1 != Global.universe.list().end());
 
     }
 
+#if 0
     // Print names on network Objects
     for (int i = 0; i < Global.net_ships; i++)
     {
@@ -154,6 +155,7 @@ static void hud_widget_object_text(void)
 
         glPopMatrix();
     }
+#endif
 
 }
 
@@ -256,9 +258,9 @@ static void hud_widget_fps(int x, int y)
 
 static void hud_widget_select(const int x, const int y)
 {
-    const Ship     &ship = *Global.ship;
-    const Object   &view = *Global.obj_view;
-    const Object &target = *Global.obj_target;
+    const lib::Ship     &ship = *Global.ship;
+    const lib::Object   &view = *Global.obj_view;
+    const lib::Object &target = *Global.obj_target;
 
     std::string text = "Piloting: " + ship.name;
     glWindowPos2i(x, y);

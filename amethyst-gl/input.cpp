@@ -178,7 +178,7 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
             break;
 
         case SDLK_p:
-            print_object(Global.net_ship[0]);
+            //print_object(Global.net_ship[0]);
             break;
 
         case SDLK_s: // Toggle shaders on and off

@@ -16,6 +16,7 @@ SET(amethystgl_SRCS
   opengl.cpp
   opengl_shader.cpp
   scene.cpp
+  scene_object.cpp
   scene_xml.cpp
   stars.cpp
   texture.cpp
