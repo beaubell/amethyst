@@ -20,6 +20,7 @@
 #include "ship.h"
 #include "physics.h"
 #include "net.h"
+#include "datatypes.h"
 
 #ifdef __GNUG__
 #pragma implementation
@@ -37,8 +38,13 @@ namespace lib {
   {
        bool success = false;
        info_variable_size();
+
+       test_units(quiet, debug);
+       
        test_cartsphere_conv(quiet, debug);
        success = test_engine(quiet, debug);
+       
+       
 
 //       unsigned short a = 30356, b;
 //       printf("a: %#xh\n",a);
@@ -168,6 +174,25 @@ namespace lib {
        std::cout << " lib::Object:  " << sizeof(Object)          << std::endl;
        std::cout << " lib::Ship  :  " << sizeof(Ship)            << std::endl;
   }
+
+  bool test_units(bool quiet, bool debug)
+  {
+    std::cout << "\nTest: Units and Dimensions\n";
+    
+      Location location = 9.0*meters;
+      Time     time = 8.0*seconds;
+      
+      Velocity     velocity = location/time;
+      Acceleration acceleration = velocity/time;
+     
+      std::cout << " Location                 : " << location << std::endl;
+      std::cout << " Time                     : " << time     << std::endl;
+      std::cout << " Velocity (Location/Time) : " << velocity << std::endl;
+      std::cout << " Acceleration (Velo/Time) : " << acceleration << std::endl;
+      
+    return true;
+  }
+
 
 } // namespace lib
 } // namespace amethyst

@@ -26,8 +26,10 @@ namespace lib {
 
   bool test_cartsphere_conv(bool quiet, bool debug);
   bool test_engine(bool quiet, bool debug);
-
+  
   void info_variable_size(void);
+  
+  bool test_units(bool quiet, bool debug);
 
 } // namespace lib
 } // namespace amethyst
