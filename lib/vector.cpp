@@ -139,7 +139,7 @@ namespace lib {
        return vector;
        }
 
-  const bool operator == (const Cartesian_Vector &left, const Cartesian_Vector &right) {
+  bool operator == (const Cartesian_Vector &left, const Cartesian_Vector &right) {
 
       return ((left.x == right.x) && (left.y == right.y) && (left.z == right.z));
       }

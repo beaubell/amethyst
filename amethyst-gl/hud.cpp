@@ -276,8 +276,8 @@ static void hud_widget_select(const int x, const int y)
         text = "Targeted: " + target.name;
         text += "  Distance: " + lexical_cast<std::string>(distance);
 
-        const Cartesian_Vector vector = Cartesian_Vector(target.velocity - view.velocity);
-        text += "  Speed: " + lexical_cast<std::string>(vector.magnitude());
+        const Cartesian_Vector speed = Cartesian_Vector(target.velocity - view.velocity);
+        text += "  Speed: " + lexical_cast<std::string>(speed.magnitude());
         glWindowPos2i(x, y - 26);
         fonts[0]->Render(text.c_str());
     }

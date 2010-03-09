@@ -12,4 +12,6 @@
 #cmakedefine SIZEOF_DOUBLE      ${SIZEOF_DOUBLE}
 #cmakedefine SIZEOF_LONG_DOUBLE ${SIZEOF_LONG_DOUBLE}
 
+#cmakedefine HAVE_EXECINFO_H 1
+
 #endif

@@ -15,6 +15,7 @@
 
 #include <boost/bind.hpp>
 #include <exception>
+#include <iostream>
 
 #ifndef WIN32
 #include <dlfcn.h>

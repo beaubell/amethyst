@@ -36,6 +36,9 @@ class Connection_Manager
     /// Stop all connections.
     void stop_all();
 
+    /// Query number of active connections.
+    int  get_number_of_connections();
+
    private:
     /// The managed connections.
     std::set<connection_ptr> connections_;

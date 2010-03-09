@@ -13,6 +13,7 @@
 
 #include <signal.h>
 #include <termios.h>
+#include <stdlib.h>
 
 #include "console.h"
 #include "console_io.h"

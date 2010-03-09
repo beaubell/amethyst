@@ -18,12 +18,15 @@ SET(amethystgl_SRCS
   scene.cpp
   scene_object.cpp
   scene_xml.cpp
+  sound.cpp
   stars.cpp
   texture.cpp
   thread.cpp
   timer.cpp
   ui.cpp
   amethyst-gl.cpp
+  bootstrap.cpp
+  ${amthyst-uiwindows}
 )
 
 INCLUDE_DIRECTORIES(
@@ -32,7 +35,6 @@ INCLUDE_DIRECTORIES(
   ../support/FTGL/include
   ${LIBXML2_INCLUDE_DIR}
   ${SDL_INCLUDE_DIR}
-  ${SDLNET_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIR}
   ../support/
 )

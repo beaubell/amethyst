@@ -12,6 +12,7 @@
 
 #include "manifest.h"
 #include <boost/filesystem.hpp>
+// FIXME!!
 #include <boost/crypto/sha2.hpp>
 #include <boost/crypto/message_digest.hpp>
 #include <iostream>

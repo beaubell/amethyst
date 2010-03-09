@@ -218,7 +218,10 @@ void TCP_Connection::handle_main_sequence_read(boost::system::error_code ec)
 
         is.ignore(255);
 
-        std::cout << "Got Command: " << command << std::endl;
+        using namespace boost::gregorian;
+        using namespace boost::local_time;
+        using namespace boost::posix_time;
+        std::cout << ptime(second_clock::local_time()) << " -- " << socket_.remote_endpoint() << ":" << client_user << "> Got Command: " << command << std::endl;
 
         // FIXME Handle commands
         if (command == "manifest")
@@ -227,6 +230,10 @@ void TCP_Connection::handle_main_sequence_read(boost::system::error_code ec)
         }
         else if (command == "get")
         {}
+        else if (command == "connections")
+        {
+            connectionlist_send();
+        }
         else if (command == "bye")
         {
             connection_manager_.stop(shared_from_this());
@@ -249,7 +256,21 @@ void TCP_Connection::manifest_send()
         message_ += manifest_[count].hash + " " + manifest_[count].file
                  + " " + lexical_cast<std::string>(manifest_[count].size) + "\r\n";
 
-    message_ += "Ok. Client Ready...\r\n";
+    message_ += ":Command Completed.\r\n";
+    boost::asio::async_write(socket_, boost::asio::buffer(message_),
+     boost::bind(&TCP_Connection::handle_main_sequence_send, shared_from_this(), _1));
+
+}
+
+void TCP_Connection::connectionlist_send()
+{
+    //connection_manager_
+    message_ = "Ok. " + lexical_cast<std::string>(connection_manager_.get_number_of_connections()) + "Entries\r\n";
+    //for (int count = 0;count < manifest_.size();count++)
+    //    message_ += manifest_[count].hash + " " + manifest_[count].file
+    //             + " " + lexical_cast<std::string>(manifest_[count].size) + "\r\n";
+
+    message_ += ":Command Completed.\r\n";
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
      boost::bind(&TCP_Connection::handle_main_sequence_send, shared_from_this(), _1));
 

@@ -123,17 +123,17 @@ struct sha2_ctx
   
   void add_to_bit_count(size_type x)
   {
-    bit_count.add(x);
+    bit_count_.add(x);
   }
   
   unsigned int bytes_in_buf() const
   {
-    return bit_count[0] / 8 % block_size;
+    return bit_count_[0] / 8 % block_size;
   }
 
   unsigned int bits_in_buf() const
   {
-    return bit_count[0] % block_size;
+    return bit_count_[0] % block_size;
   }
 
   static word_type rotate_right(word_type x, word_type bits)
@@ -162,7 +162,7 @@ struct sha2_ctx
   }
 
   word_type H[8];
-  bit_count<size_type, bit_count_size> bit_count;
+  bit_count<size_type, bit_count_size> bit_count_;
 };
 
 
@@ -175,7 +175,7 @@ sha2_ctx<Impl>::sha2_ctx()
 template<class Impl>
 sha2_ctx<Impl>::sha2_ctx(const sha2_ctx<Impl>& copy)
 :
-  bit_count(copy.bit_count)
+  bit_count_(copy.bit_count_)
 {
   std::memcpy(H, copy.H, sizeof(H));
 }
@@ -183,7 +183,7 @@ sha2_ctx<Impl>::sha2_ctx(const sha2_ctx<Impl>& copy)
 template<class Impl>
 sha2_ctx<Impl>& sha2_ctx<Impl>::operator = (const sha2_ctx<Impl>& rhs)
 {
-  bit_count = rhs.bit_count;
+  bit_count_ = rhs.bit_count_;
   std::memcpy(H, rhs.H, sizeof(H));
   return *this;
 }
@@ -192,7 +192,7 @@ template<class Impl>
 void sha2_ctx<Impl>::reset()
 {
   std::memcpy(H, Impl::init_values, sizeof(H));
-  bit_count = 0;
+  bit_count_ = 0;
 }
 
 template<class Impl>
@@ -243,7 +243,7 @@ void sha2_ctx<Impl>::store_msg_digest(void* digest) const
 template<class Impl>
 void sha2_ctx<Impl>::store_bit_count(void* dst) const
 {
-  bit_count.store_as_big_endian(dst);
+  bit_count_.store_as_big_endian(dst);
 }
 
 

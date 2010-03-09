@@ -37,5 +37,10 @@ void Connection_Manager::stop_all()
     connections_.clear();
 }
 
+int  Connection_Manager::get_number_of_connections()
+{
+    return connections_.size();
+}
+
 } // namespace server
 } // namespace amethyst

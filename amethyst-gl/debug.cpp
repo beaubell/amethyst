@@ -12,7 +12,12 @@
 
 #include "debug.h"
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <iostream>
+#include <malloc.h>
 #ifdef HAVE_EXECINFO_H
   #include <execinfo.h>
 #endif
@@ -54,6 +59,7 @@ void print_object(Object &obj)
 void print_trace(void)
 {
 #ifdef HAVE_EXECINFO_H
+    printf ("Printing BackTrace:..");
 
     void *array[MAX_BT];
     size_t size;

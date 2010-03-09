@@ -6,7 +6,7 @@ INCLUDE(./cmake/FindFreetype.cmake)
 
 FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(SDL)
-FIND_PACKAGE(SDL_net)
+#FIND_PACKAGE(SDL_net)
 FIND_PACKAGE(Boost 1.35.0 COMPONENTS asio date_time filesystem system thread)
 
 #FIND_PACKAGE(Subversion)
@@ -14,6 +14,8 @@ FIND_PACKAGE(Boost 1.35.0 COMPONENTS asio date_time filesystem system thread)
 #    Subversion_WC_INFO(${PROJECT_SOURCE_DIR} AMETHYST)
 #    MESSAGE("Current revision is ${AMETHYST_WC_REVISION}")
 #ENDIF(Subversion_FOUND)
+INCLUDE(CheckIncludeFile)
+CHECK_INCLUDE_FILE(execinfo.h HAVE_EXECINFO_H)
 
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
@@ -26,7 +28,7 @@ CHECK_TYPE_SIZE("double"      SIZEOF_DOUBLE)
 CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
-SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -g3 -Wall -Wconversion -Wextra -Wold-style-cast")
+SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wconversion -Wextra -Wold-style-cast")
 #SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -o3")
 SET( SUPPORT_CXX_FLAGS "-O3")
 

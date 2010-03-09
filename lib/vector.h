@@ -54,7 +54,7 @@ namespace lib {
   const Cartesian_Vector operator* (const Cartesian_Vector &left, const double &scalar);
   const Cartesian_Vector operator/ (const Cartesian_Vector &left, const double &scalar);
 
-  const bool  operator == (const Cartesian_Vector &left, const Cartesian_Vector &right);
+  bool  operator == (const Cartesian_Vector &left, const Cartesian_Vector &right);
 
 
   // Spherical_Vector Data Type and Support Functions

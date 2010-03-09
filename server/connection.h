@@ -79,6 +79,9 @@ class TCP_Connection
 
     void manifest_send();
     void handle_manifest_send(boost::system::error_code ec);
+    
+    void connectionlist_send();
+    void handle_connectionlist_send(boost::system::error_code ec);
 
     tcp::socket socket_;
     std::string message_;
