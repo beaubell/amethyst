@@ -27,10 +27,12 @@ namespace amethyst {
 namespace lib {
 
   // Big 'G', The gravitational constant, also The constant of proportionality.
-  double G = 6.672e-11;     // N m^2 kg^-2
+  Grav_Const G = 6.672e-11*si::newton*pow<2>(si::meter)/pow<2>(si::kilogram);     // N m^2 kg^-2
+  //using boost::units::si::constants::codata;
   // Speed of Light
-  double C = 2.99792458e8;  // m/s
+  Velocity C = 2.99792458e8*si::meter/si::second;  // m/s
 
+/*
   double phys_distance (const Cartesian_Coord &a, const Cartesian_Coord &b)
   {
 
@@ -41,10 +43,10 @@ namespace lib {
                    pow(vector.y,2)+
                    pow(vector.z,2) );
   }
+*/
 
 
-
-  double phys_gravity (const Object &a, const Object &b)
+  Force phys_gravity (const Object &a, const Object &b)
   {
 
       double distance = phys_distance (a.location, b.location);
@@ -53,18 +55,18 @@ namespace lib {
   }
 
 
-  double phys_gravity (const double &mass_a, const double &distance)
+  Force phys_gravity (const Mass &mass_a, const Location &distance)
   {
-      return ((G*(mass_a)) / pow(distance, 2));
+      return ((G*(mass_a)) / pow<2>(distance));
   }
 
 
-  double phys_gravity (const double &mass_a, const double &mass_b, const double &distance)
+  Force phys_gravity (const Mass &mass_a, const Mass &mass_b, const Location &distance)
   {
-      return ((G*(mass_a)*(mass_b)) / pow(distance, 2));
+      return ((G*(mass_a)*(mass_b)) / pow<2>(distance));
   }
 
-
+/*
   Spherical_Vector phys_alias_transform (const Cartesian_Coord &a)
   {
 
@@ -99,7 +101,7 @@ namespace lib {
 
       return output;
   }
-
+*/
 
   Cartesian_Vector phys_vector (const Cartesian_Coord &a,
                                 const Cartesian_Coord &b)
@@ -136,7 +138,7 @@ namespace lib {
       return output;
   }
 
-
+/*
   Cartesian_Coord phys_alibi_transform (const Cartesian_Coord &a,
                                         const Cartesian_Vector &v)
   {
@@ -163,6 +165,7 @@ namespace lib {
 
       return output;
   }
+*/
 
 } // namespace lib
 } // namespace amethyst

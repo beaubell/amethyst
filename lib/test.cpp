@@ -179,8 +179,8 @@ namespace lib {
   {
     std::cout << "\nTest: Units and Dimensions\n";
     
-      Location location = 9.0*meters;
-      Time     time = 8.0*seconds;
+      Location location = 9.0*si::meters;
+      Time     time = 8.0*si::seconds;
       
       Velocity     velocity = location/time;
       Acceleration acceleration = velocity/time;

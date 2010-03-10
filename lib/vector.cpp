@@ -16,41 +16,8 @@
 namespace amethyst {
 namespace lib {
 
-  void Cartesian_Vector::clear(void) {
-
-       x = 0;
-       y = 0;
-       z = 0;
-       }
-
-  double Cartesian_Vector::magnitude(void) const {
-
-       return sqrt(x*x + y*y + z*z);
-       }
-
-  void Cartesian_Vector::normalize(void) {
-
-       double m = magnitude();
-       x /= m;
-       y /= m;
-       z /= m;
-       }
-
-  void Cartesian_Vector::reverse(void) {
-
-       x = -x;
-       y = -y;
-       z = -z;
-       }
-
-    Cartesian_Vector& Cartesian_Vector::operator = (const Cartesian_Vector& vector)
-    {
-        x = vector.x;
-        y = vector.y;
-        z = vector.z;
-        return *this;
-    }
-
+  
+/*
   const Cartesian_Vector& Cartesian_Vector::operator += (const Cartesian_Vector& vector) {
 
        x += vector.x;
@@ -143,9 +110,9 @@ namespace lib {
 
       return ((left.x == right.x) && (left.y == right.y) && (left.z == right.z));
       }
+*/
 
-
-
+/*
       Spherical_Vector& Spherical_Vector::operator=(const Spherical_Vector &right)
       {
           a = right.a;
@@ -161,6 +128,8 @@ namespace lib {
        p = 0;
        r = 0;
        }
+
+*/
 
 } // namespace lib
 } // namespace amethyst

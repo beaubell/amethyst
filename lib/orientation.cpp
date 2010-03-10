@@ -17,6 +17,7 @@
 namespace amethyst {
 namespace lib {
 
+  /*
   Quaternion::Quaternion(const Quaternion &old) {
 
        w = old.w;
@@ -158,6 +159,7 @@ namespace lib {
 
    }
 
+   
    const Quaternion operator*(const Quaternion &q, const Cartesian_Vector &v) {
 
        return  Quaternion(  -(q.x*v.x + q.y*v.y + q.z*v.z),
@@ -182,6 +184,8 @@ Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
     t = (q * v) * q.Bar();
     return t.GetVector();
 }
+
+*/
 
 } // namespace lib
 } // namespace amethyst

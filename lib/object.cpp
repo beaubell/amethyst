@@ -15,6 +15,7 @@
 
 #include "physics.h"
 #include "object.h"
+#include "vector.h"
 
 
 namespace amethyst {
@@ -22,7 +23,7 @@ namespace lib {
 
     Object::Object()
     {
-        mass = 1;
+        mass = 1*si::kilogram;
 
         next = NULL;
         meta = NULL;
@@ -60,15 +61,15 @@ namespace lib {
     }
 #endif
 
-    void Object::force_add(const Cartesian_Vector &new_force)
+    void Object::force_add(const Cartesian_Vector<Force> &new_force)
     {
         force += new_force;
     }
 
 
-    void Object::force_add(const Spherical_Vector &sphr_force)
+    void Object::force_add(const Spherical_Vector<Force> &sphr_force)
     {
-        Cartesian_Vector new_force = phys_alias_transform (sphr_force);
+        Cartesian_Vector<Force> new_force = phys_alias_transform (sphr_force);
 
         force += new_force;
     }
@@ -80,6 +81,7 @@ namespace lib {
         acceleration.clear();
     }
 
+    
 
     void Object::force_apply(void)
     {
@@ -88,21 +90,21 @@ namespace lib {
     }
 
 
-    void Object::accel_apply(const double &time)
+    void Object::accel_apply(const Time &time)
     {
-        Cartesian_Vector temp(acceleration * time);
+        Cartesian_Vector<Velocity> temp(acceleration * time);
         velocity += temp;
     }
 
 
-    void Object::velocity_apply(const double &time)
+    void Object::velocity_apply(const Time &time)
     {
-        Cartesian_Vector temp(velocity * time);
+        Cartesian_Vector<Location> temp(velocity * time);
         location += temp;
     }
 
 
-    void Object::iterate(const double &time)
+    void Object::iterate(const Time &time)
     {
 
 
@@ -112,14 +114,14 @@ namespace lib {
         //angular_velocity *= acc_temp;
 
         //Quaternion vel_temp;
-        Quaternion future_angvelocity = angular_velocity;
+        Quaternion<Velocity> future_angvelocity = angular_velocity;
         future_angvelocity *= angular_acceleration;
         angular_velocity.slerp(angular_velocity, future_angvelocity, time);
 
 
-        Quaternion future_attitude(attitude);
+        Quaternion<Location> future_attitude(attitude);
         future_attitude *= angular_velocity;
-        Quaternion current_attitude = attitude;
+        Quaternion<Location> current_attitude = attitude;
         attitude.slerp(current_attitude, future_attitude, time);
 
         //attitude         *= angular_acceleration;

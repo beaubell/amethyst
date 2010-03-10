@@ -15,7 +15,7 @@
 namespace amethyst {
 namespace lib {
 
-
+/*
 Matrix::Matrix(void)
     : e11(0), e12(0), e13(0),
       e21(0), e22(0), e23(0),
@@ -207,7 +207,7 @@ Cartesian_Vector operator*(const Cartesian_Vector& v, const Matrix& m)
                              m.e21*v.x + m.e22*v.y + m.e23*v.z,
                              m.e31*v.x + m.e32*v.y + m.e33*v.z);
 }
-
+*/
 
 } // namespace lib
 } // namespace amethyst

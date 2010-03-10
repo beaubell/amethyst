@@ -30,14 +30,14 @@ namespace lib {
        struct vector {
 
            /* Cartesian Format */
-           Cartesian_Vector     cart_v;
+           Cartesian_Vector<Force>     cart_v;
 
            /* Spherical Format */
-           Spherical_Vector     sphr_v;
+           Spherical_Vector<Force>     sphr_v;
            };
 
        /* location of applied force (0,0,0 = center of gravity = no rotation) */
-       Cartesian_Coord      location;
+       Cartesian_Vector<Location>      location;
 
        int format;
        };
@@ -53,8 +53,8 @@ namespace lib {
        Object(const Object&);
        virtual ~Object() {};
 
-       void force_add(const Cartesian_Vector &force);
-       void force_add(const Spherical_Vector &force);
+       void force_add(const Cartesian_Vector<Force> &force);
+       void force_add(const Spherical_Vector<Force> &force);
 
        void force_clear();
 
@@ -62,40 +62,40 @@ namespace lib {
        void force_apply(void);           //
 
        // Calculate velocity from acceleration;
-       void accel_apply(const double &time);    //time == 1 for 1 second
+       void accel_apply(const Time &time);    //time == 1 for 1 second
 
        // calculate velocity to determine actual movement
-       void velocity_apply(const double &time); //time == 1 for 1 second
+       void velocity_apply(const Time &time); //time == 1 for 1 second
 
        // Apply acceleration and velocity calculations;
-       virtual void iterate(const double &time);
+       virtual void iterate(const Time &time);
 
        /* Absolute Mass */
-       double mass;
+       Mass mass;
 
 
        // location variables
          /* Absolute Location      (in meters from the center of the UNIVERSE!)   */
-         Cartesian_Coord  location;
+         Cartesian_Vector<Location> location;
 
          /* Absolute Velocity      (in m s ^ -1) */
-         Cartesian_Vector velocity;
+         Cartesian_Vector<Velocity> velocity;
 
          /* Absolute Acceleration  (in m s ^ -2)   Storage Variable */
-         Cartesian_Vector acceleration;
+         Cartesian_Vector<Acceleration> acceleration;
 
          /* Absolute Applied Force (in Newtons)    Storage Variable */
-         Cartesian_Vector force;
+         Cartesian_Vector<Force> force;
 
        // attitude variables
          /* Absolute Attitude */
-         Quaternion attitude;
+         Quaternion<Location> attitude;
 
          /* Absolute Angular Velocity */
-         Quaternion angular_velocity;
+         Quaternion<Velocity> angular_velocity;
 
          /* Absolute Angular Acceleration */
-         Quaternion angular_acceleration;
+         Quaternion<Acceleration> angular_acceleration;
 
 
        /* Pointer to external forces (Gravity, etc) */
