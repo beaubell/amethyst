@@ -25,10 +25,10 @@ namespace lib {
 // Constants
 
   // Gravitational Constant, Defined in physics.cpp   (6.672E-11)
-  extern Grav_Const G;
+  extern double G;
 
   // Speed of Light        , Defined in physics.cpp   (2.99792458E8 meters per second)
-  extern Velocity C;
+  extern double C;
 
   // PI
   //extern double PI;
@@ -37,116 +37,39 @@ namespace lib {
 // Functions
 
   // Compute Distance between 'Object A' and 'Object B'
-  template <typename T>
-  T phys_distance (const Cartesian_Vector<T> &a, const Cartesian_Vector<T> &b)
-  {
-
-      Cartesian_Vector<T> vector;
-      vector = phys_vector (a, b);
-
-      return sqrt( pow(vector.x,2)+
-                   pow(vector.y,2)+
-                   pow(vector.z,2) );
-  }
+  double phys_distance (const Cartesian_Coord &a, const Cartesian_Coord &b);
 
   // Compute Gravity between 'Object A' and 'Object B'
-  Force phys_gravity (const Object &a, const Object &b);
+  double phys_gravity (const Object &a, const Object &b);
 
   // Compute Gravity for mass of one object
-  Force phys_gravity (const Mass &mass_a, const Location &distance);
+  double phys_gravity (const double &mass_a, const double &distance);
 
   // Conpute Gravity for mass of two objects
-  Force phys_gravity (const Mass &mass_a, const Mass &mass_b, const Location &distance);
+  double phys_gravity (const double &mass_a, const double &mass_b, const double &distance);
 
   // Compute Cartisian Vector from Cartesian Coordinates
-  template <typename T>
-  Cartesian_Vector<T> phys_vector (const Cartesian_Vector<T> &a,
-                                const Cartesian_Vector<T> &b)
-  { 
-      Cartesian_Vector<T> output;
+  Cartesian_Vector phys_vector (const Cartesian_Coord &a,
+                                const Cartesian_Coord &b);
 
-      output.x = b.x - a.x;
-      output.y = b.y - a.y;
-      output.z = b.z - a.z;
-
-      return output;
-  }
- 
   // Invert Spherical Vector
-  template <typename T>
-  Spherical_Vector<T> phys_vector_invert (const Spherical_Vector<T> &a)
-  {
-      Spherical_Vector<T> output;
+  Spherical_Vector phys_vector_invert (const Spherical_Vector &a);
 
-      // invert Azimuthal angle
-      if (a.a > M_PI)
-      {
-          output.a = a.a - M_PI;
-        } else {
-          output.a = a.a + M_PI;
-      }
+  // Perform alias transformation from Cartesian to Spherical
+  Spherical_Vector phys_alias_transform (const Cartesian_Coord &a);
 
-      // invert Polar angle
-      output.p = M_PI - a.p;
+  // Perform alias transformation from Spherical to Cartesian
+  Cartesian_Vector phys_alias_transform (const Spherical_Vector &a);
 
-      // pass radius verbatim
-      output.r = a.r;
-
-      return output;
-  }
-
-  template <typename T>
-  Spherical_Vector<T> phys_alias_transform (const Cartesian_Vector<T> &a)
-  {
-
-      Cartesian_Vector<T> zero;
-
-      T radius = phys_distance (zero, a);
-      return Spherical_Vector<T> ( atan2(a.y, a.x), acos(a.z/radius), radius);
-
-      //return output;
-  }
-
-  template <typename T>
-  Cartesian_Vector<T> phys_alias_transform (const Spherical_Vector<T> &a)
-  {
-
-      Cartesian_Vector<T> output( (a.r)*cos(a.a)*sin(a.p), (a.r)*sin(a.a)*sin(a.p), (a.r)*cos(a.p) );
-
-      return output;
-  }
-      
   // Perform alibi transformation
-  template <typename T>
-  Cartesian_Vector<T> phys_alibi_transform (const Cartesian_Vector<T> &a,
-                                           const Cartesian_Vector<T> &v)
-  {
-      Cartesian_Vector<T> output;
-
-      output.x = a.x + v.x;
-      output.y = a.y + v.y;
-      output.z = a.z + v.z;
-
-      return output;
-  }
-					   
+  Cartesian_Coord phys_alibi_transform (const Cartesian_Coord &a,
+                                        const Cartesian_Vector &v);
 
   // Perform alibi transformation with multiplier
-  template <typename T>
-  Cartesian_Vector<T> phys_alibi_transform (const Cartesian_Vector<T> &a,
-                                        const Cartesian_Vector<T> &v,
-                                        const Scalar& modifier)
-  {
+  Cartesian_Coord phys_alibi_transform (const Cartesian_Coord &a,
+                                        const Cartesian_Vector &v,
+                                        double modifier);
 
-      Cartesian_Vector<T> output;
-
-      output.x = (a.x + v.x) * modifier;
-      output.y = (a.y + v.y) * modifier;
-      output.z = (a.z + v.z) * modifier;
-
-      return output;
-  }
-  
 } // namespace lib
 } // namespace amethyst
 
