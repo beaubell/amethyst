@@ -131,8 +131,8 @@ GLuint image_load(const char *file) {
     //glTexImage2D(GL_TEXTURE_2D, 0, 3, test->w, test->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
 
-    free (texti->data);
-    free (texti);
+    delete [] texti->data;
+    delete texti;
     return texture;
 
     }

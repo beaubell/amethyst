@@ -13,7 +13,15 @@
  $LastChangedBy$
  ***********************************************************************/
 
+// Forward Delcaration
+namespace amethyst {
+namespace client {
+  class Input;
+}
+}
+
 #include "joystick.h"
+#include "amethyst-gl.h"
 
 namespace amethyst {
 namespace client {
@@ -22,7 +30,7 @@ namespace client {
 class Input
 {
    public:
-    Input();
+    Input(Amethyst_GL &context);
 
     int process_events(void);
 
@@ -82,6 +90,11 @@ class Input
 
     /// Flag for when mouse movement is controlling the camera.
     bool mouse_camera;
+    
+    /// flag for when UI has input focus
+    bool ui_has_focus_;
+    
+    Amethyst_GL &context_;
 
 };
 

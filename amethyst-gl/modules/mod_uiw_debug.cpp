@@ -10,6 +10,8 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "mod_uiw_debug.h"
+
 #include "../module.h"
 #include "../ui.h"
 #include "../global.h"
@@ -27,7 +29,7 @@ namespace client {
 namespace module {
 
 /// Module Static Objects
-static const std::string module_name = "uiw_log";
+static const std::string module_name = "uiw_shipstat";
 static const std::string module_version = "0.0.1";
 
 static UI_Window_ptr window;
@@ -36,36 +38,20 @@ static bool          module_active = false;
 static Amethyst_GL*            agl = NULL;
 
 
-/// UI_Window class derivative
-class UIW_Log : public UI_Window
-{
-  public:
-    UIW_Log(UI &ui);
-    void render();
-    bool check_focus(unsigned short x, unsigned short y);
 
-  private:
-    unsigned int scroll_offset;
-};
-
-UIW_Log::UIW_Log(UI &ui)
-    : UI_Window(ui, std::string("Message Log")),
-      scroll_offset(0)
+UIW_Shipstat::UIW_Shipstat(UI &ui)
+    : UI_Window(ui, std::string("Ship Stats"))
       
 {
-  int max_size = 10;
-  
-  position_x = 400;
-  position_y = 400;
-  size_x = 500;
-  size_y = (static_cast<float>(max_size+1)*14.0f);
-  
+  position_x = 0;
+  position_y = 500;
+  size_x = 520;
+  size_y = 40;
 }
 
-void UIW_Log::render()
+void UIW_Shipstat::render()
 {
-    position_y = (static_cast<float>(11)*14.0f);
-    position_x = Global.screen_x - 400;
+    position_y = Global.screen_y - 20;
   
     UI_Window::render();
     glPushMatrix();
@@ -74,28 +60,96 @@ void UIW_Log::render()
     
     if(agl)
     {
-        int max_size = 10;
-        int start    = 0;
-        int length   = Global.log.log().size();
+        using lib::Cartesian_Vector;
+	using lib::Quaternion;
+	using std::string;
+	
+	string buffer;
+	const Cartesian_Vector &ref = Global.ship->location;
+	const Quaternion &att = Global.ship->attitude;
+	
+	std::stringstream temp;
+	std::string temp2;
+        temp.precision(8);
+        //temp.setf(std::ios::scientific, std::ios::floatfield);
+        //temp.setf(std::ios::floatfield);
+	
+	float pos_y = position_y - 24.0f;
+	
+	temp << ref.x;
+	temp >> temp2;
+        buffer = "Location - X:" + temp2;
+	glPushMatrix();
+	glTranslatef(position_x+20, pos_y, 0.0f);
+        font.Render(buffer.c_str());
+	glPopMatrix();
 
-        if (length > max_size)
-            start = length - max_size - scroll_offset;
+	temp.clear();
+	temp << ref.y;
+	temp >> temp2;
+	buffer = "Y:" + temp2;
+	glPushMatrix();
+	glTranslatef(position_x +210, pos_y, 0.0f);
+        font.Render(buffer.c_str());
+	glPopMatrix();
 
-        for(int i = start; i < length; i++)
-        {
-            glPushMatrix();
-            glTranslatef(position_x +20, position_y - (static_cast<float>(i-start+2)*14.0f), 0.0f);
-            font.Render(Global.log.log()[i].c_str());
-            glPopMatrix();
-        }
+	glPushMatrix();
+	temp.clear();
+	temp << ref.z;
+	temp >> temp2;
+	buffer = "Z:" + temp2;
+        glTranslatef(position_x +310, pos_y, 0.0f);
+        font.Render(buffer.c_str());
+        glPopMatrix();
+	
+	
+	// Attitude 
+	pos_y = pos_y - 10;
+	temp.precision(6);
+	
+	glPushMatrix();
+	temp.clear();
+	temp << att.z;
+	temp >> temp2;
+	buffer = "Attitude - W:" + temp2;
+        glTranslatef(position_x + 20, pos_y, 0.0f);
+        font.Render(buffer.c_str());
+        glPopMatrix();
+	
+	temp << att.x;
+	temp >> temp2;
+        buffer = "X:" + temp2;
+	glPushMatrix();
+	glTranslatef(position_x+ 210, pos_y, 0.0f);
+        font.Render(buffer.c_str());
+	glPopMatrix();
 
+	temp.clear();
+	temp << att.y;
+	temp >> temp2;
+	buffer = "Y:" + temp2;
+	glPushMatrix();
+	glTranslatef(position_x +310, pos_y, 0.0f);
+        font.Render(buffer.c_str());
+	glPopMatrix();
+
+	glPushMatrix();
+	temp.clear();
+	temp << att.z;
+	temp >> temp2;
+	buffer = "Z:" + temp2;
+        glTranslatef(position_x +410, pos_y, 0.0f);
+        font.Render(buffer.c_str());
+        glPopMatrix();
+	
+	
     }
     glPopAttrib();
     glPopClientAttrib();
     glPopMatrix();
 }
 
-bool UIW_Log::check_focus(unsigned short x, unsigned short y)
+bool UIW_Shipstat::check_focus(unsigned short x, unsigned short y)
 {
   
   
@@ -162,7 +216,7 @@ extern "C" bool mod_start(Amethyst_GL &agl_temp)
     {
         agl = &agl_temp;
 
-        window = UI_Window_ptr(new UIW_Log(agl->ui));
+        window = UI_Window_ptr(new UIW_Shipstat(agl->ui));
         agl->ui.add(window);
 
         module_active = true;

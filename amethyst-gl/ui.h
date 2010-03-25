@@ -32,31 +32,45 @@ class UI
    public:
     UI(const std::string &font);
     virtual ~UI();
-
-    virtual void render(void);
-
+    
     void add(UI_Window_ptr);
     void remove(UI_Window_ptr);
+    
+    // Render UI
+    virtual void render(void);
 
+    // Focus functions
+    bool check_focus(unsigned short x, unsigned short y, unsigned short but); // Uint16
+    bool is_focused();
+    
     FTFont &get_font();
 
    private:
     FTFont *font_;
     std::set<UI_Window_ptr> windows_;
-
+    
 };
 
 
 class UI_Window
 {
    public:
-    UI_Window(UI &ui);
+    UI_Window(UI &ui, const std::string &title);
     virtual ~UI_Window();
 
-    virtual void render(float min_x, float max_x, float min_y, float max_y) = 0;
-
+    virtual void render();
+    virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
+    
+    int position_x;
+    int position_y;
+    int size_x;
+    int size_y;
+    bool resizable;
+    bool focused;
+    std::string title;
    protected:
     FTFont &font;
+    
 
 };
 

@@ -12,6 +12,11 @@
  $LastChangedBy$
  ***********************************************************************/
 
+namespace amethyst {
+namespace client {
+  class Amethyst_GL;
+}
+}
 #include "lib/manifest.h"
 #include "net.h"
 #include "ui.h"
@@ -25,7 +30,6 @@ namespace amethyst
 namespace client
 {
 
-
 class Amethyst_GL
 {
    public:
@@ -34,8 +38,8 @@ class Amethyst_GL
     void main_loop(void);
     void render   (void);
 
-    UI       ui;
-    Input    input;
+    UI        ui;
+    Input    *const input;
    private:
     lib::FileManifest manifest_;
     Server_Connection connection;

@@ -12,6 +12,7 @@
 
 #include "../module.h"
 #include "../ui.h"
+#include "../global.h"
 #include "SDL.h"
 
 #include <iostream>
@@ -39,7 +40,7 @@ class UIW_FPS : public UI_Window
 {
    public:
     UIW_FPS(UI &ui);
-    void render(float min_x, float max_x, float min_y, float max_y);
+    void render();
 
    private:
     unsigned int frames;
@@ -48,15 +49,23 @@ class UIW_FPS : public UI_Window
 };
 
 UIW_FPS::UIW_FPS(UI &ui)
-    : UI_Window(ui),
+    : UI_Window(ui, std::string("FPS")),
       frames(0),
       benchmark(0),
       fps(0.0f)
 {
+  position_x = 0;
+  position_y = 0;
 }
 
-void UIW_FPS::render(float min_x, float max_x, float min_y, float max_y)
+void UIW_FPS::render()
 {
+    UI_Window::render();
+    
+    //glPushMatrix();
+    //glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);  // FIXME Seeing if this fixes the only on vertex pointer call problem
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    
     std::string fpsstring;
     if(frames > 100)
     {
@@ -76,11 +85,15 @@ void UIW_FPS::render(float min_x, float max_x, float min_y, float max_y)
     fpsstring = "FPS: " + temp1;
 
     glPushMatrix();
-    glTranslatef(min_x,min_y,0.0f);
     font.Render(fpsstring.c_str());
     glPopMatrix();
 
     frames++;
+    
+    glPopAttrib();
+    //glPopClientAttrib();
+    //glPopMatrix();
+
 }
 
 } // namespace module
@@ -118,7 +131,8 @@ void __attribute__ ((destructor)) fini(void);
 /// Main Initiators
 void init(void)
 {
-    std::cout << "Module: " << module_name << " Initializing..." << std::endl;
+    //std::string log = "Module: " + module_name + " Initializing...";
+    //Global.log.add(log);
 
     //module = Module_ptr(new Module(module_name));
 

@@ -11,8 +11,10 @@
  ***********************************************************************/
 
 #include "../amethyst-gl.h"
+#include "../global.h"
 
 #include <iostream>
+#include <boost/lexical_cast.hpp>
 
 #ifdef WIN32
 #include "windows.h"
@@ -22,6 +24,8 @@ namespace amethyst {
 namespace client {
 namespace module {
 
+using boost::lexical_cast;
+  
 /// Module Static Objects
 static const std::string module_name = "uiw_test";
 static const std::string module_version = "0.0.1";
@@ -38,13 +42,13 @@ class UIW_Test : public UI_Window
    public:
     UIW_Test(UI &ui);
     ~UIW_Test();
-    void render(float min_x, float max_x, float min_y, float max_y);
+    void render();
 
    private:
 };
 
 UIW_Test::UIW_Test(UI &ui)
-    : UI_Window(ui)
+    : UI_Window(ui, std::string("Test"))
 {
     std::cout << "UI_Window_Test Object Created..." << std::endl;
 }
@@ -55,8 +59,12 @@ UIW_Test::~UIW_Test()
 }
 
 
-void UIW_Test::render(float min_x, float max_x, float min_y, float max_y)
+void UIW_Test::render()
 {
+
+  glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);  // FIXME Seeing if this fixes the only on vertex pointer call problem
+  glPushAttrib(GL_ALL_ATTRIB_BITS);
+  
     GLfloat frame[] =
         { 100.0f,100.0f,0.0f,  -100.0f,100.0f,0.0f,  -100.0f,-100.0f,0.0f,  100.0f,-100.0f,0.0f,
           200.0f,200.0f,0.0f,  -200.0f,200.0f,0.0f,  -200.0f,-200.0f,0.0f,  200.0f,-200.0f,0.0f,
@@ -74,7 +82,7 @@ void UIW_Test::render(float min_x, float max_x, float min_y, float max_y)
     for (int i = 0; i < 7; i++)
         glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx + i*5);
 
-    glDisableClientState(GL_VERTEX_ARRAY);
+    //glDisableClientState(GL_VERTEX_ARRAY);
 
     for (int i = 1; i < 6; i++)
     {
@@ -95,6 +103,9 @@ void UIW_Test::render(float min_x, float max_x, float min_y, float max_y)
         font.Render(temp.c_str());
         glPopMatrix();
     }
+    
+    glPopAttrib();
+    glPopClientAttrib();
 
 }
 
@@ -135,7 +146,8 @@ void __attribute__ ((destructor)) fini(void);
 /// Main Initiators
 void init(void)
 {
-    std::cout << "Module: " << module_name << " Initializing..." << std::endl;
+    //std::string log = "Module: " + module_name + " Initializing...";
+    //Global.log.add(log);
 
     //module = Module_ptr(new Module(module_name));
 

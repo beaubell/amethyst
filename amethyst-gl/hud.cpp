@@ -88,9 +88,10 @@ void hud_render(void)
         hud_widget_object_text();
 
         #ifdef HAVE_MALLOC_H
-        hud_widget_memory(10, screen_y - 13);
+//        hud_widget_memory(10, screen_y - 13);
         #endif
 
+/*  Deprecated due to GUI code
         glWindowPos2i(10, screen_y - 46);
         fonts[0]->Render("Ship Stats");
 
@@ -102,7 +103,7 @@ void hud_render(void)
         hud_widget_camera(10, screen_y - 76);
         // FPS/Ticks indicator
         hud_widget_fps(10,4);
-
+*/
         hud_widget_select(10,40);
     }
 

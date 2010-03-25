@@ -27,14 +27,16 @@ namespace amethyst {
 namespace client {
 
 
-Input::Input()
+Input::Input(Amethyst_GL &context)
     : kb_lalt(false),
       kb_ralt(false),
       kb_lctrl(false),
       kb_rctrl(false),
       kb_lshift(false),
       kb_rshift(false),
-      mouse_camera(false)
+      mouse_camera(false),
+      ui_has_focus_(false),
+      context_(context)
 {
 }
 
@@ -262,8 +264,24 @@ int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
 
 int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
 {
+    if(context_.ui.check_focus(button.x,button.y, button.which))
+    {
+       ui_has_focus_ = true;
+       return 0;
+    }
     if (button.button == SDL_BUTTON_LEFT)
-        mouse_camera = true;
+    {
+        //// Check to see if UI wants to claim that button click
+        //if(context_.ui.check_focus(button.x,button.y, button.))
+	//{
+	// ui_has_focus_ = true;
+	//}
+	//else
+	{
+	  ui_has_focus_ = false;
+	  mouse_camera = true;
+	}
+    }
 
     return 0;
 }
@@ -271,6 +289,12 @@ int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
 
 int Input::event_mouse_buttonup(const SDL_MouseButtonEvent &button)
 {
+    if(context_.ui.check_focus(button.x,button.y, button.which))
+    {
+       ui_has_focus_ = true;
+       return 0;
+    }
+    
     if (button.button == SDL_BUTTON_LEFT)
         mouse_camera = false;
     else if (button.button == SDL_BUTTON_WHEELUP)

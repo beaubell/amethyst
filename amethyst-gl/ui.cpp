@@ -19,9 +19,12 @@
 
 #include <cmath>
 
+#include <boost/lexical_cast.hpp>
+
 namespace amethyst {
 namespace client {
 
+using boost::lexical_cast;
 
 UI::UI(const std::string &fontfile)
 {
@@ -51,6 +54,7 @@ UI::~UI()
 void UI::render(void)
 {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
+    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
     glPushMatrix();
 
     int h_win = Global.screen_y; int w_win = Global.screen_x;
@@ -58,7 +62,10 @@ void UI::render(void)
     // Set camera
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt( 0.0f, 0.0f, h_win*1.4, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+    //gluLookAt(0.0f, 0.0f, h_win*1.4, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+
+    // Start UI coords at bottom left
+    gluLookAt(w_win/2,h_win/2,h_win*1.38, w_win/2, h_win/2, 0.0f, 0.0f, 1.0f, 0.0f);
 
     float light1_ambient[4]  = { 1.0, 1.0, 1.0, 1.0 };
     float light1_diffuse[4]  = { 1.0, 0.9, 0.9, 1.0 };
@@ -95,10 +102,37 @@ void UI::render(void)
 
     /// Render each window
     std::for_each(windows_.begin(), windows_.end(),
-       boost::bind(&UI_Window::render, _1, -w_win/2, w_win/2, -h_win/2, h_win/2));
+       boost::bind(&UI_Window::render, _1));
 
     glPopMatrix();
+    glPopClientAttrib();
     glPopAttrib();
+    
+    // Debug stuff
+    //int foo;
+    //glGetIntegerv(GL_MODELVIEW_STACK_DEPTH, &foo);
+    //std::cout << "Stack Depth" << foo;
+}
+
+bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
+{
+    // Check each window to see if mouse is within it's bounds
+    
+    // Convert mouse coords to gl-coords
+    y = Global.screen_y - y;
+   
+   
+  
+    // Else UI doesn't have focus.
+    std::string log = "Debug: Mouse Click (" + lexical_cast<std::string>(x) + "," + lexical_cast<std::string>(y) + ")";
+    //log += " Converted   (" + lexical_cast<std::string>(posX) + "," + lexical_cast<std::string>(posY) + "," + lexical_cast<std::string>(posZ) +")";
+    
+    Global.log.add(log);
+    
+    int err = glGetError();
+    if(err)
+      std::cout  <<  "GLError Reported: " << err << std::endl;
+    return false;
 }
 
 FTFont& UI::get_font()
@@ -116,8 +150,15 @@ void UI::remove(UI_Window_ptr window)
     windows_.erase(window);
 }
 
-UI_Window::UI_Window(UI &ui)
-    : font(ui.get_font())
+UI_Window::UI_Window(UI &ui, const std::string &newtitle)
+    : position_x(0),
+      position_y(0),
+      size_x(0),
+      size_y(0),
+      resizable(true),
+      focused(false),
+      title(newtitle),
+      font(ui.get_font())
 {
 
 
@@ -127,6 +168,42 @@ UI_Window::~UI_Window()
 {
 }
 
+void UI_Window::render()
+{
+    //glPushMatrix();
+    //glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);  // FIXME Seeing if this fixes the only on vertex pointer call problem
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+    
+    GLfloat window_frame[] =  { float(position_x+size_x),float(position_y-size_y),0.0f,
+                                float(position_x+size_x),float(position_y)       ,0.0f,
+                                float(position_x),       float(position_y)       ,0.0f,
+                                float(position_x),       float(position_y-size_y),0.0f}; 
+
+    GLushort frame_idx[] = {0,1,2,3,0};
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, window_frame);
+    glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    
+    glPushMatrix();
+      
+      glTranslatef(position_x + 2, position_y-12.0f, 0.0f);
+      font.Render(title.c_str());
+    glPopMatrix();
+    
+    glPopAttrib();
+}
+
+bool UI_Window::check_focus( unsigned short x, unsigned short y, unsigned short but)
+{
+   if ((x > position_x) && 
+       (x < (position_x + size_x)) &&
+       (y > position_y) &&
+       (y < (position_y + size_y)) )
+      return true;
+   
+   return false;
+}
 
 } // namespace client
 } // namespace amethyst

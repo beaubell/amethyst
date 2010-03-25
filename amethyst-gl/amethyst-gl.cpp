@@ -48,7 +48,7 @@ namespace client
 
 Amethyst_GL::Amethyst_GL(const std::string &path_root)
     : ui("/spacefri.ttf"), //FIXME make not static
-      input(),
+      input(new Input(*this)),
       manifest_(),
       connection(manifest_)
 {
@@ -62,15 +62,18 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     //ui.add(win_fps);
 
     /// Load Test UI modules and start it
-    //if (module_manager.load("uiw_test"))
-    //    module_manager.start("uiw_test", *this);
+    if (module_manager.load("uiw_test"))
+        module_manager.start("uiw_test", *this);
 
     if  (module_manager.load("uiw_fps"))
         module_manager.start("uiw_fps", *this);
 
-    //if  (module_manager.load("uiw_log"))
-    //    module_manager.start("uiw_log", *this);
+    if  (module_manager.load("uiw_log"))
+        module_manager.start("uiw_log", *this);
 
+    if  (module_manager.load("uiw_debug"))
+        module_manager.start("uiw_debug", *this);
+    
     hud_setup();
     
 }
@@ -84,7 +87,7 @@ void Amethyst_GL::main_loop()
     Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
 
     // Process Inputs
-    int status = input.process_events();
+    int status = input->process_events();
     if (status) return;
 
     // Iterate Physics Engine
