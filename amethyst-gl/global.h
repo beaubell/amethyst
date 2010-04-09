@@ -20,7 +20,7 @@
 #include <string>
 #include <set>
 #include "opengl.h"
-#include "SDL_net.h"
+//#include "SDL_net.h"
 
 #include "joystick.h"
 #include "log.h"
@@ -127,11 +127,11 @@ class __global {
       short       net_port;
 
       std::string net_handle;
-
+/*
       IPaddress   net_server_ip;
       UDPsocket   net_socket;
       UDPpacket   *pack_in, *pack_out;
-
+*/
       // Network ships
       //Scene_Object net_ship[5];
       //int          net_ships;

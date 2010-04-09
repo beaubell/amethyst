@@ -54,7 +54,7 @@ UI::~UI()
 void UI::render(void)
 {
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+//    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
     glPushMatrix();
 
     int h_win = Global.screen_y; int w_win = Global.screen_x;
@@ -67,20 +67,20 @@ void UI::render(void)
     // Start UI coords at bottom left
     gluLookAt(w_win/2,h_win/2,h_win*1.38, w_win/2, h_win/2, 0.0f, 0.0f, 1.0f, 0.0f);
 
-    float light1_ambient[4]  = { 1.0, 1.0, 1.0, 1.0 };
-    float light1_diffuse[4]  = { 1.0, 0.9, 0.9, 1.0 };
-    float light1_specular[4] = { 1.0, 0.7, 0.7, 1.0 };
-    float light1_position[4] = { -1.0, 1.0, 1.0, 0.0 };
+    float light1_ambient[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float light1_diffuse[4]  = { 1.0f, 0.9f, 0.9f, 1.0f };
+    float light1_specular[4] = { 1.0f, 0.7f, 0.7f, 1.0f };
+    float light1_position[4] = { -1.0f, 1.0f, 1.0f, 0.0f };
     glLightfv(GL_LIGHT1, GL_AMBIENT,  light1_ambient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE,  light1_diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
     glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     glEnable(GL_LIGHT1);
 
-    float front_emission[4] = { 0.3, 0.2, 0.1, 0.0 };
-    float front_ambient[4]  = { 0.2, 0.2, 0.2, 0.0 };
-    float front_diffuse[4]  = { 0.95, 0.95, 0.8, 0.0 };
-    float front_specular[4] = { 0.6, 0.6, 0.6, 0.0 };
+    float front_emission[4] = { 0.3f, 0.2f, 0.1f, 0.0f };
+    float front_ambient[4]  = { 0.2f, 0.2f, 0.2f, 0.0f };
+    float front_diffuse[4]  = { 0.95f, 0.95f, 0.8f, 0.0f };
+    float front_specular[4] = { 0.6f, 0.6f, 0.6f, 0.0f };
     glMaterialfv(GL_FRONT, GL_EMISSION, front_emission);
     glMaterialfv(GL_FRONT, GL_AMBIENT, front_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, front_diffuse);
@@ -97,15 +97,15 @@ void UI::render(void)
     glEnable( GL_TEXTURE_2D);
     glDisable( GL_DEPTH_TEST);
 
-    glNormal3f( 0.0, 0.0, 1.0);
-    glColor4f( 1.0, 1.0, 1.0, 1.0);
+    glNormal3f( 0.0f, 0.0f, 1.0f);
+    glColor4f( 1.0f, 1.0f, 1.0f, 1.0f);
 
     /// Render each window
     std::for_each(windows_.begin(), windows_.end(),
        boost::bind(&UI_Window::render, _1));
 
     glPopMatrix();
-    glPopClientAttrib();
+ //   glPopClientAttrib();
     glPopAttrib();
     
     // Debug stuff
@@ -124,7 +124,7 @@ bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
    
   
     // Else UI doesn't have focus.
-    std::string log = "Debug: Mouse Click (" + lexical_cast<std::string>(x) + "," + lexical_cast<std::string>(y) + ")";
+    std::string log = "D: Mouse Click (" + lexical_cast<std::string>(but) + ") <" + lexical_cast<std::string>(x) + "," + lexical_cast<std::string>(y) + "";
     //log += " Converted   (" + lexical_cast<std::string>(posX) + "," + lexical_cast<std::string>(posY) + "," + lexical_cast<std::string>(posZ) +")";
     
     Global.log.add(log);

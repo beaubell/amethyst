@@ -15,7 +15,7 @@
 //#endif
 
 #include <iostream>
-#include "SDL_net.h"
+//#include "SDL_net.h"
 
 #include "thread.h"
 #include "net.h"

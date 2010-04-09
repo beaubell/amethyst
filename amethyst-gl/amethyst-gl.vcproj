@@ -42,14 +42,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files\boost\boost_1_40&quot;;..\support;..\lib;..\;&quot;Z:\src\win32\libxml2-2.6.26\include&quot;;Z:\src\win32\FTGL\include;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;&quot;Z:\src\win32\SDL-1.2.11\include&quot;;&quot;Z:\src\win32\SDL_net-1.2.6\include&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Program Files\boost\boost_1_42&quot;;Z:\src\win32\FTGL\include;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;&quot;Z:\src\win32\libxml2-2.6.26\include&quot;;&quot;Z:\src\win32\SDL-1.2.11\include&quot;;..\support;.."
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -63,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib SDL_net.lib libxml2.lib ftgl_dynamic_MT_d.lib libamethyst.lib libsha2.lib OpenGL32.lib GlU32.lib"
+				AdditionalDependencies="SDL.lib SDLmain.lib libxml2.lib ftgl_dynamic_MTD.lib libamethyst.lib libsha2.lib OpenGL32.lib GlU32.lib"
 				OutputFile="$(SolutionDir)..\Bin\$(ProjectName)-Debug.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\support\boost\crypto\Release;&quot;C:\Program Files\boost\boost_1_40\lib&quot;;..\lib\Release;&quot;Z:\src\win32\SDL_net-1.2.6\lib&quot;;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;Z:\src\win32\FTGL\win32_vcpp\build"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_42\lib&quot;;Z:\src\amethyst\trunk\support\boost\crypto\Release;Z:\src\amethyst\trunk\lib\Release;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;..\support\FTGL\win32_vcpp\Build;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/amethyst-gl.pdb"
 				SubSystem="1"
@@ -121,12 +120,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="Z:\src\win32\amethyst\include;&quot;Z:\src\win32\libxml2-2.6.26\include&quot;;Z:\src\win32\FTGL\include;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;&quot;Z:\src\win32\SDL-1.2.11\include&quot;;&quot;Z:\src\win32\SDL_net-1.2.6\include&quot;"
+				AdditionalIncludeDirectories="&quot;C:\Program Files\boost\boost_1_42&quot;;Z:\src\win32\FTGL\include;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;&quot;Z:\src\win32\libxml2-2.6.26\include&quot;;&quot;Z:\src\win32\SDL-1.2.11\include&quot;;..\support;.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -140,10 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib SDL_net.lib libxml2.lib ftgl_dynamic_MT_d.lib amethyst.lib OpenGL32.lib GlU32.lib"
-				OutputFile="$(OutDir)/starfighter.exe"
+				AdditionalDependencies="SDL.lib SDLmain.lib libxml2.lib ftgl_dynamic_MTD.lib libamethyst.lib libsha2.lib OpenGL32.lib GlU32.lib"
+				OutputFile="$(SolutionDir)..\Bin\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;Z:\src\win32\SDL_net-1.2.6\lib&quot;;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;Z:\src\win32\FTGL\win32_vcpp\build;Z:\src\win32\amethyst\Release"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_42\lib&quot;;Z:\src\amethyst\trunk\support\boost\crypto\Release;Z:\src\amethyst\trunk\lib\Release;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;..\support\FTGL\win32_vcpp\Build;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -185,6 +183,10 @@
 			>
 			<File
 				RelativePath=".\amethyst-gl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\bootstrap.cpp"
 				>
 			</File>
 			<File
@@ -241,6 +243,10 @@
 			</File>
 			<File
 				RelativePath=".\scene.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\scene_object.cpp"
 				>
 			</File>
 			<File
@@ -338,6 +344,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\scene_object.h"
+				>
+			</File>
+			<File
 				RelativePath=".\scene_xml.h"
 				>
 			</File>
@@ -367,10 +377,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\Amethyst-GL.rc"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

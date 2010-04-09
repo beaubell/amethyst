@@ -63,7 +63,7 @@ namespace lib {
        Quaternion        scale(const double &s);
        double            length(void);
        double            dot   (const Quaternion &right) const;
-       void              slerp (const Quaternion &left, Quaternion &right, float t);
+       void              slerp (const Quaternion &left, Quaternion &right, const double t);
        //Cartesian_Vector GetAxis(void);
        void              setIdentity(void) {w=1; x=y=z=0; };
        bool              isIdentity() {return ( w==1 && x==0 && y==0 && z==0); };

@@ -264,7 +264,7 @@ int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
 
 int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
 {
-    if(context_.ui.check_focus(button.x,button.y, button.which))
+    if(context_.ui.check_focus(button.x,button.y, button.button))
     {
        ui_has_focus_ = true;
        return 0;
@@ -289,7 +289,7 @@ int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
 
 int Input::event_mouse_buttonup(const SDL_MouseButtonEvent &button)
 {
-    if(context_.ui.check_focus(button.x,button.y, button.which))
+    if(context_.ui.check_focus(button.x,button.y, button.button))
     {
        ui_has_focus_ = true;
        return 0;

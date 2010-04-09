@@ -81,7 +81,7 @@ namespace lib {
                 + z * right.z );
     }
 
-    void Quaternion::slerp(const Quaternion &left, Quaternion &right, const float t)
+    void Quaternion::slerp(const Quaternion &left, Quaternion &right, const double t)
     {
         double w1, w2;
 
