@@ -33,7 +33,11 @@ SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra ")
 
 #SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -O3")
 SET( SUPPORT_CXX_FLAGS "-O3")
-SET( CMAKE_CXX_COMPILER "/usr/bin/gcc-4.4.3")
+#SET( CMAKE_CXX_COMPILER "/usr/bin/gcc-4.4.3")
 SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
-INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR} lib)
+
+INCLUDE_DIRECTORIES(
+  ${CMAKE_BINARY_DIR}
+  lib
+)
 
