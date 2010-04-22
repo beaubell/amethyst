@@ -54,3 +54,5 @@ TARGET_LINK_LIBRARIES(
   libamethyst
 )
 
+install(TARGETS libamethyst DESTINATION lib)
+install(TARGETS amethystcmd DESTINATION bin)

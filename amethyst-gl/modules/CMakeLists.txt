@@ -29,6 +29,7 @@ ADD_LIBRARY(uiw_test MODULE ${mod_uiw_test_SRCS})
 ADD_LIBRARY(uiw_log MODULE ${mod_uiw_log_SRCS})
 ADD_LIBRARY(uiw_debug MODULE ${mod_uiw_debug_SRCS})
 
+INSTALL(TARGETS uiw_fps uiw_test uiw_log uiw_debug DESTINATION lib)
 #TARGET_LINK_LIBRARIES(
 #  uiwfps
 #  libamethyst
