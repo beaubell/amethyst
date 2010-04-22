@@ -7,7 +7,9 @@ INCLUDE(./cmake/FindFreetype.cmake)
 FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(SDL)
 #FIND_PACKAGE(SDL_net)
-FIND_PACKAGE(Boost 1.35.0 COMPONENTS asio date_time filesystem system thread)
+FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread)
+FIND_PACKAGE(OpenGL)
+FIND_PACKAGE(OpenAL)
 
 #FIND_PACKAGE(Subversion)
 #IF(Subversion_FOUND)
@@ -33,11 +35,7 @@ SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra ")
 
 #SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -O3")
 SET( SUPPORT_CXX_FLAGS "-O3")
-#SET( CMAKE_CXX_COMPILER "/usr/bin/gcc-4.4.3")
+SET( CMAKE_CXX_COMPILER "/usr/bin/gcc-4.4.3")
 SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
-
-INCLUDE_DIRECTORIES(
-  ${CMAKE_BINARY_DIR}
-  lib
-)
+INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR} lib)
 

@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableFiberSafeOptimizations="true"
-				AdditionalIncludeDirectories="&quot;Z:\src\win32\SDL_net-1.2.6\include&quot;;&quot;Z:\src\win32\SDL-1.2.11\include&quot;;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;&quot;C:\Program Files\boost\boost_1_42&quot;;&quot;$(SolutionDir)\support\FTGL\include&quot;;&quot;$(SolutionDir)&quot;"
+				AdditionalIncludeDirectories="Z:\src\amethyst\trunk;&quot;Z:\src\amethyst\trunk\amethyst-gl&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -68,7 +68,7 @@
 				AdditionalDependencies="amethyst-gl.obj"
 				OutputFile="$(OutDir)/mod_uiw_log.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;Z:\src\win32\amethyst\amethyst-gl\Debug&quot;;Z:\src\win32\Bin;&quot;E:\Program Files\boost\boost_1_36_0\lib&quot;"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_42\lib&quot;;Z:\src\amethyst\trunk\support\boost\crypto\Release;Z:\src\amethyst\trunk\lib\Release;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;..\support\FTGL\win32_vcpp\Build;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/mod_uiw_log.pdb"
 				SubSystem="2"
@@ -103,7 +103,7 @@
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
 			>
@@ -124,11 +124,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="&quot;Z:\src\win32\SDL-1.2.11\include&quot;;&quot;Z:\src\win32\freetype-2.2.1\include&quot;;Z:\src\win32\FTGL\include;&quot;C:\Program Files\boost\boost_1_42&quot;;Z:\src\amethyst\trunk;&quot;Z:\src\amethyst\trunk\amethyst-gl&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="0"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -142,14 +142,16 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/mod_uiw_log.exe"
-				LinkIncremental="1"
+				LinkLibraryDependencies="false"
+				AdditionalDependencies="SDL.lib SDLmain.lib libxml2.lib libamethyst.lib libsha2.lib OpenGL32.lib GlU32.lib Amethyst-GL.ilk"
+				ShowProgress="2"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;C:\Program Files\boost\boost_1_42\lib&quot;;Z:\src\amethyst\trunk\support\boost\crypto\Release;Z:\src\amethyst\trunk\lib\Release;&quot;Z:\src\win32\libxml2-2.6.26\win32\lib&quot;;..\support\FTGL\win32_vcpp\Build;&quot;Z:\src\win32\SDL-1.2.11\lib&quot;;Z:\src\amethyst\Bin"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool

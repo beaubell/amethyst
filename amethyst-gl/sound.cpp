@@ -20,8 +20,8 @@
 #include "sound.h"
 #include <stdio.h>
 #include <stdlib.h>
-//#include <GL/glut.h> Fixme
-//#include <AL/alut.h> Fixme
+#include <GL/glut.h>
+#include <AL/alut.h>
 
 #if 0
 namespace amaethyst {

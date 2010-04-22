@@ -30,18 +30,20 @@ SET(amethystgl_SRCS
 )
 
 INCLUDE_DIRECTORIES(
-  ../
   ${FREETYPE_INCLUDE_DIR}
-  ../support/FTGL/include
+  ${libFTGL_INCLUDE_DIR}
   ${LIBXML2_INCLUDE_DIR}
   ${SDL_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
-  ../support/
+  ${Amethyst_SOURCE_DIR}/support
+  ${Amethyst_SOURCE_DIR}
+  ${Amethyst_BINARY_DIR}
+
 )
 
 
 link_directories (${SDL_LIBRARY} ${Boost_LIBRARY_DIRS})  
 ADD_EXECUTABLE(amethyst-gl ${amethystgl_SRCS})
-TARGET_LINK_LIBRARIES(amethyst-gl freetype SDL SDL_net xml2 GL GLU libamethyst libftgl ${Boost_THREAD_LIBRARY})
+TARGET_LINK_LIBRARIES(amethyst-gl ${SDL_LIBRARY} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} libamethyst libftgl ${Boost_THREAD_LIBRARY})
 
 SUBDIRS(modules)

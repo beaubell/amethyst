@@ -27,7 +27,9 @@ SET(amethystcmd_SRCS
 
 INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIR}
-  ../support/
+  ${Amethyst_SOURCE_DIR}/support
+  ${Amethyst_SOURCE_DIR}
+  ${Amethyst_BINARY_DIR}
 )
 
 link_directories (

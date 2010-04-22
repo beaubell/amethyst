@@ -20,6 +20,7 @@
 
 #ifdef WIN32
 #include "windows.h"
+//#include "stdafx.h"
 #endif
 
 namespace amethyst {
@@ -98,7 +99,7 @@ void UIW_Log::render()
 bool UIW_Log::check_focus(unsigned short x, unsigned short y)
 {
   
-  
+  return false;
 }
 
 } // namespace module
