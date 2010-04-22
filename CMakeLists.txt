@@ -30,12 +30,21 @@ CHECK_TYPE_SIZE("double"      SIZEOF_DOUBLE)
 CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
 #SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra -Wconversion -Wold-style-cast")
 SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra ")
-
 #SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -O3")
 SET( SUPPORT_CXX_FLAGS "-O3")
-SET( CMAKE_CXX_COMPILER "/usr/bin/gcc-4.4.3")
-SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
+
+#Hardset the compiler for debugging
+#SET( CMAKE_CXX_COMPILER "/usr/bin/gcc-4.4.3")
+
+# Build only the server if no gui components exist
+IF( NOT SDLMAIN_LIBRARY )
+	       SUBDIRS(support/boost/crypto lib server)
+	ELSE()
+	       SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
+ENDIF()
+
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR} lib)
 

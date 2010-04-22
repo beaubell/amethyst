@@ -28,9 +28,11 @@ Server::Server(const std::string& address, const std::string& port,
     boost::asio::ip::tcp::resolver resolver(io_service_);
     boost::asio::ip::tcp::resolver::query query(address, port);
     boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
-    acceptor_.open(endpoint.protocol());
+    //acceptor_.open(endpoint.protocol());
+    acceptor_.open(boost::asio::ip::tcp::v4());
     acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
     acceptor_.bind(endpoint);
+    //acceptor_.bind(boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port));
     acceptor_.listen();
     acceptor_.async_accept(new_connection_->socket(),
       boost::bind(&Server::handle_accept, this,
