@@ -1,4 +1,4 @@
-SET(libFTGL_INCLUDE_DIR ${Amethyst_SOURCE_DIR}/support/FTGL/include CACHE PATH "Location of FTGL includes")
+SET(libFTGL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Location of FTGL includes")
 
 SET(CMAKE_CXX_FLAGS ${SUPPORT_CXX_FLAGS})
 

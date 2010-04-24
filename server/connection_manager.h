@@ -38,7 +38,10 @@ class Connection_Manager
 
     /// Query number of active connections.
     int  get_number_of_connections();
-
+    
+    const std::set<connection_ptr>::const_iterator iterator_begin();
+    const std::set<connection_ptr>::const_iterator iterator_end();
+    
    private:
     /// The managed connections.
     std::set<connection_ptr> connections_;

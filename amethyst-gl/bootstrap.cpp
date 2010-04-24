@@ -175,6 +175,7 @@ int main(int argc, char* argv[])
         throw e;
     }
 
+
     // Load shaders if supported
     if (glShaderObjectsSupported)
         load_shader(Global.vshader, Global.fshader);

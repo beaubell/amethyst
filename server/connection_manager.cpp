@@ -42,5 +42,15 @@ int  Connection_Manager::get_number_of_connections()
     return connections_.size();
 }
 
+const std::set<connection_ptr>::const_iterator Connection_Manager::iterator_begin()
+{
+    return connections_.begin();
+}
+
+const std::set<connection_ptr>::const_iterator Connection_Manager::iterator_end()
+{
+    return connections_.end();
+}
+
 } // namespace server
 } // namespace amethyst

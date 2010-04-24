@@ -41,7 +41,8 @@ class Server
 
    private:
     /// Handle completion of an asynchronous accept operation.
-    void handle_accept(const boost::system::error_code& e);
+    void handle_acceptV4(const boost::system::error_code& e);
+    void handle_acceptV6(const boost::system::error_code& e);
 
     /// Handle a request to stop the server.
     void handle_stop();
@@ -50,13 +51,15 @@ class Server
     boost::asio::io_service io_service_;
 
     /// Acceptor used to listen for incoming connections.
-    boost::asio::ip::tcp::acceptor acceptor_;
+    boost::asio::ip::tcp::acceptor acceptorV4_;
+    boost::asio::ip::tcp::acceptor acceptorV6_;
 
     /// The connection manager which owns all live connections.
     Connection_Manager connection_manager_;
 
     /// The next connection to be accepted.
-    connection_ptr new_connection_;
+    connection_ptr new_connectionV4_;
+    connection_ptr new_connectionV6_;
 
     /// The handler for all incoming requests.
     //request_handler request_handler_;
