@@ -5,7 +5,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #define __STDC_CONSTANT_MACROS
-#include <boost/cstdint.hpp>
+#include </opt/local/include/boost/cstdint.hpp>
 #include <boost/crypto/detail/sha2_ctx.hpp>
 
 namespace boost {

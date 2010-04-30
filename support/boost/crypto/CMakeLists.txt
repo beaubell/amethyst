@@ -1,7 +1,6 @@
 
 SET(CMAKE_CXX_FLAGS ${SUPPORT_CXX_FLAGS})
-
-INCLUDE_DIRECTORIES(include ../../)
+INCLUDE_DIRECTORIES(include ../../ ${Boost_INCLUDE_DIR})
 
 SET(libSHA2_SRCS
   ./lib/sha2_ctx.cpp
