@@ -10,7 +10,7 @@ FIND_PACKAGE(SDL)
 FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread)
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(OpenAL)
-
+FIND_PACKAGE(FreeType)
 #FIND_PACKAGE(Subversion)
 #IF(Subversion_FOUND)
 #    Subversion_WC_INFO(${PROJECT_SOURCE_DIR} AMETHYST)
@@ -46,6 +46,6 @@ IF( NOT SDLMAIN_LIBRARY )
 	       SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
 ENDIF()
 
-INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR} lib)
+INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_freetype2} lib)
 
 include(CPack)

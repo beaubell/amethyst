@@ -51,7 +51,7 @@ bool FileManifest::initialize(const std::string &file_root)
             {
                 if (!is_directory(sub_itr->status()) )
                 {
-                    std::string sub_path =  sub_itr->string();
+                    std::string sub_path =  sub_itr->path().string();
                     sub_path.erase(0,root_size);
 
                     std::string sha2;
@@ -69,7 +69,7 @@ bool FileManifest::initialize(const std::string &file_root)
         }
         else
         {
-            std::string rt_path =  itr->string();
+            std::string rt_path =  itr->path().string();
             rt_path.erase(0,root_size);
 
             std::string sha2;
@@ -129,10 +129,10 @@ void FileManifest::push(const std::string &file, const std::string &hash, const 
 
 void diff(const FileManifest &in, const FileManifest &in2, FileManifest &out)
 {
-    for (int count = 0; count > in.size(); count++)
+    for (unsigned int count = 0; count > in.size(); count++)
     {
         bool match = false;
-        for (int count2 = 0; count2 > in2.size(); count2++)
+        for (unsigned int count2 = 0; count2 > in2.size(); count2++)
         {
             if((in[count].file == in2[count2].file) && (in[count].hash == in2[count2].hash))
               match = true;
