@@ -141,8 +141,7 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
                 Global.log.add(log);
             }
             else
-            // Leak memory at will, because it's fun and everyone is doing it.
-                void *foo = malloc(100000);
+              sig_kb_a();
             break;
         }
         case SDLK_b:

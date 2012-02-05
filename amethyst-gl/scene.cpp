@@ -76,9 +76,9 @@ void set_camera(const Quaternion &attitude, const double distance)
 
     // Rotate Camera to ship's orientation
     {
-        Cartesian_Vector raw_pos (0.0, 0.0, 0.0);
-        Cartesian_Vector raw_view(0.0, 1000.0, 0.0);
-        Cartesian_Vector raw_up  (0.0, 0.0, 1000.0);
+        Cartesian_Vector raw_pos (0.0e11, 0.0, 0.0);
+        Cartesian_Vector raw_view(0.0, 1.0e11, 0.0);
+        Cartesian_Vector raw_up  (0.0, 0.0, 1.0e11);
 
         //Camera location in relation to ship
         Cartesian_Vector shipoffset(0.0, -distance, 0.0);

@@ -20,6 +20,8 @@ namespace client {
 }
 }
 
+#include <boost/signals2.hpp>
+
 #include "joystick.h"
 #include "amethyst-gl.h"
 
@@ -35,6 +37,10 @@ class Input
     int process_events(void);
 
     Joystick js;
+    typedef boost::signals2::signal<void ()> Signal_kb;
+    typedef boost::signals2::signal<void (signed short)> Signal_axis;
+
+    Signal_kb sig_kb_a;
 
    private:
     /// Process Keyboard Key Down/Up

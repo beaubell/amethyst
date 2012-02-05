@@ -23,6 +23,7 @@
 #include "console_menu_main.h"
 
 #include "version.h"
+#include "cl.h"
 
 #ifdef __GNUG__
 #pragma implementation
@@ -62,6 +63,7 @@ namespace amethyst {
        //Add exit and quit functions to main menu becuase these functions are defined in this file
        consolemain.add("exit", stop_console);
        consolemain.add("quit", stop_console);
+       consolemain.add("clinit", lib::cl_init);
        
        //Display version information
        cout << endl << AMETHYST_VER << endl;

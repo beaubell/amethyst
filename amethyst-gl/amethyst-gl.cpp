@@ -90,11 +90,13 @@ void Amethyst_GL::main_loop()
     int status = input->process_events();
     if (status) return;
 
+    double time_scalar = 100000;
+    
     // Iterate Physics Engine
     Global.time_interval = SDL_GetTicks() - Global.time_ticks;
     Global.time_ticks += Global.time_interval;
     if (Global.time_interval > 0)
-        universe.iterate(Global.time_interval / 1000.0);
+        universe.iterate(Global.time_interval / 1000.0 * time_scalar);
 
     /* update the screen */
     render();
@@ -109,6 +111,7 @@ void Amethyst_GL::render()
 
     scene_render();
 
+    sig_render_scene(Global.obj_view->location);
     // Display HUD XXX being replaced.
     hud_render();
 

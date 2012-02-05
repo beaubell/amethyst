@@ -3,6 +3,7 @@
 SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
 
 SET(libamethyst_SRCS
+  cl.cpp
   console.cpp
   console_history.cpp
   console_io.cpp
@@ -26,6 +27,7 @@ SET(amethystcmd_SRCS
 )
 
 INCLUDE_DIRECTORIES(
+  ${OPENCL_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
   ${Amethyst_SOURCE_DIR}/support
   ${Amethyst_SOURCE_DIR}
@@ -47,6 +49,8 @@ TARGET_LINK_LIBRARIES(
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_DATE_TIME_LIBRARY}
   ${Boost_FILESYSTEM_LIBRARY}
+  ${OPENCL_LIBRARIES}
+  ${OPENGL_LIBRARIES}
 )
 
 TARGET_LINK_LIBRARIES(

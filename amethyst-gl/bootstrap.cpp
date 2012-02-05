@@ -20,6 +20,8 @@
 #include "scene.h"
 #include "scene_xml.h"
 #include "config_xml.h"
+#include "cl.h"
+#include "science/gravpotential.h"
 
 #include <iostream>
 
@@ -116,6 +118,7 @@ static void sdl_setup()
 
 int main(int argc, char* argv[])
 {
+    using namespace amethyst;
     using namespace amethyst::client;
 
     std::cout << QUOTEME(AMETHSYT_SHORT_NAME) << " Starting..." << std::endl;
@@ -152,6 +155,9 @@ int main(int argc, char* argv[])
 
     opengl_setup();
 
+    lib::cl_init();
+
+    // Create Instance of Amethyst Physics Engine
     Amethyst_GL client(Global.dir_amethyst);
 
     // FIXME XXX network_setup();
@@ -175,7 +181,13 @@ int main(int argc, char* argv[])
         throw e;
     }
 
+    // Send Objects to GPU
+    std::cout << "Size of Universe" << Global.universe.object_count() << std::endl;
+    Global.universe.cl_setup();
+    Global.universe.cl_copytogpu();
 
+    GravPotential test(client);
+    
     // Load shaders if supported
     if (glShaderObjectsSupported)
         load_shader(Global.vshader, Global.fshader);

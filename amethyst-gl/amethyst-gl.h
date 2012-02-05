@@ -24,6 +24,9 @@ namespace client {
 #include "log.h"
 
 #include <boost/thread.hpp>
+#include <boost/signals2.hpp>
+
+#include <CL/cl_platform.h>
 
 namespace amethyst
 {
@@ -40,6 +43,10 @@ class Amethyst_GL
 
     UI        ui;
     Input    *const input;
+
+    typedef boost::signals2::signal<void (const lib::Cartesian_Vector& reference)> Signal_render;
+    Signal_render sig_render_scene;
+
    private:
     lib::FileManifest manifest_;
     Server_Connection connection;
