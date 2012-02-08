@@ -47,6 +47,10 @@ class Amethyst_GL
     typedef boost::signals2::signal<void (const lib::Cartesian_Vector& reference)> Signal_render;
     Signal_render sig_render_scene;
 
+    void pause_toggle();
+    double time_scalar;
+
+
    private:
     lib::FileManifest manifest_;
     Server_Connection connection;
@@ -55,6 +59,7 @@ class Amethyst_GL
     void start_net();
 
     //Universe universe;
+    bool paused;
 
 };
 

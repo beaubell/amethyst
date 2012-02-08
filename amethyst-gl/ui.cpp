@@ -127,7 +127,7 @@ bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
     std::string log = "D: Mouse Click (" + lexical_cast<std::string>(but) + ") <" + lexical_cast<std::string>(x) + "," + lexical_cast<std::string>(y) + "";
     //log += " Converted   (" + lexical_cast<std::string>(posX) + "," + lexical_cast<std::string>(posY) + "," + lexical_cast<std::string>(posZ) +")";
     
-    Global.log.add(log);
+    //Global.log.add(log);
     
     int err = glGetError();
     if(err)

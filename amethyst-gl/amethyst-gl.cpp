@@ -50,7 +50,9 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     : ui("/spacefri.ttf"), //FIXME make not static
       input(new Input(*this)),
       manifest_(),
-      connection(manifest_)
+      connection(manifest_),
+      paused(true),
+      time_scalar(100000.0f)
 {
 
     /// DONT QUITE START THE NETWORK THREAD JUST YET
@@ -62,8 +64,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     //ui.add(win_fps);
 
     /// Load Test UI modules and start it
-    if (module_manager.load("uiw_test"))
-        module_manager.start("uiw_test", *this);
+    //if (module_manager.load("uiw_test"))
+    //    module_manager.start("uiw_test", *this);
 
     if  (module_manager.load("uiw_fps"))
         module_manager.start("uiw_fps", *this);
@@ -75,7 +77,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
         module_manager.start("uiw_debug", *this);
     
     hud_setup();
-    
+
+    input->sig_kb_space.connect(bind(&Amethyst_GL::pause_toggle,this));
 }
 
 
@@ -90,16 +93,21 @@ void Amethyst_GL::main_loop()
     int status = input->process_events();
     if (status) return;
 
-    double time_scalar = 100000;
+    
     
     // Iterate Physics Engine
     Global.time_interval = SDL_GetTicks() - Global.time_ticks;
     Global.time_ticks += Global.time_interval;
-    if (Global.time_interval > 0)
+
+    if (Global.time_interval > 0 && !paused)
         universe.iterate(Global.time_interval / 1000.0 * time_scalar);
 
     /* update the screen */
     render();
+
+    GLenum error = glGetError();
+    if (error)
+      std::cout << "glGetError: " << error << std::endl;
     }
 }
 
@@ -131,6 +139,11 @@ void Amethyst_GL::start_net()
 	std::cout << "Thread: Network Thread Terminating, Nothing to do..." << std::endl;
 }
 
+
+void Amethyst_GL::pause_toggle()
+{
+    paused = !paused;
+}
 
 } // namespace client
 } // namespace amethyst

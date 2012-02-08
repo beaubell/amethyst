@@ -65,9 +65,9 @@ namespace lib {
             std::vector<Cartesian_Vector> _object_velocity;
 
             bool _using_cl;
-            cl::Buffer *_cl_buf_mass;
-            cl::Buffer *_cl_buf_location;
-            cl::Buffer *_cl_buf_velocity;
+            cl::Buffer _cl_buf_mass;
+            cl::Buffer _cl_buf_location;
+            cl::Buffer _cl_buf_velocity;
 
     };
 

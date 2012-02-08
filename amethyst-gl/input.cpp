@@ -131,7 +131,11 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
 //          level--;
 //          if (level < 0) level=0;
             break;
-
+        case SDLK_SPACE:
+        {
+            sig_kb_space();
+            break;
+        }
         case SDLK_a:
         {
             /// Ctrl A
@@ -153,20 +157,23 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
             break;
 
         case SDLK_d:
-            scene_xml_write("Dump");
+            //scene_xml_write("Dump");
+            sig_kb_d();
             break;
 
         case SDLK_e:
-            scene_select_object_next();
+            //scene_select_object_next();
+            sig_kb_e();
             break;
 
         case SDLK_f:
         {
-            if (glWindowPosSupported)
-                if (glWindowPosEnabled)
-                    glWindowPosEnabled = false;
-                else
-                    glWindowPosEnabled = true;
+            //if (glWindowPosSupported)
+            //    if (glWindowPosEnabled)
+            //        glWindowPosEnabled = false;
+            //    else
+            //        glWindowPosEnabled = true;
+            scene_select_object_next();
             break;
         }
 
@@ -182,22 +189,37 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
             //print_object(Global.net_ship[0]);
             break;
 
+        case SDLK_q:
+        {
+            sig_kb_q();
+            break;
+        }
         case SDLK_s: // Toggle shaders on and off
         {
-            if (glShaderObjectsSupported)
-                if (glShaderObjectsEnabled)
-                {
-                    glShaderObjectsEnabled = false;
-                    glUseProgramObjectARB(0);
-                }
-                else
-                {
-                    glShaderObjectsEnabled = true;
-                    glUseProgramObjectARB(Global.shaderProgram);
-                }
-             break;
+            //if (glShaderObjectsSupported)
+            //    if (glShaderObjectsEnabled)
+            //    {
+            //        glShaderObjectsEnabled = false;
+            //        glUseProgramObjectARB(0);
+            //    }
+            //    else
+            //    {
+            //        glShaderObjectsEnabled = true;
+            //        glUseProgramObjectARB(Global.shaderProgram);
+            //    }
+            sig_kb_s();
+            break;
         }
-
+        case SDLK_w:
+        {
+            sig_kb_w();
+            break;
+        }
+        case SDLK_z:
+        {
+            sig_kb_z();
+            break;
+        }
         default:
              std::string log = "Unhandled keystroke: " + boost::lexical_cast<std::string>(key.keysym.sym);
              Global.log.add(log);

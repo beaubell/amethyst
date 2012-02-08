@@ -58,7 +58,7 @@ UIW_Log::UIW_Log(UI &ui)
   
   position_x = 400;
   position_y = 400;
-  size_x = 500;
+  size_x = 700;
   size_y = (static_cast<float>(max_size+1)*14.0f);
   
 }
@@ -66,7 +66,7 @@ UIW_Log::UIW_Log(UI &ui)
 void UIW_Log::render()
 {
     position_y = (static_cast<float>(11)*14.0f);
-    position_x = Global.screen_x - 400;
+    position_x = Global.screen_x - size_x;
   
     UI_Window::render();
     glPushMatrix();

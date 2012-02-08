@@ -189,8 +189,8 @@ int main(int argc, char* argv[])
     GravPotential test(client);
     
     // Load shaders if supported
-    if (glShaderObjectsSupported)
-        load_shader(Global.vshader, Global.fshader);
+    //if (glShaderObjectsSupported)
+    //    load_shader(Global.vshader, Global.fshader);
 
 
     client.main_loop();

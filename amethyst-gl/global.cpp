@@ -22,7 +22,7 @@ __global::__global()
     cam_num   = 0;
     cam_yaw   = 0.0f;
     cam_pitch = 0.0f;
-    cam_zoom  = 20.0f;
+    cam_zoom  = 2.0e8f;
 
     // Field of view (in degrees)
     fov      =     40;

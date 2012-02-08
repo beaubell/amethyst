@@ -17,10 +17,10 @@ namespace lib {
     static const std::string SectionName("Amethyst Library (Universe)");
 
     Universe::Universe(void)
-    : _using_cl(false),
-      _cl_buf_mass(NULL),
-      _cl_buf_location(NULL),
-      _cl_buf_velocity(NULL)
+    : _using_cl(false)
+      //_cl_buf_mass(NULL),
+      //_cl_buf_location(NULL),
+      //_cl_buf_velocity(NULL)
     {
         do_gravity_calc = true;
 
@@ -176,12 +176,12 @@ namespace lib {
 
         std::cout << size_vec_mass;
         
-        if (_cl_buf_mass) delete _cl_buf_mass;
-        _cl_buf_mass     = new cl::Buffer(amethyst_cl_context, CL_MEM_READ_ONLY,  size_vec_mass, NULL, &err);
-        if (_cl_buf_location) delete _cl_buf_location;
-        _cl_buf_location = new cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, &err);
-        if (_cl_buf_velocity) delete _cl_buf_velocity;
-        _cl_buf_velocity = new cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, &err);
+        //if (_cl_buf_mass) delete _cl_buf_mass;
+        _cl_buf_mass     = cl::Buffer(amethyst_cl_context, CL_MEM_READ_ONLY,  size_vec_mass, NULL, &err);
+        //if (_cl_buf_location) delete _cl_buf_location;
+        _cl_buf_location = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, &err);
+        //if (_cl_buf_velocity) delete _cl_buf_velocity;
+        _cl_buf_velocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, &err);
 
         //load kernels for dynamics
         
@@ -221,9 +221,9 @@ namespace lib {
         cl::CommandQueue queue(amethyst_cl_context, cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, &err);
 
         //push our CPU arrays to the GPU
-        err = queue.enqueueWriteBuffer(*_cl_buf_mass,     CL_TRUE, 0, size_vec_mass,  &_object_mass[0],     NULL, &in_mass_event);
-        err = queue.enqueueWriteBuffer(*_cl_buf_location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
-        err = queue.enqueueWriteBuffer(*_cl_buf_velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
+        err = queue.enqueueWriteBuffer(_cl_buf_mass,     CL_TRUE, 0, size_vec_mass,  &_object_mass[0],     NULL, &in_mass_event);
+        err = queue.enqueueWriteBuffer(_cl_buf_location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
+        err = queue.enqueueWriteBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
 
         queue.finish();
     }
@@ -247,8 +247,8 @@ namespace lib {
 
         //get our CPU arrays from the GPU
         //err = queue.enqueueWriteBuffer(*_cl_buf_mass,     CL_TRUE, 0, size_vec_mass,  &_object_mass[0],     NULL, &in_mass_event);
-        err = queue.enqueueReadBuffer(*_cl_buf_location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
-        err = queue.enqueueReadBuffer(*_cl_buf_velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
+        err = queue.enqueueReadBuffer(_cl_buf_location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
+        err = queue.enqueueReadBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
 
         queue.finish();
 
