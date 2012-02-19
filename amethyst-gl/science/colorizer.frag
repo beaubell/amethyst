@@ -8,21 +8,19 @@ void main() {
    vec4 texel = texture2DRect(tex,gl_TexCoord[0].st);
    vec4 color;
 
-   // Just take the red for intensity since they are all the same for grayscale.
+   // Just take the red, since that contains our data.
    float sample = texel.r;
-   float g = texel.g;
-   float b = texel.b;
-   float a = texel.a;
 
-   // Convert to decibels, I do it here in the shader so that data smoothing performed by texture2D can be done on the linear data.
-   //float db = log(sample);
-   float db = sample;
+   // Convert to log scaling, I do it here in the shader so that data smoothing performed by texture2D can be done on the linear data.
+   float db = log(sample);
+   //float db = sample;
 
-   float expmin = exp(data_min);
-   float expmax = exp(data_max);
+   //float expmin = exp(data_min);
+   //float expmax = exp(data_max);
 
-   //float expmin = data_min;
-   //float expmax = data_max;
+   float expmin = data_min;
+   float expmax = data_max;
+
    // Normalize sample to be between min and max values
    float i = (db-expmin)/(expmax-expmin);
 

@@ -2,12 +2,12 @@
 #pragma OPENCL EXTENSION cl_amd_fp64 : enable
 
 __kernel void
-gravpotential(             uint      num_objects,
-              const __global   double*   masses,
-              const __global   double3*  obj_locations,
-              const __global   double*  square,
-                           uint      grid,
-              __write_only image2d_t image_data
+gravpotential(               uint      num_objects,
+              const __global double*   masses,
+              const __global double3*  obj_locations,
+              const __global double*   square,
+                             uint      grid,
+              __write_only   image2d_t image_data
               )
 {
   int x = get_global_id(0);
@@ -35,17 +35,13 @@ gravpotential(             uint      num_objects,
  
   for (uint obj_i = 0; obj_i < num_objects; obj_i++)
   {
-     //uint obj_i = 0;
      double dist = distance(obj_locations[obj_i],pixel_location);
-     //double dist = distance((double3)(0.0,0.0,0.0),pixel_location);
      potential += (BigG*masses[obj_i])/dist;
   }
 
   int2 coord = (int2)(x,y);
 
   float4 color = (float4)((float)(potential),0.0f ,0.0f,0.0f);
-  //float4 color = (float4)(x_grid_frac*y_grid_frac, 0.0f, 0.0f, 0.0f);
-  //float4 color = (float4)(dist, 0.0f, 0.0f, 0.0f);
   write_imagef(image_data, coord, color);
 } 
 
