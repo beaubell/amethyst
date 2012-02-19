@@ -7,9 +7,10 @@
 //
 //
 
-#include <stdio.h>
-
 #include "utility.h"
+
+#include <fstream>
+#include <iostream>
 
 #ifdef __GNUG__
 #pragma implementation
@@ -46,6 +47,21 @@ namespace lib{
          print_vector(" Force        :", obj.force);
 
     }
+
+void readTextFile(const std::string& filename, std::string& in_buffer)
+{
+    std::ifstream input;
+
+    in_buffer.clear();
+
+    input.open(filename.c_str(), std::ifstream::in);
+    while (input.good())
+    {
+        char c = input.get();
+        in_buffer.append(1, c);
+    }
+    input.close();
+}
 
 } // namespace lib
 } // namespace amethyst

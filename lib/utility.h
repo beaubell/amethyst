@@ -25,6 +25,8 @@ namespace lib {
   void print_vector(const char *title, const Quaternion       &vector);
   void print_object(const Object &obj);
 
+  void readTextFile(const std::string& filename, std::string& in_buffer);
+
 } // namespace lib
 } // namespace amethyst
 

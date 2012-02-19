@@ -1,6 +1,7 @@
 #define GL_GLEXT_PROTOTYPES 1
 
 #include "gravpotential.h"
+#include "lib/utility.h"
 #include "../global.h"
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
@@ -81,16 +82,10 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     _cl_buf_plane_corners = cl::Buffer(lib::amethyst_cl_context, CL_MEM_READ_ONLY, sizeof(_potentianl_plane), NULL, NULL);
     
     // Load cl Kernel
-    std::ifstream input; std::string code;
-    input.open("/home/beau/.amethyst/kernels/gravpotential.cl", std::ifstream::in);
-    while (input.good())
-    {
-        char c = input.get();
-        code.append(1, c);
-    }
-    input.close();
+    std::string cl_source;
+    lib::readTextFile(std::string("/home/beau/.amethyst/kernels/gravpotential.cl"), cl_source);
 
-    source = cl::Program::Sources(1, std::make_pair (code.c_str(), code.size()-1));
+    source = cl::Program::Sources(1, std::make_pair (cl_source.c_str(), cl_source.size()-1));
     program = cl::Program(lib::amethyst_cl_context, source);
 
     // Compile CL Kernel
@@ -136,16 +131,10 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     glEnable( GL_TEXTURE_2D );
 
     //Load Shader
-    code.clear();
-    input.open("/home/beau/.amethyst/shaders/colorizer.frag", std::ifstream::in);
-    while (input.good())
-    {
-        char c = input.get();
-        code.append(1, c);
-    }
-    input.close();
+    std::string f_source;
+    lib::readTextFile(std::string("/home/beau/.amethyst/shaders/colorizer.frag"), f_source);
 
-    const char* chararr= code.c_str();
+    const char* chararr= f_source.c_str();
     GLhandleARB myFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
     glShaderSourceARB(myFragmentShader, 1, (const char **)&chararr, NULL);
 
@@ -162,16 +151,10 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     }
 
     //Load Vertex Shader
-    code.clear();
-    input.open("/home/beau/.amethyst/shaders/ambient.vert", std::ifstream::in);
-    while (input.good())
-    {
-        char c = input.get();
-        code.append(1, c);
-    }
-    input.close();
+    std::string v_source;
+    lib::readTextFile(std::string("/home/beau/.amethyst/shaders/ambient.vert"), v_source);
 
-    chararr= code.c_str();
+    chararr= v_source.c_str();
     GLhandleARB myVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
     glShaderSourceARB(myVertexShader, 1, (const char **)&chararr, NULL);
 

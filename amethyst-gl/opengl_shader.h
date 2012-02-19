@@ -18,8 +18,8 @@
 namespace amethyst {
 namespace client {
 
-void load_shader(const std::string &vname, const std::string &fname);
-void apply_shader();
+int load_shader(const std::string &vname, const std::string &fname);
+void switch_shader(int num);
 
 } // namespace amethyst
 } // namespace client
