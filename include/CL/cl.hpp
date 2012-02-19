@@ -238,7 +238,7 @@ public:
      *
      *  \return The error code.
      */
-    const cl_int err(void) const { return err_; }
+    cl_int err(void) const { return err_; }  /// Fixed, removed const for return type - Beau
 };
 
 #define __ERR_STR(x) #x
@@ -3422,7 +3422,7 @@ Event KernelFunctor::operator()(const VECTOR_CLASS<Event>* events)
         offset_,
         global_,
         local_,
-        NULL,    // bgaster_fixme - do we want to allow wait event lists?
+        events,    // bgaster_fixme - do we want to allow wait event lists? /// FIXME - Verify validity (beau)
         &event);
 
     return event;
