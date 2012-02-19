@@ -15,6 +15,7 @@
 #include <stdlib.h> // malloc
 #include <errno.h>  //
 #include <iostream>
+#include <cmath>
 
 #include "lib/physics.h"
 
@@ -130,7 +131,7 @@ void stars_load(std::string &filestr)
 
     for (unsigned int i = 0; i<entries; i++)
     {
-        temp = lib::phys_alias_transform (Spherical_Vector(star[i].ra, star[i].de, 10000));
+        temp = lib::phys_alias_transform (Spherical_Vector(star[i].ra*M_PI/180.0, (star[i].de + 90.0)*M_PI/180.0, 10000.0));
 
         star_vertex[i].r = spectral_class[star[i].type][1];
         star_vertex[i].g = spectral_class[star[i].type][2];
