@@ -166,6 +166,10 @@ void opengl_setup(void)
     glGetIntegerv( GL_MAX_TEXTURE_SIZE, &MaxSize );
     std::cout << "GL_MAX_TEXTURE_SIZE: " << MaxSize << std::endl;
 
+    GLboolean glstereo;
+    glGetBooleanv(GL_STEREO, &glstereo);
+    std::cout << "GL_STEREO: " << ((glstereo)?"Supported":"Not Supported") << std::endl;
+
     // Do opengl extension checks
     opengl_ext_window_pos();
     opengl_ext_occlusion_query();
