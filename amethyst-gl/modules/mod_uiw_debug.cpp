@@ -12,10 +12,10 @@
 
 #include "mod_uiw_debug.h"
 
+#include "../opengl.h"
 #include "../module.h"
 #include "../ui.h"
 #include "../global.h"
-#include "SDL.h"
 
 #include <iostream>
 #include <boost/lexical_cast.hpp>

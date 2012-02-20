@@ -13,6 +13,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "opengl.h"
 #include "FTGL.h"
 #include "FTGLTextureFont.h"
 

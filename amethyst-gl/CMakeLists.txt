@@ -46,7 +46,16 @@ INCLUDE_DIRECTORIES(
 
 link_directories (${SDL_LIBRARY_DIR} ${Boost_LIBRARY_DIRS})  
 ADD_EXECUTABLE(amethyst-gl ${amethystgl_SRCS})
-TARGET_LINK_LIBRARIES(amethyst-gl ${SDL_LIBRARY} ${LIBXML2_LIBRARIES} ${FREETYPE_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} libamethyst libftgl ${Boost_THREAD_LIBRARY})
+TARGET_LINK_LIBRARIES(amethyst-gl
+  ${SDL_LIBRARY}
+  ${LIBXML2_LIBRARIES}
+  ${FREETYPE_LIBRARY}
+  ${OPENGL_gl_LIBRARY}
+  ${OPENGL_glu_LIBRARY}
+  -lGLEW
+  libamethyst
+  libftgl
+  ${Boost_THREAD_LIBRARY})
 INSTALL(TARGETS amethyst-gl DESTINATION bin)
 
 SUBDIRS(modules science)

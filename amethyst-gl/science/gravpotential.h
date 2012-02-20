@@ -1,9 +1,9 @@
 #ifndef GRAVPOTENTIAL_H
 #define GRAVPOTENTIAL_H
 
-#include "cl.h"
 #include "../amethyst-gl.h"
 #include "../opengl.h"
+#include "lib/cl.h"
 
 #include <boost/signals2.hpp>
 

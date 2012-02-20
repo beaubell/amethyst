@@ -10,6 +10,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "opengl.h"
 #include "ui.h"
 #include "global.h"
 

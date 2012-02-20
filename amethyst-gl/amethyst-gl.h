@@ -17,6 +17,8 @@ namespace client {
   class Amethyst_GL;
 }
 }
+
+#include "opengl.h"
 #include "lib/manifest.h"
 #include "net.h"
 #include "ui.h"

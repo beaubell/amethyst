@@ -1,4 +1,3 @@
-#define GL_GLEXT_PROTOTYPES 1
 
 #include "gravpotential.h"
 #include "lib/utility.h"

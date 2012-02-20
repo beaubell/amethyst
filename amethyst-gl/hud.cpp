@@ -13,11 +13,11 @@
 #include "hud.h"
 #include "scene.h"
 #include "global.h"
+#include "opengl.h"
 #include "lib/physics.h"
 
 #include "FTGL.h"
 #include "FTGLPixmapFont.h"
-#include "SDL_opengl.h"
 #include <string>
 #include <boost/lexical_cast.hpp>
 
@@ -79,39 +79,29 @@ void hud_render(void)
     glDisable( GL_DEPTH_TEST);
     glDisable( GL_LIGHTING);
 
-    // Turn off the shader, it consumes so much GPU when rendering text
-    if(glShaderObjectsEnabled)
-            glUseProgramObjectARB(0);
+    hud_widget_object_text();
 
-    if (glWindowPosEnabled)
-    {
-        hud_widget_object_text();
-
-        #ifdef HAVE_MALLOC_H
+    #ifdef HAVE_MALLOC_H
 //        hud_widget_memory(10, screen_y - 13);
-        #endif
+    #endif
 
 /*  Deprecated due to GUI code
-        glWindowPos2i(10, screen_y - 46);
-        fonts[0]->Render("Ship Stats");
+    glWindowPos2i(10, screen_y - 46);
+    fonts[0]->Render("Ship Stats");
 
-        // Display Location Information for Ship
-        hud_widget_location(10, screen_y - 56, Global.ship->location);
-        // Display Attitude Information for Ship
-        hud_widget_attitude(10, screen_y - 66, Global.ship->attitude);
-        // Display Camera Look Angles
-        hud_widget_camera(10, screen_y - 76);
-        // FPS/Ticks indicator
-        hud_widget_fps(10,4);
+    // Display Location Information for Ship
+    hud_widget_location(10, screen_y - 56, Global.ship->location);
+    // Display Attitude Information for Ship
+    hud_widget_attitude(10, screen_y - 66, Global.ship->attitude);
+    // Display Camera Look Angles
+    hud_widget_camera(10, screen_y - 76);
+    // FPS/Ticks indicator
+    hud_widget_fps(10,4);
 */
         hud_widget_select(10,40);
-    }
+
 
     hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
-
-    // Turn back on the shader
-    if(glShaderObjectsEnabled)
-            glUseProgramObjectARB(Global.shaderProgram);
 
     glEnable( GL_LIGHTING);
     glEnable( GL_DEPTH_TEST);
