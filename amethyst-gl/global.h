@@ -19,7 +19,7 @@
 
 #include <string>
 #include <set>
-#include "opengl.h"
+//#include "opengl.h"
 
 #include "joystick.h"
 #include "log.h"
@@ -61,14 +61,6 @@ class __global {
 
       // Viewed Object
       lib::Object *obj_view;
-
-      // Models // FIXME
-      GLuint sun_mdl;
-
-
-      // Textures // FIXME
-      GLuint sun_tex;
-
 
       // Field of View
       float   fov;

@@ -170,7 +170,6 @@ int main(int argc, char* argv[])
 
 
     stars_load(stars_file);
-    models_load();
 
     try // Experimenting with exceptions
     {

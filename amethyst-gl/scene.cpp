@@ -135,11 +135,11 @@ void scene_render(void)
     }
 
     //Rotate planet on axis
-    glRotated(sun_rot, 0.0, -1.0, 0.0);
-    sun_rot = sun_rot + 0.01;
-     glDisable(GL_COLOR_MATERIAL);
-    glCallList(Global.sun_mdl);
-    glEnable(GL_COLOR_MATERIAL);
+    //glRotated(sun_rot, 0.0, -1.0, 0.0);
+    //sun_rot = sun_rot + 0.01;
+    // glDisable(GL_COLOR_MATERIAL);
+    //glCallList(Global.sun_mdl);
+    //glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_LIGHTING);
   glPopMatrix();
 

@@ -32,28 +32,6 @@ namespace client {
 
 std::list<Model *>  model_list;
 
-
-void models_load(void)
-{
-
-    // Load Sun Texture
-    Global.sun_tex = texture_load("sun2048.bmp");
-    glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-    // Load Sun Model
-    Global.sun_mdl = glGenLists(1);
-    glNewList(Global.sun_mdl, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, Global.sun_tex);
-    model_sphere_create(0,0,0,5000,SPHERE_DETAIL);
-    glEndList();
-
-}
-
-
 Model* model_load(std::string &model_name)
 {
 
@@ -113,7 +91,7 @@ Model* model_find(const std::string &name)
 
 void models_free(void)
 {
-    glDeleteLists(Global.sun_mdl,1);
+    //glDeleteLists(Global.sun_mdl,1);
 
     // FIXME ADD MODEL FREEING FUNCTIONS;
 
