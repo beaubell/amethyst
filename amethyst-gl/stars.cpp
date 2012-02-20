@@ -19,8 +19,7 @@
 
 #include "lib/physics.h"
 
-#include "SDL_opengl.h"
-
+#include "opengl.h"
 #include "stars.h"
 
 namespace amethyst {

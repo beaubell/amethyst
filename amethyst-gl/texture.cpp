@@ -15,11 +15,6 @@
 
 #include "texture.h"
 
-#include "SDL_types.h"
-#include "SDL_rwops.h"
-#include "SDL_endian.h"
-
-
 #include "lib/object.h"
 #include <iostream>
 #include <stdexcept>

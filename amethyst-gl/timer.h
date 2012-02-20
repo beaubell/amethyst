@@ -14,12 +14,12 @@
  ***********************************************************************/
 
 
-#include "SDL.h"
+//#include "SDL.h"
 
 namespace amethyst {
 namespace client {
 
-Uint32 time_left(void);
+unsigned int time_left(void);
 
 } // namespace client
 } // namespace amethyst

@@ -24,8 +24,6 @@
 #include "hud.h"
 #include "model.h"
 
-#include "SDL_opengl.h"
-
 #include "scene.h"
 
 namespace amethyst {

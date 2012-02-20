@@ -17,9 +17,9 @@
 namespace amethyst {
 namespace client {
 
-Uint32 time_left(void)
+unsigned int time_left(void)
 {
-  Uint32 now;
+  unsigned int now;
 
   now = SDL_GetTicks();
   if(Global.next_time <= now)
