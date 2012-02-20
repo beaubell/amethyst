@@ -223,13 +223,13 @@ static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur)
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("vertex") ))
         {
             temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            Global.vshader = reinterpret_cast<char *>(temp);
+            //Global.vshader = reinterpret_cast<char *>(temp); /// FIXME, no longer loading shaders here
             xmlFree(temp);
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("fragment") ))
         {
             temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            Global.fshader = reinterpret_cast<char *>(temp);
+            //Global.fshader = reinterpret_cast<char *>(temp); /// FIXME, no longer loading shaders here
             xmlFree(temp);
         }
         cur = cur->next;
@@ -466,8 +466,8 @@ void scene_xml_write (const std::string &name)
                                     << Global.cam_zoom << "\" />" << std::endl;
     outfile << "  </client>" << std::endl;
     outfile << "  <shader>" << std::endl;
-    outfile << "    <vertex>" << Global.vshader << "</vertex>" << std::endl;
-    outfile << "    <fragment>" << Global.fshader << "</fragment>" << std::endl;
+    //outfile << "    <vertex>" << Global.vshader << "</vertex>" << std::endl;     /// FIXME, no longer loading shaders here
+    //outfile << "    <fragment>" << Global.fshader << "</fragment>" << std::endl; /// FIXME, no longer loading shaders here
     outfile << "  </shader>" << std::endl;
 
     if(!object_list.empty())

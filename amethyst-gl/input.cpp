@@ -200,12 +200,12 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
             //    if (glShaderObjectsEnabled)
             //    {
             //        glShaderObjectsEnabled = false;
-            //        glUseProgramObjectARB(0);
+            //        glUseProgram(0);
             //    }
             //    else
             //    {
             //        glShaderObjectsEnabled = true;
-            //        glUseProgramObjectARB(Global.shaderProgram);
+            //        glUseProgram(Global.shaderProgram);
             //    }
             sig_kb_s();
             break;

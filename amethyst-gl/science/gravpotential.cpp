@@ -1,6 +1,8 @@
 
 #include "gravpotential.h"
 #include "lib/utility.h"
+#include "../opengl.h"
+#include "../opengl_shader.h"
 #include "../global.h"
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
@@ -12,25 +14,6 @@ namespace amethyst {
 namespace client {
 
 using namespace boost;
-
-
-static void printInfoLog(GLhandleARB obj)
-{
-    int infologLength = 0;
-    int charsWritten  = 0;
-    char *infoLog;
-
-    glGetObjectParameterivARB(obj, GL_OBJECT_INFO_LOG_LENGTH_ARB,
-                              &infologLength);
-
-    if (infologLength > 0)
-    {
-        infoLog = reinterpret_cast<char *>(malloc(infologLength));
-        glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
-        printf("%s\n",infoLog);
-        free(infoLog);
-    }
-}
 
 float get_seconds_elapsed(cl::Event& ev)
 {
@@ -129,84 +112,24 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     glDisable( GL_TEXTURE_RECTANGLE_ARB );
     glEnable( GL_TEXTURE_2D );
 
-    //Load Shader
-    std::string f_source;
-    lib::readTextFile(std::string("/home/beau/.amethyst/shaders/colorizer.frag"), f_source);
+    //Load Shaders
+    _shaderProgram = load_shader(std::string("fixed.vert"),std::string("colorizer.frag"));
 
-    const char* chararr= f_source.c_str();
-    GLhandleARB myFragmentShader = glCreateShaderObjectARB(GL_FRAGMENT_SHADER_ARB);
-    glShaderSourceARB(myFragmentShader, 1, (const char **)&chararr, NULL);
-
-    GLint success = 0;
-    glCompileShaderARB(myFragmentShader);
-    glGetObjectParameterivARB(myFragmentShader, GL_OBJECT_COMPILE_STATUS_ARB, &success);
-    if (!success)
-    {
-        GLcharARB infoLog[1000];
-        glGetInfoLogARB(myFragmentShader, 1000, NULL, infoLog);
-        std::cout << "Error in fragment shader compilation!" << std::endl;
-        std::cout << "Info Log: " << infoLog << std::endl;
-        return;
-    }
-
-    //Load Vertex Shader
-    std::string v_source;
-    lib::readTextFile(std::string("/home/beau/.amethyst/shaders/ambient.vert"), v_source);
-
-    chararr= v_source.c_str();
-    GLhandleARB myVertexShader = glCreateShaderObjectARB(GL_VERTEX_SHADER_ARB);
-    glShaderSourceARB(myVertexShader, 1, (const char **)&chararr, NULL);
-
-    success = 0;
-    glCompileShaderARB(myVertexShader);
-    glGetObjectParameterivARB(myVertexShader, GL_OBJECT_COMPILE_STATUS_ARB, &success);
-    if (!success)
-    {
-        GLcharARB infoLog[1000];
-        glGetInfoLogARB(myVertexShader, 1000, NULL, infoLog);
-        std::cout << "Error in fragment shader compilation!" << std::endl;
-        std::cout << "Info Log: " << infoLog << std::endl;
-        return;
-    }
-    
-    _shaderProgram = glCreateProgramObjectARB();
-    glAttachObjectARB(_shaderProgram, myFragmentShader);
-    //glAttachObjectARB(_shaderProgram, myVertexShader);
-
-    success = 0;
-
-    glLinkProgramARB(_shaderProgram);
-    glGetObjectParameterivARB(_shaderProgram, GL_OBJECT_LINK_STATUS_ARB, &success);
-    if (!success)
-    {
-        printInfoLog(_shaderProgram);
-    }
-
-    success = 0;
-
-    glValidateProgramARB(_shaderProgram);
-    glGetObjectParameterivARB(_shaderProgram, GL_OBJECT_VALIDATE_STATUS_ARB, &success);
-    if (!success)
-    {
-        GLcharARB infoLog[1000];
-        glGetInfoLogARB(_shaderProgram, 1000, NULL, infoLog);
-        std::cout << "Error in program validation!" << std::endl;
-        std::cout << "Info Log: " << infoLog << std::endl;
-    }
-
-    glUseProgramObjectARB(_shaderProgram);
-    _shader_min_loc = glGetUniformLocationARB(_shaderProgram, "data_min");
+    //Get handles to shader parameters
+    glUseProgram(_shaderProgram);
+    _shader_min_loc = glGetUniformLocation(_shaderProgram, "data_min");
     GLenum err = glGetError();
     if(err)
-      std::cout << "OpenGL ERROR (glGetUniformLocationARB(shaderProgram, data_min): " << err << std::endl;
+      std::cout << "OpenGL ERROR (glGetUniformLocation(shaderProgram, data_min): " << err << std::endl;
 
-    _shader_max_loc = glGetUniformLocationARB(_shaderProgram, "data_max");
+    _shader_max_loc = glGetUniformLocation(_shaderProgram, "data_max");
     err = glGetError();
     if(err)
-      std::cout << "OpenGL ERROR (glGetUniformLocationARB(shaderProgram, data_max): " << err << std::endl;
+      std::cout << "OpenGL ERROR (glGetUniformLocation(shaderProgram, data_max): " << err << std::endl;
 
     set_min(_shader_min);
     set_max(_shader_max);
+    glUseProgram(0);
 }
 
 void GravPotential::update()
@@ -269,7 +192,7 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
     glEnable( GL_TEXTURE_RECTANGLE_ARB );
 
     // Switch Shader and set boounds
-    glUseProgramObjectARB(_shaderProgram);
+    glUseProgram(_shaderProgram);
     //set_min(_shader_min);
     //set_max(_shader_max);
     
@@ -297,7 +220,7 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
 
     glPopMatrix();
 
-    glUseProgramObjectARB(0);
+    glUseProgram(0);
 
     glDisable( GL_TEXTURE_RECTANGLE_ARB );
     glEnable( GL_BLEND );
@@ -308,15 +231,15 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
 
 void GravPotential::set_min(float bound)
 {
-    glUseProgramObjectARB(_shaderProgram);
+    glUseProgram(_shaderProgram);
     _shader_min = bound;
     glUniform1f(_shader_min_loc, _shader_min);
     GLint err = glGetError();
     if(err)
-      std::cout << "OpenGL ERROR (glUniform1fARB(shader_data_min_loc, shader_data_min)): " << err << std::endl;
+      std::cout << "OpenGL ERROR (glUniform1f(shader_data_min_loc, shader_data_min)): " << err << std::endl;
 
     std::cout << "Set min: " << bound << std::endl;
-    glUseProgramObjectARB(0);
+    glUseProgram(0);
 }
 //float GravPotential::get_lower_bound();
 void GravPotential::inc_min()
@@ -330,15 +253,15 @@ void GravPotential::dec_min()
 
 void GravPotential::set_max(float bound)
 {
-    glUseProgramObjectARB(_shaderProgram);
+    glUseProgram(_shaderProgram);
     _shader_max = bound;
     glUniform1f(_shader_max_loc, _shader_max);
     GLint err = glGetError();
     if(err)
-      std::cout << "OpenGL ERROR (glUniform1fARB(shader_data_max_loc, shader_data_max)): " << err << std::endl;
+      std::cout << "OpenGL ERROR (glUniform1f(shader_data_max_loc, shader_data_max)): " << err << std::endl;
 
     std::cout << "Set max: " << bound << std::endl;
-    glUseProgramObjectARB(0);
+    glUseProgram(0);
 }
 //float GravPotential::get_higher_bound();
 void GravPotential::inc_max()

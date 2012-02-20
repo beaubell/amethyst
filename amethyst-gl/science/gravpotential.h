@@ -55,7 +55,7 @@ private:
     GLuint   _texname;
     cl::Image2DGL _cl_tex;
 
-    GLhandleARB _shaderProgram;
+    GLuint _shaderProgram;
     float _shader_min;
     float _shader_max;
     float _shader_scaler;

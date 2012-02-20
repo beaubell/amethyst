@@ -20,7 +20,6 @@
 #include <string>
 #include <set>
 #include "opengl.h"
-//#include "SDL_net.h"
 
 #include "joystick.h"
 #include "log.h"
@@ -116,11 +115,6 @@ class __global {
       std::string file_tex_sb_dn;
       std::string file_tex_sb_rt;
       std::string file_tex_sb_lt;
-
-      // Shader stuff
-      GLhandleARB shaderProgram;
-      std::string vshader;
-      std::string fshader;
 
       // Network
       std::string net_server;
