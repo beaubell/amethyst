@@ -140,30 +140,30 @@ void model_sphere_create(const double cx, const double cy, const double cz, doub
 
         glBegin( GL_TRIANGLE_STRIP );
         {
-            for( int j = p; j >= 0; --j )
+            for( int j = 0; j <= p; j++ )
             {
                 theta3 = j * TWOPI / p;
 
                 ex = cos(theta2) * cos(theta3);
-                ey = sin(theta2);
-                ez = cos(theta2) * sin(theta3);
+                ez = sin(theta2);
+                ey = cos(theta2) * sin(theta3);
                 px = cx + r * ex;
-                py = cy + r * ey;
                 pz = cz + r * ez;
+                py = cy + r * ey;
 
                 glNormal3d( ex, ey, ez );
-                glTexCoord2d( -(j/static_cast<double>(p) ) , 2*(i+1)/static_cast<double>(p) );
+                glTexCoord2d( (j/static_cast<double>(p) ) , 2*(i+1)/static_cast<double>(p) );
                 glVertex3d( px, py, pz );
 
                 ex = cos(theta1) * cos(theta3);
-                ey = sin(theta1);
-                ez = cos(theta1) * sin(theta3);
+                ez = sin(theta1);
+                ey = cos(theta1) * sin(theta3);
                 px = cx + r * ex;
-                py = cy + r * ey;
                 pz = cz + r * ez;
+                py = cy + r * ey;
 
                 glNormal3d( ex, ey, ez );
-                glTexCoord2d( -(j/static_cast<double>(p) ), 2*i/static_cast<double>(p) );
+                glTexCoord2d( (j/static_cast<double>(p) ), 2*i/static_cast<double>(p) );
                 glVertex3d( px, py, pz );
             }
         }
