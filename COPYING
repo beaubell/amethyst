@@ -1,0 +1,16 @@
+This is proprietary code.  Please do not redistribute any part of this project and
+derivatives of it unless you have written permission from the original copywrite 
+holder, Beau V.C. Bellamy <bellamy.beau@gmail.com>.  Exemptions to this rule
+are made expressly for non-profit academic and scientific endeavors.  In this
+case, please send me a courtesy email to let me know how you are using my code.  
+
+This project utilizes (and is distributed with) software from other projects.
+These projects are listed below with thier respective licenses.
+C++ Boost Libraries - Boost License 1.0
+GLM	- MIT License
+FTGL - Lesser General Public License v2.0
+Simple Directmedia Layer (libSDL) - 'zlib' License
+OpenCL/OpenGL - MIT License
+GLEW - Modified BSD License
+FreeType - FreeType License
+libXML2 - MIT License
