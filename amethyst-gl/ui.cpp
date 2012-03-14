@@ -22,6 +22,9 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 namespace amethyst {
 namespace client {
 
@@ -62,11 +65,12 @@ void UI::render(void)
 
     // Set camera
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    //gluLookAt(0.0f, 0.0f, h_win*1.4, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
     // Start UI coords at bottom left
-    gluLookAt(w_win/2,h_win/2,h_win*1.38, w_win/2, h_win/2, 0.0f, 0.0f, 1.0f, 0.0f);
+    glm::dmat4 m_model = glm::lookAt(glm::dvec3(static_cast<double>(w_win/2),static_cast<double>(h_win/2),static_cast<double>(h_win)*1.38),
+                                     glm::dvec3(static_cast<double>(w_win/2), static_cast<double>(h_win/2), 0.0),
+                                     glm::dvec3(0.0, 1.0, 0.0));
+    glLoadMatrixd(&m_model[0][0]);
 
     float light1_ambient[4]  = { 1.0f, 1.0f, 1.0f, 1.0f };
     float light1_diffuse[4]  = { 1.0f, 0.9f, 0.9f, 1.0f };

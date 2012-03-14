@@ -16,6 +16,9 @@
 
 #include "global.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 namespace amethyst {
 namespace client {
 
@@ -77,10 +80,10 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
 
     // Reset the coordinate system before modifying
     glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
 
-    // Set the clipping volume
-    gluPerspective(Global.fov, fAspect, 5.0f, 5e9f);
+    // Generate matrix for the clipping volume
+    glm::dmat4 m_proj = glm::perspective(static_cast<double>(Global.fov), static_cast<double>(fAspect), 5.0, 5e9);
+    glLoadMatrixd(&m_proj[0][0]);  // Send projection matrix to fixed function pipeline
 
     Global.screen_x = w;
     Global.screen_y = h;

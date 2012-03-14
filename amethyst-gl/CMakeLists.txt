@@ -51,7 +51,6 @@ TARGET_LINK_LIBRARIES(amethyst-gl
   ${LIBXML2_LIBRARIES}
   ${FREETYPE_LIBRARY}
   ${OPENGL_gl_LIBRARY}
-  ${OPENGL_glu_LIBRARY}
   -lGLEW
   libamethyst
   libftgl
