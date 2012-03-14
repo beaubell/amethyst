@@ -26,6 +26,9 @@
 
 #include "scene.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 namespace amethyst {
 namespace client {
 
@@ -37,7 +40,7 @@ std::list<Scene_Object_Base *>  object_list;
 double sun_rot = 0;
 
 
-void set_camera(const Quaternion &attitude, const double distance)
+glm::dmat4 set_camera(const Quaternion &attitude, const double distance)
 {
 
     // Get Camera Offsets
@@ -86,9 +89,9 @@ void set_camera(const Quaternion &attitude, const double distance)
         Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up  )));
 
         // Apply Camera
-        gluLookAt(real_pos.x,  real_pos.y,  real_pos.z,
-                  real_view.x, real_view.y, real_view.z,
-                  real_up.x,   real_up.y,   real_up.z);
+        return glm::lookAt(glm::dvec3(real_pos.x, real_pos.y, real_pos.z),
+                           glm::dvec3(real_view.x, real_view.y, real_view.z),
+                           glm::dvec3(real_up.x,   real_up.y,   real_up.z));
     }
 
 
@@ -104,21 +107,20 @@ void scene_render(void)
   const Quaternion       &attitude  = Global.obj_view->attitude;
 
   glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  set_camera(attitude, 1.0);
 
   //Stars
   {
-    glPushMatrix();
-      stars_render();
-    glPopMatrix();
+    // Set camera position without respect to camera zoom-out so that stars appear far away.
+    glm::dmat4 m_model = set_camera(attitude, 1.0);
+    glLoadMatrixd(&m_model[0][0]);
+    stars_render();
   }
 
-  glLoadIdentity();
+  // Now consider camera zoom-out.
+  glm::dmat4 m_model = set_camera(attitude, Global.cam_zoom);
+  glLoadMatrixd(&m_model[0][0]); // FIXME - this is temporary. We'll eventually move this call higher in the chain as the gl fixed function calls are replaced.
 
-  set_camera(attitude, Global.cam_zoom);
-
+#if 0
   //Draw Sun
   glPushMatrix();
     glDisable(GL_LIGHTING);
@@ -142,7 +144,7 @@ void scene_render(void)
     //glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_LIGHTING);
   glPopMatrix();
-
+#endif
 
   { // Set light to white
     GLfloat fDiffLight[] =  { 1.0f, 0.9f, 0.9f, 1.0f };
