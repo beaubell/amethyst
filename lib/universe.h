@@ -12,64 +12,70 @@
 #include "object.h"
 #include "cl.h"
 
-#define BOOST_DISABLE_ASSERTS TRUE
-#include "boost/multi_array.hpp"
-
-typedef boost::multi_array<unsigned int , 2> Muir2DArrayUI;
-typedef boost::multi_array<unsigned int , 3> Muir3DArrayUI;
-typedef boost::multi_array<unsigned int , 4> Muir4DArrayUI;
-
-typedef boost::multi_array<float , 2> Muir2DArrayF;
-typedef boost::multi_array<float , 3> Muir3DArrayF;
-typedef boost::multi_array<float , 4> Muir4DArrayF;
-
-typedef boost::multi_array<double , 2> Muir2DArrayD;
-typedef boost::multi_array<double , 3> Muir3DArrayD;
-typedef boost::multi_array<double , 4> Muir4DArrayD;
-
-typedef std::vector<int> PhaseCodeT;
-
+//#define BOOST_DISABLE_ASSERTS TRUE
+//#include "boost/multi_array.hpp"
 
 namespace amethyst {
 namespace lib {
 
-    class Universe
-    {
-        public:
-            Universe(void);
-            //void ~Universe(void);
+class Universe
+{
+  public:
+    Universe(void);
+    //void ~Universe(void);
 
-            bool do_gravity_calc;
+    bool do_gravity_calc;
 
-            void object_add(      Object *);
-            void object_del(const Object *);
-            void object_del_all(void);
+    void object_add(      Object *);
+    void object_del(const Object *);
+    void object_del_all(void);
 
-            Object*      object_find(const std::string &name);
+    Object*      object_find(const std::string &name);
 
-            std::size_t object_count();
+    std::size_t object_count();
 
-            void iterate(const double &time);
+    void iterate(const double &time);
+    void iterate_gpu(const double &time);
+    void iterate_cpu(const double &time);
 
-            void cl_setup();
-            void cl_copytogpu();
-            void cl_copyfrgpu();
+    void cl_setup();
+    void cl_copytogpu();
+    void cl_copyfrgpu();
 
-            std::list<Object*>& list(void);
+    std::list<Object*>& list(void);
 
-        //private: //FIXME Temporary fix for science
-            std::list<Object*>  _object_list;
+  //private: //FIXME Temporary fix for science
+    std::list<Object*>  _object_list;
 
-            std::vector<float_type> _object_mass;
-            std::vector<Cartesian_Vector> _object_position;
-            std::vector<Cartesian_Vector> _object_velocity;
+    std::vector<float_type> _object_mass;
+    std::vector<Cartesian_Vector> _object_position;
+    std::vector<Cartesian_Vector> _object_velocity;
 
-            bool _using_cl;
-            cl::Buffer _cl_buf_mass;
-            cl::Buffer _cl_buf_location;
-            cl::Buffer _cl_buf_velocity;
+    bool _using_cl;
+    cl::Buffer _cl_buf_mass;
+    cl::Buffer _cl_buf_location;
+    cl::Buffer _cl_buf_velocity;
 
-    };
+    // For Runge Kutta Integration
+    cl::Buffer _cl_buf_expanded_acceleration;
+    cl::Buffer _cl_buf_k1_dlocation;
+    cl::Buffer _cl_buf_k1_dvelocity;
+    cl::Buffer _cl_buf_k2_dlocation;
+    cl::Buffer _cl_buf_k2_dvelocity;
+    cl::Buffer _cl_buf_k3_dlocation;
+    cl::Buffer _cl_buf_k3_dvelocity;
+    cl::Buffer _cl_buf_k4_dlocation;
+    cl::Buffer _cl_buf_k4_dvelocity;
+    cl::Buffer _cl_buf_fin_location;
+    cl::Buffer _cl_buf_fin_velocity;
+
+    cl::Kernel kern_rk4_sum;
+    cl::Kernel kern_rk4_grav;
+    cl::Kernel kern_rk4_scale;
+    cl::Kernel kern_rk4_scalesum;
+    cl::Kernel kern_rk4_finalsum;
+    cl::Kernel kern_rk4_reductionscale;
+};
 
 } // namespace lib
 } // namespace amethyst

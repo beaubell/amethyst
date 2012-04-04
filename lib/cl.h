@@ -20,6 +20,7 @@ extern std::vector<cl::Device> cl_devices;
 
 void cl_init(void);
 const char* oclErrorString(cl_int error);
+cl::Kernel cl_loadkernel(const std::string &file, const std::string &main);
 
 }
 }

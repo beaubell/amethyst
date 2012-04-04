@@ -1,4 +1,5 @@
 #include "cl.h"
+#include "utility.h"
 
 #include <CL/cl_gl.h>
 
@@ -233,6 +234,31 @@ const char* oclErrorString(cl_int error)
 
 }
 
+
+cl::Kernel cl_loadkernel(const std::string &file, const std::string &functionstr)
+{
+  // Load cl Kernel source from file
+  std::string cl_source;
+  readTextFile(std::string("/home/beau/src/amethyst/trunk/lib/") + file, cl_source);
+
+  cl::Program::Sources source = cl::Program::Sources(1, std::make_pair (cl_source.c_str(), cl_source.size()-1));
+  cl::Program program = cl::Program(lib::amethyst_cl_context, source);
+
+  // Compile CL Kernel
+  try {
+    program.build(lib::cl_devices);
+  }
+  catch(...)
+  {
+    std::cout << "Build_log: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(lib::cl_devices[0]);
+    throw;
+  }
+
+  /// FIXME XXX Log Warnings.
+  std::cout << "Build_log: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(lib::cl_devices[0]);
+  
+  return cl::Kernel(program, functionstr.c_str());
+}
 
 
 } // Namespace lib

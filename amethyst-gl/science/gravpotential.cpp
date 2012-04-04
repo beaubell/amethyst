@@ -76,7 +76,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     }
     catch(...)
     {
-       
+       throw;
     }
     
     std::cout << "Build_log: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(lib::cl_devices[0]);

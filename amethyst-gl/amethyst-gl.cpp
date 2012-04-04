@@ -78,6 +78,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     
     hud_setup();
 
+    // Connect space bar to pause.
     input->sig_kb_space.connect(bind(&Amethyst_GL::pause_toggle,this));
 }
 
@@ -100,7 +101,10 @@ void Amethyst_GL::main_loop()
     Global.time_ticks += Global.time_interval;
 
     if (Global.time_interval > 0 && !paused)
-        universe.iterate(Global.time_interval / 1000.0 * time_scalar);
+    {
+      universe.iterate(Global.time_interval / 1000.0 * time_scalar);
+      paused = true;
+    }
 
     /* update the screen */
     render();
