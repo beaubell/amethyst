@@ -13,9 +13,7 @@
 #include "vector.h"
 #include "object.h"
 
-#ifdef __GNUG__
-#pragma interface
-#endif
+#include <vector>
 
 namespace amethyst {
 namespace lib {
@@ -26,6 +24,8 @@ namespace lib {
   void print_object(const Object &obj);
 
   void readTextFile(const std::string& filename, std::string& in_buffer);
+
+  void dumpVectorHDF5(const std::string &filename, const std::vector<Cartesian_Vector> &vec_in);
 
 } // namespace lib
 } // namespace amethyst

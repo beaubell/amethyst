@@ -52,6 +52,7 @@ class Universe
     std::vector<Cartesian_Vector> _object_velocity;
 
     bool _using_cl;
+    cl::CommandQueue queue_rk4;
     cl::Buffer _cl_buf_mass;
     cl::Buffer _cl_buf_location;
     cl::Buffer _cl_buf_velocity;

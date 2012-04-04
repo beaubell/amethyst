@@ -27,7 +27,7 @@ namespace amethyst {
 namespace lib {
 
   // Big 'G', The gravitational constant, also The constant of proportionality.
-  double G = 6.672e-11;     // N m^2 kg^-2
+  double G = 6.6738480e-11; // N m^2 kg^-2
   // Speed of Light
   double C = 2.99792458e8;  // m/s
 

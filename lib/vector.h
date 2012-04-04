@@ -23,11 +23,11 @@ namespace lib {
        double x;
        double y;
        double z;
+       double w; // For GPU packing
 
-       inline Cartesian_Vector() : x(0), y(0), z(0) {};
-       inline Cartesian_Vector(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz){};
-       Cartesian_Vector(const Cartesian_Vector &right) : x(right.x), y(right.y), z(right.z){};
-       virtual ~Cartesian_Vector(void) {};
+       inline Cartesian_Vector() : x(0), y(0), z(0), w(0) {};
+       inline Cartesian_Vector(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz), w(0){};
+       Cartesian_Vector(const Cartesian_Vector &right) : x(right.x), y(right.y), z(right.z), w(0){};
 
        void    clear(void);
 

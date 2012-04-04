@@ -10,7 +10,7 @@ rk4_grav(const          uint      num_objects,
                __global double3*  obj_acceleration_exp
          )
 {
-  double BigG = 6.6738480e-10;
+  double BigG = 6.6738480e-11;
 
   int obj1 = get_global_id(0); //object being worked
   int obj2 = get_global_id(1); //object effecting first object (I just read it's data)
@@ -22,12 +22,12 @@ rk4_grav(const          uint      num_objects,
   else
      new_obj2 = obj2;
 
-  double dist = distance(obj_locations[obj1], obj_locations[obj2]);
+  double dist = distance(obj_locations[obj1], obj_locations[new_obj2]);
 
-  double force = (BigG*masses[obj2])/pow(dist,2);
+  double force = (BigG*masses[new_obj2])/pow(dist,2);
 
-  double3 diff_vector = obj_locations[obj1] - obj_locations[obj2];
+  double3 diff_vector = obj_locations[new_obj2] - obj_locations[obj1];
   double3 force_vector = normalize(diff_vector) * force;
 
-  obj_acceleration_exp[(num_objects - 1)*obj1 + new_obj2] = force_vector;
+  obj_acceleration_exp[(num_objects - 1)*obj1 + obj2] = force_vector;
 }
