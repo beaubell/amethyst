@@ -13,21 +13,21 @@ gravpotential(               uint      num_objects,
   int x = get_global_id(0);
   int y = get_global_id(1);
 
-  double BigG = 6.6738480e-10;
+  double BigG = 6.6738480e-11;
   double x_grid_frac = (double)(x)/(double)(grid);
   double y_grid_frac = (double)(y)/(double)(grid);
 
   //double3 top_edge = mix(square[0],square[1],x_grid_frac);
   double3 top_edge;
-  top_edge.x = mix(square[0],square[3],x_grid_frac);
-  top_edge.y = mix(square[1],square[4],x_grid_frac);
-  top_edge.z = mix(square[2],square[5],x_grid_frac);
+  top_edge.x = mix(square[0],square[4],x_grid_frac);
+  top_edge.y = mix(square[1],square[5],x_grid_frac);
+  top_edge.z = mix(square[2],square[6],x_grid_frac);
 
-  //double3 bot_edge = mix(square[9],square[6],x_grid_frac);
+  //double3 bot_edge = mix(square[3],square[2],x_grid_frac);
   double3 bot_edge;
-  bot_edge.x = mix(square[9],square[6],x_grid_frac);
-  bot_edge.y = mix(square[10],square[7],x_grid_frac);
-  bot_edge.z = mix(square[11],square[8],x_grid_frac);
+  bot_edge.x = mix(square[12],square[8],x_grid_frac);
+  bot_edge.y = mix(square[13],square[9],x_grid_frac);
+  bot_edge.z = mix(square[14],square[10],x_grid_frac);
 
   double3 pixel_location = mix(top_edge,bot_edge,y_grid_frac);
 

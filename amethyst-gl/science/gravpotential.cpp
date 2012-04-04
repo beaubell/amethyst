@@ -49,16 +49,16 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     std::string log = "Module: science_potplane Activating...";
     Global.log.add(log);
     
-    _potentianl_plane = { 1.5e12, 1.5e12, 0,
-                         -1.5e12, 1.5e12, 0,
-                         -1.5e12,-1.5e12, 0,
-                          1.5e12,-1.5e12, 0};
+    _potentianl_plane = { 1.5e12, 1.5e12, 0, 0,
+                         -1.5e12, 1.5e12, 0, 0,
+                         -1.5e12,-1.5e12, 0, 0,
+                          1.5e12,-1.5e12, 0, 0};
     //_potentianl_plane = { 1.5e12, 0.75e12, 0,
     //                           0, 0.75e12, 0,
     //                           0,-0.75e12, 0,
     //                      1.5e12,-0.75e12, 0};
     
-    std::cout << "Grid Density: " << fabs(_potentianl_plane[0]-_potentianl_plane[3])/(double)_grid_x << std::endl;
+    std::cout << "Grid Density: " << fabs(_potentianl_plane[0]-_potentianl_plane[4])/(double)_grid_x << std::endl;
 
     // Setup plane bounds
     _cl_buf_plane_corners = cl::Buffer(lib::amethyst_cl_context, CL_MEM_READ_ONLY, sizeof(_potentianl_plane), NULL, NULL);
@@ -210,9 +210,9 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
     glDisable(GL_CULL_FACE);
     glBegin( GL_QUADS );
     glTexCoord2d(0.0     ,0.0    ); glVertex3dv(&_potentianl_plane[0]);
-    glTexCoord2d(0.0     ,_grid_y); glVertex3dv(&_potentianl_plane[3]);
-    glTexCoord2d(_grid_x ,_grid_y); glVertex3dv(&_potentianl_plane[6]);
-    glTexCoord2d(_grid_x ,0.0    ); glVertex3dv(&_potentianl_plane[9]);
+    glTexCoord2d(_grid_x ,0.0    ); glVertex3dv(&_potentianl_plane[4]);
+    glTexCoord2d(_grid_x ,_grid_y); glVertex3dv(&_potentianl_plane[8]);
+    glTexCoord2d(0.0     ,_grid_y); glVertex3dv(&_potentianl_plane[12]);
     glEnd();
     glEnable(GL_CULL_FACE);
 

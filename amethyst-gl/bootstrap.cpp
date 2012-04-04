@@ -186,7 +186,7 @@ int main(int argc, char* argv[])
     Global.universe.cl_setup();
     Global.universe.cl_copytogpu();
 
-    //GravPotential test(client);
+    GravPotential test(client);
     
     // Load shaders if supported
     //if (glShaderObjectsSupported)
