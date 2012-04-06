@@ -1,12 +1,9 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
-//#pragma OPENCL EXTENSION cl_amd_vec3 : enable
-
-//#pragma OPENCL EXTENSION cl_amd_fp64 : enable
 
 __kernel void
-rk4_scalesum(const          double    scalar,
-             const __global double3*  obj_orig,
+rk4_scalesum(const __global double3*  obj_orig,
              const __global double3*  obj_k,
+             const          double    scalar,
                    __global double3*  obj_out
             )
 {

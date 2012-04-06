@@ -1,17 +1,14 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
-//#pragma OPENCL EXTENSION cl_amd_vec3 : enable
-
-//#pragma OPENCL EXTENSION cl_amd_fp64 : enable
 
 __kernel void
-rk4_grav(const          uint      num_objects,
-         const __global double*   masses,
+rk4_grav(const __global double*   masses,
          const __global double3*  obj_locations,
                __global double3*  obj_acceleration_exp
          )
 {
   double BigG = 6.6738480e-11;
 
+  size_t num_objects = get_global_size(0);
   int obj1 = get_global_id(0); //object being worked
   int obj2 = get_global_id(1); //object effecting first object (I just read it's data)
   int new_obj2 = 0;

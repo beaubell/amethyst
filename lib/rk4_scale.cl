@@ -1,11 +1,8 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
-//#pragma OPENCL EXTENSION cl_amd_vec3 : enable
-
-//#pragma OPENCL EXTENSION cl_amd_fp64 : enable
 
 __kernel void
-rk4_scale(const          double    scalar,
-          const __global double3*  obj_in,
+rk4_scale(const __global double3*  obj_in,
+          const          double    scalar,
                 __global double3*  obj_out
          )
 {

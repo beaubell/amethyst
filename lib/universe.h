@@ -56,6 +56,8 @@ class Universe
     cl::Buffer _cl_buf_mass;
     cl::Buffer _cl_buf_location;
     cl::Buffer _cl_buf_velocity;
+    cl::Buffer _cl_buf_hist_location;
+    cl::Buffer _cl_buf_hist_velocity;
 
     // For Runge Kutta Integration
     cl::Buffer _cl_buf_expanded_acceleration;
@@ -78,6 +80,7 @@ class Universe
     cl::Kernel kern_rk4_scalesum;
     cl::Kernel kern_rk4_finalsum;
     cl::Kernel kern_rk4_reductionscale;
+    unsigned int _timesteps;
 };
 
 } // namespace lib

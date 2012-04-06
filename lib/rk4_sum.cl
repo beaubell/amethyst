@@ -1,7 +1,4 @@
 #pragma OPENCL EXTENSION cl_khr_fp64 : enable
-//#pragma OPENCL EXTENSION cl_amd_vec3 : enable
-
-//#pragma OPENCL EXTENSION cl_amd_fp64 : enable
 
 __kernel void
 rk4_sum(const __global double3* obj_orig,
