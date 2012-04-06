@@ -67,6 +67,8 @@ class Universe
     cl::Buffer _cl_buf_k3_dvelocity;
     cl::Buffer _cl_buf_k4_dlocation;
     cl::Buffer _cl_buf_k4_dvelocity;
+    cl::Buffer _cl_buf_tmp_location;
+    cl::Buffer _cl_buf_tmp_velocity;
     cl::Buffer _cl_buf_fin_location;
     cl::Buffer _cl_buf_fin_velocity;
 
