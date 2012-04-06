@@ -91,8 +91,8 @@ void Universe::iterate(const double &dtime)
 
 void Universe::iterate_gpu(const double &dtime)
 {
-  cl::Event              grav_event, k1vel_event, k1pos_event, k2vel_event, k2pos_event, k3vel_event, k3pos_event, k4vel_event, k4pos_event, tmpvel_event, tmppos_event, finpos_event, finvel_event;
-  std::vector<cl::Event> wait_queue;
+  cl::Event              tmpvel_event, tmppos_event, finpos_event, finvel_event;
+  std::vector<cl::Event> wait_queue, new_events;
 
   unsigned int num_objects = object_count();
 
@@ -121,26 +121,10 @@ void Universe::iterate_gpu(const double &dtime)
   }
   /// /// /// ///
 #endif
-  
-  // [A] Run Gravity Calculation To Find Accelerations
-  kern_rk4_grav.setArg(0, _cl_buf_mass);
-  kern_rk4_grav.setArg(1, _cl_buf_location);
-  kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
 
-  // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
-  kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration);
-  kern_rk4_reductionscale.setArg(1, dtime);
-  kern_rk4_reductionscale.setArg(2, _cl_buf_k1_dvelocity);
-  wait_queue.push_back(grav_event);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k1vel_event);
-
-  // [C] Scale velocity by time to get change in position
-  kern_rk4_scale.setArg(0, _cl_buf_velocity);
-  kern_rk4_scale.setArg(1, dtime);
-  kern_rk4_scale.setArg(2, _cl_buf_k1_dlocation);
-  wait_queue.clear();
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k1pos_event);
+  // Make K1
+  iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_location, _cl_buf_velocity, _cl_buf_k1_dlocation, _cl_buf_k1_dvelocity, wait_queue, new_events);
+  wait_queue = new_events;
 
   if(0) // 1st Order
   {
@@ -148,16 +132,12 @@ void Universe::iterate_gpu(const double &dtime)
     kern_rk4_sum.setArg(0, _cl_buf_velocity);
     kern_rk4_sum.setArg(1, _cl_buf_k1_dvelocity);
     kern_rk4_sum.setArg(2, _cl_buf_velocity);
-    wait_queue.clear();
-    wait_queue.push_back(k1vel_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finvel_event);
 
     // Sum position with change in position
-    kern_rk4_sum.setArg(0, _cl_buf_location);
+    kern_rk4_sum.setArg(0, _cl_buf_location);    wait_queue.clear();
     kern_rk4_sum.setArg(1, _cl_buf_k1_dlocation);
     kern_rk4_sum.setArg(2, _cl_buf_location);
-    wait_queue.clear();
-    wait_queue.push_back(k1pos_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
   }
   else // Full RK4 Hotness
@@ -168,8 +148,6 @@ void Universe::iterate_gpu(const double &dtime)
     kern_rk4_scalesum.setArg(1, _cl_buf_k1_dvelocity);
     kern_rk4_scalesum.setArg(2, (double)0.5);
     kern_rk4_scalesum.setArg(3, _cl_buf_tmp_velocity);
-    wait_queue.clear();
-    wait_queue.push_back(k1vel_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
     
     // [E] Sum position with scaled change in position
@@ -177,35 +155,14 @@ void Universe::iterate_gpu(const double &dtime)
     kern_rk4_scalesum.setArg(1, _cl_buf_k1_dlocation);
     kern_rk4_scalesum.setArg(2, (double)0.5);
     kern_rk4_scalesum.setArg(3, _cl_buf_tmp_location);
-    wait_queue.clear();
-    wait_queue.push_back(k1pos_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
 
     /// Make K2 Now
-    // [A] Run Gravity Calculation To Find Accelerations
-    kern_rk4_grav.setArg(0, _cl_buf_mass);
-    kern_rk4_grav.setArg(1, _cl_buf_tmp_location);
-    kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);
     wait_queue.clear();
-    wait_queue.push_back(tmppos_event); // Wait for tmp vector based on K1 to finish
+    wait_queue.push_back(tmppos_event);
     wait_queue.push_back(tmpvel_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
-
-    // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
-    kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration);
-    kern_rk4_reductionscale.setArg(1, dtime);
-    kern_rk4_reductionscale.setArg(2, _cl_buf_k2_dvelocity);
-    wait_queue.push_back(grav_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k2vel_event);
-
-    // [C] Scale velocity by time to get change in position
-    kern_rk4_scale.setArg(0, _cl_buf_tmp_velocity);
-    kern_rk4_scale.setArg(1, dtime);
-    kern_rk4_scale.setArg(2, _cl_buf_k2_dlocation);
-    wait_queue.clear();
-    wait_queue.push_back(tmppos_event); // Wait for tmp vector based on K1 to finish
-    wait_queue.push_back(tmpvel_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k2pos_event);
+    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k2_dlocation, _cl_buf_k2_dvelocity, wait_queue, new_events);
+    wait_queue = new_events;
 
     /// Setup for K3
     // [D] Sum velocity with scaled change in velocity
@@ -213,8 +170,6 @@ void Universe::iterate_gpu(const double &dtime)
     kern_rk4_scalesum.setArg(1, _cl_buf_k2_dvelocity);
     kern_rk4_scalesum.setArg(2, (double)0.5);
     kern_rk4_scalesum.setArg(3, _cl_buf_tmp_velocity);
-    wait_queue.clear();
-    wait_queue.push_back(k2vel_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
 
     // [E] Sum position with scaled change in position
@@ -222,80 +177,36 @@ void Universe::iterate_gpu(const double &dtime)
     kern_rk4_scalesum.setArg(1, _cl_buf_k2_dlocation);
     kern_rk4_scalesum.setArg(2, (double)0.5);
     kern_rk4_scalesum.setArg(3, _cl_buf_tmp_location);
-    wait_queue.clear();
-    wait_queue.push_back(k2pos_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
 
     /// Make K3 Now
-    // [A] Run Gravity Calculation To Find Accelerations
-    kern_rk4_grav.setArg(0, _cl_buf_mass);
-    kern_rk4_grav.setArg(1, _cl_buf_tmp_location);
-    kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);
     wait_queue.clear();
-    wait_queue.push_back(tmppos_event); // Wait for tmp vector based on K2 to finish
+    wait_queue.push_back(tmppos_event);
     wait_queue.push_back(tmpvel_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
+    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k3_dlocation, _cl_buf_k3_dvelocity, wait_queue, new_events);
+    wait_queue = new_events;
 
-    // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
-    kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration);
-    kern_rk4_reductionscale.setArg(1, dtime);
-    kern_rk4_reductionscale.setArg(2, _cl_buf_k3_dvelocity);
-    wait_queue.push_back(grav_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k3vel_event);
-
-    // [C] Scale velocity by time to get change in position
-    
-    kern_rk4_scale.setArg(0, _cl_buf_tmp_velocity);
-    kern_rk4_scale.setArg(1, dtime);
-    kern_rk4_scale.setArg(2, _cl_buf_k3_dlocation);
-    wait_queue.clear();
-    wait_queue.push_back(tmppos_event); // Wait for tmp vector based on K2 to finish
-    wait_queue.push_back(tmpvel_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k3pos_event);
 
     /// Setup for K4
     // [D] Sum velocity with change in velocity
     kern_rk4_sum.setArg(0, _cl_buf_velocity);
     kern_rk4_sum.setArg(1, _cl_buf_k3_dvelocity);
     kern_rk4_sum.setArg(2, _cl_buf_tmp_velocity);
-    wait_queue.clear();
-    wait_queue.push_back(k3vel_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
 
     // [E] Sum position with change in position
     kern_rk4_sum.setArg(0, _cl_buf_location);
     kern_rk4_sum.setArg(1, _cl_buf_k3_dlocation);
     kern_rk4_sum.setArg(2, _cl_buf_tmp_location);
-    wait_queue.clear();
-    wait_queue.push_back(k3pos_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
 
     /// Make K4 Now
-    // [A] Run Gravity Calculation To Find Accelerations
-    kern_rk4_grav.setArg(0, _cl_buf_mass);
-    kern_rk4_grav.setArg(1, _cl_buf_tmp_location);
-    kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);
     wait_queue.clear();
-    wait_queue.push_back(tmppos_event); // Wait for tmp vector based on K3 to finish
+    wait_queue.push_back(tmppos_event);
     wait_queue.push_back(tmpvel_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
-
-    // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
-    kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration);
-    kern_rk4_reductionscale.setArg(1, dtime);
-    kern_rk4_reductionscale.setArg(2, _cl_buf_k4_dvelocity);
-    wait_queue.push_back(grav_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k4vel_event);
-
-    // [C] Scale velocity by time to get change in position
-    kern_rk4_scale.setArg(0, _cl_buf_tmp_velocity);
-    kern_rk4_scale.setArg(1, dtime);
-    kern_rk4_scale.setArg(2, _cl_buf_k4_dlocation);
-    wait_queue.clear();
-    wait_queue.push_back(tmppos_event); // Wait for tmp vector based on K3 to finish
-    wait_queue.push_back(tmpvel_event);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &k4pos_event);
-
+    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k4_dlocation, _cl_buf_k4_dvelocity, wait_queue, new_events);
+    wait_queue = new_events;
+    
     /// Sum it all together!
     // 
     kern_rk4_finalsum.setArg(0, _cl_buf_velocity);
@@ -304,9 +215,6 @@ void Universe::iterate_gpu(const double &dtime)
     kern_rk4_finalsum.setArg(3, _cl_buf_k3_dvelocity);
     kern_rk4_finalsum.setArg(4, _cl_buf_k4_dvelocity);
     kern_rk4_finalsum.setArg(5, _cl_buf_velocity);
-    wait_queue.clear();
-    wait_queue.push_back(k4pos_event); // Wait for K4 to finish
-    wait_queue.push_back(k4vel_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finvel_event);
 
     kern_rk4_finalsum.setArg(0, _cl_buf_location);
@@ -315,9 +223,6 @@ void Universe::iterate_gpu(const double &dtime)
     kern_rk4_finalsum.setArg(3, _cl_buf_k3_dlocation);
     kern_rk4_finalsum.setArg(4, _cl_buf_k4_dlocation);
     kern_rk4_finalsum.setArg(5, _cl_buf_location);
-    wait_queue.clear();
-    wait_queue.push_back(k4pos_event); // Wait for K4 to finish
-    wait_queue.push_back(k4vel_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
 
   }
@@ -326,6 +231,43 @@ void Universe::iterate_gpu(const double &dtime)
 
   // Copy data back to linked list (XXX - Temporary - FIXME)
   cl_copyfrgpu();
+}
+
+void Universe::iterate_gpu_rk4_gravk(const double &dtime,
+                                     uint num_objects,
+                                     cl::Buffer &masses,
+                                     cl::Buffer &old_locations,
+                                     cl::Buffer &old_velocities,
+                                     cl::Buffer &new_dlocations,
+                                     cl::Buffer &new_dvelocities,
+                                     std::vector<cl::Event> wait_queue,
+                                     std::vector<cl::Event> &events)
+{
+  cl::Event grav_event, kvel_event, kpos_event;
+  events.clear();
+
+  // [A] Run Gravity Calculation To Find Accelerations
+  kern_rk4_grav.setArg(0, masses);
+  kern_rk4_grav.setArg(1, old_locations);
+  kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);   // FIXME, Uses global buffer
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
+
+  // [C] Scale velocity by time to get change in position
+  kern_rk4_scale.setArg(0, old_velocities);
+  kern_rk4_scale.setArg(1, dtime);
+  kern_rk4_scale.setArg(2, new_dlocations);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kpos_event);
+  
+  // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
+  kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration); // FIXME, Uses global buffer
+  kern_rk4_reductionscale.setArg(1, dtime);
+  kern_rk4_reductionscale.setArg(2, new_dvelocities);
+  wait_queue.clear();
+  wait_queue.push_back(grav_event);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kvel_event);
+
+  events.push_back(kpos_event);
+  events.push_back(kvel_event);
 }
 
 

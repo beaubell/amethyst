@@ -36,6 +36,16 @@ class Universe
 
     void iterate(const double &time);
     void iterate_gpu(const double &time);
+    void iterate_gpu_rk4_gravk(const double &dtime,
+                               uint num_objects,
+                               cl::Buffer &masses,
+                               cl::Buffer &old_locations,
+                               cl::Buffer &old_velocities,
+                               cl::Buffer &new_dlocation,
+                               cl::Buffer &new_dvelocities,
+                               std::vector<cl::Event> wait_queue,
+                               std::vector<cl::Event> &events);
+    
     void iterate_cpu(const double &time);
 
     void cl_setup();
