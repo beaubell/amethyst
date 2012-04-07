@@ -12,6 +12,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <boost/timer/timer.hpp>
+
 namespace amethyst {
 namespace lib {
 
@@ -85,14 +87,23 @@ void Universe::iterate(const double &dtime)
   if (!_using_cl)
     iterate_cpu(dtime);
   else
-    iterate_gpu(dtime);
+  {
+    std::vector<cl::Event> wait_queue, new_events;
+    iterate_gpu(dtime, wait_queue, new_events);
+
+    queue_rk4.finish();
+    // Copy data back to linked list (XXX - Temporary - FIXME)
+    cl_copyfrgpu();
+  }
 }
 
 
-void Universe::iterate_gpu(const double &dtime)
+void Universe::iterate_gpu(const double &dtime,
+                           std::vector<cl::Event> wait_queue,
+                           std::vector<cl::Event> &new_events)
 {
   cl::Event              tmpvel_event, tmppos_event, finpos_event, finvel_event;
-  std::vector<cl::Event> wait_queue, new_events;
+  //std::vector<cl::Event> wait_queue, new_events;
 
   unsigned int num_objects = object_count();
 
@@ -226,11 +237,10 @@ void Universe::iterate_gpu(const double &dtime)
     queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
 
   }
-  
-  queue_rk4.finish();
 
-  // Copy data back to linked list (XXX - Temporary - FIXME)
-  cl_copyfrgpu();
+  wait_queue.clear();
+  wait_queue.push_back(finvel_event);
+  wait_queue.push_back(finpos_event);
 }
 
 void Universe::iterate_gpu_rk4_gravk(const double &dtime,
@@ -404,14 +414,15 @@ void Universe::cl_setup()
   kern_rk4_sum      = cl_loadkernel(std::string("rk4_sum.cl"),      std::string("rk4_sum"));
   kern_rk4_grav     = cl_loadkernel(std::string("rk4_grav.cl"),     std::string("rk4_grav"));
   kern_rk4_scale    = cl_loadkernel(std::string("rk4_scale.cl"),    std::string("rk4_scale"));
+  kern_rk4_copy3d   = cl_loadkernel(std::string("rk4_copy3d.cl"),   std::string("rk4_copy3d"));
   kern_rk4_scalesum = cl_loadkernel(std::string("rk4_scalesum.cl"), std::string("rk4_scalesum"));
   kern_rk4_finalsum = cl_loadkernel(std::string("rk4_finalsum.cl"), std::string("rk4_finalsum"));
   kern_rk4_reductionscale = cl_loadkernel(std::string("rk4_reductionscale.cl"), std::string("rk4_reductionscale"));
 
   /// Setup Command Queue
   unsigned int gpu_id = 0;  // FIXME - Make GPU_ID dynamic?
-  queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, NULL);
-  //queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], NULL, NULL);
+  //queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, NULL);
+  queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], NULL, NULL);
   
   _using_cl = true;
 }
@@ -488,6 +499,80 @@ void Universe::cl_copyfrgpu()
     (*obj)->velocity = _object_velocity[i];
 
     obj++;
+  }
+
+}
+
+void Universe::cl_integrate()
+{
+  size_t num_objects = _object_list.size();
+  cl::Event              cpvel_event, cppos_event;
+  std::vector<cl::Event> wait_queue, new_events;
+
+  const double dtime = 86400.0; //seconds (1 day)
+
+  // Start timer.  Reports elapsed time when destroyed.
+  boost::timer::auto_cpu_timer t;
+
+  // Copy buffer to 1st row in history
+  kern_rk4_copy3d.setArg(0, _cl_buf_location);
+  kern_rk4_copy3d.setArg(1, (unsigned int)0);
+  kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
+  kern_rk4_copy3d.setArg(3, (unsigned int)0);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
+
+  kern_rk4_copy3d.setArg(0, _cl_buf_velocity);
+  kern_rk4_copy3d.setArg(1, (unsigned int)0);
+  kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
+  kern_rk4_copy3d.setArg(3, (unsigned int)0);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel_event);
+
+  wait_queue.clear();
+  wait_queue.push_back(cppos_event);
+  wait_queue.push_back(cpvel_event);
+  
+  // Fill in rest of history
+  for (unsigned int i = 1; i < _timesteps; i++)
+  {
+    // Iterate Engine
+    iterate_gpu(dtime, wait_queue, new_events);
+    wait_queue = new_events;
+
+    // Copy buffer to ith row in history
+    kern_rk4_copy3d.setArg(0, _cl_buf_location);
+    kern_rk4_copy3d.setArg(1, (unsigned int)0);
+    kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
+    kern_rk4_copy3d.setArg(3, i);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
+
+    kern_rk4_copy3d.setArg(0, _cl_buf_velocity);
+    kern_rk4_copy3d.setArg(1, (unsigned int)0);
+    kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
+    kern_rk4_copy3d.setArg(3, i);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel_event);
+
+    wait_queue.clear();
+    wait_queue.push_back(cppos_event);
+    wait_queue.push_back(cpvel_event);
+  }
+
+  queue_rk4.finish();
+
+  // Dump History to File for debugging
+  {
+    cl::Event debug_event;
+    size_t objects = _object_list.size();
+    std::size_t size_vec_loc = sizeof(Cartesian_Vector)*objects*_timesteps;
+    std::size_t size_vec_vel = sizeof(Cartesian_Vector)*objects*_timesteps;
+    std::vector<Cartesian_Vector> dump_vec;
+    dump_vec.resize(objects*_timesteps);
+    //queue.enqueueWriteBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
+    queue_rk4.enqueueReadBuffer(_cl_buf_hist_location, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
+    queue_rk4.finish();
+    dumpVectorHDF5(std::string("dump_loc.hd5"), dump_vec);
+    queue_rk4.enqueueReadBuffer(_cl_buf_hist_velocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
+    queue_rk4.finish();
+    dumpVectorHDF5(std::string("dump_vel.hd5"), dump_vec);
   }
 
 }

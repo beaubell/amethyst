@@ -35,7 +35,10 @@ class Universe
     std::size_t object_count();
 
     void iterate(const double &time);
-    void iterate_gpu(const double &time);
+    void iterate_gpu(const double &time,
+                     std::vector<cl::Event> wait_queue,
+                     std::vector<cl::Event> &new_events);  // Events_out
+    
     void iterate_gpu_rk4_gravk(const double &dtime,
                                uint num_objects,
                                cl::Buffer &masses,
@@ -44,13 +47,14 @@ class Universe
                                cl::Buffer &new_dlocation,
                                cl::Buffer &new_dvelocities,
                                std::vector<cl::Event> wait_queue,
-                               std::vector<cl::Event> &events);
+                               std::vector<cl::Event> &events);  // Events_out
     
     void iterate_cpu(const double &time);
 
     void cl_setup();
     void cl_copytogpu();
     void cl_copyfrgpu();
+    void cl_integrate();
 
     std::list<Object*>& list(void);
 
@@ -87,6 +91,7 @@ class Universe
     cl::Kernel kern_rk4_sum;
     cl::Kernel kern_rk4_grav;
     cl::Kernel kern_rk4_scale;
+    cl::Kernel kern_rk4_copy3d;
     cl::Kernel kern_rk4_scalesum;
     cl::Kernel kern_rk4_finalsum;
     cl::Kernel kern_rk4_reductionscale;

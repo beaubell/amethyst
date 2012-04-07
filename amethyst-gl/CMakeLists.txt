@@ -54,6 +54,7 @@ TARGET_LINK_LIBRARIES(amethyst-gl
   -lGLEW
   libamethyst
   libftgl
+  ${Boost_TIMER_LIBRARY}
   ${Boost_THREAD_LIBRARY})
 INSTALL(TARGETS amethyst-gl DESTINATION bin)
 

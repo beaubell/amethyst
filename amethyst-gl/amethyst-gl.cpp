@@ -102,8 +102,9 @@ void Amethyst_GL::main_loop()
 
     if (Global.time_interval > 0 && !paused)
     {
-      universe.iterate(Global.time_interval / 1000.0 * time_scalar);
-      //paused = true;
+      //universe.iterate(Global.time_interval / 1000.0 * time_scalar);
+      universe.cl_integrate();
+      paused = true;
     }
 
     /* update the screen */

@@ -6,7 +6,7 @@ SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
 
 FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(SDL)
-FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread)
+FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread timer)
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(GLEW)
 FIND_PACKAGE(OpenCL)
