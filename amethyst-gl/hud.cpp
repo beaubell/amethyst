@@ -15,6 +15,7 @@
 #include "global.h"
 #include "opengl.h"
 #include "lib/physics.h"
+#include "lib/utility.h"
 
 #include "FTGL.h"
 #include "FTGLPixmapFont.h"
@@ -49,6 +50,8 @@ static void hud_widget_camera(int x, int y);
 static void hud_widget_fps(int x, int y);
 static void hud_widget_select(const int x, const int y);
 static void hud_widget_vectorbox(int x, int y, float xaxis, float yaxis, float zaxis);
+static void hud_radials();
+static void hud_orbits();
 
 static FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
@@ -79,6 +82,9 @@ void hud_render(void)
     glDisable( GL_DEPTH_TEST);
     glDisable( GL_LIGHTING);
 
+    hud_radials();
+    hud_orbits();
+    
     hud_widget_object_text();
 
     #ifdef HAVE_MALLOC_H
@@ -98,7 +104,9 @@ void hud_render(void)
     // FPS/Ticks indicator
     hud_widget_fps(10,4);
 */
-        hud_widget_select(10,40);
+    hud_widget_select(10,40);
+
+    
 
 
     hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
@@ -349,6 +357,178 @@ static void hud_widget_vectorbox(int x, int y, float xvector, float yvector, flo
     glPopMatrix();
     glPopAttrib();
 }
+
+static void hud_radials()
+{
+  const unsigned int radials       = 365;
+  const double       radial_length = 1e12;
+
+  double radialvectors[radials + 2][2][3];
+  float  radialcolors[radials + 2][2][3];
+
+  double radial_angle = 2.0*M_PI/static_cast<double>(radials);
+
+  for(unsigned int i = 0; i < radials; i++)
+  {
+    radialvectors[i][0][0] = 0;
+    radialvectors[i][0][1] = 0;
+    radialvectors[i][0][2] = 0;
+    radialvectors[i][1][0] = cos(static_cast<double>(i)*radial_angle)*radial_length;
+    radialvectors[i][1][1] = sin(static_cast<double>(i)*radial_angle)*radial_length;
+    radialvectors[i][1][2] = 0;
+
+    radialcolors[i][0][0] = radialcolors[i][1][0] = (i == 0)?1.0f:0.0f;
+    radialcolors[i][0][1] = radialcolors[i][1][1] = (i == 32 || i == 60 || i == 91 || i == 121 || i == 152 || i == 182 || i == 213 || i == 244 || i == 274 || i == 305  || i == 335  )?1.0:0.0f;
+    radialcolors[i][0][2] = radialcolors[i][1][2] = (i != 0)?1.0f:0.0f;
+  }
+
+  lib::Object *earth = Global.universe.object_find("Earth");
+  if (earth != NULL)
+  {
+    unsigned int i = 365;
+    radialvectors[i][0][0] = 0;
+    radialvectors[i][0][1] = 0;
+    radialvectors[i][0][2] = 0;
+    radialvectors[i][1][0] = earth->location.x;
+    radialvectors[i][1][1] = earth->location.y;
+    radialvectors[i][1][2] = 0;
+
+    radialcolors[i][0][0] = radialcolors[i][1][0] = 1.0f;
+    radialcolors[i][0][1] = radialcolors[i][1][1] = 1.0f;
+    radialcolors[i][0][2] = radialcolors[i][1][2] = 1.0f;
+  }
+
+  lib::Object *probe = Global.universe.object_find("SE Lagrange Probe A");
+  lib::Object *sol = Global.universe.object_find("Sol");
+  if (probe != NULL && sol != NULL && earth != NULL)
+  {
+    lib::Object L1_exact;
+    lib::placement_L1(*sol, *earth, L1_exact);
+
+    unsigned int i = 366;
+    radialvectors[i][0][0] = L1_exact.location.x;
+    radialvectors[i][0][1] = L1_exact.location.y;
+    radialvectors[i][0][2] = L1_exact.location.z;
+    radialvectors[i][1][0] = probe->location.x;
+    radialvectors[i][1][1] = probe->location.y;
+    radialvectors[i][1][2] = probe->location.z;
+
+    radialcolors[i][0][0] = radialcolors[i][1][0] = 1.0f;
+    radialcolors[i][0][1] = radialcolors[i][1][1] = 1.0f;
+    radialcolors[i][0][2] = radialcolors[i][1][2] = 1.0f;
+
+    std::stringstream temp;
+    std::string temp2;
+    temp.precision(8);
+
+    temp << (L1_exact.location - probe->location).magnitude();
+    temp >> temp2;
+    std::string text = "L1 Probe Distance: " + temp2;
+    glWindowPos2i(10, 80);
+    fonts[0]->Render(text.c_str());
+
+    temp.clear();
+    temp2.clear();
+    temp << Global.simulation_time;
+    temp >> temp2;
+    text =             "Simulation Time  : " + temp2;
+    glWindowPos2i(10, 93);
+    fonts[0]->Render(text.c_str());
+  }
+  glEnable(GL_FOG);
+
+  float FogCol[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+  glFogfv(GL_FOG_COLOR, FogCol);
+  glFogi(GL_FOG_MODE, GL_LINEAR); // Note the 'i' after glFog - the GL_LINEAR constant is an integer.
+  glFogf(GL_FOG_START, 10.0);
+  glFogf(GL_FOG_END, Global.cam_zoom*10.0);
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glVertexPointer(3, GL_DOUBLE, 0, radialvectors);
+  glColorPointer(3, GL_FLOAT, 0, radialcolors);
+
+  // draw radials
+  Cartesian_Vector &reference = Global.obj_view->location;
+
+  // Place "Sol" at the origin of radials
+  if (sol != NULL)
+  {
+    glPushMatrix();
+    Cartesian_Vector temp = sol->location - reference;
+    glTranslated(temp.x, temp.y, temp.z);
+  
+    glDrawArrays(GL_LINES, 0, radials*2 + 4); // Plus four for earth radial and L1/Probe line.
+    glPopMatrix();
+  }
+  
+  // deactivate vertex arrays after drawing
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisable(GL_FOG);
+}
+
+static void hud_orbits()
+{
+  const unsigned int orbitpoints = 1001;
+  const double radial_angle = 2.0*M_PI/static_cast<double>(orbitpoints-1);
+
+  double earthorbit[orbitpoints][3];
+  double moonorbit[orbitpoints][3];
+
+  for(unsigned int i = 0; i < orbitpoints; i++)
+  {
+    earthorbit[i][0] = cos(static_cast<double>(i)*radial_angle)*149.598e9;
+    earthorbit[i][1] = sin(static_cast<double>(i)*radial_angle)*149.598e9;
+    earthorbit[i][2] = 0;
+
+    moonorbit[i][0] = cos(static_cast<double>(i)*radial_angle)*384.400e6;
+    moonorbit[i][1] = sin(static_cast<double>(i)*radial_angle)*384.400e6;
+    moonorbit[i][2] = 0;
+
+  }
+
+  glEnable(GL_FOG);
+
+  float FogCol[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+  glFogfv(GL_FOG_COLOR, FogCol);
+  glFogi(GL_FOG_MODE, GL_LINEAR); // Note the 'i' after glFog - the GL_LINEAR constant is an integer.
+  glFogf(GL_FOG_START, 10.0);
+  glFogf(GL_FOG_END, Global.cam_zoom*10.0);
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glDisableClientState(GL_COLOR_ARRAY);
+  glColor3ub(255,255,255);
+
+  // draw radials
+  Cartesian_Vector &reference = Global.obj_view->location;
+
+  // Place "Sol" at the origin of radials
+  lib::Object *sol = Global.universe.object_find("Sol");
+  if (sol != NULL)
+  {
+    glPushMatrix();
+    Cartesian_Vector temp = sol->location - reference;
+    glTranslated(temp.x, temp.y, temp.z);
+    glVertexPointer(3, GL_DOUBLE, 0, earthorbit);
+    glDrawArrays(GL_LINE_STRIP, 0, orbitpoints);
+    glPopMatrix();
+  }
+
+  lib::Object *earth= Global.universe.object_find("Earth");
+  if (earth != NULL)
+  {
+    glPushMatrix();
+    Cartesian_Vector temp = earth->location - reference;
+    glTranslated(temp.x, temp.y, temp.z);
+    glVertexPointer(3, GL_DOUBLE, 0, moonorbit);
+    glDrawArrays(GL_LINE_STRIP, 0, orbitpoints);
+    glPopMatrix();
+  }
+  
+  // deactivate vertex arrays after drawing
+  glDisableClientState(GL_VERTEX_ARRAY);
+  glDisable(GL_FOG);
+}
+
 
 } // namespace client
 } // namespace amethyst
