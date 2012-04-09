@@ -194,5 +194,54 @@ namespace lib {
   }
 
 
+void test_rk4()
+{
+  cl_init();
+
+  Object *a = new (Object);
+  Object *b = new (Object);
+  Object *c = new (Object);
+  Object *d = new (Object);
+
+  Universe universe;
+
+  universe.object_add(a);
+  universe.object_add(b);
+  universe.object_add(c);
+  universe.object_add(d);
+
+  a->name = "Object 1 (Sun)";
+  a->mass = 1.9891e30;  // AIP PDR 2002
+
+  b->name = "Object 2 (Earth)";
+  b->mass = 5.9743e24;  // PDR 2002
+  placement_SimpleOrbit(*a, *b, 149.598e9);
+
+  c->name = "Object 3 (Moon)";
+  c->mass = 7.35e22;    // PDR 2002
+  placement_SimpleOrbit(*b, *c, 384.400e6);
+
+  d->name = "Object 4 (L1 Test Probe)";
+  d->mass = 1;
+  placement_L1(*a, *b, *d);
+
+   std::cout << "Size of Universe: " << universe.object_count() << std::endl;
+  
+  universe.cl_setup();
+  universe.cl_copytogpu();
+  universe.cl_integrate();
+
+  universe.object_del(a);
+  universe.object_del(b);
+  universe.object_del(c);
+  universe.object_del(d);
+
+  delete a;
+  delete b;
+  delete c;
+  delete d;
+
+}
+
 } // namespace lib
 } // namespace amethyst

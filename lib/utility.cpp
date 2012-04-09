@@ -8,12 +8,14 @@
 //
 
 #include "utility.h"
+#include "physics.h"
 
 #include <H5Cpp.h>
 
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #ifdef __GNUG__
 #pragma implementation
@@ -96,6 +98,44 @@ void dumpVectorHDF5(const std::string &filename, const std::vector<Cartesian_Vec
 
   h5file.close();
   return;
+}
+
+
+void placement_SimpleOrbit(const Object &primary, Object &satellite, double distance)
+{
+  satellite.location = primary.location;
+  satellite.location.x += distance;
+
+  satellite.velocity = primary.velocity;
+  double grav_acc = G*primary.mass/pow(distance,2);
+  satellite.velocity.y += sqrt(grav_acc * distance);
+}
+
+
+void placement_L1(const Object &primary, const Object &satellite, Object &L1)
+{
+
+  /// Find Location of L1 Point
+  Cartesian_Vector to_body1 = primary.location - satellite.location;
+  double distance = to_body1.magnitude();
+  to_body1.normalize();
+
+  double distanceL1 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
+  L1.location = satellite.location + to_body1*distanceL1;
+
+  /// Find Velocity of L1 Point
+  double disL1ratio = distanceL1/distance;
+  L1.velocity = (primary.velocity - satellite.velocity)*disL1ratio + satellite.velocity;
+  //L1.velocity = primary.velocity*(-disL1ratio) + satellite.velocity*(1.0+disL1ratio);
+
+}
+
+double distance_L1(const Object &primary, const Object &satellite, Object &probe)
+{
+  Object L1;
+  placement_L1(primary, satellite, L1);
+  
+  return (probe.location - L1.location).magnitude();
 }
 
 } // namespace lib

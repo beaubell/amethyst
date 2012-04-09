@@ -47,6 +47,7 @@ ADD_EXECUTABLE(amethystcmd ${amethystcmd_SRCS})
 TARGET_LINK_LIBRARIES(
   libamethyst
   libsha2
+  ${Boost_TIMER_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_DATE_TIME_LIBRARY}
   ${Boost_FILESYSTEM_LIBRARY}

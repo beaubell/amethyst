@@ -18,6 +18,7 @@ namespace amethyst {
 namespace client {
 
 __global::__global()
+ : simulation_time(0.0)
 {
     cam_num   = 0;
     cam_yaw   = 0.0f;

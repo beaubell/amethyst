@@ -30,6 +30,7 @@ namespace lib {
   void info_variable_size(void);
   
   bool test_units(bool quiet, bool debug);
+  void test_rk4();
 
 } // namespace lib
 } // namespace amethyst
