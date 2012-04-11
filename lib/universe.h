@@ -26,6 +26,7 @@ class Universe
     //void ~Universe(void);
 
     bool do_gravity_calc;
+    bool gpu_rk4_4thorder;
 
     void object_add(      Object *);
     void object_del(const Object *);
@@ -96,6 +97,9 @@ class Universe
     cl::Kernel kern_rk4_finalsum;
     cl::Kernel kern_rk4_reductionscale;
     unsigned int _timesteps;
+
+    // The amount of mass that is the threshold between gravitationally significant and insignificant.
+    float_type mass_cutoff;
 };
 
 } // namespace lib

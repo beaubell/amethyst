@@ -21,14 +21,12 @@ namespace lib {
 static const std::string SectionName("Amethyst Library (Universe)");
 
 Universe::Universe(void)
-: _using_cl(false),
-  _timesteps(3125)
-  //_cl_buf_mass(NULL),
-  //_cl_buf_location(NULL),
-  //_cl_buf_velocity(NULL)
+: do_gravity_calc(true),
+  gpu_rk4_4thorder(true),
+  _using_cl(false),
+  _timesteps(3125),
+  mass_cutoff(1e5)
 {
-    do_gravity_calc = true;
-
 }
 
 
@@ -114,7 +112,7 @@ void Universe::iterate_gpu(const double &dtime,
   iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _current, _k1, wait_queue, new_events);
   wait_queue = new_events;
 
-  if(0) // 1st Order
+  if(!gpu_rk4_4thorder) // 1st Order
   {
     iterate_gpu_rk4_scalesum(1.0, num_objects, _current, _k1, _current, wait_queue, new_events);
   }
@@ -180,28 +178,34 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
   cl::Event grav_event, kvel_event, kpos_event;
   events.clear();
 
-  // [A] Run Gravity Calculation To Find Accelerations
-  kern_rk4_grav.setArg(0, masses);
-  kern_rk4_grav.setArg(1, old.location);
-  kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);   // FIXME, Uses global buffer
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
+  if(do_gravity_calc)
+  {
+    // [A] Run Gravity Calculation To Find Accelerations
+    kern_rk4_grav.setArg(0, masses);
+    kern_rk4_grav.setArg(1, old.location);
+    kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);   // FIXME, Uses global buffer
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
+  }
 
-  // [C] Scale velocity by time to get change in position
-  kern_rk4_scale.setArg(0, old.velocity);
-  kern_rk4_scale.setArg(1, dtime);
-  kern_rk4_scale.setArg(2, new_d.location);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kpos_event);
-  
-  // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
-  kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration); // FIXME, Uses global buffer
-  kern_rk4_reductionscale.setArg(1, dtime);
-  kern_rk4_reductionscale.setArg(2, new_d.velocity);
-  wait_queue.clear();
-  wait_queue.push_back(grav_event);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kvel_event);
+    // [C] Scale velocity by time to get change in position
+    kern_rk4_scale.setArg(0, old.velocity);
+    kern_rk4_scale.setArg(1, dtime);
+    kern_rk4_scale.setArg(2, new_d.location);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kpos_event);
+
+  if(do_gravity_calc)
+  {
+    // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
+    kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration); // FIXME, Uses global buffer
+    kern_rk4_reductionscale.setArg(1, dtime);
+    kern_rk4_reductionscale.setArg(2, new_d.velocity);
+    wait_queue.clear();
+    wait_queue.push_back(grav_event);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kvel_event);
+    events.push_back(kvel_event);
+  }
 
   events.push_back(kpos_event);
-  events.push_back(kvel_event);
 }
 
 
@@ -218,12 +222,16 @@ void Universe::iterate_gpu_rk4_scalesum(const double &scale,
 
   if(scale != 1.0)
   {
-    // [D] Sum velocity with scaled change in velocity
-    kern_rk4_scalesum.setArg(0, orig.velocity);
-    kern_rk4_scalesum.setArg(1, k_d.velocity);
-    kern_rk4_scalesum.setArg(2, (double)scale);
-    kern_rk4_scalesum.setArg(3, new_g.velocity);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
+    if(do_gravity_calc)
+    {
+      // [D] Sum velocity with scaled change in velocity
+      kern_rk4_scalesum.setArg(0, orig.velocity);
+      kern_rk4_scalesum.setArg(1, k_d.velocity);
+      kern_rk4_scalesum.setArg(2, (double)scale);
+      kern_rk4_scalesum.setArg(3, new_g.velocity);
+      queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
+      events.push_back(tmpvel_event);
+    }
 
     // [E] Sum position with scaled change in position
     kern_rk4_scalesum.setArg(0, orig.location);
@@ -234,11 +242,15 @@ void Universe::iterate_gpu_rk4_scalesum(const double &scale,
   }
   else
   {
-    // [D] Sum velocity with change in velocity
-    kern_rk4_sum.setArg(0, orig.velocity);
-    kern_rk4_sum.setArg(1, k_d.velocity);
-    kern_rk4_sum.setArg(2, new_g.velocity);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
+    if(do_gravity_calc)
+    {
+      // [D] Sum velocity with change in velocity
+      kern_rk4_sum.setArg(0, orig.velocity);
+      kern_rk4_sum.setArg(1, k_d.velocity);
+      kern_rk4_sum.setArg(2, new_g.velocity);
+      queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
+      events.push_back(tmpvel_event);
+    }
 
     // [E] Sum position with change in position
     kern_rk4_sum.setArg(0, orig.location);
@@ -248,7 +260,6 @@ void Universe::iterate_gpu_rk4_scalesum(const double &scale,
   }
 
   events.push_back(tmppos_event);
-  events.push_back(tmpvel_event);
 }
 
 
