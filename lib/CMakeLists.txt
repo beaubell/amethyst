@@ -13,6 +13,7 @@ SET(libamethyst_SRCS
   matrix.cpp
   net.cpp
   object.cpp
+  object_group.cpp
   orientation.cpp
   physics.cpp
   ship.cpp

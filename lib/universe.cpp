@@ -110,84 +110,56 @@ void Universe::iterate_gpu(const double &dtime,
   std::cout << ".";
   std::cout.flush();
 
-#if 0
-  /// DEBUG
-  {
-    queue_rk4.finish();
-    cl::Event debug_event;
-    size_t objects = _object_list.size();
-    std::size_t size_vec_mass = sizeof(float_type)*objects;
-    std::size_t size_vec_loc = sizeof(Cartesian_Vector)*objects;
-    std::size_t size_vec_vel = sizeof(Cartesian_Vector)*objects;
-    std::size_t size_exp_acc = sizeof(Cartesian_Vector)*objects*(objects-1);
-    std::vector<Cartesian_Vector> dump_vec;
-    dump_vec.resize(objects);
-    //queue.enqueueWriteBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.enqueueReadBuffer(_cl_buf_k2_dlocation, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.finish();
-    dumpVectorHDF5(std::string("dump_loc.hd5"), dump_vec);
-    queue_rk4.enqueueReadBuffer(_cl_buf_k2_dvelocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.finish();
-    dumpVectorHDF5(std::string("dump_vel.hd5"), dump_vec);
-  }
-  /// /// /// ///
-#endif
-
   // Make K1
-  iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_location, _cl_buf_velocity, _cl_buf_k1_dlocation, _cl_buf_k1_dvelocity, wait_queue, new_events);
+  iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _current, _k1, wait_queue, new_events);
   wait_queue = new_events;
 
   if(0) // 1st Order
   {
-    iterate_gpu_rk4_scalesum(1.0, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k1_dlocation,
-                             _cl_buf_k1_dvelocity, _cl_buf_location, _cl_buf_velocity, wait_queue, new_events);
-    
+    iterate_gpu_rk4_scalesum(1.0, num_objects, _current, _k1, _current, wait_queue, new_events);
   }
   else // Full RK4 Hotness
   {
     /// Setup for K2
-    iterate_gpu_rk4_scalesum(0.5, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k1_dlocation,
-                             _cl_buf_k1_dvelocity, _cl_buf_tmp_location, _cl_buf_tmp_velocity, wait_queue, new_events);
+    iterate_gpu_rk4_scalesum(0.5, num_objects, _current, _k1, _tmp, wait_queue, new_events);
     wait_queue = new_events;
 
     /// Make K2 Now
-    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k2_dlocation, _cl_buf_k2_dvelocity, wait_queue, new_events);
+    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _tmp, _k2, wait_queue, new_events);
     wait_queue = new_events;
 
     /// Setup for K3
-    iterate_gpu_rk4_scalesum(0.5, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k2_dlocation,
-                             _cl_buf_k2_dvelocity, _cl_buf_tmp_location, _cl_buf_tmp_velocity, wait_queue, new_events);
+    iterate_gpu_rk4_scalesum(0.5, num_objects, _current, _k2, _tmp, wait_queue, new_events);
     wait_queue = new_events;
 
     /// Make K3 Now
-    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k3_dlocation, _cl_buf_k3_dvelocity, wait_queue, new_events);
+    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _tmp, _k3, wait_queue, new_events);
     wait_queue = new_events;
 
     /// Setup for K4
-    iterate_gpu_rk4_scalesum(1.0, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k3_dlocation,
-                             _cl_buf_k3_dvelocity, _cl_buf_tmp_location, _cl_buf_tmp_velocity, wait_queue, new_events);
+    iterate_gpu_rk4_scalesum(1.0, num_objects, _current, _k3, _tmp, wait_queue, new_events);
     wait_queue = new_events;
 
     /// Make K4 Now
-    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k4_dlocation, _cl_buf_k4_dvelocity, wait_queue, new_events);
+    iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _tmp, _k4, wait_queue, new_events);
     wait_queue = new_events;
     
     /// Sum it all together!
     // 
-    kern_rk4_finalsum.setArg(0, _cl_buf_velocity);
-    kern_rk4_finalsum.setArg(1, _cl_buf_k1_dvelocity);
-    kern_rk4_finalsum.setArg(2, _cl_buf_k2_dvelocity);
-    kern_rk4_finalsum.setArg(3, _cl_buf_k3_dvelocity);
-    kern_rk4_finalsum.setArg(4, _cl_buf_k4_dvelocity);
-    kern_rk4_finalsum.setArg(5, _cl_buf_velocity);
+    kern_rk4_finalsum.setArg(0, _current.velocity);
+    kern_rk4_finalsum.setArg(1, _k1.velocity);
+    kern_rk4_finalsum.setArg(2, _k2.velocity);
+    kern_rk4_finalsum.setArg(3, _k3.velocity);
+    kern_rk4_finalsum.setArg(4, _k4.velocity);
+    kern_rk4_finalsum.setArg(5, _current.velocity);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finvel_event);
 
-    kern_rk4_finalsum.setArg(0, _cl_buf_location);
-    kern_rk4_finalsum.setArg(1, _cl_buf_k1_dlocation);
-    kern_rk4_finalsum.setArg(2, _cl_buf_k2_dlocation);
-    kern_rk4_finalsum.setArg(3, _cl_buf_k3_dlocation);
-    kern_rk4_finalsum.setArg(4, _cl_buf_k4_dlocation);
-    kern_rk4_finalsum.setArg(5, _cl_buf_location);
+    kern_rk4_finalsum.setArg(0, _current.location);
+    kern_rk4_finalsum.setArg(1, _k1.location);
+    kern_rk4_finalsum.setArg(2, _k2.location);
+    kern_rk4_finalsum.setArg(3, _k3.location);
+    kern_rk4_finalsum.setArg(4, _k4.location);
+    kern_rk4_finalsum.setArg(5, _current.location);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
 
   }
@@ -200,10 +172,8 @@ void Universe::iterate_gpu(const double &dtime,
 void Universe::iterate_gpu_rk4_gravk(const double &dtime,
                                      uint num_objects,
                                      cl::Buffer &masses,
-                                     cl::Buffer &old_locations,
-                                     cl::Buffer &old_velocities,
-                                     cl::Buffer &new_dlocations,
-                                     cl::Buffer &new_dvelocities,
+                                     Object_Group &old,
+                                     Object_Group &new_d,
                                      std::vector<cl::Event> wait_queue,
                                      std::vector<cl::Event> &events)
 {
@@ -212,20 +182,20 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
 
   // [A] Run Gravity Calculation To Find Accelerations
   kern_rk4_grav.setArg(0, masses);
-  kern_rk4_grav.setArg(1, old_locations);
+  kern_rk4_grav.setArg(1, old.location);
   kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);   // FIXME, Uses global buffer
   queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
 
   // [C] Scale velocity by time to get change in position
-  kern_rk4_scale.setArg(0, old_velocities);
+  kern_rk4_scale.setArg(0, old.velocity);
   kern_rk4_scale.setArg(1, dtime);
-  kern_rk4_scale.setArg(2, new_dlocations);
+  kern_rk4_scale.setArg(2, new_d.location);
   queue_rk4.enqueueNDRangeKernel(kern_rk4_scale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kpos_event);
   
   // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
   kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration); // FIXME, Uses global buffer
   kern_rk4_reductionscale.setArg(1, dtime);
-  kern_rk4_reductionscale.setArg(2, new_dvelocities);
+  kern_rk4_reductionscale.setArg(2, new_d.velocity);
   wait_queue.clear();
   wait_queue.push_back(grav_event);
   queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kvel_event);
@@ -237,12 +207,9 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
 
 void Universe::iterate_gpu_rk4_scalesum(const double &scale,
                                         const uint num_objects,
-                                        cl::Buffer &orig_location,
-                                        cl::Buffer &orig_velocity,
-                                        cl::Buffer &k_dlocation,
-                                        cl::Buffer &k_dvelocity,
-                                        cl::Buffer &new_location,
-                                        cl::Buffer &new_velocity,
+                                        Object_Group &orig,
+                                        Object_Group &k_d,
+                                        Object_Group &new_g,
                                         std::vector<cl::Event> wait_queue,
                                         std::vector<cl::Event> &events)
 {
@@ -252,31 +219,31 @@ void Universe::iterate_gpu_rk4_scalesum(const double &scale,
   if(scale != 1.0)
   {
     // [D] Sum velocity with scaled change in velocity
-    kern_rk4_scalesum.setArg(0, orig_velocity);
-    kern_rk4_scalesum.setArg(1, k_dvelocity);
+    kern_rk4_scalesum.setArg(0, orig.velocity);
+    kern_rk4_scalesum.setArg(1, k_d.velocity);
     kern_rk4_scalesum.setArg(2, (double)scale);
-    kern_rk4_scalesum.setArg(3, new_velocity);
+    kern_rk4_scalesum.setArg(3, new_g.velocity);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
 
     // [E] Sum position with scaled change in position
-    kern_rk4_scalesum.setArg(0, orig_location);
-    kern_rk4_scalesum.setArg(1, k_dlocation);
+    kern_rk4_scalesum.setArg(0, orig.location);
+    kern_rk4_scalesum.setArg(1, k_d.location);
     kern_rk4_scalesum.setArg(2, (double)scale);
-    kern_rk4_scalesum.setArg(3, new_location);
+    kern_rk4_scalesum.setArg(3, new_g.location);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
   }
   else
   {
     // [D] Sum velocity with change in velocity
-    kern_rk4_sum.setArg(0, orig_velocity);
-    kern_rk4_sum.setArg(1, k_dvelocity);
-    kern_rk4_sum.setArg(2, new_velocity);
+    kern_rk4_sum.setArg(0, orig.velocity);
+    kern_rk4_sum.setArg(1, k_d.velocity);
+    kern_rk4_sum.setArg(2, new_g.velocity);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
 
     // [E] Sum position with change in position
-    kern_rk4_sum.setArg(0, orig_location);
-    kern_rk4_sum.setArg(1, k_dlocation);
-    kern_rk4_sum.setArg(2, new_location);
+    kern_rk4_sum.setArg(0, orig.location);
+    kern_rk4_sum.setArg(1, k_d.location);
+    kern_rk4_sum.setArg(2, new_g.location);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
   }
 
@@ -381,18 +348,12 @@ void Universe::cl_setup()
 
   /// Primary CL space for objects
   std::size_t size_vec_mass = sizeof(float_type)*objects;
-  std::size_t size_vec_loc = sizeof(Cartesian_Vector)*objects;
-  std::size_t size_vec_vel = sizeof(Cartesian_Vector)*objects;
   std::size_t size_exp_acc = sizeof(Cartesian_Vector)*objects*(objects-1);
   std::size_t size_vec_histloc = sizeof(Cartesian_Vector)*objects*_timesteps;
   std::size_t size_vec_histvel = sizeof(Cartesian_Vector)*objects*_timesteps;
 
-  //if (_cl_buf_mass) delete _cl_buf_mass;
   _cl_buf_mass     = cl::Buffer(amethyst_cl_context, CL_MEM_READ_ONLY,  size_vec_mass, NULL, NULL);
-  //if (_cl_buf_location) delete _cl_buf_location;
-  _cl_buf_location = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, NULL);
-  //if (_cl_buf_velocity) delete _cl_buf_velocity;
-  _cl_buf_velocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, NULL);
+  _current.set_size(objects, 0);
 
 
   /// Object History Vectors
@@ -402,18 +363,12 @@ void Universe::cl_setup()
   /// CL space for integration
   _cl_buf_expanded_acceleration = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_exp_acc,  NULL, NULL);
 
-  _cl_buf_k1_dlocation = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, NULL);
-  _cl_buf_k1_dvelocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, NULL);
-  _cl_buf_k2_dlocation = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, NULL);
-  _cl_buf_k2_dvelocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, NULL);
-  _cl_buf_k3_dlocation = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, NULL);
-  _cl_buf_k3_dvelocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, NULL);
-  _cl_buf_k4_dlocation = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, NULL);
-  _cl_buf_k4_dvelocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, NULL);
-  _cl_buf_tmp_location = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, NULL);
-  _cl_buf_tmp_velocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, NULL);
-  _cl_buf_fin_location = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_loc,  NULL, NULL);
-  _cl_buf_fin_velocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_vel,  NULL, NULL);
+  _k1.set_size(objects, 0);
+  _k2.set_size(objects, 0);
+  _k3.set_size(objects, 0);
+  _k4.set_size(objects, 0);
+  _tmp.set_size(objects, 0);
+  _final.set_size(objects, 0);
 
   /// Load CL kernels
   kern_rk4_sum      = cl_loadkernel(std::string("rk4_sum.cl"),      std::string("rk4_sum"));
@@ -427,7 +382,7 @@ void Universe::cl_setup()
   /// Setup Command Queue
   unsigned int gpu_id = 0;  // FIXME - Make GPU_ID dynamic?
   //queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, NULL);
-  queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], NULL, NULL);
+  queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], 0, NULL);
   
   _using_cl = true;
 }
@@ -465,8 +420,8 @@ void Universe::cl_copytogpu()
 
   //push our CPU arrays to the GPU
   err = queue_rk4.enqueueWriteBuffer(_cl_buf_mass,     CL_TRUE, 0, size_vec_mass,  &_object_mass[0],     NULL, &in_mass_event);
-  err = queue_rk4.enqueueWriteBuffer(_cl_buf_location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
-  err = queue_rk4.enqueueWriteBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
+  err = queue_rk4.enqueueWriteBuffer(_current.location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
+  err = queue_rk4.enqueueWriteBuffer(_current.velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
 
   queue_rk4.finish();
 }
@@ -487,8 +442,8 @@ void Universe::cl_copyfrgpu()
   cl::Event in_mass_event, in_location_event, in_velocity_event;
 
   //get our CPU arrays from the GPU
-  err = queue_rk4.enqueueReadBuffer(_cl_buf_location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
-  err = queue_rk4.enqueueReadBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
+  err = queue_rk4.enqueueReadBuffer(_current.location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
+  err = queue_rk4.enqueueReadBuffer(_current.velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
 
   queue_rk4.finish();
 
@@ -520,13 +475,13 @@ void Universe::cl_integrate()
   boost::timer::auto_cpu_timer t;
 
   // Copy buffer to 1st row in history
-  kern_rk4_copy3d.setArg(0, _cl_buf_location);
+  kern_rk4_copy3d.setArg(0, _current.location);
   kern_rk4_copy3d.setArg(1, (unsigned int)0);
   kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
   kern_rk4_copy3d.setArg(3, (unsigned int)0);
   queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos1_event);
 
-  kern_rk4_copy3d.setArg(0, _cl_buf_velocity);
+  kern_rk4_copy3d.setArg(0, _current.velocity);
   kern_rk4_copy3d.setArg(1, (unsigned int)0);
   kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
   kern_rk4_copy3d.setArg(3, (unsigned int)0);
@@ -546,13 +501,13 @@ void Universe::cl_integrate()
     wait_queue = new_events;
 
     // Copy buffer to ith row in history
-    kern_rk4_copy3d.setArg(0, _cl_buf_location);
+    kern_rk4_copy3d.setArg(0, _current.location);
     kern_rk4_copy3d.setArg(1, (unsigned int)0);
     kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
     kern_rk4_copy3d.setArg(3, i);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
 
-    kern_rk4_copy3d.setArg(0, _cl_buf_velocity);
+    kern_rk4_copy3d.setArg(0, _current.velocity);
     kern_rk4_copy3d.setArg(1, (unsigned int)0);
     kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
     kern_rk4_copy3d.setArg(3, i);

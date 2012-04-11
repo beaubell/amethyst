@@ -8,7 +8,12 @@
 #endif
 
 #define __CL_ENABLE_EXCEPTIONS yup
+
+#include <cstddef>
+#include <vector>
+
 #include <CL/cl.hpp>
+
 
 namespace amethyst {
 namespace lib {

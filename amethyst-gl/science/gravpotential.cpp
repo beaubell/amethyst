@@ -158,7 +158,7 @@ void GravPotential::update()
     // Set Kernel Arguments
     kern_pot.setArg(0, (unsigned int)Global.universe.object_count());
     kern_pot.setArg(1, Global.universe._cl_buf_mass);
-    kern_pot.setArg(2, Global.universe._cl_buf_location);
+    kern_pot.setArg(2, Global.universe._current.location);
     kern_pot.setArg(3, _cl_buf_plane_corners);
     kern_pot.setArg(4, (unsigned int)_grid_x);
     kern_pot.setArg(5, _cl_tex);

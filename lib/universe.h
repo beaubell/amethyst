@@ -11,6 +11,7 @@
 #include "types.h"
 #include "object.h"
 #include "cl.h"
+#include "object_group.h"
 
 //#define BOOST_DISABLE_ASSERTS TRUE
 //#include "boost/multi_array.hpp"
@@ -42,21 +43,16 @@ class Universe
     void iterate_gpu_rk4_gravk(const double &dtime,
                                uint num_objects,
                                cl::Buffer &masses,
-                               cl::Buffer &old_locations,
-                               cl::Buffer &old_velocities,
-                               cl::Buffer &new_dlocation,
-                               cl::Buffer &new_dvelocities,
+                               Object_Group &old,
+                               Object_Group &new_d,
                                std::vector<cl::Event> wait_queue,
                                std::vector<cl::Event> &events);  // Events_out
 
     void iterate_gpu_rk4_scalesum(const double &scale,
                                   const uint num_objects,
-                                  cl::Buffer &orig_location,
-                                  cl::Buffer &orig_velocity,
-                                  cl::Buffer &k_dlocation,
-                                  cl::Buffer &k_dvelocity,
-                                  cl::Buffer &new_location,
-                                  cl::Buffer &new_velocity,
+                                  Object_Group &orig,
+                                  Object_Group &k,
+                                  Object_Group &new_objs,
                                   std::vector<cl::Event> wait_queue,
                                   std::vector<cl::Event> &events);
     
@@ -79,25 +75,18 @@ class Universe
     bool _using_cl;
     cl::CommandQueue queue_rk4;
     cl::Buffer _cl_buf_mass;
-    cl::Buffer _cl_buf_location;
-    cl::Buffer _cl_buf_velocity;
+    Object_Group _current;
     cl::Buffer _cl_buf_hist_location;
     cl::Buffer _cl_buf_hist_velocity;
 
     // For Runge Kutta Integration
     cl::Buffer _cl_buf_expanded_acceleration;
-    cl::Buffer _cl_buf_k1_dlocation;
-    cl::Buffer _cl_buf_k1_dvelocity;
-    cl::Buffer _cl_buf_k2_dlocation;
-    cl::Buffer _cl_buf_k2_dvelocity;
-    cl::Buffer _cl_buf_k3_dlocation;
-    cl::Buffer _cl_buf_k3_dvelocity;
-    cl::Buffer _cl_buf_k4_dlocation;
-    cl::Buffer _cl_buf_k4_dvelocity;
-    cl::Buffer _cl_buf_tmp_location;
-    cl::Buffer _cl_buf_tmp_velocity;
-    cl::Buffer _cl_buf_fin_location;
-    cl::Buffer _cl_buf_fin_velocity;
+    Object_Group _k1;
+    Object_Group _k2;
+    Object_Group _k3;
+    Object_Group _k4;
+    Object_Group _tmp;
+    Object_Group _final;
 
     cl::Kernel kern_rk4_sum;
     cl::Kernel kern_rk4_grav;
