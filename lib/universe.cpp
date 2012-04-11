@@ -102,8 +102,8 @@ void Universe::iterate_gpu(const double &dtime,
                            std::vector<cl::Event> wait_queue,
                            std::vector<cl::Event> &new_events)
 {
-  cl::Event              tmpvel_event, tmppos_event, finpos_event, finvel_event;
-  //std::vector<cl::Event> wait_queue, new_events;
+  cl::Event finpos_event, finvel_event;
+  new_events.clear();
 
   unsigned int num_objects = object_count();
 
@@ -139,82 +139,36 @@ void Universe::iterate_gpu(const double &dtime,
 
   if(0) // 1st Order
   {
-    // Sum velocity with change in velocity
-    kern_rk4_sum.setArg(0, _cl_buf_velocity);
-    kern_rk4_sum.setArg(1, _cl_buf_k1_dvelocity);
-    kern_rk4_sum.setArg(2, _cl_buf_velocity);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finvel_event);
-
-    // Sum position with change in position
-    kern_rk4_sum.setArg(0, _cl_buf_location);    wait_queue.clear();
-    kern_rk4_sum.setArg(1, _cl_buf_k1_dlocation);
-    kern_rk4_sum.setArg(2, _cl_buf_location);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
+    iterate_gpu_rk4_scalesum(1.0, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k1_dlocation,
+                             _cl_buf_k1_dvelocity, _cl_buf_location, _cl_buf_velocity, wait_queue, new_events);
+    
   }
   else // Full RK4 Hotness
   {
     /// Setup for K2
-    // [D] Sum velocity with scaled change in velocity
-    kern_rk4_scalesum.setArg(0, _cl_buf_velocity);
-    kern_rk4_scalesum.setArg(1, _cl_buf_k1_dvelocity);
-    kern_rk4_scalesum.setArg(2, (double)0.5);
-    kern_rk4_scalesum.setArg(3, _cl_buf_tmp_velocity);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
-    
-    // [E] Sum position with scaled change in position
-    kern_rk4_scalesum.setArg(0, _cl_buf_location);
-    kern_rk4_scalesum.setArg(1, _cl_buf_k1_dlocation);
-    kern_rk4_scalesum.setArg(2, (double)0.5);
-    kern_rk4_scalesum.setArg(3, _cl_buf_tmp_location);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
+    iterate_gpu_rk4_scalesum(0.5, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k1_dlocation,
+                             _cl_buf_k1_dvelocity, _cl_buf_tmp_location, _cl_buf_tmp_velocity, wait_queue, new_events);
+    wait_queue = new_events;
 
     /// Make K2 Now
-    wait_queue.clear();
-    wait_queue.push_back(tmppos_event);
-    wait_queue.push_back(tmpvel_event);
     iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k2_dlocation, _cl_buf_k2_dvelocity, wait_queue, new_events);
     wait_queue = new_events;
 
     /// Setup for K3
-    // [D] Sum velocity with scaled change in velocity
-    kern_rk4_scalesum.setArg(0, _cl_buf_velocity);
-    kern_rk4_scalesum.setArg(1, _cl_buf_k2_dvelocity);
-    kern_rk4_scalesum.setArg(2, (double)0.5);
-    kern_rk4_scalesum.setArg(3, _cl_buf_tmp_velocity);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
-
-    // [E] Sum position with scaled change in position
-    kern_rk4_scalesum.setArg(0, _cl_buf_location);
-    kern_rk4_scalesum.setArg(1, _cl_buf_k2_dlocation);
-    kern_rk4_scalesum.setArg(2, (double)0.5);
-    kern_rk4_scalesum.setArg(3, _cl_buf_tmp_location);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
+    iterate_gpu_rk4_scalesum(0.5, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k2_dlocation,
+                             _cl_buf_k2_dvelocity, _cl_buf_tmp_location, _cl_buf_tmp_velocity, wait_queue, new_events);
+    wait_queue = new_events;
 
     /// Make K3 Now
-    wait_queue.clear();
-    wait_queue.push_back(tmppos_event);
-    wait_queue.push_back(tmpvel_event);
     iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k3_dlocation, _cl_buf_k3_dvelocity, wait_queue, new_events);
     wait_queue = new_events;
 
-
     /// Setup for K4
-    // [D] Sum velocity with change in velocity
-    kern_rk4_sum.setArg(0, _cl_buf_velocity);
-    kern_rk4_sum.setArg(1, _cl_buf_k3_dvelocity);
-    kern_rk4_sum.setArg(2, _cl_buf_tmp_velocity);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
-
-    // [E] Sum position with change in position
-    kern_rk4_sum.setArg(0, _cl_buf_location);
-    kern_rk4_sum.setArg(1, _cl_buf_k3_dlocation);
-    kern_rk4_sum.setArg(2, _cl_buf_tmp_location);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
+    iterate_gpu_rk4_scalesum(1.0, num_objects, _cl_buf_location, _cl_buf_velocity, _cl_buf_k3_dlocation,
+                             _cl_buf_k3_dvelocity, _cl_buf_tmp_location, _cl_buf_tmp_velocity, wait_queue, new_events);
+    wait_queue = new_events;
 
     /// Make K4 Now
-    wait_queue.clear();
-    wait_queue.push_back(tmppos_event);
-    wait_queue.push_back(tmpvel_event);
     iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _cl_buf_tmp_location, _cl_buf_tmp_velocity, _cl_buf_k4_dlocation, _cl_buf_k4_dvelocity, wait_queue, new_events);
     wait_queue = new_events;
     
@@ -238,9 +192,9 @@ void Universe::iterate_gpu(const double &dtime,
 
   }
 
-  wait_queue.clear();
-  wait_queue.push_back(finvel_event);
-  wait_queue.push_back(finpos_event);
+  new_events.clear();
+  new_events.push_back(finvel_event);
+  new_events.push_back(finpos_event);
 }
 
 void Universe::iterate_gpu_rk4_gravk(const double &dtime,
@@ -279,6 +233,57 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
   events.push_back(kpos_event);
   events.push_back(kvel_event);
 }
+
+
+void Universe::iterate_gpu_rk4_scalesum(const double &scale,
+                                        const uint num_objects,
+                                        cl::Buffer &orig_location,
+                                        cl::Buffer &orig_velocity,
+                                        cl::Buffer &k_dlocation,
+                                        cl::Buffer &k_dvelocity,
+                                        cl::Buffer &new_location,
+                                        cl::Buffer &new_velocity,
+                                        std::vector<cl::Event> wait_queue,
+                                        std::vector<cl::Event> &events)
+{
+  cl::Event tmpvel_event, tmppos_event;
+  events.clear();
+
+  if(scale != 1.0)
+  {
+    // [D] Sum velocity with scaled change in velocity
+    kern_rk4_scalesum.setArg(0, orig_velocity);
+    kern_rk4_scalesum.setArg(1, k_dvelocity);
+    kern_rk4_scalesum.setArg(2, (double)scale);
+    kern_rk4_scalesum.setArg(3, new_velocity);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
+
+    // [E] Sum position with scaled change in position
+    kern_rk4_scalesum.setArg(0, orig_location);
+    kern_rk4_scalesum.setArg(1, k_dlocation);
+    kern_rk4_scalesum.setArg(2, (double)scale);
+    kern_rk4_scalesum.setArg(3, new_location);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_scalesum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
+  }
+  else
+  {
+    // [D] Sum velocity with change in velocity
+    kern_rk4_sum.setArg(0, orig_velocity);
+    kern_rk4_sum.setArg(1, k_dvelocity);
+    kern_rk4_sum.setArg(2, new_velocity);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmpvel_event);
+
+    // [E] Sum position with change in position
+    kern_rk4_sum.setArg(0, orig_location);
+    kern_rk4_sum.setArg(1, k_dlocation);
+    kern_rk4_sum.setArg(2, new_location);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_sum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &tmppos_event);
+  }
+
+  events.push_back(tmppos_event);
+  events.push_back(tmpvel_event);
+}
+
 
 
 void Universe::iterate_cpu(const double &dtime)
@@ -506,7 +511,7 @@ void Universe::cl_copyfrgpu()
 void Universe::cl_integrate()
 {
   size_t num_objects = _object_list.size();
-  cl::Event              cpvel_event, cppos_event;
+  cl::Event cpvel1_event, cppos1_event;
   std::vector<cl::Event> wait_queue, new_events;
 
   const double dtime = 86400.0; //seconds (1 day)
@@ -519,21 +524,23 @@ void Universe::cl_integrate()
   kern_rk4_copy3d.setArg(1, (unsigned int)0);
   kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
   kern_rk4_copy3d.setArg(3, (unsigned int)0);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos1_event);
 
   kern_rk4_copy3d.setArg(0, _cl_buf_velocity);
   kern_rk4_copy3d.setArg(1, (unsigned int)0);
   kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
   kern_rk4_copy3d.setArg(3, (unsigned int)0);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel_event);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel1_event);
 
   wait_queue.clear();
-  wait_queue.push_back(cppos_event);
-  wait_queue.push_back(cpvel_event);
+  wait_queue.push_back(cppos1_event);
+  wait_queue.push_back(cpvel1_event);
   
   // Fill in rest of history
   for (unsigned int i = 1; i < _timesteps; i++)
   {
+    cl::Event cpvel_event, cppos_event;
+    
     // Iterate Engine
     iterate_gpu(dtime, wait_queue, new_events);
     wait_queue = new_events;

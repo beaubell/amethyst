@@ -101,6 +101,7 @@
  *       cl::Context context(CL_DEVICE_TYPE_CPU, properties); 
  * 
  *       std::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
+ * 
  *       cl::Program::Sources source(1,
  *           std::make_pair(helloStr,strlen(helloStr)));
  *       cl::Program program_ = cl::Program(context, source);
@@ -238,7 +239,7 @@ public:
      *
      *  \return The error code.
      */
-    cl_int err(void) const { return err_; }  /// Fixed, removed const for return type - Beau
+    const cl_int err(void) const { return err_; }
 };
 
 #define __ERR_STR(x) #x
@@ -1437,27 +1438,6 @@ public:
         if (err != NULL) {
             *err = error;
         }
-    }
-
-    Context(cl_context context)
-    {
-        object_ = context;
-    }
-
-    //IJ: Mac Hack
-    Context(cl_context_properties* properties, cl_int* err = NULL)
-    {
-        cl_int error;
-        object_ = ::clCreateContext(
-            properties, 0, 
-            0,
-            NULL, NULL, &error);
-
-        detail::errHandler(error, __CREATE_CONTEXT_FROM_TYPE_ERR);
-        if (err != NULL) {
-            *err = error;
-        }
-
     }
 
     Context(
@@ -3422,7 +3402,7 @@ Event KernelFunctor::operator()(const VECTOR_CLASS<Event>* events)
         offset_,
         global_,
         local_,
-        events,    // bgaster_fixme - do we want to allow wait event lists? /// FIXME - Verify validity (beau)
+        NULL,    // bgaster_fixme - do we want to allow wait event lists?
         &event);
 
     return event;

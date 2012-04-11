@@ -48,6 +48,17 @@ class Universe
                                cl::Buffer &new_dvelocities,
                                std::vector<cl::Event> wait_queue,
                                std::vector<cl::Event> &events);  // Events_out
+
+    void iterate_gpu_rk4_scalesum(const double &scale,
+                                  const uint num_objects,
+                                  cl::Buffer &orig_location,
+                                  cl::Buffer &orig_velocity,
+                                  cl::Buffer &k_dlocation,
+                                  cl::Buffer &k_dvelocity,
+                                  cl::Buffer &new_location,
+                                  cl::Buffer &new_velocity,
+                                  std::vector<cl::Event> wait_queue,
+                                  std::vector<cl::Event> &events);
     
     void iterate_cpu(const double &time);
 
