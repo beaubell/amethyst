@@ -178,13 +178,35 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
   cl::Event grav_event, kvel_event, kpos_event;
   events.clear();
 
+  size_t objects_sig = old.get_sigsize();
+
   if(do_gravity_calc)
   {
     // [A] Run Gravity Calculation To Find Accelerations
     kern_rk4_grav.setArg(0, masses);
     kern_rk4_grav.setArg(1, old.location);
     kern_rk4_grav.setArg(2, _cl_buf_expanded_acceleration);   // FIXME, Uses global buffer
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, num_objects-1), cl::NullRange, &wait_queue, &grav_event);
+    queue_rk4.enqueueNDRangeKernel(kern_rk4_grav, cl::NullRange, cl::NDRange(num_objects, objects_sig), cl::NullRange, &wait_queue, &grav_event);
+
+    if(0)
+    {
+    queue_rk4.finish();
+    cl::Event debug_event;
+    size_t objects = _object_list.size();
+    std::size_t size_vec_acc = sizeof(Cartesian_Vector)*objects*objects_sig;
+    std::size_t size_vec_loc = sizeof(Cartesian_Vector)*objects;
+    std::vector<Cartesian_Vector> dump_vec;
+    dump_vec.resize(objects*objects_sig);
+    //queue.enqueueWriteBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
+    queue_rk4.enqueueReadBuffer(_cl_buf_expanded_acceleration, CL_TRUE, 0, size_vec_acc, &dump_vec[0], NULL, &debug_event);
+    queue_rk4.finish();
+    dumpVectorHDF5(std::string("dump_grav_acc.hd5"), dump_vec);
+    dump_vec.resize(objects);
+    queue_rk4.enqueueReadBuffer(old.location, CL_TRUE, 0, size_vec_loc, &dump_vec[0], NULL, &debug_event);
+    queue_rk4.finish();
+    dumpVectorHDF5(std::string("dump_grav_loc.hd5"), dump_vec);
+    exit(12);
+    }
   }
 
     // [C] Scale velocity by time to get change in position
@@ -196,9 +218,10 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
   if(do_gravity_calc)
   {
     // [B] Reduce(sum) expanded accelerations for each object and scale by time to determine change in velocity
-    kern_rk4_reductionscale.setArg(0, _cl_buf_expanded_acceleration); // FIXME, Uses global buffer
-    kern_rk4_reductionscale.setArg(1, dtime);
-    kern_rk4_reductionscale.setArg(2, new_d.velocity);
+    kern_rk4_reductionscale.setArg(0, (unsigned int)objects_sig);
+    kern_rk4_reductionscale.setArg(1, _cl_buf_expanded_acceleration); // FIXME, Uses global buffer
+    kern_rk4_reductionscale.setArg(2, dtime);
+    kern_rk4_reductionscale.setArg(3, new_d.velocity);
     wait_queue.clear();
     wait_queue.push_back(grav_event);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_reductionscale, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &kvel_event);
@@ -348,6 +371,11 @@ std::list<Object*>& Universe::list(void)
 void Universe::cl_setup()
 {
   size_t objects = _object_list.size();
+  size_t objects_sig = count_sig_objects();
+  size_t objects_insig = objects - objects_sig;
+  
+  std::cout << "Significant Objects"   << objects_sig << std::endl;
+  std::cout << "Insignificant Objects" << objects_insig << std::endl;
 
   if(objects == 0)
     throw std::runtime_error("Wtf! Initializing OpenCL with no objects?");
@@ -359,12 +387,12 @@ void Universe::cl_setup()
 
   /// Primary CL space for objects
   std::size_t size_vec_mass = sizeof(float_type)*objects;
-  std::size_t size_exp_acc = sizeof(Cartesian_Vector)*objects*(objects-1);
+  std::size_t size_exp_acc = sizeof(Cartesian_Vector)*objects*(objects_sig);
   std::size_t size_vec_histloc = sizeof(Cartesian_Vector)*objects*_timesteps;
   std::size_t size_vec_histvel = sizeof(Cartesian_Vector)*objects*_timesteps;
 
   _cl_buf_mass     = cl::Buffer(amethyst_cl_context, CL_MEM_READ_ONLY,  size_vec_mass, NULL, NULL);
-  _current.set_size(objects, 0);
+  _current.set_size(objects_sig, objects_insig);
 
 
   /// Object History Vectors
@@ -374,12 +402,12 @@ void Universe::cl_setup()
   /// CL space for integration
   _cl_buf_expanded_acceleration = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_exp_acc,  NULL, NULL);
 
-  _k1.set_size(objects, 0);
-  _k2.set_size(objects, 0);
-  _k3.set_size(objects, 0);
-  _k4.set_size(objects, 0);
-  _tmp.set_size(objects, 0);
-  _final.set_size(objects, 0);
+  _k1.set_size(objects_sig, objects_insig);
+  _k2.set_size(objects_sig, objects_insig);
+  _k3.set_size(objects_sig, objects_insig);
+  _k4.set_size(objects_sig, objects_insig);
+  _tmp.set_size(objects_sig, objects_insig);
+  _final.set_size(objects_sig, objects_insig);
 
   /// Load CL kernels
   kern_rk4_sum      = cl_loadkernel(std::string("rk4_sum.cl"),      std::string("rk4_sum"));
@@ -401,6 +429,14 @@ void Universe::cl_setup()
 
 void Universe::cl_copytogpu()
 {
+  sort_objects();
+  
+  uint sig_objs = _current.get_sigsize();
+  uint idx_sig = 0;
+  uint idx_insig = 0;
+
+  std::cout << "Sigsize: " << sig_objs << "  Mass Cutoff: " << mass_cutoff << std::endl;
+  
   if (!_using_cl)
     throw (std::runtime_error("Cannot copy data to GPU.  Cl is not initialized"));
 
@@ -410,12 +446,28 @@ void Universe::cl_copytogpu()
 
   for (std::size_t i = 0; i < objects; i++)
   {
+    uint idx = 0;
+
     if(obj == _object_list.end())
       throw std::runtime_error("Object lists are inconsistent!");
 
-    _object_mass[i]     = (*obj)->mass;
-    _object_position[i] = (*obj)->location;
-    _object_velocity[i] = (*obj)->velocity;
+    // Sort Insignificant/Significant Mass Objects
+    if ( ((*obj)->mass) > mass_cutoff)
+    {
+      idx = idx_sig;
+      idx_sig++;
+    }
+    else
+    {
+      idx = sig_objs + idx_insig;
+      idx_insig++;
+    }
+
+    _object_mass[idx]     = (*obj)->mass;
+    _object_position[idx] = (*obj)->location;
+    _object_velocity[idx] = (*obj)->velocity;
+
+    std::cout << "Index: " << idx << " (" << (*obj)->name << ") Mass: " << (*obj)->mass << std::endl;
 
     obj++;
   }
@@ -549,6 +601,32 @@ void Universe::cl_integrate()
   }
 
 }
+
+uint Universe::count_sig_objects()
+{
+  uint count = 0;
+  
+  for (std::list<Object *>::iterator obj = _object_list.begin(); obj != _object_list.end(); obj++)
+  {
+    if((*obj)->mass > mass_cutoff)
+    count++;
+  }
+
+  return count;
+}
+
+template <typename T> bool PComp(const T * const & a, const T * const & b)
+{
+     return (*a).mass > (*b).mass;
+}
+
+void Universe::sort_objects()
+{
+  
+  _object_list.sort(PComp<lib::Object>);
+
+}
+
 
 } // namespace lib
 } // namespace amethyst
