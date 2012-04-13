@@ -100,43 +100,160 @@ void dumpVectorHDF5(const std::string &filename, const std::vector<Cartesian_Vec
   return;
 }
 
-
-void placement_SimpleOrbit(const Object &primary, Object &satellite, double distance)
+void gen_model_solarsystem(Universe &uni)
 {
-  satellite.location = primary.location;
-  satellite.location.x += distance;
+    lib::Object *sol, *earth, *moon, *merc, *v, *p1, *p2, *mars, *jup, *sat, *ura, *nep;
+  sol = uni.object_find("Sol");
+  if(sol != NULL)
+  {
+    sol->mass = 1.9891e30;  // AIP PDR 2002
+    sol->location.clear();
+    sol->velocity.clear();
+  }
 
-  satellite.velocity = primary.velocity;
-  double grav_acc = G*primary.mass/pow(distance,2);
-  satellite.velocity.y += sqrt(grav_acc * distance);
-}
+  earth = uni.object_find("Earth");
+  earth->mass = 5.9743e24;  // PDR 2002
+  earth->location.clear();
+  earth->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *earth, 149.598e9);
 
+  moon = uni.object_find("Moon");
+  moon->mass = 7.35e22;    // PDR 2002
+  //c->mass = 1;
+  moon->location.clear();
+  moon->velocity.clear();
+  lib::placement_SimpleOrbit(*earth, *moon, 384.400e6);
 
-void placement_L1(const Object &primary, const Object &satellite, Object &L1)
-{
+  p1 = uni.object_find("S-E L1 Probe");
+  p1->mass = 1;
+  lib::placement_L1(*sol, *earth, *p1);
 
-  /// Find Location of L1 Point
-  Cartesian_Vector to_body1 = primary.location - satellite.location;
-  double distance = to_body1.magnitude();
-  to_body1.normalize();
+  uint r_step[3] = {3,3,3};
+  uint v_step[3] = {3,3,3};
+  int offset[3] = {-1,-1,-1};
 
-  double distanceL1 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
-  L1.location = satellite.location + to_body1*distanceL1;
+  p2 = uni.object_find("E-M L1 Probe");
+  p2->mass = 1;
+  lib::placement_L1(*earth, *moon, *p2);
 
-  /// Find Velocity of L1 Point
-  double disL1ratio = distanceL1/distance;
-  L1.velocity = (primary.velocity - satellite.velocity)*disL1ratio + satellite.velocity;
-  //L1.velocity = primary.velocity*(-disL1ratio) + satellite.velocity*(1.0+disL1ratio);
+  merc = uni.object_find("Mercury");
+  merc->mass = 3.3038e23;    // PDR 2002
+  //m->mass = 1;
+  merc->location.clear();
+  merc->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *merc, 57.909e9);
 
-}
+  v = uni.object_find("Venus");
+  v->mass = 4.8691e24;    // PDR 2002
+  //v->mass = 1;
+  v->location.clear();
+  v->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *v, 108.209e9);
 
-double distance_L1(const Object &primary, const Object &satellite, Object &probe)
-{
-  Object L1;
-  placement_L1(primary, satellite, L1);
+  mars = uni.object_find("Mars");
+  mars->mass = 6.4164e23;    // PDR 2002
+  //mars->mass = 1;
+  mars->location.clear();
+  mars->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *mars, 227.939e9);
+
+  jup = uni.object_find("Jupiter");
+  jup->mass = 1.8992e27;    // PDR 2002
+  //j->mass = 1;
+  jup->location.clear();
+  jup->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *jup, 778.298e9);
+
+  sat = uni.object_find("Saturn");
+  //sat->mass = 1;
+  sat->location.clear();
+  sat->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *sat, 1429.394e9);
+
+  ura = uni.object_find("Uranus");
+  //ura->mass = 1;
+  ura->location.clear();
+  ura->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *ura, 2875.039e9);
+
+  nep = uni.object_find("Neptune");
+  //nep->mass = 1;
+  nep->location.clear();
+  nep->velocity.clear();
+  lib::placement_SimpleOrbit(*sol, *nep, 4504.450e9);
+
+  Object *solmercl1 = uni.object_find("S-Merc L1 Probe");
+  lib::placement_L1(*sol, *merc, *solmercl1);
+
+  Object *solmarsl1 = uni.object_find("S-Mars L1 Probe");
+  lib::placement_L1(*sol, *mars, *solmarsl1);
   
-  return (probe.location - L1.location).magnitude();
 }
+
+
+void gen_object_variation(Universe &uni,
+                          const Object &source,
+                          const Cartesian_Vector &r_stepsize,
+                          const Cartesian_Vector &v_stepsize,
+                          const uint r_steps[3],
+                          const uint v_steps[3],
+                          const int  r_stepoff[3],
+                          const int  v_stepoff[3])
+{
+  const uint x_steps = r_steps[0];
+  const uint y_steps = r_steps[1];
+  const uint z_steps = r_steps[2];
+
+  const uint vx_steps = v_steps[0];
+  const uint vy_steps = v_steps[1];
+  const uint vz_steps = v_steps[2];
+  
+  for(int xi = 0; xi < x_steps; xi++)
+  {
+    double x = source.location.x + double(xi+r_stepoff[0])*r_stepsize.x;
+    for(int yi = 0; yi < y_steps; yi++)
+    {
+      double y = source.location.y + double(yi+r_stepoff[1])*r_stepsize.y;
+      for(int zi = 0; zi < z_steps; zi++)
+      {
+        double z = source.location.z + double(zi+r_stepoff[2])*r_stepsize.z;
+        for(int vxi = 0; vxi < vx_steps; vxi++)
+        {
+          double vx = source.velocity.x + double(vxi+v_stepoff[0])*v_stepsize.x;
+          for(int vyi = 0; vyi < vy_steps; vyi++)
+          {
+            double vy = source.velocity.y + double(vyi+v_stepoff[1])*v_stepsize.y;
+            for(int vzi = 0; vzi < vz_steps; vzi++)
+            {
+              double vz = source.velocity.z + double(vzi+v_stepoff[2])*v_stepsize.z;
+
+              // Create new object
+              Object *obj = new Object(source);
+
+              // Copy Source Data
+              //(*Object) = source;
+
+              obj->location.x = x;
+              obj->location.y = y;
+              obj->location.z = z;
+
+              obj->velocity.x = vx;
+              obj->velocity.y = vy;
+              obj->velocity.z = vz;
+              obj->name = std::string("L");
+
+              uni.object_add(obj);
+              
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+}
+
 
 } // namespace lib
 } // namespace amethyst

@@ -21,7 +21,8 @@
 #include "scene_xml.h"
 #include "config_xml.h"
 #include "cl.h"
-#include "utility.h"
+#include "lib/utility.h"
+#include "physics.h"
 #include "science/gravpotential.h"
 
 #include <iostream>
@@ -182,62 +183,21 @@ int main(int argc, char* argv[])
         throw e;
     }
 
-    // FIXME - Temporary Override for RK4 Testing
-    lib::Object *a, *b, *c, *m, *v, *p1, *p2, *mars, *j;
-    a = Global.universe.object_find("Sol");
-    a->mass = 1.9891e30;  // AIP PDR 2002
-    a->location.clear();
-    a->velocity.clear();
+    lib::gen_model_solarsystem(Global.universe);
 
-    b = Global.universe.object_find("Earth");
-    b->mass = 5.9743e24;  // PDR 2002
-    b->location.clear();
-    b->velocity.clear();
-    lib::placement_SimpleOrbit(*a, *b, 149.598e9);
+    lib::Object *p1 = Global.universe.object_find("S-E L1 Probe");
 
-    c = Global.universe.object_find("Moon");
-    //c->mass = 7.35e22;    // PDR 2002
-    c->mass = 1;
-    c->location.clear();
-    c->velocity.clear();
-    lib::placement_SimpleOrbit(*b, *c, 384.400e6);
+    uint r_step[3] = {3,3,3};
+    uint v_step[3] = {3,3,3};
+    int offset[3] = {-1,-1,-1};
 
-    p1 = Global.universe.object_find("SE Lagrange Probe A");
-    p1->mass = 1;
-    lib::placement_L1(*a, *b, *p1);
+    lib::gen_object_variation(Global.universe,
+                         (*p1),
+                         lib::Cartesian_Vector(100.0, 100.0, 100.0),
+                         lib::Cartesian_Vector(100.0, 100.0, 100.0),
+                         r_step, v_step,
+                         offset, offset);
 
-    p2 = Global.universe.object_find("EM Lagrange Probe B");
-    p2->mass = 1;
-    //lib::placement_L1(*b, *c, *p2);
-    
-    m = Global.universe.object_find("Mercury");
-    //m->mass = 1;    // PDR 2002
-    m->mass = 1;
-    m->location.clear();
-    m->velocity.clear();
-    lib::placement_SimpleOrbit(*a, *m, 57.909e9);
-
-    v = Global.universe.object_find("Venus");
-    //m->mass = 1;    // PDR 2002
-    v->mass = 1;
-    v->location.clear();
-    v->velocity.clear();
-    lib::placement_SimpleOrbit(*a, *v, 108.209e9);
-
-    mars = Global.universe.object_find("Mars");
-    //m->mass = 1;    // PDR 2002
-    mars->mass = 1;
-    mars->location.clear();
-    mars->velocity.clear();
-    lib::placement_SimpleOrbit(*a, *mars, 227.939e9);
-    
-    j = Global.universe.object_find("Jupiter");
-    //m->mass = 1;    // PDR 2002
-    j->mass = 1;
-    j->location.clear();
-    j->velocity.clear();
-    lib::placement_SimpleOrbit(*a, *j, 778.298e9);
-    
     // Send Objects to GPU
     std::cout << "Size of Universe" << Global.universe.object_count() << std::endl;
     Global.universe.cl_setup();

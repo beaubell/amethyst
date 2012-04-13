@@ -12,6 +12,7 @@
 
 #include "vector.h"
 #include "object.h"
+#include "universe.h"
 
 #include <vector>
 
@@ -27,9 +28,15 @@ namespace lib {
 
   void dumpVectorHDF5(const std::string &filename, const std::vector<Cartesian_Vector> &vec_in);
 
-  void placement_SimpleOrbit(const Object &primary, Object &satellite, double distance);
-  void placement_L1(const Object &primary, const Object &satellite, Object &L1);
-  double distance_L1(const Object &primary, const Object &satellite, Object &probe);
+  void gen_model_solarsystem(Universe &uni);
+  void gen_object_variation(Universe &uni,
+                            const Object &source,
+                            const Cartesian_Vector &r_stepsize,
+                            const Cartesian_Vector &v_stepsize,
+                            const uint r_steps[3],
+                            const uint v_steps[3],
+                            const int  r_stepoff[3],
+                            const int  v_stepoff[3]);
 
 } // namespace lib
 } // namespace amethyst

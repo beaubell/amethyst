@@ -1,2 +1,8 @@
 - Reimplement modules as non-modules.
 - Implement relative spacial movement display.
+
+Interplanetary Transport Network
+- Implement function that generates a set of "test objects" at various
+  positions and velocities relative to the lagrange points.
+- Output initial conditions and history to HDF5 file
+- CL function that determines test object proximity to L-points.

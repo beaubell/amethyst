@@ -70,6 +70,10 @@ namespace lib {
                                         const Cartesian_Vector &v,
                                         double modifier);
 
+  void placement_SimpleOrbit(const Object &primary, Object &satellite, double distance);
+  void placement_L1(const Object &primary, const Object &satellite, Object &L1);
+  double distance_L1(const Object &primary, const Object &satellite, Object &probe);
+
 } // namespace lib
 } // namespace amethyst
 
