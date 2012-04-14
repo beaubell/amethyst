@@ -40,15 +40,9 @@ class Input
     typedef boost::signals2::signal<void ()> Signal_kb;
     typedef boost::signals2::signal<void (signed short)> Signal_axis;
 
-    Signal_kb sig_kb_space;
-    Signal_kb sig_kb_a;
-    Signal_kb sig_kb_e;
-    Signal_kb sig_kb_d;
-    Signal_kb sig_kb_q;
-    
-    Signal_kb sig_kb_w;
-    Signal_kb sig_kb_s;
-    Signal_kb sig_kb_z;
+    Signal_kb sig_kb[SDLK_LAST];
+    Signal_kb sig_kb_shift[SDLK_LAST];
+    Signal_kb sig_kb_ctl[SDLK_LAST];
 
    private:
     /// Process Keyboard Key Down/Up

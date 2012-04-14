@@ -79,8 +79,15 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     
     hud_setup();
 
-    // Connect space bar to pause.
-    input->sig_kb_space.connect(bind(&Amethyst_GL::pause_toggle,this));
+    // Setup Keyboard Shortcuts
+    input->sig_kb[SDLK_SPACE].connect(bind(&Amethyst_GL::pause_toggle,this));
+    input->sig_kb[SDLK_g].connect(bind(&Universe::toggle_gravity, &Global.universe));
+    input->sig_kb[SDLK_4].connect(bind(&Universe::toggle_4thorder, &Global.universe));
+    
+    // Setup keyboard shortcuts
+    input->sig_kb[SDLK_n].connect(scene_control_ship_next);
+    input->sig_kb[SDLK_b].connect(scene_select_object_next);
+    input->sig_kb[SDLK_t].connect(scene_target_object_next);
 }
 
 

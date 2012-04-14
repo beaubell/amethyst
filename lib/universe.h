@@ -36,6 +36,9 @@ class Universe
 
     std::size_t object_count();
 
+    void toggle_gravity();
+    void toggle_4thorder();
+
     void iterate(const double &time, uint stride);
     void iterate(const double &dtime,
                  const uint stride,

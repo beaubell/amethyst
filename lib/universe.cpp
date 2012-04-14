@@ -81,6 +81,23 @@ std::size_t Universe::object_count()
 }
 
 
+void Universe::toggle_gravity()
+{
+  do_gravity_calc = !do_gravity_calc;
+
+  std::cout << "Gravity " << std::string((do_gravity_calc)?"Activated":"Deactivated") << std::string(".") << std::endl;
+}
+
+
+void Universe::toggle_4thorder()
+{ 
+  gpu_rk4_4thorder = !gpu_rk4_4thorder;
+
+  std::cout << "Integration switched to " << std::string((gpu_rk4_4thorder)?"4th":"1st") << std::string(" order.") << std::endl;
+ 
+}
+
+
 void Universe::iterate(const double &dtime,
                        uint stride)
 {

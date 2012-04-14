@@ -122,108 +122,26 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
             kb_rshift = true;
             break;
 
-        case SDLK_KP_PLUS:
-//          level++;
-//          if (level > 5) level=5;
-            break;
-
-        case SDLK_KP_MINUS:
-//          level--;
-//          if (level < 0) level=0;
-            break;
-        case SDLK_SPACE:
+        default:
         {
-            sig_kb_space();
-            break;
-        }
-        case SDLK_a:
-        {
-            /// Ctrl A
-            if(kb_lctrl || kb_rctrl)
+          if (kb_lctrl || kb_rctrl)
+            sig_kb_ctl[key.keysym.sym]();
+          else if (kb_lshift || kb_rshift)
+            sig_kb_shift[key.keysym.sym]();
+          else
+          {
+            if(sig_kb[key.keysym.sym].num_slots() != 0)
             {
-                std::string log = "ALT CTRL Works!";
-                Global.log.add(log);
+              sig_kb[key.keysym.sym]();
             }
             else
-              sig_kb_a();
-            break;
+            {
+              std::string log = "keystroke, " + boost::lexical_cast<std::string>(key.keysym.sym) + ", is not connected to an operation.";
+              Global.log.add(log);
+            }
+          }
+          break;
         }
-        case SDLK_b:
-            print_trace();
-            break;
-
-        case SDLK_c:
-            scene_control_ship_next();
-            break;
-
-        case SDLK_d:
-            //scene_xml_write("Dump");
-            sig_kb_d();
-            break;
-
-        case SDLK_e:
-            //scene_select_object_next();
-            sig_kb_e();
-            break;
-
-        case SDLK_f:
-        {
-            //if (glWindowPosSupported)
-            //    if (glWindowPosEnabled)
-            //        glWindowPosEnabled = false;
-            //    else
-            //        glWindowPosEnabled = true;
-            scene_select_object_next();
-            break;
-        }
-
-        case SDLK_g: // Toggle gravity on and off
-            Global.universe.do_gravity_calc = !Global.universe.do_gravity_calc;
-            break;
-
-        case SDLK_n:
-            scene_target_object_next();
-            break;
-
-        case SDLK_p:
-            //print_object(Global.net_ship[0]);
-            break;
-
-        case SDLK_q:
-        {
-            sig_kb_q();
-            break;
-        }
-        case SDLK_s: // Toggle shaders on and off
-        {
-            //if (glShaderObjectsSupported)
-            //    if (glShaderObjectsEnabled)
-            //    {
-            //        glShaderObjectsEnabled = false;
-            //        glUseProgram(0);
-            //    }
-            //    else
-            //    {
-            //        glShaderObjectsEnabled = true;
-            //        glUseProgram(Global.shaderProgram);
-            //    }
-            sig_kb_s();
-            break;
-        }
-        case SDLK_w:
-        {
-            sig_kb_w();
-            break;
-        }
-        case SDLK_z:
-        {
-            sig_kb_z();
-            break;
-        }
-        default:
-             std::string log = "Unhandled keystroke: " + boost::lexical_cast<std::string>(key.keysym.sym);
-             Global.log.add(log);
-             break;
     } // switch
 
     return 0;
