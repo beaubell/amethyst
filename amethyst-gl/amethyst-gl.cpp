@@ -33,6 +33,7 @@
 #include "scene.h"
 #include "timer.h"
 #include "hud.h"
+#include "physics.h"
 
 #include "file.h"
 #include "input.h"
@@ -112,6 +113,17 @@ void Amethyst_GL::main_loop()
       //paused = true;
     }
 
+    // Place L-points at their actual spots.
+    Object *sol = universe.object_find("Sol");
+    Object *earth = universe.object_find("Earth");
+    Object *solearthl1 = universe.object_find("S-E L1");
+    Object *solearthl2 = universe.object_find("S-E L2");
+    if (sol != NULL && earth != NULL && solearthl1 != NULL && solearthl2 != NULL)
+    {
+      lib::placement_L1(*sol, *earth, *solearthl1);
+      lib::placement_L2(*sol, *earth, *solearthl2);
+    }
+    
     /* update the screen */
     render();
 

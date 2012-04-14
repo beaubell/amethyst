@@ -193,6 +193,26 @@ void placement_L1(const Object &primary, const Object &satellite, Object &L1)
 
 }
 
+
+void placement_L2(const Object &primary, const Object &satellite, Object &L2)
+{
+
+  /// Find Location of L1 Point
+  Cartesian_Vector to_body1 = primary.location - satellite.location;
+  double distance = to_body1.magnitude();
+  to_body1.normalize();
+
+  double distanceL2 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
+  L2.location = satellite.location - to_body1*distanceL2;
+
+  /// Find Velocity of L1 Point
+  double disL2ratio = distanceL2/distance;
+  //L2.velocity = (primary.velocity - satellite.velocity)*disL2ratio + satellite.velocity;
+  L2.velocity = primary.velocity*(-disL2ratio) + satellite.velocity*(1.0+disL2ratio);
+
+}
+
+
 double distance_L1(const Object &primary, const Object &satellite, Object &probe)
 {
   Object L1;
@@ -200,7 +220,15 @@ double distance_L1(const Object &primary, const Object &satellite, Object &probe
 
   return (probe.location - L1.location).magnitude();
 }
-  
+
+
+double distance_L2(const Object &primary, const Object &satellite, Object &probe)
+{
+  Object L2;
+  placement_L2(primary, satellite, L2);
+
+  return (probe.location - L2.location).magnitude();
+}
 
 } // namespace lib
 } // namespace amethyst

@@ -72,6 +72,7 @@ namespace lib {
 
   void placement_SimpleOrbit(const Object &primary, Object &satellite, double distance);
   void placement_L1(const Object &primary, const Object &satellite, Object &L1);
+  void placement_L2(const Object &primary, const Object &satellite, Object &L2);
   double distance_L1(const Object &primary, const Object &satellite, Object &probe);
 
 } // namespace lib

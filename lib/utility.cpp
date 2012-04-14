@@ -130,9 +130,18 @@ void gen_model_solarsystem(Universe &uni)
   lib::placement_L1(*sol, *earth, *p1);
   //p1->location.x = p1->location.x + 1e6;
 
+  Object * SEl2 = uni.object_find("S-E L2 Probe");
+  SEl2->mass = 1;
+  lib::placement_L2(*sol, *earth, *SEl2);
+
   p2 = uni.object_find("E-M L1 Probe");
   p2->mass = 1;
   lib::placement_L1(*earth, *moon, *p2);
+
+  print_object(*p1);
+  print_object(*SEl2);
+
+  
 
   merc = uni.object_find("Mercury");
   //merc->mass = 3.3038e23;    // PDR 2002
@@ -185,6 +194,19 @@ void gen_model_solarsystem(Universe &uni)
 
   Object *solmarsl1 = uni.object_find("S-Mars L1 Probe");
   lib::placement_L1(*sol, *mars, *solmarsl1);
+
+
+  uni.object_del(merc);
+  uni.object_del(v);
+  uni.object_del(mars);
+  uni.object_del(moon);
+  uni.object_del(p2);
+  uni.object_del(jup);
+  uni.object_del(sat);
+  uni.object_del(nep);
+  uni.object_del(ura);
+  uni.object_del(solmercl1);
+  uni.object_del(solmarsl1);
   
 }
 
