@@ -14,6 +14,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <strstream>
 #include <vector>
 #include <cmath>
 
@@ -118,8 +119,8 @@ void gen_model_solarsystem(Universe &uni)
   lib::placement_SimpleOrbit(*sol, *earth, 149.598e9);
 
   moon = uni.object_find("Moon");
-  moon->mass = 7.35e22;    // PDR 2002
-  //c->mass = 1;
+  //moon->mass = 7.35e22;    // PDR 2002
+  moon->mass = 1;
   moon->location.clear();
   moon->velocity.clear();
   lib::placement_SimpleOrbit(*earth, *moon, 384.400e6);
@@ -127,57 +128,54 @@ void gen_model_solarsystem(Universe &uni)
   p1 = uni.object_find("S-E L1 Probe");
   p1->mass = 1;
   lib::placement_L1(*sol, *earth, *p1);
-
-  uint r_step[3] = {3,3,3};
-  uint v_step[3] = {3,3,3};
-  int offset[3] = {-1,-1,-1};
+  //p1->location.x = p1->location.x + 1e6;
 
   p2 = uni.object_find("E-M L1 Probe");
   p2->mass = 1;
   lib::placement_L1(*earth, *moon, *p2);
 
   merc = uni.object_find("Mercury");
-  merc->mass = 3.3038e23;    // PDR 2002
-  //m->mass = 1;
+  //merc->mass = 3.3038e23;    // PDR 2002
+  merc->mass = 1;
   merc->location.clear();
   merc->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *merc, 57.909e9);
 
   v = uni.object_find("Venus");
-  v->mass = 4.8691e24;    // PDR 2002
-  //v->mass = 1;
+  //v->mass = 4.8691e24;    // PDR 2002
+  v->mass = 1;
   v->location.clear();
   v->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *v, 108.209e9);
 
   mars = uni.object_find("Mars");
-  mars->mass = 6.4164e23;    // PDR 2002
-  //mars->mass = 1;
+  //mars->mass = 6.4164e23;    // PDR 2002
+  mars->mass = 1;
   mars->location.clear();
   mars->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *mars, 227.939e9);
 
   jup = uni.object_find("Jupiter");
-  jup->mass = 1.8992e27;    // PDR 2002
-  //j->mass = 1;
+  //jup->mass = 1.8992e27;    // PDR 2002
+  jup->mass = 1;
   jup->location.clear();
   jup->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *jup, 778.298e9);
 
   sat = uni.object_find("Saturn");
-  //sat->mass = 1;
+  sat->mass = 1;
   sat->location.clear();
   sat->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *sat, 1429.394e9);
 
   ura = uni.object_find("Uranus");
-  //ura->mass = 1;
+  ura->mass = 1;
   ura->location.clear();
   ura->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *ura, 2875.039e9);
 
   nep = uni.object_find("Neptune");
-  //nep->mass = 1;
+  nep->mass = 1;
   nep->location.clear();
   nep->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *nep, 4504.450e9);
@@ -240,7 +238,11 @@ void gen_object_variation(Universe &uni,
               obj->velocity.x = vx;
               obj->velocity.y = vy;
               obj->velocity.z = vz;
-              obj->name = std::string("L");
+              std::strstream ss;
+              std::string str;
+              ss << xi << "-" << yi << "-" << zi << ":" << vxi << "-" << vyi << "-" << vzi;
+              ss >> str;
+              obj->name = str;
 
               uni.object_add(obj);
               

@@ -134,7 +134,7 @@ namespace lib {
        {
            count++;
            count1++;
-           universe.iterate(.0001);
+           universe.iterate(.0001, 1);
            if (count1 > 100000) { printf("."); fflush (stdout); count1 = 0;};
            //if (count > 2500000) break;
            if (count >= 1000000) break;

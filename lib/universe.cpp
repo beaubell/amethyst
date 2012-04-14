@@ -74,20 +74,39 @@ Object* Universe::object_find(const std::string &name)
   return NULL;
 }
 
+
 std::size_t Universe::object_count()
 {
   return _object_list.size();
 }
 
 
-void Universe::iterate(const double &dtime)
+void Universe::iterate(const double &dtime,
+                       uint stride)
 {
+  std::vector<cl::Event> wait_queue, new_events;
+
+  iterate(dtime, stride, wait_queue, new_events);
+}
+
+
+void Universe::iterate(const double &dtime,
+                       uint stride,
+                       std::vector<cl::Event> wait_queue,
+                       std::vector<cl::Event> &new_events
+                       )
+{
+  new_events.clear();
+
   if (!_using_cl)
     iterate_cpu(dtime);
   else
   {
-    std::vector<cl::Event> wait_queue, new_events;
-    iterate_gpu(dtime, wait_queue, new_events);
+    for (uint i = 0; i < stride; i++)
+    {
+      iterate_gpu(dtime, wait_queue, new_events);
+      wait_queue = new_events;
+    }
 
     queue_rk4.finish();
     // Copy data back to linked list (XXX - Temporary - FIXME)
@@ -105,8 +124,8 @@ void Universe::iterate_gpu(const double &dtime,
 
   unsigned int num_objects = object_count();
 
-  std::cout << ".";
-  std::cout.flush();
+  //std::cout << ".";
+  //std::cout.flush();
 
   // Make K1
   iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _current, _k1, wait_queue, new_events);
@@ -533,6 +552,7 @@ void Universe::cl_integrate()
   std::vector<cl::Event> wait_queue, new_events;
 
   const double dtime = 86400.0; //seconds (1 day)
+  const uint   stride = 1;
 
   // Start timer.  Reports elapsed time when destroyed.
   boost::timer::auto_cpu_timer t;
@@ -560,7 +580,7 @@ void Universe::cl_integrate()
     cl::Event cpvel_event, cppos_event;
     
     // Iterate Engine
-    iterate_gpu(dtime, wait_queue, new_events);
+    iterate(dtime, stride, wait_queue, new_events);
     wait_queue = new_events;
 
     // Copy buffer to ith row in history

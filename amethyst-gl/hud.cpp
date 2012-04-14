@@ -383,35 +383,37 @@ static void hud_radials()
   }
 
   lib::Object *earth = Global.universe.object_find("Earth");
-  if (earth != NULL)
+  lib::Object *probe = Global.universe.object_find("S-E L1 Probe");
+  lib::Object *sol = Global.universe.object_find("Sol");
+
+  if (probe != NULL && sol != NULL && earth != NULL)
   {
+    lib::Cartesian_Vector diff = earth->location - sol->location;
     unsigned int i = 365;
     radialvectors[i][0][0] = 0;
     radialvectors[i][0][1] = 0;
     radialvectors[i][0][2] = 0;
-    radialvectors[i][1][0] = earth->location.x;
-    radialvectors[i][1][1] = earth->location.y;
+    radialvectors[i][1][0] = diff.x;
+    radialvectors[i][1][1] = diff.y;
     radialvectors[i][1][2] = 0;
 
     radialcolors[i][0][0] = radialcolors[i][1][0] = 1.0f;
     radialcolors[i][0][1] = radialcolors[i][1][1] = 1.0f;
     radialcolors[i][0][2] = radialcolors[i][1][2] = 1.0f;
-  }
 
-  lib::Object *probe = Global.universe.object_find("SE Lagrange Probe A");
-  lib::Object *sol = Global.universe.object_find("Sol");
-  if (probe != NULL && sol != NULL && earth != NULL)
-  {
+ 
     lib::Object L1_exact;
     lib::placement_L1(*sol, *earth, L1_exact);
 
-    unsigned int i = 366;
-    radialvectors[i][0][0] = L1_exact.location.x;
-    radialvectors[i][0][1] = L1_exact.location.y;
-    radialvectors[i][0][2] = L1_exact.location.z;
-    radialvectors[i][1][0] = probe->location.x;
-    radialvectors[i][1][1] = probe->location.y;
-    radialvectors[i][1][2] = probe->location.z;
+    lib::Cartesian_Vector L1_diff = L1_exact.location - sol->location;
+    lib::Cartesian_Vector probe_diff = probe->location - sol->location;
+    i = 366;
+    radialvectors[i][0][0] = L1_diff.x;
+    radialvectors[i][0][1] = L1_diff.y;
+    radialvectors[i][0][2] = L1_diff.z;
+    radialvectors[i][1][0] = probe_diff.x;
+    radialvectors[i][1][1] = probe_diff.y;
+    radialvectors[i][1][2] = probe_diff.z;
 
     radialcolors[i][0][0] = radialcolors[i][1][0] = 1.0f;
     radialcolors[i][0][1] = radialcolors[i][1][1] = 1.0f;
@@ -431,7 +433,15 @@ static void hud_radials()
     temp2.clear();
     temp << Global.simulation_time;
     temp >> temp2;
-    text =             "Simulation Time  : " + temp2;
+
+    double days = Global.simulation_time / (86400.0);
+    std::string days_text;
+    temp.clear();
+    temp << days;
+    temp >> days_text;
+    //days_text += temp2;
+
+    text =             "Simulation Time  : " + temp2 + "   Days: " + days_text;
     glWindowPos2i(10, 93);
     fonts[0]->Render(text.c_str());
   }

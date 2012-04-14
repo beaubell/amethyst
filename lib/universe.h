@@ -36,7 +36,12 @@ class Universe
 
     std::size_t object_count();
 
-    void iterate(const double &time);
+    void iterate(const double &time, uint stride);
+    void iterate(const double &dtime,
+                 const uint stride,
+                 std::vector<cl::Event> wait_queue,
+                 std::vector<cl::Event> &new_events);
+    
     void iterate_gpu(const double &time,
                      std::vector<cl::Event> wait_queue,
                      std::vector<cl::Event> &new_events);  // Events_out

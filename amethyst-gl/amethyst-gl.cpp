@@ -86,6 +86,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
 void Amethyst_GL::main_loop()
 {
     Universe &universe = Global.universe;
+    uint stride = 60;
+    double simulation_interval = 30.0;
 
     while(1) {
     Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
@@ -102,10 +104,10 @@ void Amethyst_GL::main_loop()
 
     if (Global.time_interval > 0 && !paused)
     {
-      double simulation_interval = Global.time_interval / 1000.0 * time_scalar;
-      universe.iterate(simulation_interval);
+      //double simulation_interval = Global.time_interval / 1000.0 * time_scalar;
+      universe.iterate(simulation_interval, stride);
+      Global.simulation_time += double(stride) * simulation_interval;
 
-      Global.simulation_time += simulation_interval;
       //universe.cl_integrate();
       //paused = true;
     }

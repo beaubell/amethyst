@@ -187,16 +187,17 @@ int main(int argc, char* argv[])
 
     lib::Object *p1 = Global.universe.object_find("S-E L1 Probe");
 
-    uint r_step[3] = {3,3,3};
-    uint v_step[3] = {3,3,3};
-    int offset[3] = {-1,-1,-1};
+    uint r_step[3] = {1,1,1};
+    uint v_step[3] = {5,5,1};
+    int r_offset[3] = {0,0,0};
+    int v_offset[3] = {0,0,0};
 
     lib::gen_object_variation(Global.universe,
                          (*p1),
                          lib::Cartesian_Vector(100.0, 100.0, 100.0),
-                         lib::Cartesian_Vector(100.0, 100.0, 100.0),
+                         lib::Cartesian_Vector(1.0, 1.0, 1.0),
                          r_step, v_step,
-                         offset, offset);
+                         r_offset, v_offset);
 
     // Send Objects to GPU
     std::cout << "Size of Universe" << Global.universe.object_count() << std::endl;
