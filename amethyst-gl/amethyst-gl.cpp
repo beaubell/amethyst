@@ -15,10 +15,6 @@
 #include <config.h>
 #endif
 
-#include <iostream>
-//#include <cstdlib>
-//#include <stdexcept>
-
 #include "amethyst-gl.h"
 #include "debug.h"
 #include "global.h"
@@ -39,6 +35,9 @@
 #include "file.h"
 #include "input.h"
 
+#include <string>
+#include <boost/lexical_cast.hpp>
+
 #define TICK_INTERVAL    10
 
 
@@ -49,57 +48,69 @@ namespace client
 
 
 Amethyst_GL::Amethyst_GL(const std::string &path_root)
-    : ui("/spacefri.ttf"), //FIXME make not static
-      input(new Input(*this)),
-      manifest_(),
-      connection(manifest_),
-      paused(true),
-      time_scalar(100000.0f)
+  : ui("/spacefri.ttf"), //FIXME make not static
+    input(new Input(*this)),
+    time_scalar(100000.0f),
+    manifest_(),
+    connection(manifest_),
+    paused(true),
+    stride(60),
+    simulation_interval(60),
+    show_ui(true),
+    show_hud(true)
 {
 
-    /// DONT QUITE START THE NETWORK THREAD JUST YET
-    //connection.start("127.0.0.1", "23232", "beau", "test");
-    //net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
+  /// DONT QUITE START THE NETWORK THREAD JUST YET
+  //connection.start("127.0.0.1", "23232", "beau", "test");
+  //net_thread = new boost::thread(boost::bind(&amethyst_gl::start_net, this));
 
-    /// Create and add FPS widget to UI.
-    //UI_Window_ptr win_fps(new UIW_FPS(ui));
-    //ui.add(win_fps);
+  /// Create and add FPS widget to UI.
+  //UI_Window_ptr win_fps(new UIW_FPS(ui));
+  //ui.add(win_fps);
 
-    /// Load Test UI modules and start it
-    //if (module_manager.load("uiw_test"))
-    //    module_manager.start("uiw_test", *this);
+  /// Load Test UI modules and start it
+  //if (module_manager.load("uiw_test"))
+  //    module_manager.start("uiw_test", *this);
 
-    if  (module_manager.load("uiw_fps"))
-        module_manager.start("uiw_fps", *this);
+  if  (module_manager.load("uiw_fps"))
+      module_manager.start("uiw_fps", *this);
 
-    if  (module_manager.load("uiw_log"))
-        module_manager.start("uiw_log", *this);
+  if  (module_manager.load("uiw_log"))
+      module_manager.start("uiw_log", *this);
 
-    if  (module_manager.load("uiw_debug"))
-        module_manager.start("uiw_debug", *this);
-    
-    hud_setup();
+  if  (module_manager.load("uiw_debug"))
+      module_manager.start("uiw_debug", *this);
 
-    // Setup Keyboard Shortcuts
-    input->sig_kb[SDLK_SPACE].connect(bind(&Amethyst_GL::pause_toggle,this));
-    input->sig_kb[SDLK_g].connect(bind(&Universe::toggle_gravity, &Global.universe));
-    input->sig_kb[SDLK_4].connect(bind(&Universe::toggle_4thorder, &Global.universe));
-    
-    // Setup keyboard shortcuts
-    input->sig_kb[SDLK_n].connect(scene_control_ship_next);
-    input->sig_kb[SDLK_b].connect(scene_select_object_next);
-    input->sig_kb[SDLK_t].connect(scene_target_object_next);
-    input->sig_kb[SDLK_p].connect(bind(scene_xml_write,std::string("dump")));
+  hud_setup();
+
+  /// Setup Keyboard Shortcuts
+  // Integration Control
+  input->sig_kb[SDLK_SPACE].connect(bind(&Amethyst_GL::pause_toggle,this));
+  input->sig_kb[SDLK_g].connect(bind(&Universe::toggle_gravity, &Global.universe));
+  input->sig_kb[SDLK_4].connect(bind(&Universe::toggle_4thorder, &Global.universe));
+  input->sig_kb[SDLK_EQUALS].connect(bind(&Amethyst_GL::simint_inc,this));
+  input->sig_kb[SDLK_MINUS].connect(bind(&Amethyst_GL::simint_dec,this));
+  input->sig_kb[SDLK_RIGHTBRACKET].connect(bind(&Amethyst_GL::stride_inc,this));
+  input->sig_kb[SDLK_LEFTBRACKET].connect(bind(&Amethyst_GL::stride_dec,this));
+
+  // Targeting Control
+  input->sig_kb[SDLK_n].connect(scene_control_ship_next);
+  input->sig_kb[SDLK_b].connect(scene_select_object_next);
+  input->sig_kb[SDLK_t].connect(scene_target_object_next);
+  input->sig_kb[SDLK_p].connect(bind(scene_xml_write,std::string("dump")));
+
+  // GUI Control
+  input->sig_kb[SDLK_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
+  input->sig_kb[SDLK_F2].connect(bind(&Amethyst_GL::ui_toggle,this));
 }
 
 
 void Amethyst_GL::main_loop()
 {
-    Universe &universe = Global.universe;
-    uint stride = 60;
-    double simulation_interval = 30.0;
+  Universe &universe = Global.universe;
 
-    while(1) {
+  while(1)
+  {
     Global.next_time = SDL_GetTicks() + TICK_INTERVAL;
 
     // Process Inputs
@@ -138,43 +149,93 @@ void Amethyst_GL::main_loop()
 
     GLenum error = glGetError();
     if (error)
-      std::cout << "glGetError: " << error << std::endl;
+    {
+      std::string log_msg =  "OpenGL Error Detected: " + boost::lexical_cast<std::string>(error);
+      Global.log.add(log_msg);
     }
+  }
 }
 
 
 void Amethyst_GL::render()
 {
-    // Clear the window with current clearing color
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // Clear the window with current clearing color
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    scene_render();
+  scene_render();
 
-    sig_render_scene(Global.obj_view->location);
-    // Display HUD XXX being replaced.
+  sig_render_scene(Global.obj_view->location);
+  // Display HUD XXX being replaced.
+
+  if(show_hud)
     hud_render();
 
+  if(show_ui)
     ui.render();
 
-    // Do the buffer Swap
-    SDL_GL_SwapBuffers();
+  // Do the buffer Swap
+  SDL_GL_SwapBuffers();
 }
 
 
 void Amethyst_GL::start_net()
 {
-	//namespace cout = std::cout;
-	std::cout << "Net: Handing over control to Netwrok Thread...\n";
-	std::cout << "Thread: Starting Network Thread..." << std::endl;
-    connection.run();
-	std::cout << "Thread: Network Thread Terminating, Nothing to do..." << std::endl;
+  Global.log.add("Net: Handing over control to Netwrok Thread...");
+  Global.log.add("Thread: Starting Network Thread...");
+  connection.run();
+  Global.log.add("Thread: Network Thread Terminating, Nothing to do...");
 }
 
 
 void Amethyst_GL::pause_toggle()
 {
-    paused = !paused;
+  paused = !paused;
 }
+
+
+void Amethyst_GL::ui_toggle()
+{
+  show_ui = !show_ui;
+}
+
+
+void Amethyst_GL::hud_toggle()
+{
+  show_hud = !show_hud;
+}
+
+
+void Amethyst_GL::simint_inc()
+{
+  simulation_interval += 10.0;
+  std::string log_msg = "Simulation Interval Increased to " + boost::lexical_cast<std::string>(simulation_interval) + " s";
+  Global.log.add(log_msg);
+}
+
+
+void Amethyst_GL::simint_dec()
+{
+  simulation_interval -= 10.0;
+  std::string log_msg = "Simulation Interval Decreased to " + boost::lexical_cast<std::string>(simulation_interval) + " s";
+  Global.log.add(log_msg);
+}
+
+
+void Amethyst_GL::stride_inc()
+{
+  stride += 1;
+  std::string log_msg = "Integration Stride Increased to " + boost::lexical_cast<std::string>(stride) + " iterations/run";
+  Global.log.add(log_msg);
+}
+
+
+void Amethyst_GL::stride_dec()
+{
+  stride -= 1;
+  std::string log_msg = "Integration Stride Decreased to " + boost::lexical_cast<std::string>(stride) + " iterations/run";
+  Global.log.add(log_msg);
+}
+
 
 } // namespace client
 } // namespace amethyst

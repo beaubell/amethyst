@@ -50,6 +50,13 @@ class Amethyst_GL
     Signal_render sig_render_scene;
 
     void pause_toggle();
+    void ui_toggle();
+    void hud_toggle();
+    void simint_inc();
+    void simint_dec();
+    void stride_inc();
+    void stride_dec();
+
     double time_scalar;
 
 
@@ -62,6 +69,11 @@ class Amethyst_GL
 
     //Universe universe;
     bool paused;
+    uint stride;
+    double simulation_interval;
+
+    bool show_ui;
+    bool show_hud;
 
 };
 
