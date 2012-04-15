@@ -1,6 +1,7 @@
 
 #include "gravpotential.h"
 #include "lib/utility.h"
+#include "lib/cl.h"
 #include "../opengl.h"
 #include "../opengl_shader.h"
 #include "../global.h"
@@ -64,29 +65,13 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
 
     // Setup plane bounds
     _cl_buf_plane_corners = cl::Buffer(lib::amethyst_cl_context, CL_MEM_READ_ONLY, sizeof(_potentianl_plane), NULL, NULL);
-    
-    // Load cl Kernel
-    std::string cl_source;
-    lib::readTextFile(std::string("/home/beau/.amethyst/kernels/gravpotential.cl"), cl_source);
 
-    source = cl::Program::Sources(1, std::make_pair (cl_source.c_str(), cl_source.size()-1));
-    program = cl::Program(lib::amethyst_cl_context, source);
-
-    // Compile CL Kernel
-    try {
-       program.build(lib::cl_devices);
-    }
-    catch(...)
-    {
-       throw;
-    }
-    
-    std::cout << "Build_log: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(lib::cl_devices[0]);
-    kern_pot = cl::Kernel(program,"gravpotential");
+    // Load kernel
+    kern_pot = lib::cl_loadkernel(std::string("../amethyst-gl/science/gravpotential.cl"), std::string("gravpotential"));
 
     glDisable( GL_TEXTURE_2D );
     glEnable( GL_TEXTURE_RECTANGLE_ARB );
-    
+
     // Allocate space for GL texture
     glGenTextures(1, &_texname );
 
@@ -100,7 +85,6 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
 
     glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_R32F, _grid_x, _grid_y, 0, GL_LUMINANCE, GL_FLOAT, NULL);
 
-    //clGetSupportImageFormats(lib::amethyst_cl_context)
     // Make CL texture fom GL one
     try {
       _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);

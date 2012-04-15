@@ -31,6 +31,7 @@
 #include "stars.h"
 #include "thread.h"
 #include "scene.h"
+#include "scene_xml.h"
 #include "timer.h"
 #include "hud.h"
 #include "physics.h"
@@ -88,6 +89,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     input->sig_kb[SDLK_n].connect(scene_control_ship_next);
     input->sig_kb[SDLK_b].connect(scene_select_object_next);
     input->sig_kb[SDLK_t].connect(scene_target_object_next);
+    input->sig_kb[SDLK_p].connect(bind(scene_xml_write,std::string("dump")));
 }
 
 
