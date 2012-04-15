@@ -35,7 +35,7 @@ namespace client {
 //using lib::Object;
 using lib::Cartesian_Vector;
 
-std::list<Scene_Object_Base *>  object_list;
+std::list<Scene_Object_Base::ptr>  object_list;
 
 double sun_rot = 0;
 
@@ -155,7 +155,7 @@ void scene_render(void)
   // Draw Objects in List.
   if(!object_list.empty())
   {
-    std::list<Scene_Object_Base *>::iterator obj1 = object_list.begin();
+    std::list<Scene_Object_Base::ptr>::iterator obj1 = object_list.begin();
     do
     {
         (*obj1)->render(reference);
@@ -192,9 +192,9 @@ void scene_render(void)
 }
 
 
-void scene_add_object(Scene_Object_Base *newobject)
+void scene_add_object(Scene_Object_Base::ptr newobject)
 {
-    if (newobject)
+    if (newobject != NULL)
       object_list.push_back(newobject);
 
 }
@@ -207,27 +207,27 @@ void scene_select_object_next()
 
     if(!object_list.empty())
     {
-        std::list<lib::Object *>::iterator obj1 = Global.universe.list().begin();
+        std::list<lib::Object::ptr>::iterator obj1 = Global.universe.list().begin();
 
         if(reference == selected)
         {
-            selected = *obj1;
+            selected = obj1->get();
             return;
         }
 
         do
         {
             // Find Object
-            if(selected == (*obj1))
+            if(selected == obj1->get())
             {
                 obj1++;
                 if (obj1 == Global.universe.list().end())
                 {
                     obj1 = Global.universe.list().begin();
-                    selected = *obj1;
+                    selected = obj1->get();
                 }
                 else
-                    selected = *obj1;
+                    selected = obj1->get();
                 return;
             }
 
@@ -249,27 +249,27 @@ void scene_target_object_next()
 
     if(!object_list.empty())
     {
-        std::list<lib::Object *>::iterator obj1 = Global.universe.list().begin();
+        std::list<lib::Object::ptr>::iterator obj1 = Global.universe.list().begin();
 
         if(reference == target)
         {
-            target = *obj1;
+            target = obj1->get();
             return;
         }
 
         do
         {
             // Find Object
-            if(target == (*obj1))
+            if(target == obj1->get())
             {
                 obj1++;
                 if (obj1 == Global.universe.list().end())
                 {
                     obj1 = Global.universe.list().begin();
-                    target = *obj1;
+                    target = obj1->get();
                 }
                 else
-                    target = *obj1;
+                    target = obj1->get();
                 return;
             }
 
@@ -290,11 +290,11 @@ void scene_control_ship_next()
 
     if(!object_list.empty())
     {
-        std::set<Scene_Ship_ptr>::iterator obj1 = Global.ships.begin();
+        std::set<Scene_Ship::ptr>::iterator obj1 = Global.ships.begin();
 
         if(reference == control)
         {
-            control = get_pointer(*obj1);
+            control = obj1->get();
             return;
         }
 

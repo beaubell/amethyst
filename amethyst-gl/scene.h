@@ -22,12 +22,12 @@ namespace client {
 
 void scene_render(void);
 
-void scene_add_object(Scene_Object_Base *);
+void scene_add_object(Scene_Object_Base::ptr);
 void scene_select_object_next();
 void scene_target_object_next();
 void scene_control_ship_next();
 
-extern std::list<Scene_Object_Base *>  object_list;
+extern std::list<Scene_Object_Base::ptr>  object_list;
 
 } // namespace client
 } // namespace amethyst

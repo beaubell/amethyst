@@ -85,10 +85,10 @@ namespace lib {
 
   bool test_engine(bool quiet, bool debug)
   {
-       Object *a = new (Object);
-       Object *b = new (Object);
-       Object *c = new (Object);
-       Object *d = new (Object);
+       Object::ptr a = Object::ptr(new (Object));
+       Object::ptr b = Object::ptr(new (Object));
+       Object::ptr c = Object::ptr(new (Object));
+       Object::ptr d = Object::ptr(new (Object));
 
        Universe universe;
 
@@ -150,11 +150,6 @@ namespace lib {
 
        printf("\nDISTANCE: %le, GRAVITY: %le\n", phys_distance(a->location, b->location), phys_gravity(*a, *b));
 
-       delete d;
-       delete c;
-       delete b;
-       delete a;
-
        return 0; //XXX return meaningful success status
   } // test_engine
 
@@ -198,10 +193,10 @@ void test_rk4()
 {
   cl_init();
 
-  Object *a = new (Object);
-  Object *b = new (Object);
-  Object *c = new (Object);
-  Object *d = new (Object);
+  Object::ptr a = Object::ptr(new (Object));
+  Object::ptr b = Object::ptr(new (Object));
+  Object::ptr c = Object::ptr(new (Object));
+  Object::ptr d = Object::ptr(new (Object));
 
   Universe universe;
 
@@ -235,11 +230,6 @@ void test_rk4()
   universe.object_del(b);
   universe.object_del(c);
   universe.object_del(d);
-
-  delete a;
-  delete b;
-  delete c;
-  delete d;
 
 }
 

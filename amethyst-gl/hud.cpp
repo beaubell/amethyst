@@ -123,7 +123,7 @@ static void hud_widget_object_text(void)
     // Print names on the objects
     if(!object_list.empty())
     {
-        std::list<lib::Object *>::iterator obj1 = Global.universe.list().begin();
+        std::list<lib::Object::ptr>::iterator obj1 = Global.universe.list().begin();
 
         do
         {
@@ -382,10 +382,10 @@ static void hud_radials()
     radialcolors[i][0][2] = radialcolors[i][1][2] = (i != 0)?1.0f:0.0f;
   }
 
-  lib::Object *earth = Global.universe.object_find("Earth");
-  lib::Object *probe1 = Global.universe.object_find("S-E L1 Probe");
-  lib::Object *probe2 = Global.universe.object_find("S-E L2 Probe");
-  lib::Object *sol = Global.universe.object_find("Sol");
+  lib::Object::ptr earth = Global.universe.object_find("Earth");
+  lib::Object::ptr probe1 = Global.universe.object_find("S-E L1 Probe");
+  lib::Object::ptr probe2 = Global.universe.object_find("S-E L2 Probe");
+  lib::Object::ptr sol = Global.universe.object_find("Sol");
 
   if (probe1 != NULL && probe2 != NULL && sol != NULL && earth != NULL)
   {
@@ -523,7 +523,7 @@ static void hud_orbits()
   Cartesian_Vector &reference = Global.obj_view->location;
 
   // Place "Sol" at the origin of radials
-  lib::Object *sol = Global.universe.object_find("Sol");
+  lib::Object::ptr sol = Global.universe.object_find("Sol");
   if (sol != NULL)
   {
     glPushMatrix();
@@ -534,7 +534,7 @@ static void hud_orbits()
     glPopMatrix();
   }
 
-  lib::Object *earth= Global.universe.object_find("Earth");
+  lib::Object::ptr earth = Global.universe.object_find("Earth");
   if (earth != NULL)
   {
     glPushMatrix();

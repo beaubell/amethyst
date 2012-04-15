@@ -107,15 +107,15 @@ void scene_load(const std::string &name)
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
         {
-            Scene_Object *temp;
+            Scene_Object::ptr temp;
             try
             {
-                temp = new Scene_Object;
+                temp = Scene_Object::ptr(new Scene_Object);
                 scene_xml_parse_object (doc, cur, *temp);
             }
             catch (parse_error& e)
             {
-                delete temp;
+                temp.reset();
                 xmlFreeDoc(doc);
                 throw e;
             }
@@ -125,10 +125,10 @@ void scene_load(const std::string &name)
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("ship") ))
         {
-            Scene_Ship_ptr temp;
+            Scene_Ship::ptr temp;
             try
             {
-                temp = Scene_Ship_ptr(new Scene_Ship());
+                temp = Scene_Ship::ptr(new Scene_Ship());
                 scene_xml_parse_ship (doc, cur, temp);
             }
             catch (parse_error& e)
@@ -138,9 +138,9 @@ void scene_load(const std::string &name)
                 throw e;
             }
 
-            scene_add_object(get_pointer(temp));
+            scene_add_object(temp);
             Global.ships.insert(temp);
-            Global.universe.object_add(get_pointer(temp));
+            Global.universe.object_add(temp);
         }
         cur = cur->next;
     }
@@ -148,7 +148,7 @@ void scene_load(const std::string &name)
     xmlFreeDoc(doc);
 
     //Find Player and set
-    Global.obj_view = Global.universe.object_find(selected_object);
+    Global.obj_view = Global.universe.object_find(selected_object).get();
     if (Global.obj_view == NULL)
     {
         Global.obj_view = &Global.reference_object;
@@ -472,7 +472,7 @@ void scene_xml_write (const std::string &name)
 
     if(!object_list.empty())
     {
-        std::list<Object *>::iterator obj1 = Global.universe.list().begin();
+        std::list<Object::ptr>::iterator obj1 = Global.universe.list().begin();
         do
         {
             outfile << "  <object name=\"" << (*obj1)->name << "\">" << std::endl;

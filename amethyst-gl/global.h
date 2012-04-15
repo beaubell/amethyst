@@ -129,7 +129,7 @@ class __global {
 
       Log    log;
 
-      std::set<Scene_Ship_ptr> ships;
+      std::set<Scene_Ship::ptr> ships;
 };
 
 // Tell all c files that Global is instantiated somewhere externally

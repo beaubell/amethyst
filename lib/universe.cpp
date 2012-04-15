@@ -30,7 +30,7 @@ Universe::Universe(void)
 }
 
 
-void Universe::object_add(Object *new_object)
+void Universe::object_add(Object::ptr new_object)
 {
   if (_using_cl)
     throw (std::runtime_error("Adding objects after OpenCL runtime is initialized is not supported!"));
@@ -41,9 +41,9 @@ void Universe::object_add(Object *new_object)
 }
 
 
-void Universe::object_del(const Object *del_object)
+void Universe::object_del(const Object::ptr del_object)
 {
-  std::list<Object *>::iterator obj1 = _object_list.begin();
+  std::list<Object::ptr>::iterator obj1 = _object_list.begin();
 
   do
   {
@@ -57,11 +57,11 @@ void Universe::object_del(const Object *del_object)
 }
 
 
-Object* Universe::object_find(const std::string &name)
+Object::ptr Universe::object_find(const std::string &name)
 {
   if(!_object_list.empty())
   {
-      std::list<Object *>::iterator obj1 = _object_list.begin();
+      std::list<Object::ptr>::iterator obj1 = _object_list.begin();
 
       do
       {
@@ -71,7 +71,7 @@ Object* Universe::object_find(const std::string &name)
         obj1++;
       }  while (obj1 != _object_list.end());
   }
-  return NULL;
+  return Object::ptr();
 }
 
 
@@ -328,8 +328,8 @@ void Universe::iterate_cpu(const double &dtime)
 {
   if(!_object_list.empty())
   {
-    std::list<Object *>::iterator obj1;
-    std::list<Object *>::iterator obj2;
+    std::list<Object::ptr>::iterator obj1;
+    std::list<Object::ptr>::iterator obj2;
 
     // Zero Forces out
     obj1 = _object_list.begin();
@@ -398,7 +398,7 @@ void Universe::iterate_cpu(const double &dtime)
   } // If
 }
 
-std::list<Object*>& Universe::list(void)
+std::list<Object::ptr>& Universe::list(void)
 {
   return _object_list;
 
@@ -479,7 +479,7 @@ void Universe::cl_copytogpu()
 
   // FIXME FIll out buffer before this step.
   size_t objects = _object_list.size();
-  std::list<Object *>::iterator obj = _object_list.begin();
+  std::list<Object::ptr>::iterator obj = _object_list.begin();
 
   for (std::size_t i = 0; i < objects; i++)
   {
@@ -547,7 +547,7 @@ void Universe::cl_copyfrgpu()
 
   queue_rk4.finish();
 
-  std::list<Object *>::iterator obj = _object_list.begin();
+  std::list<Object::ptr>::iterator obj = _object_list.begin();
 
   for (std::size_t i = 0; i < objects; i++)
   {
@@ -644,7 +644,7 @@ uint Universe::count_sig_objects()
 {
   uint count = 0;
   
-  for (std::list<Object *>::iterator obj = _object_list.begin(); obj != _object_list.end(); obj++)
+  for (std::list<Object::ptr>::iterator obj = _object_list.begin(); obj != _object_list.end(); obj++)
   {
     if((*obj)->mass > mass_cutoff)
     count++;
@@ -653,7 +653,7 @@ uint Universe::count_sig_objects()
   return count;
 }
 
-template <typename T> bool PComp(const T * const & a, const T * const & b)
+bool PComp(const Object::ptr &a, const Object::ptr &b)
 {
      return (*a).mass > (*b).mass;
 }
@@ -661,7 +661,7 @@ template <typename T> bool PComp(const T * const & a, const T * const & b)
 void Universe::sort_objects()
 {
   
-  _object_list.sort(PComp<lib::Object>);
+  _object_list.sort(PComp);
 
 }
 

@@ -185,17 +185,17 @@ int main(int argc, char* argv[])
 
     lib::gen_model_solarsystem(Global.universe);
 
-    lib::Object *p1 = Global.universe.object_find("S-E L1 Probe");
+    lib::Object::ptr p1 = Global.universe.object_find("S-E L1 Probe");
 
     uint r_step[3] = {1,1,1};
-    uint v_step[3] = {5,5,1};
+    uint v_step[3] = {7,7,1};
     int r_offset[3] = {0,0,0};
-    int v_offset[3] = {0,0,0};
+    int v_offset[3] = {3,3,0};
 
     lib::gen_object_variation(Global.universe,
                          (*p1),
                          lib::Cartesian_Vector(100.0, 100.0, 100.0),
-                         lib::Cartesian_Vector(1.0, 1.0, 1.0),
+                         lib::Cartesian_Vector(0.5, 0.5, 0.5),
                          r_step, v_step,
                          r_offset, v_offset);
 
@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
     //if (glShaderObjectsSupported)
     //    load_shader(Global.vshader, Global.fshader);
 
-
+    
     client.main_loop();
 
     models_free();

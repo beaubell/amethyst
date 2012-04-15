@@ -26,6 +26,7 @@ namespace client {
 class Scene_Object_Base
 {
     public:
+        typedef boost::shared_ptr<Scene_Object_Base> ptr;
         Scene_Object_Base(void);
         virtual ~Scene_Object_Base(void);
 
@@ -37,6 +38,7 @@ class Scene_Object_Base
 class Scene_Object : public Scene_Object_Base, public lib::Object
 {
     public:
+        typedef boost::shared_ptr<Scene_Object> ptr;
         Model *model;
 
         void render(const lib::Cartesian_Vector& reference);
@@ -46,6 +48,7 @@ class Scene_Object : public Scene_Object_Base, public lib::Object
 class Scene_Ship : public Scene_Object_Base, public lib::Ship
 {
     public:
+        typedef boost::shared_ptr<Scene_Ship> ptr;
         Model *model;
 
         void render(const lib::Cartesian_Vector& reference);
@@ -55,6 +58,7 @@ class Scene_Ship : public Scene_Object_Base, public lib::Ship
 class Scene_Star : public Scene_Object_Base //, public lib::Star  FIXME No stars in library yet.
 {
     public:
+        typedef boost::shared_ptr<Scene_Star> ptr;
         Model *model;
 
         void render(const lib::Cartesian_Vector& reference);
@@ -64,15 +68,12 @@ class Scene_Star : public Scene_Object_Base //, public lib::Star  FIXME No stars
 class Scene_Planet : public Scene_Object_Base //, public lib::Planet  FIXME No Planets in library yet.
 {
     public:
+        typedef boost::shared_ptr<Scene_Planet> ptr;
         Model *model;
 
         void render(const lib::Cartesian_Vector& reference);
 };
 
-typedef boost::shared_ptr<Scene_Object> Scene_Object_ptr;
-typedef boost::shared_ptr<Scene_Ship>   Scene_Ship_ptr;
-typedef boost::shared_ptr<Scene_Star>   Scene_Star_ptr;
-typedef boost::shared_ptr<Scene_Planet> Scene_Planet_ptr;
 
 } // namespace client
 } // namespace amethyst

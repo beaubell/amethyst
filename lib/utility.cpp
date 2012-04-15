@@ -103,7 +103,7 @@ void dumpVectorHDF5(const std::string &filename, const std::vector<Cartesian_Vec
 
 void gen_model_solarsystem(Universe &uni)
 {
-    lib::Object *sol, *earth, *moon, *merc, *v, *p1, *p2, *mars, *jup, *sat, *ura, *nep;
+  lib::Object::ptr sol, earth, moon, merc, v, p1, p2, mars, jup, sat, ura, nep;
   sol = uni.object_find("Sol");
   if(sol != NULL)
   {
@@ -119,8 +119,8 @@ void gen_model_solarsystem(Universe &uni)
   lib::placement_SimpleOrbit(*sol, *earth, 149.598e9);
 
   moon = uni.object_find("Moon");
-  //moon->mass = 7.35e22;    // PDR 2002
-  moon->mass = 1;
+  moon->mass = 7.35e22;    // PDR 2002
+  //moon->mass = 1;
   moon->location.clear();
   moon->velocity.clear();
   lib::placement_SimpleOrbit(*earth, *moon, 384.400e6);
@@ -130,7 +130,7 @@ void gen_model_solarsystem(Universe &uni)
   lib::placement_L1(*sol, *earth, *p1);
   //p1->location.x = p1->location.x + 1e6;
 
-  Object * SEl2 = uni.object_find("S-E L2 Probe");
+  Object::ptr SEl2 = uni.object_find("S-E L2 Probe");
   SEl2->mass = 1;
   lib::placement_L2(*sol, *earth, *SEl2);
 
@@ -189,10 +189,10 @@ void gen_model_solarsystem(Universe &uni)
   nep->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *nep, 4504.450e9);
 
-  Object *solmercl1 = uni.object_find("S-Merc L1 Probe");
+  Object::ptr solmercl1 = uni.object_find("S-Merc L1 Probe");
   lib::placement_L1(*sol, *merc, *solmercl1);
 
-  Object *solmarsl1 = uni.object_find("S-Mars L1 Probe");
+  Object::ptr solmarsl1 = uni.object_find("S-Mars L1 Probe");
   lib::placement_L1(*sol, *mars, *solmarsl1);
 
 
@@ -248,7 +248,7 @@ void gen_object_variation(Universe &uni,
               double vz = source.velocity.z + double(vzi+v_stepoff[2])*v_stepsize.z;
 
               // Create new object
-              Object *obj = new Object(source);
+              Object::ptr obj = Object::ptr(new Object(source));
 
               // Copy Source Data
               //(*Object) = source;

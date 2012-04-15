@@ -28,11 +28,11 @@ class Universe
     bool do_gravity_calc;
     bool gpu_rk4_4thorder;
 
-    void object_add(      Object *);
-    void object_del(const Object *);
+    void object_add(      Object::ptr);
+    void object_del(const Object::ptr);
     void object_del_all(void);
 
-    Object*      object_find(const std::string &name);
+    Object::ptr object_find(const std::string &name);
 
     std::size_t object_count();
 
@@ -74,10 +74,10 @@ class Universe
     uint count_sig_objects();
     void sort_objects();
 
-    std::list<Object*>& list(void);
+    std::list<Object::ptr>& list(void);
 
   //private: //FIXME Temporary fix for science
-    std::list<Object*>  _object_list;
+    std::list<Object::ptr>  _object_list;
 
     std::vector<float_type> _object_mass;
     std::vector<Cartesian_Vector> _object_position;
