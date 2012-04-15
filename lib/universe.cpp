@@ -196,11 +196,12 @@ void Universe::iterate_gpu(const double &dtime,
     kern_rk4_finalsum.setArg(5, _current.location);
     queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
 
+    new_events.clear();
+    new_events.push_back(finvel_event);
+    new_events.push_back(finpos_event);
   }
 
-  new_events.clear();
-  new_events.push_back(finvel_event);
-  new_events.push_back(finpos_event);
+  
 }
 
 void Universe::iterate_gpu_rk4_gravk(const double &dtime,
