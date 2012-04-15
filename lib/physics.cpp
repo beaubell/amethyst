@@ -183,7 +183,9 @@ void placement_L1(const Object &primary, const Object &satellite, Object &L1)
   double distance = to_body1.magnitude();
   to_body1.normalize();
 
-  double distanceL1 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
+  //double distanceL1 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
+  double distanceL1 = distance*cbrt(satellite.mass/(3.0*(primary.mass + satellite.mass)));
+  //double distanceL1 = distance*sqrt(satellite.mass)/(sqrt(primary.mass) + sqrt(satellite.mass));
   L1.location = satellite.location + to_body1*distanceL1;
 
   /// Find Velocity of L1 Point
@@ -202,7 +204,8 @@ void placement_L2(const Object &primary, const Object &satellite, Object &L2)
   double distance = to_body1.magnitude();
   to_body1.normalize();
 
-  double distanceL2 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
+  //double distanceL2 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
+  double distanceL2 = distance*cbrt(satellite.mass/(3.0*(primary.mass + satellite.mass)));
   L2.location = satellite.location - to_body1*distanceL2;
 
   /// Find Velocity of L1 Point
