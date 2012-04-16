@@ -146,23 +146,38 @@ void scene_render(void)
   glPopMatrix();
 #endif
 
+  
+  glDisable(GL_LIGHTING);
   { // Set light to white
     GLfloat fDiffLight[] =  { 1.0f, 0.9f, 0.9f, 1.0f };
     glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
   }
 
+  /// FIXME Special case for Sol
+  Scene_Object::ptr sol = boost::dynamic_pointer_cast<Scene_Object>(Global.universe.object_find("Sol"));
+  if (sol != NULL)
+  {
+    Cartesian_Vector temp = sol->location - reference;
+    GLfloat lightPos[] = {(float)temp.x, (float)temp.y, (float)temp.z, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    sol->render(reference);
+  }
 
+  glEnable(GL_LIGHTING);
   // Draw Objects in List.
   if(!object_list.empty())
   {
     std::list<Scene_Object_Base::ptr>::iterator obj1 = object_list.begin();
     do
     {
-        (*obj1)->render(reference);
+        if(sol != *obj1)
+          (*obj1)->render(reference);
         obj1++;
     }  while (obj1 != object_list.end());
 
   }
+
+  glDisable(GL_LIGHTING);
 
 #if 0
   // Draw Network Objects
