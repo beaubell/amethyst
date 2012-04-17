@@ -104,6 +104,11 @@ void Universe::iterate(const double &dtime,
   std::vector<cl::Event> wait_queue, new_events;
 
   iterate(dtime, stride, wait_queue, new_events);
+
+  // Since we don't return events, go ahead and wait for the queue to finish before returning.
+  queue_rk4.finish();
+  // Copy data back to linked list (XXX - Temporary - FIXME)
+  cl_copyfrgpu();
 }
 
 
@@ -124,10 +129,6 @@ void Universe::iterate(const double &dtime,
       iterate_gpu(dtime, wait_queue, new_events);
       wait_queue = new_events;
     }
-
-    queue_rk4.finish();
-    // Copy data back to linked list (XXX - Temporary - FIXME)
-    cl_copyfrgpu();
   }
 }
 
@@ -136,13 +137,9 @@ void Universe::iterate_gpu(const double &dtime,
                            std::vector<cl::Event> wait_queue,
                            std::vector<cl::Event> &new_events)
 {
-  cl::Event finpos_event, finvel_event;
   new_events.clear();
 
   unsigned int num_objects = object_count();
-
-  //std::cout << ".";
-  //std::cout.flush();
 
   // Make K1
   iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _current, _k1, wait_queue, new_events);
@@ -179,31 +176,12 @@ void Universe::iterate_gpu(const double &dtime,
     wait_queue = new_events;
     
     /// Sum it all together!
-    // 
-    kern_rk4_finalsum.setArg(0, _current.velocity);
-    kern_rk4_finalsum.setArg(1, _k1.velocity);
-    kern_rk4_finalsum.setArg(2, _k2.velocity);
-    kern_rk4_finalsum.setArg(3, _k3.velocity);
-    kern_rk4_finalsum.setArg(4, _k4.velocity);
-    kern_rk4_finalsum.setArg(5, _current.velocity);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finvel_event);
-
-    kern_rk4_finalsum.setArg(0, _current.location);
-    kern_rk4_finalsum.setArg(1, _k1.location);
-    kern_rk4_finalsum.setArg(2, _k2.location);
-    kern_rk4_finalsum.setArg(3, _k3.location);
-    kern_rk4_finalsum.setArg(4, _k4.location);
-    kern_rk4_finalsum.setArg(5, _current.location);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
-
-    new_events.clear();
-    new_events.push_back(finvel_event);
-    new_events.push_back(finpos_event);
+    iterate_gpu_rk4_finalsum(num_objects, _current, _k1, _k2, _k3, _k4, _current, wait_queue, new_events);
   }
-
-  
 }
 
+
+// Performs an N-body gravitational acceleration pass as well as a time step.
 void Universe::iterate_gpu_rk4_gravk(const double &dtime,
                                      uint num_objects,
                                      cl::Buffer &masses,
@@ -269,6 +247,7 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
 }
 
 
+// Performs a multiply-sum of the k_d group and sums it wht orig
 void Universe::iterate_gpu_rk4_scalesum(const double &scale,
                                         const uint num_objects,
                                         Object_Group &orig,
@@ -324,6 +303,99 @@ void Universe::iterate_gpu_rk4_scalesum(const double &scale,
 
 
 
+// Performs the final weighted average of the RK4 algorithm
+void Universe::iterate_gpu_rk4_finalsum(const uint num_objects,
+                                        Object_Group &orig,
+                                        Object_Group &k1,
+                                        Object_Group &k2,
+                                        Object_Group &k3,
+                                        Object_Group &k4,
+                                        Object_Group &new_objs,
+                                        std::vector<cl::Event> wait_queue,
+                                        std::vector<cl::Event> &new_events)
+{
+  cl::Event finpos_event, finvel_event;
+  new_events.clear();
+
+  kern_rk4_finalsum.setArg(0, orig.velocity);
+  kern_rk4_finalsum.setArg(1, k1.velocity);
+  kern_rk4_finalsum.setArg(2, k2.velocity);
+  kern_rk4_finalsum.setArg(3, k3.velocity);
+  kern_rk4_finalsum.setArg(4, k4.velocity);
+  kern_rk4_finalsum.setArg(5, new_objs.velocity);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finvel_event);
+
+  kern_rk4_finalsum.setArg(0, orig.location);
+  kern_rk4_finalsum.setArg(1, k1.location);
+  kern_rk4_finalsum.setArg(2, k2.location);
+  kern_rk4_finalsum.setArg(3, k3.location);
+  kern_rk4_finalsum.setArg(4, k4.location);
+  kern_rk4_finalsum.setArg(5, new_objs.location);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_finalsum, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &finpos_event);
+
+  new_events.push_back(finvel_event);
+  new_events.push_back(finpos_event);
+}
+
+
+
+// Copies current data to history buffer by index number
+void Universe::iterate_gpu_tohistory(const uint num_objects,
+                                     Object_Group &current,
+                                     const uint index,
+                                     std::vector<cl::Event> wait_queue,
+                                     std::vector<cl::Event> &new_events)
+{
+  new_events.clear();
+  cl::Event cpvel_event, cppos_event;
+  
+  kern_rk4_copy3d.setArg(0, current.location);
+  kern_rk4_copy3d.setArg(1, (unsigned int)0);
+  kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
+  kern_rk4_copy3d.setArg(3, index);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
+
+  kern_rk4_copy3d.setArg(0, current.velocity);
+  kern_rk4_copy3d.setArg(1, (unsigned int)0);
+  kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
+  kern_rk4_copy3d.setArg(3, index);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel_event);
+
+  new_events.push_back(cppos_event);
+  new_events.push_back(cpvel_event);
+}
+
+
+
+// Copies history data by index to the current data set
+void Universe::iterate_gpu_frhistory(const uint num_objects,
+                                     Object_Group &current,
+                                     const uint index,
+                                     std::vector<cl::Event> wait_queue,
+                                     std::vector<cl::Event> &new_events)
+{
+  new_events.clear();
+  cl::Event cpvel_event, cppos_event;
+
+  kern_rk4_copy3d.setArg(0, _cl_buf_hist_location);
+  kern_rk4_copy3d.setArg(1, index);
+  kern_rk4_copy3d.setArg(2, current.location);
+  kern_rk4_copy3d.setArg(3, (unsigned int)0);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
+
+  kern_rk4_copy3d.setArg(0, _cl_buf_hist_velocity);
+  kern_rk4_copy3d.setArg(1, index);
+  kern_rk4_copy3d.setArg(2, current.velocity);
+  kern_rk4_copy3d.setArg(3, (unsigned int)0);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel_event);
+
+  new_events.push_back(cppos_event);
+  new_events.push_back(cpvel_event);
+}
+
+
+
+// Old 1st Order CPU method for integrating the positions.
 void Universe::iterate_cpu(const double &dtime)
 {
   if(!_object_list.empty())
@@ -563,60 +635,38 @@ void Universe::cl_copyfrgpu()
 
 }
 
+
+
+//Performs an integration for the purpose of recording a history for data analysis.
 void Universe::cl_integrate()
 {
   size_t num_objects = _object_list.size();
-  cl::Event cpvel1_event, cppos1_event;
   std::vector<cl::Event> wait_queue, new_events;
 
-  const double dtime = 86400.0; //seconds (1 day)
-  const uint   stride = 1;
+  const double dtime = 60.0; //seconds (1 min)
+  const uint   stride = 180;
 
   // Start timer.  Reports elapsed time when destroyed.
   boost::timer::auto_cpu_timer t;
 
   // Copy buffer to 1st row in history
-  kern_rk4_copy3d.setArg(0, _current.location);
-  kern_rk4_copy3d.setArg(1, (unsigned int)0);
-  kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
-  kern_rk4_copy3d.setArg(3, (unsigned int)0);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos1_event);
+  iterate_gpu_tohistory(num_objects, _current, 0, wait_queue, new_events);
+  wait_queue = new_events;
 
-  kern_rk4_copy3d.setArg(0, _current.velocity);
-  kern_rk4_copy3d.setArg(1, (unsigned int)0);
-  kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
-  kern_rk4_copy3d.setArg(3, (unsigned int)0);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel1_event);
-
-  wait_queue.clear();
-  wait_queue.push_back(cppos1_event);
-  wait_queue.push_back(cpvel1_event);
-  
   // Fill in rest of history
   for (unsigned int i = 1; i < _timesteps; i++)
   {
-    cl::Event cpvel_event, cppos_event;
-    
+    std::cout << ".";
+    std::cout.flush();
+
     // Iterate Engine
     iterate(dtime, stride, wait_queue, new_events);
     wait_queue = new_events;
 
-    // Copy buffer to ith row in history
-    kern_rk4_copy3d.setArg(0, _current.location);
-    kern_rk4_copy3d.setArg(1, (unsigned int)0);
-    kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
-    kern_rk4_copy3d.setArg(3, i);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
-
-    kern_rk4_copy3d.setArg(0, _current.velocity);
-    kern_rk4_copy3d.setArg(1, (unsigned int)0);
-    kern_rk4_copy3d.setArg(2, _cl_buf_hist_velocity);
-    kern_rk4_copy3d.setArg(3, i);
-    queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cpvel_event);
-
+    // Copy data to history
+    iterate_gpu_tohistory(num_objects, _current, i, wait_queue, new_events);
     wait_queue.clear();
-    wait_queue.push_back(cppos_event);
-    wait_queue.push_back(cpvel_event);
+    queue_rk4.finish();
   }
 
   queue_rk4.finish();
@@ -640,6 +690,8 @@ void Universe::cl_integrate()
 
 }
 
+
+
 uint Universe::count_sig_objects()
 {
   uint count = 0;
@@ -653,10 +705,14 @@ uint Universe::count_sig_objects()
   return count;
 }
 
+
+
 bool PComp(const Object::ptr &a, const Object::ptr &b)
 {
      return (*a).mass > (*b).mass;
 }
+
+
 
 void Universe::sort_objects()
 {

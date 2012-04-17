@@ -64,6 +64,28 @@ class Universe
                                   Object_Group &new_objs,
                                   std::vector<cl::Event> wait_queue,
                                   std::vector<cl::Event> &events);
+
+    void iterate_gpu_rk4_finalsum(const uint num_objects,
+                                  Object_Group &orig,
+                                  Object_Group &k1,
+                                  Object_Group &k2,
+                                  Object_Group &k3,
+                                  Object_Group &k4,
+                                  Object_Group &new_objs,
+                                  std::vector<cl::Event> wait_queue,
+                                  std::vector<cl::Event> &events);
+
+    void iterate_gpu_tohistory(const uint num_objects,
+                               Object_Group &current,
+                               const uint index,
+                               std::vector<cl::Event> wait_queue,
+                               std::vector<cl::Event> &events);
+
+    void iterate_gpu_frhistory(const uint num_objects,
+                               Object_Group &current,
+                               const uint index,
+                               std::vector<cl::Event> wait_queue,
+                               std::vector<cl::Event> &events);
     
     void iterate_cpu(const double &time);
 
