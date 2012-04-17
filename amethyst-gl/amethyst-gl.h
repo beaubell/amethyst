@@ -56,6 +56,8 @@ class Amethyst_GL
     void simint_dec();
     void stride_inc();
     void stride_dec();
+    void state_save();
+    void state_recall();
 
     double time_scalar;
 

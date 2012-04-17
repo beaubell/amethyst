@@ -442,10 +442,10 @@ static void hud_radials()
 
     temp.clear();
     temp2.clear();
-    temp << Global.simulation_time;
+    temp <<  Global.universe._current.time;
     temp >> temp2;
 
-    double days = Global.simulation_time / (86400.0);
+    double days = Global.universe._current.time / (86400.0);
     std::string days_text;
     temp.clear();
     temp << days;

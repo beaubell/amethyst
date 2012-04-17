@@ -102,6 +102,10 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   // GUI Control
   input->sig_kb[SDLK_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
   input->sig_kb[SDLK_F2].connect(bind(&Amethyst_GL::ui_toggle,this));
+
+  // History Buffer
+  input->sig_kb[SDLK_c].connect(bind(&Amethyst_GL::state_save, this));
+  input->sig_kb[SDLK_v].connect(bind(&Amethyst_GL::state_recall, this));
 }
 
 
@@ -127,7 +131,6 @@ void Amethyst_GL::main_loop()
     {
       //double simulation_interval = Global.time_interval / 1000.0 * time_scalar;
       universe.iterate(simulation_interval, stride);
-      Global.simulation_time += double(stride) * simulation_interval;
 
       //universe.cl_integrate();
       //paused = true;
@@ -234,6 +237,26 @@ void Amethyst_GL::stride_dec()
   stride -= 1;
   std::string log_msg = "Integration Stride Decreased to " + boost::lexical_cast<std::string>(stride) + " iterations/run";
   Global.log.add(log_msg);
+}
+
+
+void Amethyst_GL::state_save()
+{
+  std::vector<cl::Event> wait_queue, new_events;
+  size_t num_objects = Global.universe._object_list.size();
+  Global.universe.iterate_gpu_tohistory(num_objects, Global.universe._current, 0, wait_queue, new_events);
+  Global.universe.queue_rk4.finish();
+  Global.universe.cl_copyfrgpu();
+}
+
+
+void Amethyst_GL::state_recall()
+{
+  std::vector<cl::Event> wait_queue, new_events;
+  size_t num_objects = Global.universe._object_list.size();
+  Global.universe.iterate_gpu_frhistory(num_objects, Global.universe._current, 0, wait_queue, new_events);
+  Global.universe.queue_rk4.finish();
+  Global.universe.cl_copyfrgpu();
 }
 
 

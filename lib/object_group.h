@@ -23,6 +23,8 @@ namespace lib {
 class Object_Group
 {
   public:
+    Object_Group();
+
     void set_size(uint sig_size, uint insig_size);
     void clear();
     uint get_size();
@@ -31,6 +33,8 @@ class Object_Group
     cl::Buffer mass;
     cl::Buffer location;
     cl::Buffer velocity;
+
+    double time;
 
   private:
     uint _object_count;

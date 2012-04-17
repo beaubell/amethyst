@@ -27,6 +27,8 @@ Universe::Universe(void)
   _timesteps(3125),
   mass_cutoff(1e5)
 {
+
+  _hist_time.resize(_timesteps);
 }
 
 
@@ -141,7 +143,7 @@ void Universe::iterate_gpu(const double &dtime,
 
   unsigned int num_objects = object_count();
 
-  // Make K1
+  /// Make K1
   iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _current, _k1, wait_queue, new_events);
   wait_queue = new_events;
 
@@ -155,7 +157,7 @@ void Universe::iterate_gpu(const double &dtime,
     iterate_gpu_rk4_scalesum(0.5, num_objects, _current, _k1, _tmp, wait_queue, new_events);
     wait_queue = new_events;
 
-    /// Make K2 Now
+    /// Make K2
     iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _tmp, _k2, wait_queue, new_events);
     wait_queue = new_events;
 
@@ -163,7 +165,7 @@ void Universe::iterate_gpu(const double &dtime,
     iterate_gpu_rk4_scalesum(0.5, num_objects, _current, _k2, _tmp, wait_queue, new_events);
     wait_queue = new_events;
 
-    /// Make K3 Now
+    /// Make K3
     iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _tmp, _k3, wait_queue, new_events);
     wait_queue = new_events;
 
@@ -171,13 +173,17 @@ void Universe::iterate_gpu(const double &dtime,
     iterate_gpu_rk4_scalesum(1.0, num_objects, _current, _k3, _tmp, wait_queue, new_events);
     wait_queue = new_events;
 
-    /// Make K4 Now
+    /// Make K4
     iterate_gpu_rk4_gravk(dtime, num_objects, _cl_buf_mass, _tmp, _k4, wait_queue, new_events);
     wait_queue = new_events;
     
     /// Sum it all together!
     iterate_gpu_rk4_finalsum(num_objects, _current, _k1, _k2, _k3, _k4, _current, wait_queue, new_events);
   }
+
+  /// Add time step in current buffer.
+  // This is probably not asynchronously safe...  but I don't want to waste GPU cycles for it.
+  _current.time += dtime;
 }
 
 
@@ -363,6 +369,9 @@ void Universe::iterate_gpu_tohistory(const uint num_objects,
 
   new_events.push_back(cppos_event);
   new_events.push_back(cpvel_event);
+
+  // Copy time to history buffer
+  _hist_time[index] = current.time;
 }
 
 
@@ -391,6 +400,9 @@ void Universe::iterate_gpu_frhistory(const uint num_objects,
 
   new_events.push_back(cppos_event);
   new_events.push_back(cpvel_event);
+
+  // Copy time from history buffer
+  current.time = _hist_time[index];
 }
 
 

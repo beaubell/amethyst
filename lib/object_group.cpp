@@ -20,6 +20,11 @@
 namespace amethyst {
 namespace lib {
 
+Object_Group::Object_Group()
+: time(0.0)
+{
+}
+
 void Object_Group::set_size(uint sig_size, uint insig_size)
 {
   _object_count     = sig_size + insig_size;

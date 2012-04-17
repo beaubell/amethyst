@@ -89,7 +89,6 @@ class __global {
       Uint32 next_time;
       Uint32 time_ticks;
       Uint32 time_interval;
-      double simulation_time;
 
       // Paths
       std::string dir_home;

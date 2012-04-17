@@ -23,7 +23,7 @@ class Universe
 {
   public:
     Universe(void);
-    //void ~Universe(void);
+    //~Universe(void);
 
     bool do_gravity_calc;
     bool gpu_rk4_4thorder;
@@ -109,8 +109,7 @@ class Universe
     cl::CommandQueue queue_rk4;
     cl::Buffer _cl_buf_mass;
     Object_Group _current;
-    cl::Buffer _cl_buf_hist_location;
-    cl::Buffer _cl_buf_hist_velocity;
+
 
     // For Runge Kutta Integration
     cl::Buffer _cl_buf_expanded_acceleration;
@@ -128,8 +127,14 @@ class Universe
     cl::Kernel kern_rk4_scalesum;
     cl::Kernel kern_rk4_finalsum;
     cl::Kernel kern_rk4_reductionscale;
-    unsigned int _timesteps;
 
+    // History Buffer
+    unsigned int _timesteps;
+    cl::Buffer _cl_buf_hist_location;
+    cl::Buffer _cl_buf_hist_velocity;
+    std::vector<double> _hist_time;
+
+    
     // The amount of mass that is the threshold between gravitationally significant and insignificant.
     float_type mass_cutoff;
 };
