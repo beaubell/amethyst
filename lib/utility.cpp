@@ -67,39 +67,7 @@ void readTextFile(const std::string& filename, std::string& in_buffer)
   input.close();
 }
 
-// Writes a vector to an HDF5 File
-void dumpVectorHDF5(const std::string &filename, const std::vector<Cartesian_Vector> &vec_in)
-{
-  // Open File for Writing
-  H5::H5File h5file( filename.c_str(), H5F_ACC_TRUNC );
 
-  // Create group
-  h5file.createGroup(std::string("/dump"));
-
-  // Prepare and write range data
-  //h5file.write_2D_double(std::string("/dump/vector"), _time);
-
-  const hsize_t rank = 2;
-  hsize_t dimsf[rank];
-  dimsf[0] = vec_in.size();
-  dimsf[1] = 4;
-
-  // Create dataspace
-  H5::DataSpace dataspace( rank, dimsf );
-
-  // Define Datatype
-  H5::FloatType datatype( H5::PredType::NATIVE_DOUBLE );
-  datatype.setOrder( H5T_ORDER_LE);;
-
-  // Create a new dataset within the file...
-  H5::DataSet dataset = h5file.createDataSet( "/dump/vector", datatype, dataspace);
-
-    // Write data
-  dataset.write(&vec_in[0], H5::PredType::NATIVE_DOUBLE);
-
-  h5file.close();
-  return;
-}
 
 void gen_model_solarsystem(Universe &uni)
 {

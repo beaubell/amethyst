@@ -7,6 +7,7 @@
 #include "object.h"
 #include "physics.h"
 #include "utility.h"
+#include "io_hdf5.h"
 
 #include <list>
 #include <iostream>
@@ -212,21 +213,28 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
     if(0)
     {
     queue_rk4.finish();
-    cl::Event debug_event;
-    size_t objects = _object_list.size();
-    std::size_t size_vec_acc = sizeof(Cartesian_Vector)*objects*objects_sig;
-    std::size_t size_vec_loc = sizeof(Cartesian_Vector)*objects;
-    std::vector<Cartesian_Vector> dump_vec;
-    dump_vec.resize(objects*objects_sig);
-    //queue.enqueueWriteBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.enqueueReadBuffer(_cl_buf_expanded_acceleration, CL_TRUE, 0, size_vec_acc, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.finish();
-    dumpVectorHDF5(std::string("dump_grav_acc.hd5"), dump_vec);
-    dump_vec.resize(objects);
-    queue_rk4.enqueueReadBuffer(old.location, CL_TRUE, 0, size_vec_loc, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.finish();
-    dumpVectorHDF5(std::string("dump_grav_loc.hd5"), dump_vec);
-    exit(12);
+    cl::Event pos_event, acc_event;
+    size_t num_objects = _object_list.size();
+
+    Am2DArrayD position_data(boost::extents[num_objects][4]);
+    Am3DArrayD accel_data(boost::extents[num_objects][objects_sig][4]);
+
+    size_t pos_data_size    = position_data.num_elements()*sizeof(float_type);
+    size_t acc_data_size    = accel_data.num_elements()*sizeof(float_type);
+
+    HDF5 h5file(std::string("acceleration_dump.h5"), H5F_ACC_TRUNC);
+    h5file.createGroup(std::string("/Dump"));
+
+    queue_rk4.enqueueReadBuffer(old.location, CL_TRUE, 0, pos_data_size, position_data.data(), NULL, &pos_event);
+    pos_event.wait();
+    h5file.write_2D_double(std::string("/Dump/Position"), position_data);
+
+    queue_rk4.enqueueReadBuffer(_cl_buf_expanded_acceleration, CL_TRUE, 0, acc_data_size, accel_data.data(), NULL, &acc_event);
+    acc_event.wait();
+    h5file.write_3D_double(std::string("/Dump/Acceleration"), accel_data);
+
+    h5file.close();
+    throw std::logic_error("Normal Termination for Debugging...");
     }
   }
 
@@ -681,27 +689,78 @@ void Universe::cl_integrate()
     queue_rk4.finish();
   }
 
-  queue_rk4.finish();
-
-  // Dump History to File for debugging
-  {
-    cl::Event debug_event;
-    size_t objects = _object_list.size();
-    std::size_t size_vec_loc = sizeof(Cartesian_Vector)*objects*_timesteps;
-    std::size_t size_vec_vel = sizeof(Cartesian_Vector)*objects*_timesteps;
-    std::vector<Cartesian_Vector> dump_vec;
-    dump_vec.resize(objects*_timesteps);
-    //queue.enqueueWriteBuffer(_cl_buf_velocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.enqueueReadBuffer(_cl_buf_hist_location, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.finish();
-    dumpVectorHDF5(std::string("dump_loc.hd5"), dump_vec);
-    queue_rk4.enqueueReadBuffer(_cl_buf_hist_velocity, CL_TRUE, 0, size_vec_vel, &dump_vec[0], NULL, &debug_event);
-    queue_rk4.finish();
-    dumpVectorHDF5(std::string("dump_vel.hd5"), dump_vec);
-  }
-
 }
 
+
+// Loads history buffer from HDF5 file
+void Universe::cl_load_history(const std::string &file)
+{
+  
+  cl::Event pos_hist_event, vel_hist_event;
+
+  size_t num_objects = _object_list.size();
+
+  // Load Data
+  HDF5 h5file(file, H5F_ACC_RDONLY);
+
+  Am3DArrayD position_data(boost::extents[1][1][1]);
+  Am3DArrayD velocity_data(boost::extents[1][1][1]);
+
+  h5file.read_3D_double(std::string("/History/Position"), position_data);
+  h5file.read_3D_double(std::string("/History/Velocity"), velocity_data);
+
+  // Verify sizes
+  const Am3DArrayD::size_type *pos_shape = position_data.shape();
+  const Am3DArrayD::size_type *vel_shape = velocity_data.shape();
+
+  if(pos_shape[0] != _timesteps || pos_shape[1] != num_objects ||
+     vel_shape[0] != _timesteps || vel_shape[1] != num_objects)
+    throw std::runtime_error("Incoming history size doesn't match currently setup history size");
+  
+  size_t pos_data_size    = position_data.num_elements()*sizeof(float_type);
+  size_t vel_data_size    = velocity_data.num_elements()*sizeof(float_type);
+
+  queue_rk4.enqueueWriteBuffer(_cl_buf_hist_location, CL_TRUE, 0, pos_data_size, position_data.data(), NULL, &pos_hist_event);
+  pos_hist_event.wait();
+
+  queue_rk4.enqueueWriteBuffer(_cl_buf_hist_velocity, CL_TRUE, 0, vel_data_size, velocity_data.data(), NULL, &vel_hist_event);
+  vel_hist_event.wait();
+
+  h5file.read_1D_double(std::string("/History/Time"), _hist_time);
+
+  h5file.close();
+  
+}
+
+
+// Saves history buffer to HDF5 file
+void Universe::cl_save_history(const std::string &file)
+{
+  cl::Event pos_hist_event, vel_hist_event;
+
+  size_t num_objects = _object_list.size();
+
+  HDF5 h5file(file, H5F_ACC_TRUNC);
+  h5file.createGroup(std::string("/History"));
+
+  h5file.write_1D_double(std::string("/History/Time"), _hist_time);
+
+  Am3DArrayD position_data(boost::extents[_timesteps][num_objects][4]);
+  Am3DArrayD velocity_data(boost::extents[_timesteps][num_objects][4]);
+
+  size_t pos_data_size    = position_data.num_elements()*sizeof(float_type);
+  size_t vel_data_size    = velocity_data.num_elements()*sizeof(float_type);
+
+  queue_rk4.enqueueReadBuffer(_cl_buf_hist_location, CL_TRUE, 0, pos_data_size, position_data.data(), NULL, &pos_hist_event);
+  pos_hist_event.wait();
+  h5file.write_3D_double(std::string("/History/Position"), position_data);
+
+  queue_rk4.enqueueReadBuffer(_cl_buf_hist_velocity, CL_TRUE, 0, vel_data_size, velocity_data.data(), NULL, &vel_hist_event);
+  vel_hist_event.wait();
+  h5file.write_3D_double(std::string("/History/Velocity"), velocity_data);
+
+  h5file.close();
+}
 
 
 uint Universe::count_sig_objects()

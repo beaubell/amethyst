@@ -226,6 +226,9 @@ void test_rk4()
   universe.cl_copytogpu();
   universe.cl_integrate();
 
+  //universe.cl_load_history("history_dump.h5");
+  universe.cl_save_history("history_dump1.h5");
+
   universe.object_del(a);
   universe.object_del(b);
   universe.object_del(c);

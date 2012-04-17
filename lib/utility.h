@@ -26,8 +26,6 @@ namespace lib {
 
   void readTextFile(const std::string& filename, std::string& in_buffer);
 
-  void dumpVectorHDF5(const std::string &filename, const std::vector<Cartesian_Vector> &vec_in);
-
   void gen_model_solarsystem(Universe &uni);
   void gen_object_variation(Universe &uni,
                             const Object &source,

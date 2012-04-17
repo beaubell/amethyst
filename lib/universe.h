@@ -93,6 +93,9 @@ class Universe
     void cl_copytogpu();
     void cl_copyfrgpu();
     void cl_integrate();
+    void cl_load_history(const std::string &file);
+    void cl_save_history(const std::string &file);
+    
     uint count_sig_objects();
     void sort_objects();
 
