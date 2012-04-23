@@ -3,10 +3,17 @@
   - ??? FIXME ??? implementations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+ 2012-2012 Beau V.C. Bellamy (beau@stellarnetservices.net)
 
  $Revision$
  $LastChangedDate$
  $LastChangedBy$
  ***********************************************************************/
 
+namespace amethyst {
+namespace lib{
+
+
+
+} // namespace lib
+} // namespace amethyst
