@@ -95,6 +95,7 @@ class Universe
     void cl_integrate();
     void cl_load_history(const std::string &file);
     void cl_save_history(const std::string &file);
+    void cl_fill_distance_buff();
     
     uint count_sig_objects();
     void sort_objects();
@@ -127,13 +128,17 @@ class Universe
     cl::Kernel kern_rk4_grav;
     cl::Kernel kern_rk4_scale;
     cl::Kernel kern_rk4_copy3d;
+    cl::Kernel kern_rk4_copyrot;
     cl::Kernel kern_rk4_scalesum;
     cl::Kernel kern_rk4_finalsum;
     cl::Kernel kern_rk4_reductionscale;
 
+    cl::Kernel kern_dist;
+
     // History Buffer
     unsigned int _timesteps;
     cl::Buffer _cl_buf_hist_location;
+    cl::Buffer _cl_buf_hist_distance;
     cl::Buffer _cl_buf_hist_velocity;
     std::vector<double> _hist_time;
 

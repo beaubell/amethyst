@@ -363,11 +363,18 @@ void Universe::iterate_gpu_tohistory(const uint num_objects,
   new_events.clear();
   cl::Event cpvel_event, cppos_event;
   
-  kern_rk4_copy3d.setArg(0, current.location);
-  kern_rk4_copy3d.setArg(1, (unsigned int)0);
-  kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
-  kern_rk4_copy3d.setArg(3, index);
-  queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
+  kern_rk4_copyrot.setArg(0, current.location);
+  kern_rk4_copyrot.setArg(1, (unsigned int)0);
+  kern_rk4_copyrot.setArg(2, (unsigned int)1);  // FIXME Earth as reference - Hardcoded
+  kern_rk4_copyrot.setArg(3, _cl_buf_hist_location);
+  kern_rk4_copyrot.setArg(4, index);
+  queue_rk4.enqueueNDRangeKernel(kern_rk4_copyrot, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
+
+//   kern_rk4_copy3d.setArg(0, current.location);
+//   kern_rk4_copy3d.setArg(1, (unsigned int)0);
+//   kern_rk4_copy3d.setArg(2, _cl_buf_hist_location);
+//   kern_rk4_copy3d.setArg(3, index);
+//   queue_rk4.enqueueNDRangeKernel(kern_rk4_copy3d, cl::NullRange, cl::NDRange(num_objects), cl::NullRange, &wait_queue, &cppos_event);
 
   kern_rk4_copy3d.setArg(0, current.velocity);
   kern_rk4_copy3d.setArg(1, (unsigned int)0);
@@ -519,14 +526,16 @@ void Universe::cl_setup()
   std::size_t size_exp_acc = sizeof(Cartesian_Vector)*objects*(objects_sig);
   std::size_t size_vec_histloc = sizeof(Cartesian_Vector)*objects*_timesteps;
   std::size_t size_vec_histvel = sizeof(Cartesian_Vector)*objects*_timesteps;
+  std::size_t size_vec_histdis = sizeof(float_type)*objects*_timesteps;
 
   _cl_buf_mass     = cl::Buffer(amethyst_cl_context, CL_MEM_READ_ONLY,  size_vec_mass, NULL, NULL);
   _current.set_size(objects_sig, objects_insig);
 
 
   /// Object History Vectors
-  _cl_buf_hist_location = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_histloc,  NULL, NULL);
-  _cl_buf_hist_velocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_histvel,  NULL, NULL);
+  _cl_buf_hist_location = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_histloc, NULL, NULL);
+  _cl_buf_hist_velocity = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_histvel, NULL, NULL);
+  _cl_buf_hist_distance = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_vec_histdis, NULL, NULL);
 
   /// CL space for integration
   _cl_buf_expanded_acceleration = cl::Buffer(amethyst_cl_context, CL_MEM_READ_WRITE, size_exp_acc,  NULL, NULL);
@@ -543,14 +552,19 @@ void Universe::cl_setup()
   kern_rk4_grav     = cl_loadkernel(std::string("rk4_grav.cl"),     std::string("rk4_grav"));
   kern_rk4_scale    = cl_loadkernel(std::string("rk4_scale.cl"),    std::string("rk4_scale"));
   kern_rk4_copy3d   = cl_loadkernel(std::string("rk4_copy3d.cl"),   std::string("rk4_copy3d"));
+  kern_rk4_copyrot  = cl_loadkernel(std::string("rk4_copyrot.cl"),   std::string("rk4_copyrot"));
   kern_rk4_scalesum = cl_loadkernel(std::string("rk4_scalesum.cl"), std::string("rk4_scalesum"));
   kern_rk4_finalsum = cl_loadkernel(std::string("rk4_finalsum.cl"), std::string("rk4_finalsum"));
   kern_rk4_reductionscale = cl_loadkernel(std::string("rk4_reductionscale.cl"), std::string("rk4_reductionscale"));
 
+  kern_dist = cl_loadkernel(std::string("histdist.cl"), std::string("histdist"));
+  
+
   /// Setup Command Queue
   unsigned int gpu_id = 0;  // FIXME - Make GPU_ID dynamic?
   //queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, NULL);
-  queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], 0, NULL);
+  uint queue_options = CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+  queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], queue_options, NULL);
   
   _using_cl = true;
 }
@@ -736,7 +750,7 @@ void Universe::cl_load_history(const std::string &file)
 // Saves history buffer to HDF5 file
 void Universe::cl_save_history(const std::string &file)
 {
-  cl::Event pos_hist_event, vel_hist_event;
+  cl::Event pos_hist_event, vel_hist_event, dis_hist_event;
 
   size_t num_objects = _object_list.size();
 
@@ -747,9 +761,11 @@ void Universe::cl_save_history(const std::string &file)
 
   Am3DArrayD position_data(boost::extents[_timesteps][num_objects][4]);
   Am3DArrayD velocity_data(boost::extents[_timesteps][num_objects][4]);
+  Am2DArrayD distance_data(boost::extents[_timesteps][num_objects]);
 
   size_t pos_data_size    = position_data.num_elements()*sizeof(float_type);
   size_t vel_data_size    = velocity_data.num_elements()*sizeof(float_type);
+  size_t dis_data_size    = distance_data.num_elements()*sizeof(float_type);
 
   queue_rk4.enqueueReadBuffer(_cl_buf_hist_location, CL_TRUE, 0, pos_data_size, position_data.data(), NULL, &pos_hist_event);
   pos_hist_event.wait();
@@ -759,7 +775,28 @@ void Universe::cl_save_history(const std::string &file)
   vel_hist_event.wait();
   h5file.write_3D_double(std::string("/History/Velocity"), velocity_data);
 
+  queue_rk4.enqueueReadBuffer(_cl_buf_hist_distance, CL_TRUE, 0, dis_data_size, distance_data.data(), NULL, &dis_hist_event);
+  dis_hist_event.wait();
+  h5file.write_2D_double(std::string("/History/Distance"), distance_data);
+
   h5file.close();
+}
+
+// Saves history buffer to HDF5 file
+void Universe::cl_fill_distance_buff()
+{
+  
+  cl::Event dis_event;
+ 
+  size_t num_objects = _object_list.size();
+
+  uint ref = 3; // Harded L1 point;
+
+  kern_dist.setArg(0, _cl_buf_hist_location);
+  kern_dist.setArg(1, (unsigned int)ref);
+  kern_dist.setArg(2, _cl_buf_hist_distance);
+  queue_rk4.enqueueNDRangeKernel(kern_dist, cl::NullRange, cl::NDRange(num_objects, _timesteps), cl::NullRange, NULL, &dis_event);
+  dis_event.wait();
 }
 
 
