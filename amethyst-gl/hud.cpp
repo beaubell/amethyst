@@ -21,7 +21,6 @@
 #include "FTGLPixmapFont.h"
 #include <string>
 #include <boost/lexical_cast.hpp>
-//#include <boost/accumulators/statistics/weighted_sum.hpp>
 
 #ifdef HAVE_MALLOC_H
   #include <malloc.h>

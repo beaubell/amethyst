@@ -12,7 +12,7 @@
 
 // Include local files first
 #include "physics.h"
-#include "root.h"
+#include "types.h"
 
 // Then include system files
 #include <boost/bind.hpp>
