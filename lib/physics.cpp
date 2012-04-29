@@ -10,18 +10,22 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#include <math.h>
-
+// Include local files first
 #include "physics.h"
+#include "root.h"
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
+// Then include system files
+#include <boost/bind.hpp>
+#include <boost/math/tools/roots.hpp>
+
+#include <cmath>
+#include <stdio.h>
 
 #ifdef WIN32
 #define M_PI  3.14159265358979323846
 #define M_PIl 3.1415926535897932384626433832795029L
 #endif
+
 
 namespace amethyst {
 namespace lib {
@@ -62,6 +66,43 @@ double phys_gravity (const double &mass_a, const double &distance)
 double phys_gravity (const double &mass_a, const double &mass_b, const double &distance)
 {
   return ((G*(mass_a)*(mass_b)) / pow(distance, 2));
+}
+
+
+double phys_gravity_accel (const Object &a, const Object &b, const double x)
+{
+  const float_type M1 = a.mass;
+  const float_type M2 = b.mass;
+  const float_type d = (b.location - a.location).magnitude();
+
+  double massratio = a.mass/b.mass;
+  double bary = d/(1 + massratio);
+
+  //const float_type w = (b.velocity).magnitude()/(d-bary);
+  const float_type w = (b.velocity - a.velocity).magnitude()/(d-bary);
+
+  const float_type accel = ((G*M1)/pow((d-x),2) - (G*M2)/pow((x),2) - pow(w,2)*((d-bary)-x) );
+  //const float_type accel = ((G*M1)/pow((d-x),2.0) - (G*M2)/pow((x),2.0) );
+  //printf("w: %0.14f x: %0.14f  accel: %0.14f \n", w, x, accel);
+  return accel;
+}
+
+double phys_gravity_accel_l2 (const Object &a, const Object &b, const double x)
+{
+  const float_type M1 = a.mass;
+  const float_type M2 = b.mass;
+  const float_type d = (b.location - a.location).magnitude();
+
+  double massratio = a.mass/b.mass;
+  double bary = d/(1 + massratio);
+
+  //const float_type w = (b.velocity).magnitude()/(d-bary);
+  const float_type w = (b.velocity - a.velocity).magnitude()/(d-bary);
+
+  const float_type accel = ((G*M1)/pow((d+x),2) + (G*M2)/pow((x),2) - pow(w,2)*((d-bary)+x) );
+  //const float_type accel = ((G*M1)/pow((d-x),2.0) - (G*M2)/pow((x),2.0) );
+  //printf("w: %0.14f x: %0.14f  accel: %0.14f \n", w, x, accel);
+  return accel;
 }
 
 
@@ -174,22 +215,53 @@ void placement_SimpleOrbit(const Object &primary, Object &satellite, double dist
   satellite.velocity.y += sqrt(grav_acc * distance);
 }
 
+double fxd(double foo)
+{
+  return cos(foo) - foo;
+
+  
+}
+
+  struct TerminationCondition  {
+    bool operator() (double min, double max)  {
+      return (std::abs(min - max) <= 1e-8);
+    }
+  };
 
 void placement_L1(const Object &primary, const Object &satellite, Object &L1)
 {
 
+  
   /// Find Location of L1 Point
   Cartesian_Vector to_body1 = primary.location - satellite.location;
   double distance = to_body1.magnitude();
   to_body1.normalize();
+  
+  // Angular velocity
+  //double w = satellite.velocity.magnitude()/distance;
+  double massratio = primary.mass/satellite.mass;
+  double bary = distance/(1 + massratio);
 
-  //double distanceL1 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
-  double distanceL1 = distance*cbrt(satellite.mass/(3.0*(primary.mass + satellite.mass)));
-  //double distanceL1 = distance*sqrt(satellite.mass)/(sqrt(primary.mass) + sqrt(satellite.mass));
+  double Ecorrection = -5000e3  - 3040 -36.48 -0.20608 -0.00076288;
+  //double Ecorrection = 0.0;
+  //double distanceL1 = (distance - bary)*cbrt(satellite.mass/(3.0*(primary.mass))) + Ecorrection;
+
+  //printf("Lagrange distance: %f \n", distanceL1);
+  //std::cout << "Lagrange distance: " << distanceL1 << std::endl;
+  //root_func fx(boost::bind(phys_gravity_accel, primary, satellite, _1, w));
+  //std::pair<double, double> result = boost::math::tools::bisect(boost::bind(phys_gravity_accel, primary, satellite, _1, 20.0), 0, 5e6, 1.0);
+  std::pair<double, double> result = boost::math::tools::bisect(boost::bind(phys_gravity_accel, primary, satellite, _1), 0.1, (distance)-0.1, TerminationCondition());
+  double distanceL1 = (result.first + result.second) / 2.0;
+  //printf("Root = %f (%f,%f)\n", root,result.first, result.second);
+  //root_func fx(boost::bind(pow,w,_1));
+  //double distanceL1 = find_root(boost::bind(phys_gravity_accel, primary, satellite, _1, w), 1.0, 10000.0, distance/2.0);
+  //double distanceL1 = find_root(boost::bind(sqrt,_1), 1.0, 10000.0, distance/2.0);
+  //double distanceL1 = 0.0;
+
   L1.location = satellite.location + to_body1*distanceL1;
 
   /// Find Velocity of L1 Point
-  double disL1ratio = distanceL1/distance;
+  double disL1ratio = distanceL1/(distance);
   L1.velocity = (primary.velocity - satellite.velocity)*disL1ratio + satellite.velocity;
   //L1.velocity = primary.velocity*(-disL1ratio) + satellite.velocity*(1.0+disL1ratio);
 
@@ -204,12 +276,17 @@ void placement_L2(const Object &primary, const Object &satellite, Object &L2)
   double distance = to_body1.magnitude();
   to_body1.normalize();
 
+  double massratio = primary.mass/satellite.mass;
+  double bary = distance/(1 + massratio);
+
   //double distanceL2 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
-  double distanceL2 = distance*cbrt(satellite.mass/(3.0*(primary.mass + satellite.mass)));
+  //double distanceL2 = (distance-bary)*cbrt(satellite.mass/(3.0*(primary.mass + satellite.mass)));
+  std::pair<double, double> result = boost::math::tools::bisect(boost::bind(phys_gravity_accel_l2, primary, satellite, _1), 0.1, (distance)-0.1, TerminationCondition());
+  double distanceL2 = (result.first + result.second) / 2.0;
   L2.location = satellite.location - to_body1*distanceL2;
 
   /// Find Velocity of L1 Point
-  double disL2ratio = distanceL2/distance;
+  double disL2ratio = distanceL2/(distance);
   //L2.velocity = (primary.velocity - satellite.velocity)*disL2ratio + satellite.velocity;
   L2.velocity = primary.velocity*(-disL2ratio) + satellite.velocity*(1.0+disL2ratio);
 

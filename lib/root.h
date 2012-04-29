@@ -18,11 +18,11 @@
 namespace amethyst {
 namespace lib{
 
-typedef float_type (*root_func)(float_type x);
+typedef double (*root_func)(double x);
 
 
 // Takes a function with one argument and returns the root within the bracket and tolerance.
-float_type find_root(root_func fx, float_type tolerance, float_type start_point, float_type end_point);
+double find_root(root_func fx, double tolerance, double start_point, double end_point);
 
 
 } // namespace lib

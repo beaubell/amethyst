@@ -36,7 +36,7 @@ CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 #SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra -Wconversion -Wold-style-cast")
-SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra ")
+SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra -Wuninitialized -Wconversion")
 #SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -O3")
 SET( SUPPORT_CXX_FLAGS "-O3")
 

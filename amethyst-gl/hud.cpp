@@ -497,8 +497,11 @@ static void hud_orbits()
 
   for(unsigned int i = 0; i < orbitpoints; i++)
   {
-    earthorbit[i][0] = cos(static_cast<double>(i)*radial_angle)*149.598e9;
-    earthorbit[i][1] = sin(static_cast<double>(i)*radial_angle)*149.598e9;
+    double massratio = 3.0035191795284299e-06;
+    double semi = 149.598e9;
+    double Re = semi * (1 - massratio);
+    earthorbit[i][0] = cos(static_cast<double>(i)*radial_angle)*Re;
+    earthorbit[i][1] = sin(static_cast<double>(i)*radial_angle)*Re;
     earthorbit[i][2] = 0;
 
     moonorbit[i][0] = cos(static_cast<double>(i)*radial_angle)*384.400e6;

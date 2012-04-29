@@ -192,12 +192,14 @@ int main(int argc, char* argv[])
     int r_offset[3] = {0,0,0};
     int v_offset[3] = {3,3,0};
 
+#if 0
     lib::gen_object_variation(Global.universe,
                          (*p1),
                          lib::Cartesian_Vector(100.0, 100.0, 100.0),
                          lib::Cartesian_Vector(0.5, 0.5, 0.5),
                          r_step, v_step,
                          r_offset, v_offset);
+#endif
 
     // Send Objects to GPU
     std::cout << "Size of Universe" << Global.universe.object_count() << std::endl;

@@ -54,8 +54,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     manifest_(),
     connection(manifest_),
     paused(true),
-    stride(60),
-    simulation_interval(60),
+    stride(100),
+    simulation_interval(200),
     show_ui(true),
     show_hud(true)
 {
@@ -112,6 +112,16 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
 void Amethyst_GL::main_loop()
 {
   Universe &universe = Global.universe;
+  uint hist_index = 0;
+
+  {
+    std::vector<cl::Event> wait_queue, new_events;
+    size_t num_objects = Global.universe._object_list.size();
+
+    universe.iterate_gpu_tohistory(num_objects, Global.universe._current, hist_index, wait_queue, new_events);
+    hist_index++;
+  }
+  
 
   while(1)
   {
@@ -145,6 +155,39 @@ void Amethyst_GL::main_loop()
     {
       lib::placement_L1(*sol, *earth, *solearthl1);
       lib::placement_L2(*sol, *earth, *solearthl2);
+    }
+
+    // Save to history
+    if(0)
+    {
+      if(hist_index < Global.universe._timesteps && !paused)
+      {
+        std::vector<cl::Event> wait_queue, new_events;
+        size_t num_objects = Global.universe._object_list.size();
+
+        //Global.universe.cl_copytogpu();
+
+        Global.universe.iterate_gpu_tohistory(num_objects, Global.universe._current, hist_index, wait_queue, new_events);
+        Global.universe.queue_rk4.finish();
+
+        hist_index++;
+        if(hist_index%10)
+          std::cout << float(hist_index)/float(Global.universe._timesteps) << std::endl;
+      }
+      else if(!paused)
+      {
+        pause_toggle();
+        std::string log_msg =  "Buffer full.  Simulation Stopped.  Filling distance buffer.";
+        Global.log.add(log_msg);
+        universe.cl_fill_distance_buff();
+        
+        log_msg =  "Saving History..";
+        Global.log.add(log_msg);
+        universe.cl_save_history("dump-halo.h5");
+
+        log_msg =  "Done.";
+        Global.log.add(log_msg);
+      }
     }
     
     /* update the screen */
