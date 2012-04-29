@@ -21,6 +21,7 @@
 #include "FTGLPixmapFont.h"
 #include <string>
 #include <boost/lexical_cast.hpp>
+//#include <boost/accumulators/statistics/weighted_sum.hpp>
 
 #ifdef HAVE_MALLOC_H
   #include <malloc.h>
@@ -440,21 +441,6 @@ static void hud_radials()
     glWindowPos2i(10, 67);
     fonts[0]->Render(text.c_str());
 
-    temp.clear();
-    temp2.clear();
-    temp <<  Global.universe._current.time;
-    temp >> temp2;
-
-    double days = Global.universe._current.time / (86400.0);
-    std::string days_text;
-    temp.clear();
-    temp << days;
-    temp >> days_text;
-    //days_text += temp2;
-
-    text =             "Simulation Time  : " + temp2 + "   Days: " + days_text;
-    glWindowPos2i(10, 93);
-    fonts[0]->Render(text.c_str());
   }
   glEnable(GL_FOG);
 

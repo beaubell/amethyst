@@ -24,6 +24,7 @@
 #include "lib/utility.h"
 #include "physics.h"
 #include "science/gravpotential.h"
+#include "science/uiw_simstats.h"
 
 #include <iostream>
 
@@ -207,6 +208,10 @@ int main(int argc, char* argv[])
     Global.universe.cl_copytogpu();
 
     //GravPotential test(client);
+
+    // Create and add sim stats window
+    UI_Window_ptr window = UI_Window_ptr(new UIW_SimStats(client, client.ui));
+    client.ui.add(window);
     
     // Load shaders if supported
     //if (glShaderObjectsSupported)
