@@ -7,7 +7,7 @@
 # also defined, but not for general use are
 #  FREETYPE_LIBRARY, where to find the freetype library.
 
-FIND_PATH(FREETYPE_INCLUDE_DIR freetype/config/ftheader.h
+FIND_PATH(FREETYPE_INCLUDE_DIR ft2build.h
 /usr/local/include/freetype2
 /usr/include/freetype2
 )

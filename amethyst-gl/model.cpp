@@ -200,7 +200,7 @@ Model* model_load_file(const std::string &filename)
 
     vertices_t = vertices * 8;
 
-    for (i = 0; !feof(file), i < vertices_t; i += 8)
+    for (i = 0; !feof(file) && i < vertices_t; i += 8)
     {
         fscanf(file, "%f, %f,",      &model->data[i],   &model->data[i+1]);
         fscanf(file, "%f, %f, %f,",  &model->data[i+2], &model->data[i+3], &model->data[i+4]);

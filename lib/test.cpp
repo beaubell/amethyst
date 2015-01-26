@@ -83,7 +83,7 @@ namespace lib {
        return success;
   }
 
-  bool test_engine(bool quiet, bool debug)
+  bool test_engine(bool quiet, bool /* debug unused*/)
   {
        Object::ptr a = Object::ptr(new (Object));
        Object::ptr b = Object::ptr(new (Object));
@@ -121,36 +121,42 @@ namespace lib {
        int count  = 0;
        int count1 = 0;
 
-       printf("\n");
-       printf("Original Objects\n");
-       print_vector(" OBJ-1", a->location);
-       print_vector(" OBJ-2", b->location);
-       print_vector(" OBJ-3", c->location);
-       print_vector(" OBJ-4", d->location);
+       if (!quiet)
+       {
+           printf("\n");
+           printf("Original Objects\n");
+           print_vector(" OBJ-1", a->location);
+           print_vector(" OBJ-2", b->location);
+           print_vector(" OBJ-3", c->location);
+           print_vector(" OBJ-4", d->location);
 
-       printf("\nEngine Running...\n");
+           printf("\nEngine Running...\n");
+       } // if (!quiet)
 
        for (;;)
        {
            count++;
            count1++;
            universe.iterate(.0001, 1);
-           if (count1 > 100000) { printf("."); fflush (stdout); count1 = 0;};
+           if (!quiet && count1 > 100000) { printf("."); fflush (stdout); count1 = 0;};
            //if (count > 2500000) break;
            if (count >= 1000000) break;
        }
 
-       printf(" %d: Iterations have passed\n\n", count);
+       if (!quiet)
+       {
+           printf(" %d: Iterations have passed\n\n", count);
 
-       printf("Processed Objects\n");
-       print_vector(" OBJ-1", a->location);
-       print_vector(" OBJ-2", b->location);
-       print_vector(" OBJ-3", c->location);
-       print_vector(" OBJ-4", d->location);
+           printf("Processed Objects\n");
+           print_vector(" OBJ-1", a->location);
+           print_vector(" OBJ-2", b->location);
+           print_vector(" OBJ-3", c->location);
+           print_vector(" OBJ-4", d->location);
 
-       printf("\nDISTANCE: %le, GRAVITY: %le\n", phys_distance(a->location, b->location), phys_gravity(*a, *b));
+           printf("\nDISTANCE: %le, GRAVITY: %le\n", phys_distance(a->location, b->location), phys_gravity(*a, *b));
+       } // if (!quirt)
 
-       return 0; //XXX return meaningful success status
+       return false; //XXX return meaningful success status
   } // test_engine
 
   void info_variable_size(void)
@@ -170,9 +176,10 @@ namespace lib {
        std::cout << " lib::Ship  :  " << sizeof(Ship)            << std::endl;
   }
 
-  bool test_units(bool quiet, bool debug)
+  bool test_units(bool quiet, bool /* debug unused*/)
   {
-    std::cout << "\nTest: Units and Dimensions\n";
+      if (!quiet)
+          std::cout << "\nTest: Units and Dimensions\n";
     
       Location location = 9.0*si::meters;
       Time     time = 8.0*si::seconds;
@@ -180,11 +187,14 @@ namespace lib {
       Velocity     velocity = location/time;
       Acceleration acceleration = velocity/time;
      
-      std::cout << " Location                 : " << location << std::endl;
-      std::cout << " Time                     : " << time     << std::endl;
-      std::cout << " Velocity (Location/Time) : " << velocity << std::endl;
-      std::cout << " Acceleration (Velo/Time) : " << acceleration << std::endl;
-      
+      if (!quiet)
+      {
+          std::cout << " Location                 : " << location << std::endl;
+          std::cout << " Time                     : " << time     << std::endl;
+          std::cout << " Velocity (Location/Time) : " << velocity << std::endl;
+          std::cout << " Acceleration (Velo/Time) : " << acceleration << std::endl;
+      } // if (!quiet)
+
     return true;
   }
 

@@ -103,7 +103,7 @@ void model_xml_load(std::string &name, Model &model)
 }
 
 
-void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
+void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model)
 {
 
     xmlChar *temp;
@@ -139,7 +139,7 @@ void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model)
 }
 
 
-void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model)
+void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model)
 {
 
     xmlChar *temp;

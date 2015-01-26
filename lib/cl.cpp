@@ -239,7 +239,7 @@ cl::Kernel cl_loadkernel(const std::string &file, const std::string &functionstr
 {
   // Load cl Kernel source from file
   std::string cl_source;
-  readTextFile(std::string("/home/beau/src/amethyst/trunk/lib/") + file, cl_source);
+  readTextFile(std::string("/home/beau/src/amethyst/lib/") + file, cl_source);
 
   cl::Program::Sources source = cl::Program::Sources(1, std::make_pair (cl_source.c_str(), cl_source.size()-1));
   cl::Program program = cl::Program(lib::amethyst_cl_context, source);

@@ -95,7 +95,7 @@ void UIW_Log::render()
     glPopMatrix();
 }
 
-bool UIW_Log::check_focus(unsigned short x, unsigned short y)
+bool UIW_Log::check_focus(unsigned short /*x*/, unsigned short /*y*/)
 {
   
   return false;

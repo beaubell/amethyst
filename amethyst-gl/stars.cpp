@@ -89,7 +89,7 @@ void stars_load(std::string &filestr)
 
     unsigned int i;
 
-    for (i = 0; !feof(file), i<entries; i++)
+    for (i = 0; !feof(file) && i<entries; i++)
     {
        fscanf(file, "%f,%f,%f,%f\n", &star[i].ra, &star[i].de, &star[i].bt, &star[i].vt);
 

@@ -615,9 +615,7 @@ void Universe::cl_copytogpu()
     obj++;
   }
 
-
   // Send buffer to GPU
-  cl_int err = CL_SUCCESS;
   std::size_t size_vec_mass = sizeof(float_type)*objects;
   std::size_t size_vec_loc = sizeof(Cartesian_Vector)*objects;
   std::size_t size_vec_vel = sizeof(Cartesian_Vector)*objects;
@@ -625,9 +623,9 @@ void Universe::cl_copytogpu()
   cl::Event in_mass_event, in_location_event, in_velocity_event;
 
   //push our CPU arrays to the GPU
-  err = queue_rk4.enqueueWriteBuffer(_cl_buf_mass,     CL_TRUE, 0, size_vec_mass,  &_object_mass[0],     NULL, &in_mass_event);
-  err = queue_rk4.enqueueWriteBuffer(_current.location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
-  err = queue_rk4.enqueueWriteBuffer(_current.velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
+  queue_rk4.enqueueWriteBuffer(_cl_buf_mass,      CL_TRUE, 0, size_vec_mass,  &_object_mass[0],     NULL, &in_mass_event);
+  queue_rk4.enqueueWriteBuffer(_current.location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
+  queue_rk4.enqueueWriteBuffer(_current.velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
 
   queue_rk4.finish();
 }
@@ -638,7 +636,6 @@ void Universe::cl_copyfrgpu()
   if (!_using_cl)
     throw (std::runtime_error("Cannot copy data to GPU.  Cl is not initialized"));
 
-  cl_int err = CL_SUCCESS;
   size_t objects = _object_list.size();
 
   //std::size_t size_vec_mass = sizeof(float_type)*objects;
@@ -648,8 +645,8 @@ void Universe::cl_copyfrgpu()
   cl::Event in_mass_event, in_location_event, in_velocity_event;
 
   //get our CPU arrays from the GPU
-  err = queue_rk4.enqueueReadBuffer(_current.location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
-  err = queue_rk4.enqueueReadBuffer(_current.velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
+  queue_rk4.enqueueReadBuffer(_current.location, CL_TRUE, 0, size_vec_loc,   &_object_position[0], NULL, &in_location_event);
+  queue_rk4.enqueueReadBuffer(_current.velocity, CL_TRUE, 0, size_vec_vel,   &_object_velocity[0], NULL, &in_velocity_event);
 
   queue_rk4.finish();
 

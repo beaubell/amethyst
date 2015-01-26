@@ -14,7 +14,7 @@
 
 #include <fstream>
 #include <iostream>
-#include <strstream>
+#include <sstream>
 #include <vector>
 #include <cmath>
 
@@ -271,22 +271,22 @@ void gen_object_variation(Universe &uni,
   const uint vy_steps = v_steps[1];
   const uint vz_steps = v_steps[2];
   
-  for(int xi = 0; xi < x_steps; xi++)
+  for(unsigned int xi = 0; xi < x_steps; xi++)
   {
     double x = source.location.x + double(xi+r_stepoff[0])*r_stepsize.x;
-    for(int yi = 0; yi < y_steps; yi++)
+    for(unsigned int yi = 0; yi < y_steps; yi++)
     {
       double y = source.location.y + double(yi+r_stepoff[1])*r_stepsize.y;
-      for(int zi = 0; zi < z_steps; zi++)
+      for(unsigned int zi = 0; zi < z_steps; zi++)
       {
         double z = source.location.z + double(zi+r_stepoff[2])*r_stepsize.z;
-        for(int vxi = 0; vxi < vx_steps; vxi++)
+        for(unsigned int vxi = 0; vxi < vx_steps; vxi++)
         {
           double vx = source.velocity.x + double(vxi+v_stepoff[0])*v_stepsize.x;
-          for(int vyi = 0; vyi < vy_steps; vyi++)
+          for(unsigned int vyi = 0; vyi < vy_steps; vyi++)
           {
             double vy = source.velocity.y + double(vyi+v_stepoff[1])*v_stepsize.y;
-            for(int vzi = 0; vzi < vz_steps; vzi++)
+            for(unsigned int vzi = 0; vzi < vz_steps; vzi++)
             {
               double vz = source.velocity.z + double(vzi+v_stepoff[2])*v_stepsize.z;
 
@@ -303,7 +303,7 @@ void gen_object_variation(Universe &uni,
               obj->velocity.x = vx;
               obj->velocity.y = vy;
               obj->velocity.z = vz;
-              std::strstream ss;
+              std::stringstream ss;
               std::string str;
               ss << xi + r_stepoff[0] << "," << yi + r_stepoff[1]<< "," << zi + r_stepoff[2] << ":"
                  << vxi + v_stepoff[0] << "," << vyi + v_stepoff[1]<< "," << vzi + v_stepoff[2];

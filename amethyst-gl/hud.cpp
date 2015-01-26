@@ -76,7 +76,7 @@ void hud_setup(void)
 
 void hud_render(void)
 {
-    unsigned int screen_y = Global.screen_y;
+    // unsigned int screen_y = Global.screen_y; /*unused*/
 
     glColor3f(1.0f,1.0f,1.0f);
     glDisable( GL_DEPTH_TEST);
@@ -284,7 +284,7 @@ static void hud_widget_select(const int x, const int y)
 
 
 
-static void hud_widget_vectorbox(int x, int y, float xvector, float yvector, float zvector)
+static void hud_widget_vectorbox(int /*x unused*/, int /*y unused*/, float xvector, float yvector, float zvector)
 {
 
     GLfloat frame[] = { 1.0f,-0.1f,-0.1f,  1.0f,0.1f,-0.1f,   1.0f,0.1f,0.1f,   1.0f,-0.1f,0.1f,

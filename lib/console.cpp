@@ -100,9 +100,8 @@ namespace amethyst {
   }
   
   
-  void   catch_signal(int foo)
+  void   catch_signal(int /*foo unused*/)
   {
-       foo = 1;  // shut up gcc;
        stop_console();
   }
   

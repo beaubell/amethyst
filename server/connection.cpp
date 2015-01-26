@@ -252,7 +252,7 @@ void TCP_Connection::handle_main_sequence_read(boost::system::error_code ec)
 void TCP_Connection::manifest_send()
 {
     message_ = "Ok. " + lexical_cast<std::string>(manifest_.size()) + "Entries\r\n";
-    for (int count = 0;count < manifest_.size();count++)
+    for (unsigned int count = 0;count < manifest_.size();count++)
         message_ += manifest_[count].hash + " " + manifest_[count].file
                  + " " + lexical_cast<std::string>(manifest_[count].size) + "\r\n";
 

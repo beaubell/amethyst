@@ -40,7 +40,7 @@ public:
 
 private:
     Amethyst_GL &_amgl;
-    GLdouble _potentianl_plane[16];
+    GLdouble _potential_plane[16];
     cl::Buffer _cl_buf_plane_corners;
     
     boost::signals2::scoped_connection _scon_update;

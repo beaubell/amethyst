@@ -149,10 +149,10 @@ void UIW_Shipstat::render()
     glPopMatrix();
 }
 
-bool UIW_Shipstat::check_focus(unsigned short x, unsigned short y)
+bool UIW_Shipstat::check_focus(unsigned short /*x unused*/, unsigned short /*y unused*/)
 {
   
-  
+    return false;  
 }
 
 } // namespace module

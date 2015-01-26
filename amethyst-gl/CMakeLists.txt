@@ -53,6 +53,7 @@ TARGET_LINK_LIBRARIES(amethyst-gl
   ${FREETYPE_LIBRARY}
   ${OPENGL_gl_LIBRARY}
   -lGLEW
+  ${CMAKE_DL_LIBS}
   libamethyst
   libftgl
   ${Boost_TIMER_LIBRARY}
