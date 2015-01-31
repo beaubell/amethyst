@@ -61,8 +61,10 @@ static void sdl_setup(void);
 
 static void sdl_setup()
 {
-    const SDL_VideoInfo* video;
-
+    
+    using namespace amethyst;
+    using namespace amethyst::client;
+  
     cout << "Initializing SDL...";
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
         fprintf(stderr,
@@ -71,18 +73,6 @@ static void sdl_setup()
     } else cout << "Success!" << endl;
 
     atexit(SDL_Quit);
-
-
-    SDL_WM_SetCaption(QUOTEME(AMETHYST_LONG_NAME),QUOTEME(AMETHSYT_SHORT_NAME));
-
-    cout << "Initializing Video...";
-    video = SDL_GetVideoInfo( );
-
-    if( !video ) {
-        fprintf(stderr,
-                "Couldn't get video information: %s\n", SDL_GetError());
-        exit(1);
-    } else cout << "Success!" << endl;
 
     cout << "Initializing OpenGL (Part 1)...";
 
@@ -96,13 +86,21 @@ static void sdl_setup()
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
     //SDL_GL_SetAttribute( SDL_GL_STEREO, 1 );
 
-    if( SDL_SetVideoMode( WIDTH, HEIGHT, video->vfmt->BitsPerPixel, SDL_OPENGL |  SDL_RESIZABLE) == 0 )
+    Global.mainwindow = SDL_CreateWindow(QUOTEME(AMETHYST_LONG_NAME), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+
+    if (!Global.mainwindow)
     {
         fprintf(stderr,
                 "Couldn't set video mode: %s\n", SDL_GetError());
         exit(1);
     } else cout << "Sucess!" << endl;
 
+    //checkSDLError(__LINE__);
+    
+     /* Create our opengl context and attach it to our window */
+    Global.maincontext = SDL_GL_CreateContext(Global.mainwindow);
+    //checkSDLError(__LINE__);
+    
     int value;
 
     SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &value);
@@ -223,7 +221,7 @@ int main(int argc, char* argv[])
     models_free();
     stars_free();
 
-    thread_stop_all();
+    //thread_stop_all();
 
     //module_manager.stop_all();
 

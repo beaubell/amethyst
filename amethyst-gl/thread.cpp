@@ -10,7 +10,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
-
+#if 0
 #include <iostream>
 #include "SDL_thread.h"
 
@@ -122,3 +122,4 @@ void thread_stop_all(void)
 
 } // namespace client
 } // namespace amethyst
+#endif

@@ -64,6 +64,10 @@ class __global {
 
       // Field of View
       float   fov;
+      
+      // Video Information
+      SDL_Window*    mainwindow;
+      SDL_GLContext  maincontext;
 
       unsigned int screen_x;
       unsigned int screen_y;

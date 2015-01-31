@@ -21,7 +21,6 @@
 #include <windows.h>
 #endif
 
-#define NO_SDL_GLEXT 1
 #include <GL/glew.h>
 #include "GL/gl.h"
 #include "GL/glext.h"

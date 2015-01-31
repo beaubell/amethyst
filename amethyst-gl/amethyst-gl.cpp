@@ -85,27 +85,27 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
 
   /// Setup Keyboard Shortcuts
   // Integration Control
-  input->sig_kb[SDLK_SPACE].connect(bind(&Amethyst_GL::pause_toggle,this));
-  input->sig_kb[SDLK_g].connect(bind(&Universe::toggle_gravity, &Global.universe));
-  input->sig_kb[SDLK_4].connect(bind(&Universe::toggle_4thorder, &Global.universe));
-  input->sig_kb[SDLK_EQUALS].connect(bind(&Amethyst_GL::simint_inc,this));
-  input->sig_kb[SDLK_MINUS].connect(bind(&Amethyst_GL::simint_dec,this));
-  input->sig_kb[SDLK_RIGHTBRACKET].connect(bind(&Amethyst_GL::stride_inc,this));
-  input->sig_kb[SDLK_LEFTBRACKET].connect(bind(&Amethyst_GL::stride_dec,this));
+  input->sig_kb[SDL_SCANCODE_SPACE].connect(bind(&Amethyst_GL::pause_toggle,this));
+  input->sig_kb[SDL_SCANCODE_G].connect(bind(&Universe::toggle_gravity, &Global.universe));
+  input->sig_kb[SDL_SCANCODE_4].connect(bind(&Universe::toggle_4thorder, &Global.universe));
+  input->sig_kb[SDL_SCANCODE_EQUALS].connect(bind(&Amethyst_GL::simint_inc,this));
+  input->sig_kb[SDL_SCANCODE_MINUS].connect(bind(&Amethyst_GL::simint_dec,this));
+  input->sig_kb[SDL_SCANCODE_RIGHTBRACKET].connect(bind(&Amethyst_GL::stride_inc,this));
+  input->sig_kb[SDL_SCANCODE_LEFTBRACKET].connect(bind(&Amethyst_GL::stride_dec,this));
 
   // Targeting Control
-  input->sig_kb[SDLK_n].connect(scene_control_ship_next);
-  input->sig_kb[SDLK_b].connect(scene_select_object_next);
-  input->sig_kb[SDLK_t].connect(scene_target_object_next);
-  input->sig_kb[SDLK_p].connect(bind(scene_xml_write,std::string("dump")));
+  input->sig_kb[SDL_SCANCODE_N].connect(scene_control_ship_next);
+  input->sig_kb[SDL_SCANCODE_B].connect(scene_select_object_next);
+  input->sig_kb[SDL_SCANCODE_T].connect(scene_target_object_next);
+  input->sig_kb[SDL_SCANCODE_P].connect(bind(scene_xml_write,std::string("dump")));
 
   // GUI Control
-  input->sig_kb[SDLK_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
-  input->sig_kb[SDLK_F2].connect(bind(&Amethyst_GL::ui_toggle,this));
+  input->sig_kb[SDL_SCANCODE_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
+  input->sig_kb[SDL_SCANCODE_F2].connect(bind(&Amethyst_GL::ui_toggle,this));
 
   // History Buffer
-  input->sig_kb[SDLK_c].connect(bind(&Amethyst_GL::state_save, this));
-  input->sig_kb[SDLK_v].connect(bind(&Amethyst_GL::state_recall, this));
+  input->sig_kb[SDL_SCANCODE_C].connect(bind(&Amethyst_GL::state_save, this));
+  input->sig_kb[SDL_SCANCODE_V].connect(bind(&Amethyst_GL::state_recall, this));
 }
 
 
@@ -220,7 +220,7 @@ void Amethyst_GL::render()
     ui.render();
 
   // Do the buffer Swap
-  SDL_GL_SwapBuffers();
+  SDL_GL_SwapWindow(Global.mainwindow);
 }
 
 

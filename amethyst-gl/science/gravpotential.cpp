@@ -11,7 +11,7 @@
 #include <fstream>
 #include <cmath>
 
-#include <SDL/SDL_keysym.h>
+#include "SDL_keycode.h"
 
 namespace amethyst {
 namespace client {
@@ -29,13 +29,13 @@ float get_seconds_elapsed(cl::Event& ev)
 
 GravPotential::GravPotential(Amethyst_GL &amgl)
 : _amgl(amgl),
-  _scon_update( _amgl.input->sig_kb[SDLK_z].connect(bind(&GravPotential::update,this)) ),  // Setup Keyboard Shortcuts
-  _scon_inc_max( _amgl.input->sig_kb[SDLK_w].connect(bind(&GravPotential::inc_max,this)) ),
-  _scon_dec_max( _amgl.input->sig_kb[SDLK_s].connect(bind(&GravPotential::dec_max,this)) ),
-  _scon_inc_min( _amgl.input->sig_kb[SDLK_q].connect(bind(&GravPotential::inc_min,this)) ),
-  _scon_dec_min( _amgl.input->sig_kb[SDLK_a].connect(bind(&GravPotential::dec_min,this)) ),
-  _scon_inc_scaler( _amgl.input->sig_kb[SDLK_e].connect(bind(&GravPotential::inc_scaler,this)) ),
-  _scon_dec_scaler( _amgl.input->sig_kb[SDLK_d].connect(bind(&GravPotential::dec_scaler,this)) ),
+  _scon_update( _amgl.input->sig_kb[SDL_SCANCODE_Z].connect(bind(&GravPotential::update,this)) ),  // Setup Keyboard Shortcuts
+  _scon_inc_max( _amgl.input->sig_kb[SDL_SCANCODE_W].connect(bind(&GravPotential::inc_max,this)) ),
+  _scon_dec_max( _amgl.input->sig_kb[SDL_SCANCODE_S].connect(bind(&GravPotential::dec_max,this)) ),
+  _scon_inc_min( _amgl.input->sig_kb[SDL_SCANCODE_Q].connect(bind(&GravPotential::inc_min,this)) ),
+  _scon_dec_min( _amgl.input->sig_kb[SDL_SCANCODE_A].connect(bind(&GravPotential::dec_min,this)) ),
+  _scon_inc_scaler( _amgl.input->sig_kb[SDL_SCANCODE_E].connect(bind(&GravPotential::inc_scaler,this)) ),
+  _scon_dec_scaler( _amgl.input->sig_kb[SDL_SCANCODE_D].connect(bind(&GravPotential::dec_scaler,this)) ),
   _scon_render( _amgl.sig_render_scene.connect(bind(&GravPotential::render,this, _1)) ),  // Add to Render List
   _texname(0),
   _shaderProgram(0),

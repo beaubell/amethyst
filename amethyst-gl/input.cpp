@@ -72,13 +72,17 @@ int Input::process_events()
             case SDL_MOUSEMOTION:
                 event_mouse_motion(event.motion);
                 break;
+                
+            case SDL_MOUSEWHEEL:
+                event_mouse_wheel(event.wheel);
+                break;
 
             case SDL_JOYAXISMOTION:
                 event_joy_axismotion(event.jaxis);
                 break;
 
-            case SDL_VIDEORESIZE:
-                event_video_resize(event.resize);
+            case SDL_WINDOWEVENT:
+                event_window(event.window);
                 break;
 
             case SDL_QUIT:
@@ -124,19 +128,21 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
 
         default:
         {
+          SDL_Scancode scancode = SDL_GetScancodeFromKey(key.keysym.sym);
+          
           if (kb_lctrl || kb_rctrl)
-            sig_kb_ctl[key.keysym.sym]();
+            sig_kb_ctl[scancode]();
           else if (kb_lshift || kb_rshift)
-            sig_kb_shift[key.keysym.sym]();
+            sig_kb_shift[scancode]();
           else
           {
-            if(sig_kb[key.keysym.sym].num_slots() != 0)
+            if(sig_kb[scancode].num_slots() != 0)
             {
-              sig_kb[key.keysym.sym]();
+              sig_kb[scancode]();
             }
             else
             {
-              std::string log = "keystroke, " + boost::lexical_cast<std::string>(key.keysym.sym) + ", is not connected to an operation.";
+              std::string log = "keystroke, " + boost::lexical_cast<std::string>(scancode) + ", is not connected to an operation.";
               Global.log.add(log);
             }
           }
@@ -200,6 +206,13 @@ int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
     return 0;
 }
 
+int Input::event_mouse_wheel(const SDL_MouseWheelEvent &wheel)
+{
+    Global.cam_zoom /= pow(1.1,wheel.y);
+
+    if (Global.cam_zoom < 10) Global.cam_zoom = 10;
+
+}
 
 int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
 {
@@ -219,6 +232,7 @@ int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
 	{
 	  ui_has_focus_ = false;
 	  mouse_camera = true;
+          SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
     }
 
@@ -235,22 +249,18 @@ int Input::event_mouse_buttonup(const SDL_MouseButtonEvent &button)
     }
     
     if (button.button == SDL_BUTTON_LEFT)
-        mouse_camera = false;
-    else if (button.button == SDL_BUTTON_WHEELUP)
     {
-        Global.cam_zoom /= 1.1f;
-        if (Global.cam_zoom < 10) Global.cam_zoom = 10;
+        mouse_camera = false;
+        SDL_SetRelativeMouseMode(SDL_FALSE);
     }
-    else if (button.button == SDL_BUTTON_WHEELDOWN)
-        Global.cam_zoom *= 1.1f;
-
+    
     return 0;
 }
 
 
 int Input::event_joy_axismotion(const SDL_JoyAxisEvent &jaxis)
 {
-    unsigned char  js    = jaxis.which;
+    /* unsigned char  js    = jaxis.which;   UNUSED */
     unsigned char  axis  = jaxis.axis;
     signed   short value = jaxis.value;
 
@@ -287,12 +297,16 @@ int Input::event_joy_axismotion(const SDL_JoyAxisEvent &jaxis)
 	return 0;
 }
 
-int Input::event_video_resize(const SDL_ResizeEvent &resize)
+int Input::event_window(const SDL_WindowEvent &window)
 {
-    SDL_SetVideoMode(resize.w, resize.h, 32, SDL_OPENGL |  SDL_RESIZABLE);
+    if (window.event == SDL_WINDOWEVENT_RESIZED)
+    {
+        int w = window.data1;
+        int h = window.data2;
+        //SDL_SetVideoMode(w, h, 32, SDL_OPENGL |  SDL_RESIZABLE);
 
-    opengl_change_aspect(resize.w, resize.h);
-
+        opengl_change_aspect(w, h);
+    }
     return 0;
 }
 

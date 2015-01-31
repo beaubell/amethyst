@@ -47,7 +47,7 @@ Joystick::Joystick()
         if(Global.joystick[i])
         {
             cout << " Opened Joystck " << i << endl;
-            cout << "  Name   : " << SDL_JoystickName(i) << endl;
+            cout << "  Name   : " << SDL_JoystickName(Global.joystick[i]) << endl;
             cout << "  Axises : " << SDL_JoystickNumAxes(Global.joystick[i]) << endl;
             cout << "  Buttons: " << SDL_JoystickNumButtons(Global.joystick[i]) << endl;
             cout << "  Hats   : " << SDL_JoystickNumHats(Global.joystick[i])    << endl;

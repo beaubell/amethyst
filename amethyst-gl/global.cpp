@@ -27,6 +27,9 @@ __global::__global()
     // Field of view (in degrees)
     fov      =     40;
 
+    mainwindow = NULL;
+    maincontext = 0;
+
     screen_x = 1024;
     screen_y = 640;
 

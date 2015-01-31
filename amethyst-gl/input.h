@@ -40,9 +40,9 @@ class Input
     typedef boost::signals2::signal<void ()> Signal_kb;
     typedef boost::signals2::signal<void (signed short)> Signal_axis;
 
-    Signal_kb sig_kb[SDLK_LAST];
-    Signal_kb sig_kb_shift[SDLK_LAST];
-    Signal_kb sig_kb_ctl[SDLK_LAST];
+    Signal_kb sig_kb[SDL_NUM_SCANCODES];
+    Signal_kb sig_kb_shift[SDL_NUM_SCANCODES];
+    Signal_kb sig_kb_ctl[SDL_NUM_SCANCODES];
 
    private:
     /// Process Keyboard Key Down/Up
@@ -51,6 +51,7 @@ class Input
 
     /// Process Mouse Motion
     int event_mouse_motion(const SDL_MouseMotionEvent &motion);
+    int event_mouse_wheel(const SDL_MouseWheelEvent &wheel);
 
     /// Process Mouse Button Down/Up
     int event_mouse_buttondown(const SDL_MouseButtonEvent &button);
@@ -70,10 +71,7 @@ class Input
     int event_joy_buttonup(const SDL_JoyButtonEvent &jbutton);
 
     /// Process Video Resize
-    int event_video_resize(const SDL_ResizeEvent &resize);
-
-    /// Process Video Expose
-    int event_video_expose(const SDL_ExposeEvent &expose);
+    int event_window(const SDL_WindowEvent &window);
 
     /// Process Quit
     int event_quit(const SDL_QuitEvent &quit);
