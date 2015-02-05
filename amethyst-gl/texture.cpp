@@ -94,6 +94,24 @@ Texture* texture_find(const std::string &name)
     return NULL;
 }
 
+void textures_free(void)
+{
+    if(!texture_list.empty())
+    {
+        std::list<Texture *>::iterator obj1 = texture_list.begin();
+        do
+        {
+            glDeleteTextures(1, &((*obj1)->gl_id));
+	    delete *obj1;
+
+            obj1++;
+        }  while (obj1 != texture_list.end());
+    }
+    
+    texture_list.clear();
+}
+  
+
 
 // FIXME figure out how to pass errors downstream
 GLuint image_load(const char *file) {

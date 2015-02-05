@@ -63,7 +63,7 @@ void cl_init(void)
             std::cout << SectionName << ": OpenGL integration successful." << std::endl;
         }
         catch (cl::Error er) {
-            std::cout << SectionName << ": Warning! Failed to attach to GLX context (" << er.what() << ")" << std::endl;
+            std::cout << SectionName << ": Warning! Failed to attach to CGL context (" << er.what() << ")" << std::endl;
             std::cout << SectionName << ": Creating context without OpenGL integration." << std::endl;
             cl_context_properties props_noGPU[] =
             {
@@ -86,7 +86,7 @@ void cl_init(void)
           std::cout << SectionName << ": OpenGL integration successful." << std::endl;
         }
         catch (cl::Error er) {
-            std::cout << SectionName << ": Warning! Failed to attach to WLX context (" << er.what() << ")" << std::endl;
+            std::cout << SectionName << ": Warning! Failed to attach to WGL context (" << er.what() << ")" << std::endl;
             std::cout << SectionName << ": Creating context without OpenGL integration." << std::endl;
             cl_context_properties props_noGPU[] =
             {

@@ -15,6 +15,7 @@
 
 #include "object.h"
 
+#define BOOST_MATH_DOMAIN_ERROR_POLICY throw_on_error
 
 namespace amethyst {
 namespace lib {

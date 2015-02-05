@@ -155,7 +155,7 @@ void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mo
 
     model.dl = glGenLists(1);
     glNewList(model.dl, GL_COMPILE);
-    model_load_file(filepath.c_str());
+    model_load_file(filepath.c_str(), model);
     glEndList();
 
     return;

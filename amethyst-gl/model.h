@@ -39,10 +39,10 @@ void model_add(Model * newmodel);
 Model* model_find(const std::string &name);
 void models_free(void);
 
-Model* model_load(std::string &model);
+Model* model_load(std::string &model_name);
 
 
-Model* model_load_file(const std::string &filename);
+void model_load_file(const std::string &filename, Model &model);
 
 void model_sphere_create(double cx, double cy, double cz, double r, int p );
 

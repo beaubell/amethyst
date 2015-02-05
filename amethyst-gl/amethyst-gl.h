@@ -39,6 +39,7 @@ class Amethyst_GL
 {
    public:
     Amethyst_GL(const std::string &path_root);
+   ~Amethyst_GL();
 
     void main_loop(void);
     void render   (void);

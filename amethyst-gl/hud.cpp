@@ -74,6 +74,11 @@ void hud_setup(void)
 
 }
 
+void hud_shutdown(void)
+{
+    delete fonts[0];
+}
+
 void hud_render(void)
 {
     // unsigned int screen_y = Global.screen_y; /*unused*/

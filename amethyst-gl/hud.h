@@ -17,6 +17,7 @@ namespace amethyst {
 namespace client {
 
 void hud_setup(void);
+void hud_shutdown(void);
 void hud_render(void);
 
 } // namespace client

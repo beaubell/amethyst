@@ -109,11 +109,19 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
 }
 
 
+Amethyst_GL::~Amethyst_GL()
+{
+  hud_shutdown();
+  delete input;
+}
+
+
 void Amethyst_GL::main_loop()
 {
   Universe &universe = Global.universe;
   uint hist_index = 0;
 
+  if(0) //For history tracking.  Not used any more
   {
     std::vector<cl::Event> wait_queue, new_events;
     size_t num_objects = Global.universe._object_list.size();

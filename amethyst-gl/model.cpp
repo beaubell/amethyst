@@ -91,9 +91,20 @@ Model* model_find(const std::string &name)
 
 void models_free(void)
 {
-    //glDeleteLists(Global.sun_mdl,1);
+    if(!model_list.empty())
+    {
+        std::list<Model *>::iterator obj1 = model_list.begin();
+        do
+        {
+            glDeleteLists((*obj1)->dl,1);
+	    delete (*obj1)->data;
+	    delete *obj1;
 
-    // FIXME ADD MODEL FREEING FUNCTIONS;
+            obj1++;
+        }  while (obj1 != model_list.end());
+    }
+    
+    model_list.clear();
 
     return;
 }
@@ -172,14 +183,14 @@ void model_sphere_create(const double cx, const double cy, const double cz, doub
 }
 
 
-Model* model_load_file(const std::string &filename)
+void model_load_file(const std::string &filename, Model &model)
 {
     if (access(filename.c_str(), R_OK) < 0) {
         if (errno == ENOENT)
             printf ("Model file doesn't exist: %s\n", filename.c_str());
         if (errno == EACCES)
             printf ("Access denied accessing model file: %s\n", filename.c_str());
-        return NULL;
+	throw std::runtime_error("Cannot Access Model File");
     }
 
     unsigned int vertices = 0, vertices_t = 0, i = 0;
@@ -190,10 +201,8 @@ Model* model_load_file(const std::string &filename)
 
     fscanf(file, "%d\n", &vertices);
 
-    Model *model = new Model;
-
     // FIXME This gets leaked eventually
-    model->data = new float[vertices * 8];
+    model.data = new float[vertices * 8];
 
     //FIXME TEMP
     glBegin(GL_TRIANGLES);
@@ -202,14 +211,14 @@ Model* model_load_file(const std::string &filename)
 
     for (i = 0; !feof(file) && i < vertices_t; i += 8)
     {
-        fscanf(file, "%f, %f,",      &model->data[i],   &model->data[i+1]);
-        fscanf(file, "%f, %f, %f,",  &model->data[i+2], &model->data[i+3], &model->data[i+4]);
-        fscanf(file, "%f, %f, %f\n", &model->data[i+5], &model->data[i+6], &model->data[i+7]);
+        fscanf(file, "%f, %f,",      &(model.data[i]), &(model.data[i+1]));
+        fscanf(file, "%f, %f, %f,",  &(model.data[i+2]), &(model.data[i+3]), &(model.data[i+4]));
+        fscanf(file, "%f, %f, %f\n", &(model.data[i+5]), &(model.data[i+6]), &(model.data[i+7]));
 
         // FIXME Temporary
         //glTexCoord2fv(&(model->data[i]));
-        glNormal3fv(&model->data[i+2]);
-        glVertex3fv(&(model->data[i+5]));
+        glNormal3fv(&(model.data[i+2]));
+        glVertex3fv(&model.data[i+5]);
     }
 
     //FIXME TEMP
@@ -221,8 +230,6 @@ Model* model_load_file(const std::string &filename)
     }
 
     fclose(file);
-
-    return model;
 }
 
 } // namespace client

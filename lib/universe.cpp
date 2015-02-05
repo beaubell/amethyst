@@ -109,9 +109,12 @@ void Universe::iterate(const double &dtime,
   iterate(dtime, stride, wait_queue, new_events);
 
   // Since we don't return events, go ahead and wait for the queue to finish before returning.
-  queue_rk4.finish();
-  // Copy data back to linked list (XXX - Temporary - FIXME)
-  cl_copyfrgpu();
+  if (_using_cl)
+  {
+    queue_rk4.finish();
+    // Copy data back to linked list (XXX - Temporary - FIXME)
+    cl_copyfrgpu();
+  }
 }
 
 

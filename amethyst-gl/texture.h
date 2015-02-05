@@ -42,6 +42,7 @@ extern std::list<Texture *>  texture_list;
 GLuint texture_load(const std::string &texture_name);
 void texture_add(Texture *newtexture);
 Texture* texture_find(const std::string &name);
+void textures_free(void);
 
 GLuint image_load  (const char *file);
 void   load_skybox (void);

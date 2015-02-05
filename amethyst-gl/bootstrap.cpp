@@ -202,8 +202,13 @@ int main(int argc, char* argv[])
 
     // Send Objects to GPU
     std::cout << "Size of Universe" << Global.universe.object_count() << std::endl;
-    Global.universe.cl_setup();
-    Global.universe.cl_copytogpu();
+    try {
+        Global.universe.cl_setup();
+        Global.universe.cl_copytogpu();
+    } catch (std::exception& ex)
+    {
+        Global.log.add(std::string("Exception thrown during OpenCL Setup: ")+ ex.what());
+    }
 
     //GravPotential test(client);
 
@@ -219,6 +224,7 @@ int main(int argc, char* argv[])
     client.main_loop();
 
     models_free();
+    textures_free();
     stars_free();
 
     //thread_stop_all();
@@ -226,6 +232,10 @@ int main(int argc, char* argv[])
     //module_manager.stop_all();
 
     module_manager.unload_all();
+    
+    SDL_GL_DeleteContext(Global.maincontext);
+    SDL_DestroyWindow(Global.mainwindow);
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
 
     SDL_Quit ();
     return EXIT_SUCCESS;
