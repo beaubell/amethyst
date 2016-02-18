@@ -260,7 +260,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object &new_ob
             {
                 temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                 std::string model_name = reinterpret_cast<char *>(temp);
-                new_obj.meta = model_load(model_name);
+                new_obj.meta = model_load(model_name).get();  //FIXME!!  Defeats purpose of shared_ptr
             }
             catch(parse_error &e)
             {

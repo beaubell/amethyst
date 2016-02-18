@@ -18,12 +18,16 @@
 
 #include "texture.h"
 
+#include <boost/shared_ptr.hpp>
+
 namespace amethyst {
 namespace client {
 
 class Model
 {
    public:
+    typedef boost::shared_ptr<Model> ptr;
+    
     std::string    name;
     unsigned int   format;
     unsigned int   vertices;
@@ -31,15 +35,18 @@ class Model
     GLuint         texture;
     GLuint         dl;
 
+    Model();
+    ~Model();
+
 };
 
-extern std::list<Model *>  model_list;
+extern std::list<Model::ptr>  model_list;
 
-void model_add(Model * newmodel);
-Model* model_find(const std::string &name);
+void model_add(Model::ptr newmodel);
+Model::ptr model_find(const std::string &name);
 void models_free(void);
 
-Model* model_load(std::string &model_name);
+Model::ptr model_load(std::string &model_name);
 
 
 void model_load_file(const std::string &filename, Model &model);
