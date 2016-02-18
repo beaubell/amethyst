@@ -30,12 +30,24 @@
 namespace amethyst {
 namespace client {
 
-std::list<Model *>  model_list;
+std::list<Model::ptr>  model_list;
 
-Model* model_load(std::string &model_name)
+Model::Model()
+ : data(NULL),
+   dl(0) {}
+
+Model::~Model()
+{
+    glDeleteLists(dl,1);
+    if(data)
+      delete[] data;
+}
+
+
+Model::ptr model_load(std::string &model_name)
 {
 
-    Model *model = NULL;
+    Model::ptr model = NULL;
 
     // See if model is already loaded
     model = model_find(model_name);
@@ -43,15 +55,15 @@ Model* model_load(std::string &model_name)
     // If model doesn't already exist, load and add to linked list
     if(!model)
     {
-        model = new Model;
-        model->dl = 0;
+        model = Model::ptr(new Model);
+
         try
         {
             model_xml_load(model_name, *model);
         }
         catch (std::runtime_error &e)
         {
-            delete model;
+            //delete model;
             model = NULL;
             throw e;
         }
@@ -63,7 +75,7 @@ Model* model_load(std::string &model_name)
 }
 
 
-void model_add(Model *newmodel)
+void model_add(Model::ptr newmodel)
 {
     if (newmodel)
       model_list.push_back(newmodel);
@@ -72,11 +84,11 @@ void model_add(Model *newmodel)
 }
 
 
-Model* model_find(const std::string &name)
+Model::ptr model_find(const std::string &name)
 {
     if(!model_list.empty())
     {
-        std::list<Model *>::iterator obj1 = model_list.begin();
+        auto obj1 = model_list.begin();
         do
         {
             if(name == (*obj1)->name)
@@ -91,19 +103,6 @@ Model* model_find(const std::string &name)
 
 void models_free(void)
 {
-    if(!model_list.empty())
-    {
-        std::list<Model *>::iterator obj1 = model_list.begin();
-        do
-        {
-            glDeleteLists((*obj1)->dl,1);
-	    delete (*obj1)->data;
-	    delete *obj1;
-
-            obj1++;
-        }  while (obj1 != model_list.end());
-    }
-    
     model_list.clear();
 
     return;
