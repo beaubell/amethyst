@@ -26,6 +26,49 @@ namespace client {
 
 void printInfoLog(GLuint obj);
 
+ShaderProgram::ShaderProgram()
+ : _program_hdl(-1)
+{
+
+}
+
+ShaderProgram::ShaderProgram(const std::string &vname, const std::string &fname)
+ : _program_hdl(-1)
+{
+    _program_hdl = load_shader(vname, fname);
+}
+
+ShaderProgram::~ShaderProgram()
+{
+    glDeleteProgram(_program_hdl);
+}
+
+int ShaderProgram::GetAttribLocation(const std::string& attrib)
+{
+    int attrib_hdl = glGetAttribLocation(_program_hdl, attrib.c_str());
+    if (attrib_hdl < 0)
+    {
+      opengl_check_errors("GetAttribLocation: ");
+      throw std::runtime_error("glGetAtribLocation failed");
+    }
+    return attrib_hdl;
+}
+
+int ShaderProgram::GetUniformLocation(const std::string& uniform)
+{
+    int attrib_hdl = glGetUniformLocation(_program_hdl, uniform.c_str());
+    if (attrib_hdl < 0)
+    {
+      opengl_check_errors("GetUnformLocation: ");
+      throw std::runtime_error("glGetUniformLocation failed");
+    }
+    return attrib_hdl;
+}
+
+void ShaderProgram::use()
+{
+    glUseProgram(_program_hdl); 
+}
 unsigned int load_shader(const std::string &vname, const std::string &fname)
 {
 
@@ -53,10 +96,11 @@ unsigned int load_shader(const std::string &vname, const std::string &fname)
     if (!success)
     {
         GLchar infoLog[1000];
-        glGetShaderInfoLog(myVertexShader, 1000, NULL, infoLog);
-        std::cout << "Error in vertex shader compilation!" << std::endl;
-        std::cout << "Info Log: " << infoLog << std::endl;
-        throw std::runtime_error("Vertex shader failed to compile.");
+	GLsizei length;
+        glGetShaderInfoLog(myVertexShader, 1000, &length, infoLog);
+        Global.log.add("Error in vertex shader compilation!");
+        std::cout << "Info Log (" << length << "): " << infoLog << std::endl;
+        throw std::runtime_error(infoLog);
     }
 
     success = 0;
@@ -65,10 +109,11 @@ unsigned int load_shader(const std::string &vname, const std::string &fname)
     if (!success)
     {
         GLchar infoLog[1000];
-        glGetShaderInfoLog(myFragmentShader, 1000, NULL, infoLog);
-        std::cout << "Error in fragment shader compilation!" << std::endl;
-        std::cout << "Info Log: " << infoLog << std::endl;
-        throw std::runtime_error("Fragment shader failed to compile.");
+	GLsizei length;
+        glGetShaderInfoLog(myFragmentShader, 1000, &length, infoLog);
+        //std::cout << "Error in fragment shader compilation!" << std::endl;
+        //std::cout << "Info Log: " << infoLog << std::endl;
+        throw std::runtime_error(infoLog);
     }
 
 
@@ -77,7 +122,7 @@ unsigned int load_shader(const std::string &vname, const std::string &fname)
     glAttachShader(shaderProgram, myVertexShader);
 
     success = 0;
-
+    
     glLinkProgram(shaderProgram);
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success)
@@ -87,6 +132,9 @@ unsigned int load_shader(const std::string &vname, const std::string &fname)
 
     success = 0;
 
+    glDeleteShader(myVertexShader);
+    glDeleteShader(myFragmentShader);
+    
     return shaderProgram;
 }
 

@@ -15,9 +15,27 @@
 
 #include <string>
 
+#include <boost/shared_ptr.hpp>
+
 namespace amethyst {
 namespace client {
 
+class ShaderProgram
+{
+public:
+  typedef boost::shared_ptr<ShaderProgram> ptr;
+  
+  ShaderProgram();
+  ShaderProgram(const std::string &vname, const std::string &fname);
+  ~ShaderProgram();
+  int GetAttribLocation(const std::string &attrib);
+  int GetUniformLocation(const std::string &uniform);
+  void use();
+  
+private:
+  int _program_hdl;
+};
+  
 unsigned int load_shader(const std::string &vname, const std::string &fname);
 void switch_shader(int num);
 
