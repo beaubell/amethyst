@@ -21,6 +21,11 @@
 
 #include "opengl.h"
 #include "stars.h"
+#include "opengl_shader.h"
+
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 namespace amethyst {
 namespace client {
@@ -42,32 +47,47 @@ typedef struct
 
 typedef struct
 {
-  GLubyte r;
-  GLubyte g;
-  GLubyte b;
-  GLubyte a;
   GLfloat x;
   GLfloat y;
   GLfloat z;
+  GLfloat w;
 } _star_vertex;
+
+typedef struct
+{
+  GLfloat r;
+  GLfloat g;
+  GLfloat b;
+  GLfloat a;
+} _star_color;
 
 // Storage object for starlist
 _star_data   *star;
 _star_vertex *star_vertex;
+_star_color  *star_color;
+
 unsigned int  entries;
 
+// Shader Program Location
+ShaderProgram::ptr star_shader;
 
-static unsigned char spectral_class[7][4] =
-{{'O',156,178,255}, // 30,000 - 60,000 K - Blue
- {'B',172,190,255},
- {'A',205,214,255},
- {'F',255,246,255},
- {'G',255,246,238},
- {'K',255,210,164},
- {'M',255,206,106}};
+// Vertex Attribute Locations
+GLint vertexLoc = -1, colorLoc = -1;
+ 
+// Uniform variable Locations
+GLint projMatrixLoc = -1, viewMatrixLoc = -1;
 
+// Vertex Array Objects Identifiers
+GLuint vao[1];
 
-
+static GLfloat spectral_class[7][4] =
+{{'O',0.61,0.69,1.00}, // 30,000 - 60,000 K - Blue
+ {'B',0.67,0.74,1.00},
+ {'A',0.80,0.83,1.00},
+ {'F',1.00,0.96,1.00},
+ {'G',1.00,0.96,0.93},
+ {'K',1.00,0.82,0.64},
+ {'M',1.00,0.80,0.41}};
 
 void stars_load(std::string &filestr)
 {
@@ -125,6 +145,7 @@ void stars_load(std::string &filestr)
 
     //Create Display List
     star_vertex = new _star_vertex[entries];
+    star_color = new _star_color[entries];
 
     Cartesian_Vector temp;
 
@@ -132,17 +153,48 @@ void stars_load(std::string &filestr)
     {
         temp = lib::phys_alias_transform (Spherical_Vector(star[i].ra*M_PI/180.0, (star[i].de + 90.0)*M_PI/180.0, 10000.0));
 
-        star_vertex[i].r = spectral_class[star[i].type][1];
-        star_vertex[i].g = spectral_class[star[i].type][2];
-        star_vertex[i].b = spectral_class[star[i].type][3];
-        star_vertex[i].a = (unsigned char)(star[i].alpha * 255.0f);
+        star_color[i].r = spectral_class[star[i].type][1];
+        star_color[i].g = spectral_class[star[i].type][2];
+        star_color[i].b = spectral_class[star[i].type][3];
+        star_color[i].a = star[i].alpha;
 
         star_vertex[i].x = (float)temp.x;
         star_vertex[i].y = (float)temp.y;
         star_vertex[i].z = (float)temp.z;
+	star_vertex[i].w = 1.0;
     }
 
     fclose(file);
+
+    // Setup Shaders;
+    star_shader = ShaderProgram::ptr(new ShaderProgram("baseline.vert", "baseline.frag"));
+
+    vertexLoc = star_shader->GetAttribLocation("positionData");
+    colorLoc  = star_shader->GetAttribLocation("colorData"); 
+    projMatrixLoc = star_shader->GetUniformLocation("projMatrix");
+    viewMatrixLoc = star_shader->GetUniformLocation("viewMatrix");
+    
+    //glBindFragDataLocation(star_shader_program, 0, "outputF");
+    std::cout << "vectexLoc:" << vertexLoc << ", colorLoc:" << colorLoc << std::endl;
+    std::cout << "projMatrixLoc:" << projMatrixLoc << ", viewMatrixLoc:" << viewMatrixLoc << std::endl;
+    GLuint buffers[2];
+ 
+    glGenVertexArrays(1, vao);
+
+    glBindVertexArray(vao[0]);
+
+    // Generate two slots for the vertex and color buffers
+    glGenBuffers(2, buffers);
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+    glBufferData(GL_ARRAY_BUFFER, entries, star_vertex, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(vertexLoc);
+    glVertexAttribPointer(vertexLoc, 4, GL_FLOAT, 0, 0, 0);
+
+    // bind buffer for colors and copy data into buffer
+    glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+    glBufferData(GL_ARRAY_BUFFER, entries, star_color, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(colorLoc);
+    glVertexAttribPointer(colorLoc, 4, GL_FLOAT, 0, 0, 0);
 }
 
 
@@ -150,24 +202,27 @@ void stars_free(void)
 {
     delete[] star;
     delete[] star_vertex;
+    delete[] star_color;
     entries = 0;
+
+    star_shader = NULL;
 }
 
 
-void stars_render()
+void stars_render(const glm::mat4 &projMatrix, const glm::mat4 &viewMatrix)
 {
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
     glPointSize(2);
 
-    glDisable(GL_LIGHTING);
-    glDisable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glInterleavedArrays(GL_C4UB_V3F, 0, star_vertex);
-    glDrawArrays(GL_POINTS, 0 ,entries);
-
-    glPopAttrib();
+    star_shader->use();
+    glUniformMatrix4fv(projMatrixLoc,  1, false, glm::value_ptr(projMatrix));
+    glUniformMatrix4fv(viewMatrixLoc,  1, false, glm::value_ptr(viewMatrix));
+    
+    glBindVertexArray(vao[0]);
+    glDrawArrays(GL_POINTS, 0, entries);
+    
+    glEnable(GL_DEPTH_TEST);
 }
 
 } // namespace client
