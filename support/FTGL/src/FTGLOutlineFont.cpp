@@ -22,7 +22,7 @@ FTGlyph* FTGLOutlineFont::MakeGlyph( unsigned int g)
 
     if( ftGlyph)
     {
-        FTOutlineGlyph* tempGlyph = new FTOutlineGlyph( ftGlyph, useDisplayLists);
+        FTOutlineGlyph* tempGlyph = new FTOutlineGlyph( ftGlyph );
         return tempGlyph;
     }
 

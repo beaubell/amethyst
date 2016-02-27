@@ -9,6 +9,7 @@
 #include "FTBBox.h"
 #include "FTPoint.h"
 #include "FTVector.h"
+#include "FTGLTextHandle.h"
 
 class FTFace;
 class FTGlyph;
@@ -68,7 +69,7 @@ class FTGL_EXPORT FTGlyphContainer
          * @return              An FTGlyph or <code>null</code> is it hasn't been
          * loaded.
          */
-        const FTGlyph* const Glyph( const unsigned int characterCode) const;
+        const FTGlyph* Glyph( const unsigned int characterCode) const;
 
         /**
          * Get the bounding box for a character.
@@ -94,6 +95,8 @@ class FTGL_EXPORT FTGlyphContainer
          */
         FTPoint Render( const unsigned int characterCode, const unsigned int nextCharacterCode, FTPoint penPosition);
         
+	FTPoint Compose( const unsigned int characterCode, const unsigned int nextCharacterCode, FTPoint penPosition, TextHandle &hdl);
+
         /**
          * Queries the Font for errors.
          *

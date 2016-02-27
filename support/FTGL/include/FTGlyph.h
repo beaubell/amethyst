@@ -8,6 +8,7 @@
 #include "FTBBox.h"
 #include "FTPoint.h"
 #include "FTGL.h"
+#include "FTGLTextHandle.h"
 
 
 /**
@@ -33,7 +34,7 @@ class FTGL_EXPORT FTGlyph
          *                       <code>true</code> turns ON display lists.
          *                       <code>false</code> turns OFF display lists.
          */
-        FTGlyph( FT_GlyphSlot glyph, bool useDisplayList = true);
+        FTGlyph( FT_GlyphSlot glyph);
 
         /**
          * Destructor
@@ -47,6 +48,8 @@ class FTGL_EXPORT FTGlyph
          * @return      The advance distance for this glyph.
          */
         virtual const FTPoint& Render( const FTPoint& pen) = 0;
+	
+	virtual FTPoint Compose( const FTPoint& pen, TextHandle &hdl) = 0;
         
         /**
          * Return the advance width for this glyph.
@@ -79,14 +82,7 @@ class FTGL_EXPORT FTGlyph
          * The bounding box of this glyph.
          */
         FTBBox bBox;
-        
-        /**
-         * Flag to enable or disable the use of Display Lists inside FTGL
-         * <code>true</code> turns ON display lists.
-         * <code>false</code> turns OFF display lists.
-         */
-        bool useDisplayList;
-        
+
         /**
          * Current error code. Zero means no error.
          */

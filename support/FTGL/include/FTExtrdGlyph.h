@@ -30,7 +30,7 @@ class FTGL_EXPORT FTExtrdGlyph : public FTGlyph
          *                       <code>true</code> turns ON display lists.
          *                       <code>false</code> turns OFF display lists.
          */
-        FTExtrdGlyph( FT_GlyphSlot glyph, float depth, bool useDisplayList);
+        FTExtrdGlyph( FT_GlyphSlot glyph, float depth );
 
         /**
          * Destructor
@@ -44,7 +44,8 @@ class FTGL_EXPORT FTExtrdGlyph : public FTGlyph
          * @return      The advance distance for this glyph.
          */
         virtual const FTPoint& Render( const FTPoint& pen);
-        
+        virtual       FTPoint  Compose( const FTPoint& pen, TextHandle &hdl);
+	
     private:
         /**
          * Calculate the normal vector to 2 points. This is 2D and ignores
@@ -55,13 +56,7 @@ class FTGL_EXPORT FTExtrdGlyph : public FTGlyph
          * @return
          */
         FTPoint GetNormal( const FTPoint &a, const FTPoint &b);
-        
-        
-        /**
-         * OpenGL display list
-         */
-        GLuint glList;
-    
+
 };
 
 

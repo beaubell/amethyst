@@ -6,9 +6,8 @@
 #include    "FTVectoriser.h"
 
 
-FTExtrdGlyph::FTExtrdGlyph( FT_GlyphSlot glyph, float depth, bool useDisplayList)
-:   FTGlyph( glyph),
-    glList(0)
+FTExtrdGlyph::FTExtrdGlyph( FT_GlyphSlot glyph, float depth )
+:   FTGlyph( glyph)
 {
     bBox.SetDepth( -depth);
         
@@ -25,12 +24,6 @@ FTExtrdGlyph::FTExtrdGlyph( FT_GlyphSlot glyph, float depth, bool useDisplayList
     }
 
     unsigned int tesselationIndex;
-    
-    if(useDisplayList)
-    {
-        glList = glGenLists(1);
-        glNewList( glList, GL_COMPILE);
-    }
 
     vectoriser.MakeMesh( 1.0);
     glNormal3d(0.0, 0.0, 1.0);
@@ -123,17 +116,13 @@ FTExtrdGlyph::FTExtrdGlyph( FT_GlyphSlot glyph, float depth, bool useDisplayList
             }
         glEnd();
     }
-        
-    if(useDisplayList)
-    {
-        glEndList();
-    }
+
 }
 
 
 FTExtrdGlyph::~FTExtrdGlyph()
 {
-    glDeleteLists( glList, 1);
+
 }
 
 
@@ -141,14 +130,16 @@ const FTPoint& FTExtrdGlyph::Render( const FTPoint& pen)
 {
     glTranslatef( pen.X(), pen.Y(), 0);
     
-    if( glList)
-    {
-        glCallList( glList);    
-    }
+    // FIXME Render
     
     return advance;
 }
 
+FTPoint FTExtrdGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
+{
+    // FIXME
+    return advance;
+}
 
 FTPoint FTExtrdGlyph::GetNormal( const FTPoint &a, const FTPoint &b)
 {

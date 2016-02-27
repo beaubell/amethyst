@@ -38,6 +38,7 @@ class  FTGL_EXPORT FTPixmapGlyph : public FTGlyph
          * @return      The advance distance for this glyph.
          */
         virtual const FTPoint& Render( const FTPoint& pen);
+	virtual       FTPoint  Compose( const FTPoint& pen, TextHandle &hdl);
         
         // attributes
 

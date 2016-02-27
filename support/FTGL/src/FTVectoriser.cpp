@@ -92,7 +92,7 @@ void FTMesh::End()
 }
 
 
-const FTTesselation* const FTMesh::Tesselation( unsigned int index) const
+const FTTesselation* FTMesh::Tesselation( unsigned int index) const
 {
     return ( index < tesselationList.size()) ? tesselationList[index] : NULL;
 }
@@ -166,7 +166,7 @@ size_t FTVectoriser::PointCount()
 }
 
 
-const FTContour* const FTVectoriser::Contour( unsigned int index) const
+const FTContour* FTVectoriser::Contour( unsigned int index) const
 {
     return ( index < ContourCount()) ? contourList[index] : NULL;
 }

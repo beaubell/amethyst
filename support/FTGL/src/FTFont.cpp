@@ -3,10 +3,8 @@
 #include    "FTGlyphContainer.h"
 #include    "FTBBox.h"
 
-
 FTFont::FTFont( const char* fontFilePath)
 :   face( fontFilePath),
-    useDisplayLists(true),
     glyphList(0)
 {
     err = face.Error();
@@ -108,12 +106,6 @@ unsigned int FTFont::CharMapCount()
 FT_Encoding* FTFont::CharMapList()
 {
     return face.CharMapList();
-}
-
-
-void FTFont::UseDisplayList( bool useList)
-{
-    useDisplayLists = useList;
 }
 
 float FTFont::Ascender() const
@@ -273,7 +265,40 @@ void FTFont::Render( const wchar_t* string )
     }
 }
 
+void FTFont::Compose( const std::string text, TextHandle &hdl)
+{
+    const unsigned char* c = (unsigned char*)text.c_str();
+    pen.X(0); pen.Y(0);
 
+    while( *c)
+    {
+        
+        if(CheckGlyph( *c))
+        {
+            pen = glyphList->Compose( *c, *(c + 1), pen, hdl);
+        }
+        ++c;
+    }
+  
+}
+	
+void FTFont::Compose( const std::wstring text, TextHandle &hdl)
+{
+    const wchar_t* c = text.c_str();
+    pen.X(0); pen.Y(0);
+
+    while( *c)
+    {
+        if(CheckGlyph( *c))
+        {
+            pen = glyphList->Compose( *c, *(c + 1), pen, hdl);
+        }
+        ++c;
+    }
+  
+}
+
+	
 bool FTFont::CheckGlyph( const unsigned int characterCode)
 {
     if( NULL == glyphList->Glyph( characterCode))
@@ -286,7 +311,7 @@ bool FTFont::CheckGlyph( const unsigned int characterCode)
             {
                 err = 0x13;
             }
-            
+
             return false;
         }
         glyphList->Add( tempGlyph, characterCode);

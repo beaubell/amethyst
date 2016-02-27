@@ -1,9 +1,8 @@
 #include    "FTGlyph.h"
 
 
-FTGlyph::FTGlyph( FT_GlyphSlot glyph, bool useList)
-:   useDisplayList(useList),
-    err(0)  
+FTGlyph::FTGlyph( FT_GlyphSlot glyph)
+:   err(0)  
 {
     if( glyph)
     {

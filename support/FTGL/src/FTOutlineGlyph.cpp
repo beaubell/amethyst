@@ -2,9 +2,8 @@
 #include    "FTVectoriser.h"
 
 
-FTOutlineGlyph::FTOutlineGlyph( FT_GlyphSlot glyph, bool useDisplayList)
-:   FTGlyph( glyph),
-    glList(0)
+FTOutlineGlyph::FTOutlineGlyph( FT_GlyphSlot glyph )
+:   FTGlyph( glyph)
 {
     if( ft_glyph_format_outline != glyph->format)
     {
@@ -20,12 +19,6 @@ FTOutlineGlyph::FTOutlineGlyph( FT_GlyphSlot glyph, bool useDisplayList)
         return;
     }
 
-    if(useDisplayList)
-    {
-        glList = glGenLists(1);
-        glNewList( glList, GL_COMPILE);
-    }
-    
     for( unsigned int c = 0; c < numContours; ++c)
     {
         const FTContour* contour = vectoriser.Contour(c);
@@ -39,16 +32,12 @@ FTOutlineGlyph::FTOutlineGlyph( FT_GlyphSlot glyph, bool useDisplayList)
         glEnd();
     }
 
-    if(useDisplayList)
-    {
-        glEndList();
-    }
 }
 
 
 FTOutlineGlyph::~FTOutlineGlyph()
 {
-    glDeleteLists( glList, 1);
+
 }
 
 
@@ -56,11 +45,13 @@ const FTPoint& FTOutlineGlyph::Render( const FTPoint& pen)
 {
     glTranslatef( pen.X(), pen.Y(), 0.0f);
 
-    if( glList)
-    {
-        glCallList( glList);
-    }
+    //FIXME Render
     
     return advance;
 }
 
+FTPoint FTOutlineGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
+{
+    //FIXME
+    return advance;
+}

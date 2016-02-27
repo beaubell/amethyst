@@ -47,6 +47,10 @@ class FTGL_EXPORT FTTextureGlyph : public FTGlyph
          * @return      The advance distance for this glyph.
          */
         virtual const FTPoint& Render( const FTPoint& pen);
+	
+	virtual       FTPoint  Compose( const FTPoint& pen, TextHandle &hdl);
+	
+	
         
         /**
          * Reset the currently active texture to zero to get into a known state before

@@ -2,7 +2,9 @@
 #include <string> // For memset
 
 #include "FTGLTextureFont.h"
+#include "FTGLTextHandle.h"
 #include "FTTextureGlyph.h"
+
 
 
 inline GLuint NextPowerOf2( GLuint in)
@@ -125,12 +127,12 @@ GLuint FTGLTextureFont::CreateTexture()
     glGenTextures( 1, (GLuint*)&textID);
 
     glBindTexture( GL_TEXTURE_2D, textID);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA, textureWidth, textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureMemory);
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RED, textureWidth, textureHeight, 0, GL_RED, GL_UNSIGNED_BYTE, textureMemory);
 
     delete [] textureMemory;
 
@@ -153,7 +155,7 @@ bool FTGLTextureFont::FaceSize( const unsigned int size, const unsigned int res)
 
 void FTGLTextureFont::Render( const char* string)
 {   
-    glPushAttrib( GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
+    //DEPRECATED glPushAttrib( GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
     
     glEnable(GL_BLEND);
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_ONE
@@ -162,13 +164,13 @@ void FTGLTextureFont::Render( const char* string)
     
     FTFont::Render( string);
 
-    glPopAttrib();
+    //DEPRECATED glPopAttrib();
 }
 
 
 void FTGLTextureFont::Render( const wchar_t* string)
 {   
-    glPushAttrib( GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
+    //DEPRECATED glPushAttrib( GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT);
     
     glEnable(GL_BLEND);
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // GL_ONE
@@ -177,6 +179,18 @@ void FTGLTextureFont::Render( const wchar_t* string)
     
     FTFont::Render( string);
     
-    glPopAttrib();
+    //DEPRECATED glPopAttrib();
 }
 
+
+void FTGLTextureFont::Compose( const std::wstring text, TextHandle &hdl)
+{
+    FTFont::Compose( text.c_str(), hdl);
+}
+
+void FTGLTextureFont::Compose( const std::string text, TextHandle &hdl)
+{
+    FTFont::Compose( text.c_str(), hdl);
+  
+  
+}

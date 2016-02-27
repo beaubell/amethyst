@@ -5,6 +5,9 @@
 #include "FTVector.h"
 #include "FTGL.h"
 
+#include <string>
+
+
 class FTTextureGlyph;
 
 
@@ -59,7 +62,8 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
          * @param string    wchar_t string to be output.     
          */
         virtual void Render( const wchar_t* string);
-
+        virtual void Compose( const std::wstring text, TextHandle &hdl);
+	virtual void Compose( const std::string text, TextHandle &hdl);
         
     private:
         /**

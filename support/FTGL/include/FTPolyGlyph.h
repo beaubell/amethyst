@@ -31,7 +31,7 @@ class FTGL_EXPORT FTPolyGlyph : public FTGlyph
          *                       <code>true</code> turns ON display lists.
          *                       <code>false</code> turns OFF display lists.
          */
-        FTPolyGlyph( FT_GlyphSlot glyph, bool useDisplayList);
+        FTPolyGlyph( FT_GlyphSlot glyph );
 
         /**
          * Destructor
@@ -45,13 +45,10 @@ class FTGL_EXPORT FTPolyGlyph : public FTGlyph
          * @return      The advance distance for this glyph.
          */
         virtual const FTPoint& Render( const FTPoint& pen);
+	virtual FTPoint Compose( const FTPoint& pen, TextHandle &hdl);
         
     private:
-        /**
-         * OpenGL display list
-         */
-        GLuint glList;
-    
+
 };
 
 

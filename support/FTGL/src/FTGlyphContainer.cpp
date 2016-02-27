@@ -3,7 +3,6 @@
 #include    "FTFace.h"
 #include    "FTCharmap.h"
 
-
 FTGlyphContainer::FTGlyphContainer( FTFace* f)
 :   face(f),
     err(0)
@@ -47,7 +46,7 @@ void FTGlyphContainer::Add( FTGlyph* tempGlyph, const unsigned int characterCode
 }
 
 
-const FTGlyph* const FTGlyphContainer::Glyph( const unsigned int characterCode) const
+const FTGlyph* FTGlyphContainer::Glyph( const unsigned int characterCode) const
 {
     signed int index = charMap->GlyphListIndex( characterCode);
     return glyphs[index];
@@ -89,3 +88,29 @@ FTPoint FTGlyphContainer::Render( const unsigned int characterCode, const unsign
     kernAdvance += advance;
     return kernAdvance;
 }
+
+FTPoint FTGlyphContainer::Compose( const unsigned int characterCode, const unsigned int nextCharacterCode, FTPoint penPosition, TextHandle &hdl)
+{
+    FTPoint kernAdvance, advance;
+    
+    unsigned int left = charMap->FontIndex( characterCode);
+    unsigned int right = charMap->FontIndex( nextCharacterCode);
+
+    kernAdvance = face->KernAdvance( left, right);
+        
+    if( !face->Error())
+    {
+        advance = glyphs[charMap->GlyphListIndex( characterCode)]->Compose( penPosition, hdl);
+    }
+    
+    kernAdvance += advance;
+    return kernAdvance;
+  
+  
+  
+  
+  
+  
+  
+}
+  

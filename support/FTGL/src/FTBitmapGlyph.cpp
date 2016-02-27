@@ -63,3 +63,9 @@ const FTPoint& FTBitmapGlyph::Render( const FTPoint& pen)
     
     return advance;
 }
+
+FTPoint FTBitmapGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
+{
+    // FIXME
+    return advance;
+}

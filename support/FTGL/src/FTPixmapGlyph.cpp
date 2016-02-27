@@ -71,3 +71,10 @@ const FTPoint& FTPixmapGlyph::Render( const FTPoint& pen)
 
     return advance;
 }
+
+FTPoint FTPixmapGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
+{
+    //FIXME
+    return advance;
+  
+}

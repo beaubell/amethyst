@@ -1,8 +1,9 @@
 SET(libFTGL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Location of FTGL includes")
 
-SET(CMAKE_CXX_FLAGS ${SUPPORT_CXX_FLAGS})
+SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
+#SET(CMAKE_CXX_FLAGS ${SUPPORT_CXX_FLAGS})
 
-INCLUDE_DIRECTORIES(include ${FREETYPE_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(include ${Amethyst_SOURCE_DIR}/support ${FREETYPE_INCLUDE_DIR})
 
 SET(libFTGL_SRCS
   ./src/FTBitmapGlyph.cpp
@@ -27,6 +28,7 @@ SET(libFTGL_SRCS
   ./src/FTGLTextureFont.cpp 
   ./src/FTOutlineGlyph.cpp 
   ./src/FTSize.cpp
+  ./src/FTGLTextHandle.cpp
 )
 
 ADD_LIBRARY(libftgl STATIC ${libFTGL_SRCS})

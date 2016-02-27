@@ -21,7 +21,7 @@ FTTextureGlyph::FTTextureGlyph( FT_GlyphSlot glyph, int id, int xOffset, int yOf
     
     if( destWidth && destHeight)
     {
-        glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT);
+        //DEPRECATED glPushClientAttrib( GL_CLIENT_PIXEL_STORE_BIT);
         glPixelStorei( GL_UNPACK_LSB_FIRST, GL_FALSE);
         glPixelStorei( GL_UNPACK_ROW_LENGTH, 0);
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1);
@@ -29,7 +29,7 @@ FTTextureGlyph::FTTextureGlyph( FT_GlyphSlot glyph, int id, int xOffset, int yOf
         glBindTexture( GL_TEXTURE_2D, glTextureID);
         glTexSubImage2D( GL_TEXTURE_2D, 0, xOffset, yOffset, destWidth, destHeight, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap.buffer);
 
-        glPopClientAttrib();
+        //DEPRECATED glPopClientAttrib();
     }
 
 
@@ -62,7 +62,7 @@ const FTPoint& FTTextureGlyph::Render( const FTPoint& pen)
         glBindTexture( GL_TEXTURE_2D, (GLuint)glTextureID);
         activeTextureID = glTextureID;
     }
-    
+    /* DEPRECATED
     glTranslatef( pen.X(),  pen.Y(), 0.0f);
 
     glBegin( GL_QUADS);
@@ -78,7 +78,26 @@ const FTPoint& FTTextureGlyph::Render( const FTPoint& pen)
         glTexCoord2f( uv[1].X(), uv[0].Y());
         glVertex2f( destWidth + pos.X(), pos.Y());
     glEnd();
-
+    */
     return advance;
 }
 
+FTPoint FTTextureGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
+{
+    glm::vec2 texcoord1 = glm::vec2(uv[0].X(), uv[0].Y());
+    glm::vec4 vertex1   = glm::vec4(pen.X(), pen.Y(), 0.0f, 1.0f);
+
+    glm::vec2 texcoord2 = glm::vec2(uv[0].X(), uv[1].Y());
+    glm::vec4 vertex2   = glm::vec4(pen.X(), pen.Y() + destHeight, 0.0f, 1.0f);
+
+    glm::vec2 texcoord3 = glm::vec2( uv[1].X(), uv[1].Y());
+    glm::vec4 vertex3   = glm::vec4(pen.X()+destWidth, pen.Y() + destHeight, 0.0f, 1.0f);
+    
+    glm::vec2 texcoord4 = glm::vec2(uv[1].X(), uv[0].Y());
+    glm::vec4 vertex4   = glm::vec4(pen.X()+destWidth, pen.Y(), 0.0f, 1.0f);
+
+    hdl.addTriangle(glTextureID, vertex1, texcoord1, vertex2, texcoord2, vertex4, texcoord4);
+    hdl.addTriangle(glTextureID, vertex2, texcoord2, vertex3, texcoord3, vertex4, texcoord4);
+    
+    return advance + pen;
+}

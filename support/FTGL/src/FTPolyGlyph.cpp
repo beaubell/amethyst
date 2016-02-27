@@ -2,9 +2,8 @@
 #include "FTVectoriser.h"
 
 
-FTPolyGlyph::FTPolyGlyph( FT_GlyphSlot glyph, bool useDisplayList)
-:   FTGlyph( glyph),
-    glList(0)
+FTPolyGlyph::FTPolyGlyph( FT_GlyphSlot glyph )
+:   FTGlyph( glyph)
 {
     if( ft_glyph_format_outline != glyph->format)
     {
@@ -23,12 +22,6 @@ FTPolyGlyph::FTPolyGlyph( FT_GlyphSlot glyph, bool useDisplayList)
     unsigned int verticalTextureScale = glyph->face->size->metrics.y_ppem * 64;        
         
     vectoriser.MakeMesh( 1.0);
-    
-    if( useDisplayList)
-    {
-        glList = glGenLists( 1);
-        glNewList( glList, GL_COMPILE);
-    }
 
     const FTMesh* mesh = vectoriser.GetMesh();
     for( unsigned int index = 0; index < mesh->TesselationCount(); ++index)
@@ -51,27 +44,24 @@ FTPolyGlyph::FTPolyGlyph( FT_GlyphSlot glyph, bool useDisplayList)
         glEnd();
     }
 
-    if(useDisplayList)
-    {
-        glEndList();
-    }
 }
 
 
 FTPolyGlyph::~FTPolyGlyph()
 {
-    glDeleteLists( glList, 1);
+
 }
 
 
 const FTPoint& FTPolyGlyph::Render( const FTPoint& pen)
 {
     glTranslatef(  pen.X(),  pen.Y(), 0.0f);
-
-    if( glList)
-    {
-        glCallList( glList);    
-    }
     
+    return advance;
+}
+
+FTPoint FTPolyGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
+{
+    // FIXME
     return advance;
 }

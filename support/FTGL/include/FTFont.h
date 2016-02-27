@@ -4,8 +4,11 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+#include "FTGLTextHandle.h"
 #include "FTFace.h"
 #include "FTGL.h"
+
+#include <string>
 
 class FTGlyphContainer;
 class FTGlyph;
@@ -125,14 +128,6 @@ class FTGL_EXPORT FTFont
         virtual void Depth( float){}
 
         /**
-         * Enable or disable the use of Display Lists inside FTGL
-         *
-         * @param  useList <code>true</code> turns ON display lists.
-         *                 <code>false</code> turns OFF display lists.
-         */
-        void UseDisplayList( bool useList);
-
-        /**
          * Get the global ascender height for the face.
          *
          * @return  Ascender height
@@ -208,6 +203,10 @@ class FTGL_EXPORT FTFont
          * @param string    wchar_t string to be output.
          */
         virtual void Render( const wchar_t* string );
+	
+	virtual void Compose( const std::string text, TextHandle &hdl);
+	
+	virtual void Compose( const std::wstring text, TextHandle &hdl);
 
         /**
          * Queries the Font for errors.
@@ -237,13 +236,6 @@ class FTGL_EXPORT FTFont
          * Current size object
          */
         FTSize charSize;
-
-        /**
-         * Flag to enable or disable the use of Display Lists inside FTGL
-         * <code>true</code> turns ON display lists.
-         * <code>false</code> turns OFF display lists.
-         */
-        bool useDisplayLists;
 
         /**
          * Current error code. Zero means no error.
