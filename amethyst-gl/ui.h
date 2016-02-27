@@ -16,6 +16,7 @@
 #include "opengl.h"
 #include "FTGL.h"
 #include "FTGLTextureFont.h"
+#include "glm/glm.hpp"
 
 #include <string>
 #include <set>
@@ -59,22 +60,47 @@ class UI_Window
     UI_Window(UI &ui, const std::string &title);
     virtual ~UI_Window();
 
+    virtual void resize(const glm::vec2 &newsize);
+    virtual void setPosition(const glm::vec2 &newpos);
     virtual void render();
     virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
-    
-    int position_x;
-    int position_y;
-    int size_x;
-    int size_y;
+
     bool resizable;
     bool focused;
     std::string title;
    protected:
     FTFont &font;
-    
+    glm::vec2 _position;
+    glm::vec2 _size;
 
+    uint _vao_frame[1]; // Vertex Array Objects Identifier
+    uint _framebuffer[1];
+
+    TextHandle _titlehdl;
 };
 
+class UI_TextBox
+{
+   public:
+    UI_TextBox(UI &ui, const std::string &title, const std::string &content, const glm::vec2 &position);
+    virtual ~UI_TextBox();
+
+    virtual void render();
+    virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
+    
+
+    bool resizable;
+    bool focused;
+    std::string title;
+
+   protected:
+    FTFont &font;
+    
+    glm::vec2 _position;
+    glm::vec2 _size;
+
+    uint _text_[1]; // Vertex Array Objects Identifier
+};
 
 } // namespace client
 } // namespace amethyst
