@@ -14,6 +14,7 @@
  ***********************************************************************/
 
 #include "opengl.h"
+#include "ui_widget.h"
 #include "FTGL.h"
 #include "FTGLTextureFont.h"
 #include "glm/glm.hpp"
@@ -21,13 +22,13 @@
 #include <string>
 #include <set>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace amethyst {
 namespace client {
 
 class UI_Window;
-typedef boost::shared_ptr<UI_Window> UI_Window_ptr;
+typedef std::shared_ptr<UI_Window> UI_Window_ptr;
 
 class UI
 {
@@ -45,10 +46,10 @@ class UI
     bool check_focus(unsigned short x, unsigned short y, unsigned short but); // Uint16
     bool is_focused();
     
-    FTFont &get_font();
+    ftgl::FTFont &get_font();
 
    private:
-    FTFont *font_;
+    ftgl::FTFont *font_;
     std::set<UI_Window_ptr> windows_;
     
 };
@@ -57,6 +58,7 @@ class UI
 class UI_Window
 {
    public:
+    typedef std::shared_ptr<UI_Window> sptr;
     UI_Window(UI &ui, const std::string &title);
     virtual ~UI_Window();
 
@@ -64,19 +66,23 @@ class UI_Window
     virtual void setPosition(const glm::vec2 &newpos);
     virtual void render();
     virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
+    
+    virtual void addWidget(UI_Widget::sptr newwidget);
 
     bool resizable;
     bool focused;
     std::string title;
    protected:
-    FTFont &font;
+    ftgl::FTFont &font;
     glm::vec2 _position;
     glm::vec2 _size;
 
     uint _vao_frame[1]; // Vertex Array Objects Identifier
     uint _framebuffer[1];
 
-    TextHandle _titlehdl;
+    ftgl::TextHandle _titlehdl;
+    
+    std::set<UI_Widget::sptr> _widgets;
 };
 
 class UI_TextBox
@@ -94,7 +100,7 @@ class UI_TextBox
     std::string title;
 
    protected:
-    FTFont &font;
+    ftgl::FTFont &font;
     
     glm::vec2 _position;
     glm::vec2 _size;

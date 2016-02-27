@@ -34,8 +34,8 @@ namespace client {
 using boost::lexical_cast;
 
 // Shader Program Location
-static ShaderProgram::ptr ui_shader;
-static ShaderProgram::ptr uifont_shader;
+static ShaderProgram::sptr ui_shader;
+static ShaderProgram::sptr uifont_shader;
 
 // Vertex Attribute Locations
 static ShaderProgram::AttribHDL uivertexLoc;
@@ -58,8 +58,8 @@ UI::UI(const std::string &fontfile)
     const std::string fontpath = Global.dir_fonts + fontfile;
 
     // Setup Shaders;
-    ui_shader = ShaderProgram::ptr(new ShaderProgram("ui.vert", "ui.frag"));
-    uifont_shader = ShaderProgram::ptr(new ShaderProgram("uifont.vert", "uifont.frag"));
+    ui_shader = ShaderProgram::sptr(new ShaderProgram("ui.vert", "ui.frag"));
+    uifont_shader = ShaderProgram::sptr(new ShaderProgram("uifont.vert", "uifont.frag"));
 
     uivertexLoc     = ui_shader->GetAttribLocation("vertexData");
 
@@ -75,7 +75,7 @@ UI::UI(const std::string &fontfile)
     fnviewMatrixLoc = uifont_shader->GetUniformLocation("viewMatrix");
     fntexUnitLoc    = uifont_shader->GetUniformLocation("baseTex");
 
-    font_ = new FTGLTextureFont( fontpath.c_str());
+    font_ = new ftgl::FTGLTextureFont( fontpath.c_str());
 
     if(font_->Error())
       std::cout << "Font: %s TTF Font did not load!!" <<  fontpath << std::endl;
@@ -145,7 +145,7 @@ bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
     return false;
 }
 
-FTFont& UI::get_font()
+ftgl::FTFont& UI::get_font()
 {
     return *font_;
 }
@@ -261,6 +261,11 @@ bool UI_Window::check_focus( unsigned short x, unsigned short y, unsigned short 
       return true;
    */
    return false;
+}
+
+void UI_Window::addWidget(UI_Widget::sptr newwidget)
+{ 
+    _widgets.insert(newwidget);
 }
 
 } // namespace client

@@ -26,6 +26,9 @@ SET(amethystgl_SRCS
   thread.cpp
   timer.cpp
   ui.cpp
+  ui_object.cpp
+  ui_widget.cpp
+  ui_textbox.cpp
   amethyst-gl.cpp
   bootstrap.cpp
   ${amthyst-uiwindows}
