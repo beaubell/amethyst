@@ -76,7 +76,16 @@ static void sdl_setup()
 
     cout << "Initializing OpenGL (Part 1)...";
 
-    /* Set the minimum requirements for the OpenGL window */
+    // Request opengl 3.3 context.
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+    
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    
+    // Set the minimum requirements for the OpenGL window
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
     SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
     SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
@@ -157,7 +166,7 @@ int main(int argc, char* argv[])
 
     opengl_setup();
 
-    lib::cl_init();
+    //FIXME lib::cl_init();
 
     // Create Instance of Amethyst Physics Engine
     Amethyst_GL client(Global.dir_amethyst);
@@ -169,12 +178,12 @@ int main(int argc, char* argv[])
     //if  (module_manager.load("uiw_fps"))
     //    module_manager.start("uiw_fps", client);
 
-
     stars_load(stars_file);
-
+    
     try // Experimenting with exceptions
     {
         scene_load(Global.scene);
+	opengl_check_errors("bootstrap-asceneload");
     }
     catch(std::runtime_error &e)
     {
@@ -199,7 +208,7 @@ int main(int argc, char* argv[])
                          r_step, v_step,
                          r_offset, v_offset);
 #endif
-
+    opengl_check_errors("bootstrap-bopencl");
     // Send Objects to GPU
     std::cout << "Size of Universe" << Global.universe.object_count() << std::endl;
     try {
@@ -211,7 +220,8 @@ int main(int argc, char* argv[])
     }
 
     //GravPotential test(client);
-
+    opengl_check_errors("bootstrap-bsimstats");
+    
     // Create and add sim stats window
     UI_Window_ptr window = UI_Window_ptr(new UIW_SimStats(client, client.ui));
     client.ui.add(window);
@@ -219,7 +229,7 @@ int main(int argc, char* argv[])
     // Load shaders if supported
     //if (glShaderObjectsSupported)
     //    load_shader(Global.vshader, Global.fshader);
-
+    opengl_check_errors("bootstrap-bmain");
     
     client.main_loop();
 

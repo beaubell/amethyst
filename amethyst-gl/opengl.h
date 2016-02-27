@@ -21,17 +21,17 @@
 #include <windows.h>
 #endif
 
-#include <GL/glew.h>
-#include "GL/gl.h"
-#include "GL/glext.h"
+#define GL_GLEXT_PROTOTYPES true
+#include "GL/glcorearb.h"
 
-#include "SDL_opengl.h"
+#include <string>
 
 namespace amethyst {
 namespace client {
 
 void opengl_setup(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
+int  opengl_check_errors(const std::string &where);
 
 } // namespace amethyst
 } // namespace client
