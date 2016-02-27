@@ -1,6 +1,7 @@
 #include    "FTGLOutlineFont.h"
 #include    "FTOutlineGlyph.h"
 
+namespace ftgl {
 
 FTGLOutlineFont::FTGLOutlineFont( const char* fontFilePath)
 :   FTFont( fontFilePath)
@@ -64,3 +65,4 @@ void FTGLOutlineFont::Render( const wchar_t* string)
     glPopAttrib();
 }
 
+} //namespace ftgl

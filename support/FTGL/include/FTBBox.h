@@ -9,6 +9,7 @@
 #include "FTGL.h"
 #include "FTPoint.h"
 
+namespace ftgl {
 
 /**
  * FTBBox is a convenience class for handling bounding boxes.
@@ -119,6 +120,7 @@ class FTGL_EXPORT FTBBox
 
 };
 
+} //namespace ftgl
 
 #endif  //  __FTBBox__
 

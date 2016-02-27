@@ -1,5 +1,7 @@
 #include "FTContour.h"
 
+namespace ftgl {
+
 static const float BEZIER_STEP_SIZE = 0.2f;
 
 
@@ -145,3 +147,5 @@ FTContour::FTContour( FT_Vector* contour, char* pointTags, unsigned int numberOf
         }
     }
 }
+
+} //namespace ftgl

@@ -4,6 +4,7 @@
 #include "FTFont.h"
 #include "FTGL.h"
 
+namespace ftgl {
 
 class FTGlyph;
 
@@ -62,4 +63,7 @@ class FTGL_EXPORT FTGLBitmapFont : public FTFont
         inline virtual FTGlyph* MakeGlyph( unsigned int g);
                 
 };
+
+} //namespace ftgl
+
 #endif  //  __FTGLBitmapFont__

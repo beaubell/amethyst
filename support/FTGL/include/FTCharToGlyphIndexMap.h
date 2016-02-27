@@ -5,6 +5,8 @@
 
 #include "FTGL.h"
 
+namespace ftgl {
+
 /**
  * Provides a non-STL alternative to the STL map<unsigned long, unsigned long>
  * which maps character codes to glyph indices inside FTCharmap.
@@ -126,5 +128,6 @@ class FTGL_EXPORT FTCharToGlyphIndexMap
         GlyphIndex** Indices;
 };
 
+} //namespace ftgl
 
 #endif  //  __FTCharToGlyphIndexMap__

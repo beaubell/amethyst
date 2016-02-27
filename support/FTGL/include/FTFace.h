@@ -9,6 +9,8 @@
 #include "FTPoint.h"
 #include "FTSize.h"
 
+namespace ftgl {
+
 /**
  * FTFace class provides an abstraction layer for the Freetype Face.
  *
@@ -143,5 +145,6 @@ class FTGL_EXPORT FTFace
         FT_Error err;
 };
 
+} //namespace ftgl
 
 #endif  //  __FTFace__

@@ -10,6 +10,7 @@
 #include "FTGL.h"
 #include "FTGLTextHandle.h"
 
+namespace ftgl {
 
 /**
  * FTGlyph is the base class for FTGL glyphs.
@@ -92,6 +93,7 @@ class FTGL_EXPORT FTGlyph
 
 };
 
+} //namespace ftgl
 
 #endif  //  __FTGlyph__
 

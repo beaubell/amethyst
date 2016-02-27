@@ -13,6 +13,7 @@
 #define CALLBACK
 #endif
 
+namespace ftgl {
 
 /**
  * FTTesselation captures points that are output by OpenGL's gluTesselator.
@@ -271,5 +272,6 @@ class FTGL_EXPORT FTVectoriser
         FT_Outline outline;
 };
 
+} //namespace ftgl
 
 #endif  //  __FTVectoriser__

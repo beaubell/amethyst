@@ -5,6 +5,8 @@
 #include "FTFont.h"
 #include "FTGL.h"
 
+namespace ftgl {
+
 class FTGlyph;
 
 
@@ -48,6 +50,7 @@ class FTGL_EXPORT FTGLPolygonFont : public FTFont
         
 };
 
+} //namespace ftgl
 
 #endif  //  __FTGLPolygonFont__
 

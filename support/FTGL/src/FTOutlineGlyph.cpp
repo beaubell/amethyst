@@ -1,6 +1,7 @@
 #include    "FTOutlineGlyph.h"
 #include    "FTVectoriser.h"
 
+namespace ftgl {
 
 FTOutlineGlyph::FTOutlineGlyph( FT_GlyphSlot glyph )
 :   FTGlyph( glyph)
@@ -55,3 +56,5 @@ FTPoint FTOutlineGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
     //FIXME
     return advance;
 }
+
+} //namespace ftgl

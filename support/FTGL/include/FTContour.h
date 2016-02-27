@@ -5,6 +5,7 @@
 #include "FTVector.h"
 #include "FTGL.h"
 
+namespace ftgl {
 
 /**
  * FTContour class is a container of points that describe a vector font
@@ -84,5 +85,7 @@ class FTGL_EXPORT FTContour
          */
         float controlPoints[4][2];
 };
+
+} //namespace ftgl
 
 #endif // __FTContour__

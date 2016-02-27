@@ -9,6 +9,7 @@
 #include "FTGL.h"
 #include "FTGlyph.h"
 
+namespace ftgl {
 
 /**
  * FTPixmapGlyph is a specialisation of FTGlyph for creating pixmaps.
@@ -65,5 +66,6 @@ class  FTGL_EXPORT FTPixmapGlyph : public FTGlyph
         
 };
 
+} //namespace ftgl
 
 #endif  //  __FTPixmapGlyph__

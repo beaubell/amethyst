@@ -4,6 +4,8 @@
 #include <vector>
 #include "glm/glm.hpp"
 
+namespace ftgl {
+
 class TextHandle
 {
 public:
@@ -33,5 +35,7 @@ public:
 		     const glm::vec4 &vert3, const glm::vec2 &texcoord3);
     void addVertex(const glm::vec4 &newvert, const glm::vec2 &newtexcoord);
 };
+
+} //namespace ftgl
 
 #endif // __FTGLTextHandle__

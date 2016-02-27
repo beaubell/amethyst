@@ -1,5 +1,6 @@
 #include    "FTSize.h"
 
+namespace ftgl {
 
 FTSize::FTSize()
 :   ftFace(0),
@@ -102,3 +103,4 @@ float FTSize::Underline() const
     return 0.0f;
 }
 
+} //namespace ftgl

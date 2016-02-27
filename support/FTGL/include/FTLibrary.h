@@ -7,6 +7,7 @@
 
 #include "FTGL.h"
 
+namespace ftgl {
 
 /**
  * FTLibrary class is the global accessor for the Freetype library.
@@ -93,5 +94,7 @@ class FTGL_EXPORT FTLibrary
         FT_Error err;
         
 };
+
+} //namespace ftgl
 
 #endif  //  __FTLibrary__

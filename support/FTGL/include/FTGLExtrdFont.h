@@ -4,6 +4,8 @@
 #include "FTFont.h"
 #include "FTGL.h"
 
+namespace ftgl {
+
 class FTGlyph;
 
 /**
@@ -58,6 +60,7 @@ class FTGL_EXPORT FTGLExtrdFont : public FTFont
         float depth;
 };
 
+} //namespace ftgl
 
 #endif	//	__FTGLExtrdFont__
 

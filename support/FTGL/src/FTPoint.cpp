@@ -1,5 +1,6 @@
 #include "FTPoint.h"
 
+namespace ftgl {
 
 bool operator == ( const FTPoint &a, const FTPoint &b) 
 {
@@ -16,4 +17,5 @@ FTPoint operator*( double multiplier, FTPoint& point)
 {
     return point * multiplier;
 }
-        
+
+} //namespace ftgl

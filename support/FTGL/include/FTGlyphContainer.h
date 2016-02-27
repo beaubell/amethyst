@@ -11,6 +11,8 @@
 #include "FTVector.h"
 #include "FTGLTextHandle.h"
 
+namespace ftgl {
+
 class FTFace;
 class FTGlyph;
 class FTCharmap;
@@ -126,5 +128,6 @@ class FTGL_EXPORT FTGlyphContainer
         FT_Error err;
 };
 
+} //namespace ftgl
 
 #endif  //  __FTGlyphContainer__

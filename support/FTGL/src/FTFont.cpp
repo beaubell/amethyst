@@ -3,6 +3,8 @@
 #include    "FTGlyphContainer.h"
 #include    "FTBBox.h"
 
+namespace ftgl {
+
 FTFont::FTFont( const char* fontFilePath)
 :   face( fontFilePath),
     glyphList(0)
@@ -320,3 +322,4 @@ bool FTFont::CheckGlyph( const unsigned int characterCode)
     return true;
 }
 
+} //namespace ftgl

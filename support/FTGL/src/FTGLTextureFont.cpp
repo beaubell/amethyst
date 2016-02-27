@@ -5,7 +5,7 @@
 #include "FTGLTextHandle.h"
 #include "FTTextureGlyph.h"
 
-
+namespace ftgl {
 
 inline GLuint NextPowerOf2( GLuint in)
 {
@@ -194,3 +194,5 @@ void FTGLTextureFont::Compose( const std::string text, TextHandle &hdl)
   
   
 }
+
+} //namespace ftgl

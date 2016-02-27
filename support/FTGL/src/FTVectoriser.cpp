@@ -15,6 +15,7 @@
     #error "Error - need to define type GLUTesselatorFunction for this platform/compiler"
 #endif
 
+namespace ftgl {
 
 void CALLBACK ftglError( GLenum errCode, FTMesh* mesh)
 {
@@ -223,3 +224,4 @@ void FTVectoriser::MakeMesh( FTGL_DOUBLE zNormal)
     gluDeleteTess( tobj);
 }
 
+} //namespace ftgl

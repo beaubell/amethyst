@@ -9,6 +9,7 @@
 #include "FTGL.h"
 #include "FTGlyph.h"
 
+namespace ftgl {
 
 /**
  * FTBitmapGlyph is a specialisation of FTGlyph for creating bitmaps.
@@ -72,6 +73,7 @@ class FTGL_EXPORT FTBitmapGlyph : public FTGlyph
         
 };
 
+} //namespace ftgl
 
 #endif  //  __FTBitmapGlyph__
 

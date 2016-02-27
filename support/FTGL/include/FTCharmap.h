@@ -10,6 +10,7 @@
 
 #include "FTGL.h"
 
+namespace ftgl {
 
 /**
  * FTCharmap takes care of specifying the encoding for a font and mapping
@@ -132,5 +133,6 @@ class FTGL_EXPORT FTCharmap
         
 };
 
+} //namespace ftgl
 
 #endif  //  __FTCharmap__

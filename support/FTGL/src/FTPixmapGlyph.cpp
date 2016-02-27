@@ -1,5 +1,7 @@
 #include    "FTPixmapGlyph.h"
 
+namespace ftgl {
+
 FTPixmapGlyph::FTPixmapGlyph( FT_GlyphSlot glyph)
 :   FTGlyph( glyph),
     destWidth(0),
@@ -78,3 +80,5 @@ FTPoint FTPixmapGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
     return advance;
   
 }
+
+} //namespace ftgl

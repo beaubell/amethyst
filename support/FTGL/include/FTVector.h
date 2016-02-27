@@ -3,6 +3,8 @@
 
 #include "FTGL.h"
 
+namespace ftgl {
+
 /**
  * Provides a non-STL alternative to the STL vector
  */
@@ -186,5 +188,7 @@ class FTGL_EXPORT FTVector
         size_type Size;
         value_type* Items;
 };
+
+} //namespace ftgl
 
 #endif  //  __FTVector__

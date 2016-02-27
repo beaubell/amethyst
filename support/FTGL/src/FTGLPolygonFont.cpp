@@ -1,6 +1,7 @@
 #include    "FTGLPolygonFont.h"
 #include    "FTPolyGlyph.h"
 
+namespace ftgl {
 
 FTGLPolygonFont::FTGLPolygonFont( const char* fontFilePath)
 :   FTFont( fontFilePath)
@@ -30,4 +31,4 @@ FTGlyph* FTGLPolygonFont::MakeGlyph( unsigned int g)
     return NULL;
 }
 
-
+} //namespace ftgl

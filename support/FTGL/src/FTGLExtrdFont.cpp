@@ -1,6 +1,7 @@
 #include    "FTGLExtrdFont.h"
 #include    "FTExtrdGlyph.h"
 
+namespace ftgl {
 
 FTGLExtrdFont::FTGLExtrdFont( const char* fontFilePath)
 :   FTFont( fontFilePath),
@@ -32,4 +33,4 @@ FTGlyph* FTGLExtrdFont::MakeGlyph( unsigned int glyphIndex)
     return NULL;
 }
 
-
+} //namespace ftgl

@@ -3,6 +3,8 @@
 #include    "FTFace.h"
 #include    "FTCharmap.h"
 
+namespace ftgl {
+
 FTGlyphContainer::FTGlyphContainer( FTFace* f)
 :   face(f),
     err(0)
@@ -105,12 +107,6 @@ FTPoint FTGlyphContainer::Compose( const unsigned int characterCode, const unsig
     
     kernAdvance += advance;
     return kernAdvance;
-  
-  
-  
-  
-  
-  
-  
 }
-  
+
+} //namespace ftgl

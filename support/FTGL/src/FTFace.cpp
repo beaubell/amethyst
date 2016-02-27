@@ -3,6 +3,8 @@
 
 #include FT_TRUETYPE_TABLES_H
 
+namespace ftgl {
+
 FTFace::FTFace( const char* fontFilePath)
 :   numGlyphs(0),
     fontEncodingList(0),
@@ -141,3 +143,4 @@ FT_GlyphSlot FTFace::Glyph( unsigned int index, FT_Int load_flags)
     return (*ftFace)->glyph;
 }
 
+} //namespace ftgl

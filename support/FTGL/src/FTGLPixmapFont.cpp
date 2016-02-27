@@ -1,6 +1,7 @@
 #include    "FTGLPixmapFont.h"
 #include    "FTPixmapGlyph.h"
 
+namespace ftgl {
 
 FTGLPixmapFont::FTGLPixmapFont( const char* fontFilePath)
 :   FTFont( fontFilePath)
@@ -80,4 +81,4 @@ void FTGLPixmapFont::Render( const wchar_t* string)
     glPopAttrib();
 }
 
-
+} //namespace ftgl

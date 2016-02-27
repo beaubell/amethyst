@@ -10,6 +10,8 @@
 
 #include <string>
 
+namespace ftgl {
+
 class FTGlyphContainer;
 class FTGlyph;
 
@@ -263,6 +265,7 @@ class FTGL_EXPORT FTFont
 
 };
 
+} //namespace ftgl
 
 #endif  //  __FTFont__
 

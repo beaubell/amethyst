@@ -3,6 +3,8 @@
 
 #include "FTGL.h"
 
+namespace ftgl {
+  
 /**
 * Provides a non-STL alternative to the STL list
  */
@@ -107,6 +109,8 @@ class FTGL_EXPORT FTList
         Node* head;
         Node* tail;
 };
+
+} //namespace ftgl
 
 #endif // __FTList__
 

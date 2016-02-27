@@ -7,6 +7,7 @@
 
 #include <string>
 
+namespace ftgl {
 
 class FTTextureGlyph;
 
@@ -149,6 +150,7 @@ class  FTGL_EXPORT FTGLTextureFont : public FTFont
 
 };
 
+} //namespace ftgl
 
 #endif // __FTGLTextureFont__
 

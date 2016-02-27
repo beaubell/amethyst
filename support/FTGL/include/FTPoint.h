@@ -7,6 +7,8 @@
 
 #include "FTGL.h"
 
+namespace ftgl {
+
 /**
  * FTPoint class is a basic 3 dimensional point or vector.
  */
@@ -157,6 +159,8 @@ class FTGL_EXPORT FTPoint
          */
         FTGL_DOUBLE values[3];
 };
+
+} //namespace ftgl
 
 #endif  //  __FTPoint__
 

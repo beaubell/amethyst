@@ -5,6 +5,7 @@
 #include    "FTExtrdGlyph.h"
 #include    "FTVectoriser.h"
 
+namespace ftgl {
 
 FTExtrdGlyph::FTExtrdGlyph( FT_GlyphSlot glyph, float depth )
 :   FTGlyph( glyph)
@@ -162,3 +163,4 @@ FTPoint FTExtrdGlyph::GetNormal( const FTPoint &a, const FTPoint &b)
                      0.0f);
 }
 
+} //namespace ftgl

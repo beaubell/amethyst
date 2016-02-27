@@ -5,6 +5,7 @@
 #include "FTFont.h"
 #include "FTGL.h"
 
+namespace ftgl {
 
 class FTGlyph;
 
@@ -63,6 +64,7 @@ class FTGL_EXPORT FTGLPixmapFont : public FTFont
         
 };
 
+} //namespace ftgl
 
 #endif  //  __FTGLPixmapFont__
 

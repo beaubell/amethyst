@@ -9,6 +9,7 @@
 #include "FTGL.h"
 #include "FTGlyph.h"
 
+namespace ftgl {
 
 /**
  * FTTextureGlyph is a specialisation of FTGlyph for creating texture
@@ -94,5 +95,6 @@ class FTGL_EXPORT FTTextureGlyph : public FTGlyph
         
 };
 
+} //namespace ftgl
 
 #endif  //  __FTTextureGlyph__

@@ -1,5 +1,6 @@
 #include    "FTLibrary.h"
 
+namespace ftgl {
 
 const FTLibrary&  FTLibrary::Instance()
 {
@@ -62,3 +63,5 @@ bool FTLibrary::Initialise()
 
     return true;
 }
+
+} //namespace ftgl

@@ -1,6 +1,7 @@
 #include "FTFace.h"
 #include "FTCharmap.h"
 
+namespace ftgl {
 
 FTCharmap::FTCharmap( FTFace* face)
 :   ftFace( *(face->Face())),
@@ -60,3 +61,5 @@ void FTCharmap::InsertIndex( const unsigned int characterCode, const unsigned in
 {
     charMap.insert( characterCode, containerIndex);
 }
+
+} //namespace ftgl

@@ -1,6 +1,7 @@
 #include "FTPolyGlyph.h"
 #include "FTVectoriser.h"
 
+namespace ftgl {
 
 FTPolyGlyph::FTPolyGlyph( FT_GlyphSlot glyph )
 :   FTGlyph( glyph)
@@ -65,3 +66,5 @@ FTPoint FTPolyGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
     // FIXME
     return advance;
 }
+
+} //namespace ftgl

@@ -1,5 +1,7 @@
 #include    "FTTextureGlyph.h"
 
+namespace ftgl {
+
 GLint FTTextureGlyph::activeTextureID = 0;
  
 FTTextureGlyph::FTTextureGlyph( FT_GlyphSlot glyph, int id, int xOffset, int yOffset, GLsizei width, GLsizei height)
@@ -101,3 +103,5 @@ FTPoint FTTextureGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
     
     return advance + pen;
 }
+
+} //namespace ftgl

@@ -1,5 +1,6 @@
 #include    "FTGlyph.h"
 
+namespace ftgl {
 
 FTGlyph::FTGlyph( FT_GlyphSlot glyph)
 :   err(0)  
@@ -14,3 +15,5 @@ FTGlyph::FTGlyph( FT_GlyphSlot glyph)
 
 FTGlyph::~FTGlyph()
 {}
+
+} //namespace ftgl

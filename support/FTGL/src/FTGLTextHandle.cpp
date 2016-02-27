@@ -3,6 +3,8 @@
 #define GL_GLEXT_PROTOTYPES true
 #include "GL/glcorearb.h"
 
+namespace ftgl {
+
 TextHandle::TextHandle()
  :texture(0),
   num_chars(0),
@@ -94,3 +96,5 @@ void TextHandle::addVertex(const glm::vec4 &newvert, const glm::vec2 &newtexcoor
     texcoords.push_back(newtexcoord);
     
 }
+
+} //namespace ftgl

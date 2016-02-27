@@ -2,6 +2,8 @@
 
 #include "FTBitmapGlyph.h"
 
+namespace ftgl {
+
 FTBitmapGlyph::FTBitmapGlyph( FT_GlyphSlot glyph)
 :   FTGlyph( glyph),
     destWidth(0),
@@ -69,3 +71,5 @@ FTPoint FTBitmapGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
     // FIXME
     return advance;
 }
+
+} //namespace ftgl

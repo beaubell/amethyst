@@ -9,6 +9,8 @@
 #include "FTGL.h"
 #include "FTGlyph.h"
 
+namespace ftgl {
+
 class FTVectoriser;
 
 /**
@@ -51,6 +53,7 @@ class FTGL_EXPORT FTPolyGlyph : public FTGlyph
 
 };
 
+} //namespace ftgl
 
 #endif  //  __FTPolyGlyph__
 
