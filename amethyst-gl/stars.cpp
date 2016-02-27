@@ -72,10 +72,10 @@ unsigned int  entries;
 ShaderProgram::ptr star_shader;
 
 // Vertex Attribute Locations
-GLint vertexLoc = -1, colorLoc = -1;
+ShaderProgram::AttribHDL vertexLoc, colorLoc;
  
 // Uniform variable Locations
-GLint projMatrixLoc = -1, viewMatrixLoc = -1;
+ShaderProgram::UniformHDL projMatrixLoc, viewMatrixLoc;
 
 // Vertex Array Objects Identifiers
 GLuint vao[1];
@@ -175,8 +175,8 @@ void stars_load(std::string &filestr)
     viewMatrixLoc = star_shader->GetUniformLocation("viewMatrix");
     
     //glBindFragDataLocation(star_shader_program, 0, "outputF");
-    std::cout << "vectexLoc:" << vertexLoc << ", colorLoc:" << colorLoc << std::endl;
-    std::cout << "projMatrixLoc:" << projMatrixLoc << ", viewMatrixLoc:" << viewMatrixLoc << std::endl;
+    std::cout << "vectexLoc:" << vertexLoc.value << ", colorLoc:" << colorLoc.value << std::endl;
+    std::cout << "projMatrixLoc:" << projMatrixLoc.value << ", viewMatrixLoc:" << viewMatrixLoc.value << std::endl;
     GLuint buffers[2];
  
     glGenVertexArrays(1, vao);
@@ -185,16 +185,18 @@ void stars_load(std::string &filestr)
 
     // Generate two slots for the vertex and color buffers
     glGenBuffers(2, buffers);
+    
+    
     glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-    glBufferData(GL_ARRAY_BUFFER, entries, star_vertex, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(vertexLoc);
-    glVertexAttribPointer(vertexLoc, 4, GL_FLOAT, 0, 0, 0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(_star_vertex)*entries, star_vertex, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(vertexLoc.value);
+    glVertexAttribPointer(vertexLoc.value, 4, GL_FLOAT, 0, 0, 0);
 
     // bind buffer for colors and copy data into buffer
     glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-    glBufferData(GL_ARRAY_BUFFER, entries, star_color, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(colorLoc);
-    glVertexAttribPointer(colorLoc, 4, GL_FLOAT, 0, 0, 0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(_star_color)*entries, star_color, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(colorLoc.value);
+    glVertexAttribPointer(colorLoc.value, 4, GL_FLOAT, 0, 0, 0);
 }
 
 
@@ -216,8 +218,8 @@ void stars_render(const glm::mat4 &projMatrix, const glm::mat4 &viewMatrix)
     glDisable(GL_DEPTH_TEST);
 
     star_shader->use();
-    glUniformMatrix4fv(projMatrixLoc,  1, false, glm::value_ptr(projMatrix));
-    glUniformMatrix4fv(viewMatrixLoc,  1, false, glm::value_ptr(viewMatrix));
+    star_shader->UniformMatrix4f(projMatrixLoc, projMatrix);
+    star_shader->UniformMatrix4f(viewMatrixLoc, viewMatrix);
     
     glBindVertexArray(vao[0]);
     glDrawArrays(GL_POINTS, 0, entries);

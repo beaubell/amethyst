@@ -21,6 +21,8 @@
 #include <stdexcept>
 #include <iostream>
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace amethyst {
 namespace client {
 
@@ -43,32 +45,69 @@ ShaderProgram::~ShaderProgram()
     glDeleteProgram(_program_hdl);
 }
 
-int ShaderProgram::GetAttribLocation(const std::string& attrib)
+ShaderProgram::AttribHDL ShaderProgram::GetAttribLocation(const std::string& attrib)
 {
-    int attrib_hdl = glGetAttribLocation(_program_hdl, attrib.c_str());
-    if (attrib_hdl < 0)
+    int hdl = glGetAttribLocation(_program_hdl, attrib.c_str());
+    if (hdl < 0)
     {
       opengl_check_errors("GetAttribLocation: ");
-      throw std::runtime_error("glGetAtribLocation failed");
+      throw std::runtime_error("glGetAtribLocation failed: " + attrib + " for **FIXME**" );
     }
-    return attrib_hdl;
+    return AttribHDL(hdl);
 }
 
-int ShaderProgram::GetUniformLocation(const std::string& uniform)
+ShaderProgram::UniformHDL ShaderProgram::GetUniformLocation(const std::string& uniform)
 {
     int attrib_hdl = glGetUniformLocation(_program_hdl, uniform.c_str());
     if (attrib_hdl < 0)
     {
       opengl_check_errors("GetUnformLocation: ");
-      throw std::runtime_error("glGetUniformLocation failed");
+      throw std::runtime_error("glGetUniformLocation failed" + uniform + " for **FIXME**"  );
     }
     return attrib_hdl;
 }
+
+void ShaderProgram::UniformMatrix4f(ShaderProgram::UniformHDL hdl, const glm::mat4 &mat4in)
+{
+    if(GetActiveShader() != _program_hdl)
+    {
+        Global.log.add("Shader not bound during UniformMatrix4f, dumbass.");
+	throw std::runtime_error("Shader not bound during UniformMatrix4f");
+        //glUseProgram(_program_hdl);
+    }
+    glUniformMatrix4fv(hdl.value,  1, false, glm::value_ptr(mat4in));
+}
+
+void ShaderProgram::Uniform4f(UniformHDL hdl, const glm::vec4& vec4in)
+{
+    if(GetActiveShader() != _program_hdl)
+    {
+        Global.log.add("Shader not bound during Uniform4f, dumbass.");
+	throw std::runtime_error("Shader not bound during UniformMatrix4f");
+        //glUseProgram(_program_hdl);
+    }
+    glUniform4fv(hdl.value, 1, glm::value_ptr(vec4in));
+}
+
 
 void ShaderProgram::use()
 {
     glUseProgram(_program_hdl); 
 }
+
+int ShaderProgram::getHandle()
+{
+    return _program_hdl;
+}
+
+
+int GetActiveShader()
+{
+    int actProgram = -1;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &actProgram);
+    return actProgram;
+}
+
 unsigned int load_shader(const std::string &vname, const std::string &fname)
 {
 
@@ -111,8 +150,8 @@ unsigned int load_shader(const std::string &vname, const std::string &fname)
         GLchar infoLog[1000];
 	GLsizei length;
         glGetShaderInfoLog(myFragmentShader, 1000, &length, infoLog);
-        //std::cout << "Error in fragment shader compilation!" << std::endl;
-        //std::cout << "Info Log: " << infoLog << std::endl;
+        std::cout << "Error in fragment shader compilation!" << std::endl;
+        std::cout << "Info Log: " << infoLog << std::endl;
         throw std::runtime_error(infoLog);
     }
 
@@ -127,7 +166,11 @@ unsigned int load_shader(const std::string &vname, const std::string &fname)
     glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
     if (!success)
     {
-        printInfoLog(shaderProgram);
+        GLchar infoLog[1000];
+	GLsizei length;
+	glGetProgramInfoLog(shaderProgram, 1000, &length, infoLog);
+        //printInfoLog(shaderProgram);
+	throw std::runtime_error(infoLog);
     }
 
     success = 0;
