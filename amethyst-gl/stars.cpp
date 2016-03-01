@@ -69,7 +69,7 @@ _star_color  *star_color;
 unsigned int  entries;
 
 // Shader Program Location
-ShaderProgram::ptr star_shader;
+ShaderProgram::sptr star_shader;
 
 // Vertex Attribute Locations
 ShaderProgram::AttribHDL vertexLoc, colorLoc;
@@ -167,7 +167,7 @@ void stars_load(std::string &filestr)
     fclose(file);
 
     // Setup Shaders;
-    star_shader = ShaderProgram::ptr(new ShaderProgram("baseline.vert", "baseline.frag"));
+    star_shader = ShaderProgram::sptr(new ShaderProgram("baseline.vert", "baseline.frag"));
 
     vertexLoc = star_shader->GetAttribLocation("positionData");
     colorLoc  = star_shader->GetAttribLocation("colorData"); 
