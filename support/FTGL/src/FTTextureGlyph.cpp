@@ -29,7 +29,7 @@ FTTextureGlyph::FTTextureGlyph( FT_GlyphSlot glyph, int id, int xOffset, int yOf
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1);
 
         glBindTexture( GL_TEXTURE_2D, glTextureID);
-        glTexSubImage2D( GL_TEXTURE_2D, 0, xOffset, yOffset, destWidth, destHeight, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap.buffer);
+        glTexSubImage2D( GL_TEXTURE_2D, 0, xOffset, yOffset, destWidth, destHeight, GL_RED, GL_UNSIGNED_BYTE, bitmap.buffer);
 
         //DEPRECATED glPopClientAttrib();
     }
