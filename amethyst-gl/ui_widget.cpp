@@ -4,6 +4,7 @@ namespace amethyst {
 namespace client {
 
 UI_Widget::UI_Widget()
+: UI_Object()
 {
 }
 

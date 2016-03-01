@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <glm/glm.hpp>
+#include "lib/types.h"
 
 namespace amethyst {
 namespace client {
@@ -13,15 +14,17 @@ public:
     typedef std::shared_ptr<UI_Object> sptr;
     UI_Object();
     UI_Object(const UI_Object& other);
-    virtual ~UI_Object() = 0;
+    virtual ~UI_Object();
     
     UI_Object& operator=(const UI_Object& other);
     bool operator==(const UI_Object& other) const;
     
-    virtual void Render() = 0;
-    virtual void Update() = 0;
+    virtual void setPosition(glm::vec2 newloc);
     
-    glm::vec2 location;
+    virtual void Render(const TransMatrix& proj, const TransMatrix& mat);
+    virtual void Update();
+    
+    glm::vec2 _position;
     glm::vec2 size;
 };
 

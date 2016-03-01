@@ -33,10 +33,6 @@ namespace client {
 
 using boost::lexical_cast;
 
-// Shader Program Location
-static ShaderProgram::sptr ui_shader;
-static ShaderProgram::sptr uifont_shader;
-
 // Vertex Attribute Locations
 static ShaderProgram::AttribHDL uivertexLoc;
  
@@ -44,14 +40,7 @@ static ShaderProgram::AttribHDL uivertexLoc;
 static ShaderProgram::UniformHDL uicolorLoc;
 static ShaderProgram::UniformHDL uiprojMatrixLoc, uiviewMatrixLoc;
 
-// Vertex Attribute Locations
-static ShaderProgram::AttribHDL fnvertexLoc;
-static ShaderProgram::AttribHDL fntexcoordLoc;
- 
-// Uniform variable Locations
-static ShaderProgram::UniformHDL fncolorLoc;
-static ShaderProgram::UniformHDL fnprojMatrixLoc, fnviewMatrixLoc;
-static ShaderProgram::UniformHDL fntexUnitLoc;
+
 
 UI::UI(const std::string &fontfile)
 {
@@ -66,14 +55,6 @@ UI::UI(const std::string &fontfile)
     uicolorLoc      = ui_shader->GetUniformLocation("color"); 
     uiprojMatrixLoc = ui_shader->GetUniformLocation("projMatrix");
     uiviewMatrixLoc = ui_shader->GetUniformLocation("viewMatrix");
-    
-    fnvertexLoc     = uifont_shader->GetAttribLocation("vertexData");
-    fntexcoordLoc   = uifont_shader->GetAttribLocation("texcoordData");
-
-    fncolorLoc      = uifont_shader->GetUniformLocation("color"); 
-    fnprojMatrixLoc = uifont_shader->GetUniformLocation("projMatrix");
-    fnviewMatrixLoc = uifont_shader->GetUniformLocation("viewMatrix");
-    fntexUnitLoc    = uifont_shader->GetUniformLocation("baseTex");
 
     font_ = new ftgl::FTGLTextureFont( fontpath.c_str());
 
@@ -113,17 +94,16 @@ void UI::render(void)
     ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_identity);
     ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     
-    uifont_shader->use();
-    uifont_shader->UniformMatrix4f(fnprojMatrixLoc, m_proj);
-    uifont_shader->UniformMatrix4f(fnviewMatrixLoc, m_identity);
-    uifont_shader->Uniform4f(fncolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    glUniform1i(fntexUnitLoc.value , 0);
-
-    ui_shader->use();
-    
     /// Render each window
     std::for_each(windows_.begin(), windows_.end(),
-       boost::bind(&UI_Window::render, _1));
+       boost::bind(&UI_Window::render, _1, m_proj, m_identity));
+}
+
+void UI::update()
+{
+    /// Render each window
+    std::for_each(windows_.begin(), windows_.end(),
+       boost::bind(&UI_Window::update, _1));
 }
 
 bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
@@ -165,7 +145,8 @@ UI_Window::UI_Window(UI &ui, const std::string &newtitle)
       focused(false),
       title(newtitle),
       font(ui.get_font()),
-      _titlehdl()
+      ui_shader(ui.ui_shader),
+      _titlewidget(font, ui.uifont_shader)
 {
   
     _vao_frame[0] = 0;
@@ -176,11 +157,9 @@ UI_Window::UI_Window(UI &ui, const std::string &newtitle)
     std::string entry = "Window created \"" + newtitle + "\" : size " + lexical_cast<std::string>(_size.x) + " x " + lexical_cast<std::string>(_size.y);
     Global.log.add(entry);
 
-    // Prepare title text - FIXME
-    //uifont_shader->use();
-    font.Compose(title, _titlehdl);
-    //_titlehdl.bind(uifont_shader->getHandle(), fnvertexLoc.value, fntexcoordLoc.value, fntexUnitLoc.value, 0);
-    _titlehdl.bind(ui_shader->getHandle(), uivertexLoc.value, -1, -1, -1);
+    // Prepare title text
+    _titlewidget.setText(newtitle);
+    
 }
 
 UI_Window::~UI_Window()
@@ -215,12 +194,7 @@ void UI_Window::resize(const glm::vec2 &newsize)
     glVertexAttribPointer(uivertexLoc.value, 4, GL_FLOAT, 0, 0, 0);
 }
 
-void UI_Window::setPosition(const glm::vec2 &newpos)
-{
-    _position = newpos;
-}
-
-void UI_Window::render()
+void UI_Window::render(const TransMatrix& proj, const TransMatrix& mat)
 {
     glm::mat4 m_identity;
     glm::vec3 v_window_pos(_position, 0.0f);
@@ -230,6 +204,7 @@ void UI_Window::render()
     GLushort background_idx[] = {0,3,1,2};
     GLushort frame_idx[] = {0,1,2,3,0};
 
+    ui_shader->UniformMatrix4f(uiprojMatrixLoc, proj);
     ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_window);
     glBindVertexArray(_vao_frame[0]);
     
@@ -241,14 +216,14 @@ void UI_Window::render()
     ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
     glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx);
 
-    // Place title font
-    //uifont_shader->use();
-    glm::mat4 m_textpos = glm::translate(m_window,glm::vec3(1.0f, 1.0f, 0.0f));
-    //uifont_shader->UniformMatrix4f(fnviewMatrixLoc, m_textpos);
-    ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_textpos);
-    _titlehdl.render();
+    //Draw Title
+    glm::mat4 m_titlepos = glm::translate(m_window, glm::vec3(1.0f, 1.0f, 0.0f));
+    _titlewidget.render(proj, m_titlepos);
+}
 
-    ui_shader->use();
+void UI_Window::update()
+{
+
 }
 
 bool UI_Window::check_focus( unsigned short x, unsigned short y, unsigned short but)

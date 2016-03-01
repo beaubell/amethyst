@@ -18,6 +18,7 @@
 #include "FTGL.h"
 #include "FTGLTextureFont.h"
 #include "glm/glm.hpp"
+#include "ui_textbox.h"
 
 #include <string>
 #include <set>
@@ -41,12 +42,17 @@ class UI
     
     // Render UI
     virtual void render(void);
+    virtual void update();
 
     // Focus functions
     bool check_focus(unsigned short x, unsigned short y, unsigned short but); // Uint16
     bool is_focused();
-    
+
     ftgl::FTFont &get_font();
+
+    // Shader Program Location
+    ShaderProgram::sptr ui_shader;
+    ShaderProgram::sptr uifont_shader;
 
    private:
     ftgl::FTFont *font_;
@@ -55,7 +61,7 @@ class UI
 };
 
 
-class UI_Window
+class UI_Window : public UI_Object
 {
    public:
     typedef std::shared_ptr<UI_Window> sptr;
@@ -63,8 +69,8 @@ class UI_Window
     virtual ~UI_Window();
 
     virtual void resize(const glm::vec2 &newsize);
-    virtual void setPosition(const glm::vec2 &newpos);
-    virtual void render();
+    virtual void render(const TransMatrix& proj, const TransMatrix& mat);
+    virtual void update();
     virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
     
     virtual void addWidget(UI_Widget::sptr newwidget);
@@ -72,40 +78,19 @@ class UI_Window
     bool resizable;
     bool focused;
     std::string title;
+    
+    ShaderProgram::sptr ui_shader;
+
    protected:
     ftgl::FTFont &font;
-    glm::vec2 _position;
     glm::vec2 _size;
 
     uint _vao_frame[1]; // Vertex Array Objects Identifier
     uint _framebuffer[1];
-
-    ftgl::TextHandle _titlehdl;
     
     std::set<UI_Widget::sptr> _widgets;
-};
-
-class UI_TextBox
-{
-   public:
-    UI_TextBox(UI &ui, const std::string &title, const std::string &content, const glm::vec2 &position);
-    virtual ~UI_TextBox();
-
-    virtual void render();
-    virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
     
-
-    bool resizable;
-    bool focused;
-    std::string title;
-
-   protected:
-    ftgl::FTFont &font;
-    
-    glm::vec2 _position;
-    glm::vec2 _size;
-
-    uint _text_[1]; // Vertex Array Objects Identifier
+    UI_TextBox _titlewidget;
 };
 
 } // namespace client

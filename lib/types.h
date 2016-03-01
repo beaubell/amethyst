@@ -3,6 +3,7 @@
 
 #include "cl.h"
 #include <boost/multi_array.hpp>
+#include <glm/glm.hpp>
 
 typedef cl_double float_type;
 
@@ -18,4 +19,8 @@ typedef boost::multi_array<double , 2> Am2DArrayD;
 typedef boost::multi_array<double , 3> Am3DArrayD;
 typedef boost::multi_array<double , 4> Am4DArrayD;
 
+typedef glm::mat4 TransMatrix;
+typedef glm::vec4 Vertex;
+typedef glm::vec2 TexCoord;
+typedef glm::vec4 Normal;
 #endif
