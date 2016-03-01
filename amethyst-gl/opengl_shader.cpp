@@ -89,6 +89,17 @@ void ShaderProgram::Uniform4f(UniformHDL hdl, const glm::vec4& vec4in)
     glUniform4fv(hdl.value, 1, glm::value_ptr(vec4in));
 }
 
+void ShaderProgram::Uniform1i(UniformHDL hdl, const int iin)
+{
+    if(GetActiveShader() != _program_hdl)
+    {
+        Global.log.add("Shader not bound during Uniform4f, dumbass.");
+	throw std::runtime_error("Shader not bound during UniformMatrix4f");
+        //glUseProgram(_program_hdl);
+    }
+    glUniform1i(hdl.value, iin);
+}
+
 
 void ShaderProgram::use()
 {
@@ -100,6 +111,17 @@ int ShaderProgram::getHandle()
     return _program_hdl;
 }
 
+ScopedUse::ScopedUse(ShaderProgram::sptr sptr)
+ : programPtr(sptr)
+{
+    glGetIntegerv(GL_CURRENT_PROGRAM, &oldProgram);
+    sptr->use();
+}
+
+ScopedUse::~ScopedUse()
+{
+    glUseProgram(oldProgram);
+}
 
 int GetActiveShader()
 {

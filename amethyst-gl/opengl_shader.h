@@ -13,12 +13,10 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#include <string>
-
-#include <boost/shared_ptr.hpp>
-
 #include "glm/glm.hpp"
 
+#include <string>
+#include <memory>
 
 namespace amethyst {
 namespace client {
@@ -26,7 +24,7 @@ namespace client {
 class ShaderProgram
 {
 public:
-  typedef boost::shared_ptr<ShaderProgram> ptr;
+  typedef std::shared_ptr<ShaderProgram> sptr;
   class AttribHDL {
   public:
     int value;
@@ -47,12 +45,23 @@ public:
   UniformHDL GetUniformLocation(const std::string &uniform);
   void       UniformMatrix4f(UniformHDL hdl, const glm::mat4 &mat4in);
   void       Uniform4f(UniformHDL hdl, const glm::vec4 &vec4in);
+  void       Uniform1i(UniformHDL hdl, const int iin);
   void use();
   int  getHandle();
   
 private:
   int _program_hdl;
 };
+
+class ScopedUse
+{
+  public:
+    ScopedUse(ShaderProgram::sptr);
+   ~ScopedUse();
+    ShaderProgram::sptr programPtr;
+    int oldProgram;
+};
+
 
 int GetActiveShader();
 unsigned int load_shader(const std::string &vname, const std::string &fname);
