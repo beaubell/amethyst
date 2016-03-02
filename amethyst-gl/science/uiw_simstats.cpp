@@ -15,27 +15,72 @@
 #include "../opengl.h"
 #include "lib/utility.h"
 
-//#include <boost/accumulators/statistics/weighted_sum.hpp>
-//#include <boost/accumulators/accumulators.hpp>
-
 namespace amethyst {
 namespace client {
 
 UIW_SimStats::UIW_SimStats(Amethyst_GL &amgl,  UI &ui)
  : UI_Window(ui, std::string("Simulation Stats")),
-   _amgl(amgl)
+   _amgl(amgl),
+   _tbtime(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbCOMtitle(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbCOMx(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbCOMy(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbCOMz(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbVOMtitle(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbVOMx(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbVOMy(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+   _tbVOMz(new UI_TextBox(ui.get_font(), ui.uifont_shader))
 {
-  position_x = 0;
-  position_y = 200;
-  size_x = 520;
-  size_y = 100;
+  setPosition(glm::vec2(10.0, -200.0));
+  resize(glm::vec2(520.0, 100.0));
+
+  _tbtime->setPosition(glm::vec2(10.0,5.0));
+  addWidget(_tbtime);
+
+  {
+    glm::vec2 pos(10.0f, 30.0f);
+
+    _tbCOMtitle->setText("Center of Mass");
+    _tbCOMtitle->setPosition(pos);
+    addWidget(_tbCOMtitle);
+
+    pos.y += 12.0f;
+    _tbCOMx->setPosition(pos);
+    addWidget(_tbCOMx);
+
+    pos.y += 12.0f;
+    _tbCOMy->setPosition(pos);
+    addWidget(_tbCOMy);
+
+    pos.y += 12.0f;
+    _tbCOMz->setPosition(pos);
+    addWidget(_tbCOMz);
+  }
+  
+  {
+    glm::vec2 pos(200.0f, 30.0f);
+
+    _tbVOMtitle->setText("dr/dt Center of Mass");
+    _tbVOMtitle->setPosition(pos);
+    addWidget(_tbVOMtitle);
+
+    pos.y += 12.0f;
+    _tbVOMx->setPosition(pos);
+    addWidget(_tbVOMx);
+
+    pos.y += 12.0f;
+    _tbVOMy->setPosition(pos);
+    addWidget(_tbVOMy);
+
+    pos.y += 12.0f;
+    _tbVOMz->setPosition(pos);
+    addWidget(_tbVOMz);
+  }
+  update();
 }
 
-
-void UIW_SimStats::render()
+void UIW_SimStats::update()
 {
-    UI_Window::render();
-
     std::stringstream temp;
     temp.precision(8);
     std::string temp2;
@@ -47,13 +92,9 @@ void UIW_SimStats::render()
     temp.clear();
     temp << days;
     temp >> days_text;
-    //days_text += temp2;
 
     std::string text = "Time  : " + temp2 + " s   Days: " + days_text;
-    glPushMatrix();
-      glTranslatef(position_x + 10, position_y - 24, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
+    _tbtime->setText(text);
 
     /// Caluculate center of mass
     lib::Cartesian_Vector CoM(0.0, 0.0, 0.0);
@@ -75,15 +116,11 @@ void UIW_SimStats::render()
             obj1++;
         }  while (obj1 != uni.list().end());
 
-        //lib::print_vector("pre center of mass: ", CoM);
-        //std::cout << "Total mass: " << total_mass << std::endl;
-
         CoM = CoM / total_mass;
         VoM = VoM / total_mass;
 
     }
 
-    //lib::print_vector("center of mass: ", CoM);
     {
     std::stringstream xtemp;
     xtemp.precision(8);
@@ -103,29 +140,14 @@ void UIW_SimStats::render()
     ztemp <<  CoM.z;
     ztemp >> zstr;
 
-    float ref_x = 10;
-    float ref_y = -55;
-    
-    glPushMatrix();
-      text = "Center of Mass";  
-      glTranslatef(position_x + ref_x, position_y + ref_y, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
-    glPushMatrix();
-      text = "x: " + xstr;
-      glTranslatef(position_x + ref_x + 2, position_y + ref_y - 12, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
-    glPushMatrix();
-      text = "y: " + ystr;
-      glTranslatef(position_x + ref_x + 2, position_y + ref_y - 24, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
-    glPushMatrix();
-      text = "z: " + zstr;
-      glTranslatef(position_x + ref_x + 2, position_y + ref_y - 36, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
+    text = "x: " + xstr;
+    _tbCOMx->setText(text);
+
+    text = "y: " + ystr;
+    _tbCOMy->setText(text);
+
+    text = "z: " + zstr;
+    _tbCOMz->setText(text);
     }
 
     {
@@ -147,32 +169,14 @@ void UIW_SimStats::render()
     ztemp <<  VoM.z;
     ztemp >> zstr;
 
-    float ref_x = 200;
-    float ref_y = -55;
-
-    glPushMatrix();
-      text = "dr/dt Center of Mass";
-      glTranslatef(position_x + ref_x, position_y + ref_y, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
-    glPushMatrix();
-      text = "x: " + xstr;
-      glTranslatef(position_x + ref_x + 2, position_y + ref_y - 12, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
-    glPushMatrix();
-      text = "y: " + ystr;
-      glTranslatef(position_x + ref_x + 2, position_y + ref_y - 24, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
-    glPushMatrix();
-      text = "z: " + zstr;
-      glTranslatef(position_x + ref_x + 2, position_y + ref_y - 36, 0.0f);
-      font.Render(text.c_str());
-    glPopMatrix();
+    text = "x: " + xstr;
+    _tbVOMx->setText(text);
+    text = "y: " + ystr;
+    _tbVOMy->setText(text);
+    text = "z: " + zstr;
+    _tbVOMz->setText(text);
     }
 }
-
 
 } // namespace lib
 } // namespace amethyst

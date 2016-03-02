@@ -14,6 +14,7 @@
  ***********************************************************************/
 
 #include "../amethyst-gl.h"
+#include "../ui_textbox.h"
 
 namespace amethyst {
 namespace client {
@@ -22,10 +23,19 @@ class UIW_SimStats : public UI_Window
 {
   public:
     UIW_SimStats(Amethyst_GL &amgl, UI &ui);
-    void render();
+    virtual void update();
 
   private:
     Amethyst_GL &_amgl;
+    UI_TextBox::sptr _tbtime;
+    UI_TextBox::sptr _tbCOMtitle;
+    UI_TextBox::sptr _tbCOMx;
+    UI_TextBox::sptr _tbCOMy;
+    UI_TextBox::sptr _tbCOMz;
+    UI_TextBox::sptr _tbVOMtitle;
+    UI_TextBox::sptr _tbVOMx;
+    UI_TextBox::sptr _tbVOMy;
+    UI_TextBox::sptr _tbVOMz;
 
 };
 
