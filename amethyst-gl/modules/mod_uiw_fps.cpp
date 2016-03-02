@@ -13,6 +13,7 @@
 #include "../module.h"
 #include "../ui.h"
 #include "../global.h"
+#include "mod_uiw_fps.h"
 
 #include <iostream>
 
@@ -34,37 +35,26 @@ static bool          module_active = false;
 static Amethyst_GL*            agl = NULL;
 
 
-/// UI_Window class derivative
-class UIW_FPS : public UI_Window
-{
-   public:
-    UIW_FPS(UI &ui);
-    void render();
-
-   private:
-    unsigned int frames;
-    unsigned int benchmark;
-    float fps;
-};
 
 UIW_FPS::UIW_FPS(UI &ui)
     : UI_Window(ui, std::string("FPS")),
       frames(0),
       benchmark(0),
-      fps(0.0f)
+      fps(0.0f),
+      _tbfps(new UI_TextBox(ui.get_font(), ui.uifont_shader))
 {
-  position_x = 0;
-  position_y = 0;
+  setPosition(glm::vec2(10.0f, -10.0f));
+
+  framed = false;
+  
+  addWidget(_tbfps);
+  
+  update();
 }
 
-void UIW_FPS::render()
+void UIW_FPS::update()
 {
-    UI_Window::render();
-    
-    //glPushMatrix();
-    //glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);  // FIXME Seeing if this fixes the only on vertex pointer call problem
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    
+
     std::string fpsstring;
     if(frames > 100)
     {
@@ -83,15 +73,9 @@ void UIW_FPS::render()
     temp >> temp1;
     fpsstring = "FPS: " + temp1;
 
-    glPushMatrix();
-    font.Render(fpsstring.c_str());
-    glPopMatrix();
+    _tbfps->setText(fpsstring);
 
     frames++;
-    
-    glPopAttrib();
-    //glPopClientAttrib();
-    //glPopMatrix();
 
 }
 

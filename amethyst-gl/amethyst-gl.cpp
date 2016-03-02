@@ -72,8 +72,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   //if (module_manager.load("uiw_test"))
   //    module_manager.start("uiw_test", *this);
 
-  //if  (module_manager.load("uiw_fps"))
-  //    module_manager.start("uiw_fps", *this);
+  if  (module_manager.load("uiw_fps"))
+      module_manager.start("uiw_fps", *this);
 
   //if  (module_manager.load("uiw_log"))
   //    module_manager.start("uiw_log", *this);
