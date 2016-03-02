@@ -22,7 +22,7 @@ class UI_TextBox : public UI_Widget
 
     void setText(const std::string& text);
 
-    std::string text;
+    std::string _text;
 
   private:
     ShaderProgram::sptr _shaderptr;

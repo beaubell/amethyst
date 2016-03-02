@@ -19,13 +19,20 @@ public:
     UI_Object& operator=(const UI_Object& other);
     bool operator==(const UI_Object& other) const;
     
-    virtual void setPosition(glm::vec2 newloc);
+    virtual void setPosition(const glm::vec2& newloc);
+    virtual const glm::vec2& getPosition();
     
-    virtual void Render(const TransMatrix& proj, const TransMatrix& mat);
-    virtual void Update();
+    virtual void setVisible(bool vis);
+    virtual bool isVisible();
     
+    virtual void render(const TransMatrix& proj, const TransMatrix& mat) = 0;
+    virtual void update() = 0;
+    
+//private:
     glm::vec2 _position;
-    glm::vec2 size;
+    //glm::vec2 _size;
+    
+    bool _visibile;
 };
 
 } // namespace client

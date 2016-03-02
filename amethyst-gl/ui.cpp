@@ -18,20 +18,16 @@
 
 #include <iostream>
 #include <sstream>
-#include <boost/bind.hpp>
-
+#include <functional>
 #include <cmath>
-
-#include <boost/lexical_cast.hpp>
-
 
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
+using namespace std::placeholders;
+
 namespace amethyst {
 namespace client {
-
-using boost::lexical_cast;
 
 // Vertex Attribute Locations
 static ShaderProgram::AttribHDL uivertexLoc;
@@ -93,17 +89,29 @@ void UI::render(void)
     ui_shader->UniformMatrix4f(uiprojMatrixLoc, m_proj);
     ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_identity);
     ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    
+
     /// Render each window
-    std::for_each(windows_.begin(), windows_.end(),
-       boost::bind(&UI_Window::render, _1, m_proj, m_identity));
+    for(auto windowit = windows_.begin(); windowit != windows_.end(); windowit++)
+    {
+        if ((*windowit)->isVisible())
+	{
+	    glm::vec2 window_position((*windowit)->getPosition());
+	    
+	    // Check for negative position.  Wrap if so.
+	    window_position.x = (window_position.x < 0.0f)?(x+window_position.x):window_position.x;
+	    window_position.y = (window_position.y < 0.0f)?(y+window_position.y):window_position.y;
+	    
+	    glm::mat4 m_windowpos = glm::translate(m_identity, glm::vec3(window_position, 0.0f));
+	    (*windowit)->render(m_proj, m_windowpos);  
+	}
+    }
 }
 
 void UI::update()
 {
-    /// Render each window
+    /// Update each window
     std::for_each(windows_.begin(), windows_.end(),
-       boost::bind(&UI_Window::update, _1));
+       std::bind(&UI_Window::update, _1));
 }
 
 bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
@@ -114,7 +122,7 @@ bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
     y = Global.screen_y - y;
    
     // Else UI doesn't have focus.
-    std::string log = "D: Mouse Click (" + lexical_cast<std::string>(but) + ") <" + lexical_cast<std::string>(x) + "," + lexical_cast<std::string>(y) + "";
+    std::string log = "D: Mouse Click (" + std::to_string(but) + ") <" + std::to_string(x) + "," + std::to_string(y) + "";
     //log += " Converted   (" + lexical_cast<std::string>(posX) + "," + lexical_cast<std::string>(posY) + "," + lexical_cast<std::string>(posZ) +")";
 
     //Global.log.add(log);
@@ -143,6 +151,7 @@ void UI::remove(UI_Window_ptr window)
 UI_Window::UI_Window(UI &ui, const std::string &newtitle)
     : resizable(true),
       focused(false),
+      framed(true),
       title(newtitle),
       font(ui.get_font()),
       ui_shader(ui.ui_shader),
@@ -154,7 +163,7 @@ UI_Window::UI_Window(UI &ui, const std::string &newtitle)
 
     resize(glm::vec2(100.0f, 100.0f));
 
-    std::string entry = "Window created \"" + newtitle + "\" : size " + lexical_cast<std::string>(_size.x) + " x " + lexical_cast<std::string>(_size.y);
+    std::string entry = "Window created \"" + newtitle + "\" : size " + std::to_string(_size.x) + " x " + std::to_string(_size.y);
     Global.log.add(entry);
 
     // Prepare title text
@@ -194,31 +203,49 @@ void UI_Window::resize(const glm::vec2 &newsize)
     glVertexAttribPointer(uivertexLoc.value, 4, GL_FLOAT, 0, 0, 0);
 }
 
-void UI_Window::render(const TransMatrix& proj, const TransMatrix& mat)
+void UI_Window::render(const TransMatrix& proj, const TransMatrix& m_window)
 {
-    glm::mat4 m_identity;
-    glm::vec3 v_window_pos(_position, 0.0f);
-    glm::mat4 m_window = glm::translate(m_identity,v_window_pos);
-
     glLineWidth(1);
     GLushort background_idx[] = {0,3,1,2};
     GLushort frame_idx[] = {0,1,2,3,0};
 
-    ui_shader->UniformMatrix4f(uiprojMatrixLoc, proj);
-    ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_window);
-    glBindVertexArray(_vao_frame[0]);
-    
-    //Draw Background
-    ui_shader->Uniform4f(uicolorLoc, glm::vec4(0.0f, 0.1f, 0.0f, 0.5f));
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, background_idx);
+    glm::vec2 frameoffset(0.0f, 0.0f);
 
-    //Draw Window Frame
-    ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-    glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx);
+    if (framed)
+    {
+        ui_shader->use();
+        ui_shader->UniformMatrix4f(uiprojMatrixLoc, proj);
+        ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_window);
+        glBindVertexArray(_vao_frame[0]);
 
-    //Draw Title
-    glm::mat4 m_titlepos = glm::translate(m_window, glm::vec3(1.0f, 1.0f, 0.0f));
-    _titlewidget.render(proj, m_titlepos);
+        //Draw Background
+        ui_shader->Uniform4f(uicolorLoc, glm::vec4(0.0f, 0.1f, 0.0f, 0.5f));
+        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, background_idx);
+
+        //Draw Window Frame
+        ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx);
+
+        //Draw Title
+        glm::mat4 m_titlepos = glm::translate(m_window, glm::vec3(1.0f, 1.0f, 0.0f));
+        _titlewidget.render(proj, m_titlepos);
+	
+	//Set Frame Offset due to title
+	frameoffset = glm::vec2(1.0f, 15.0f);
+    }
+	
+    //Widget Refence
+    glm::mat4 m_widgetref = glm::translate(m_window, glm::vec3(frameoffset, 0.0f));
+
+    //Render Widgets
+    for(auto widit = _widgets.begin(); widit != _widgets.end(); widit++)
+    {
+        if ((*widit)->isVisible())
+	{
+	    glm::mat4 m_widgetpos = glm::translate(m_widgetref, glm::vec3((*widit)->getPosition(), 0.0f));
+	    (*widit)->render(proj, m_widgetpos);  
+	}
+    }
 }
 
 void UI_Window::update()

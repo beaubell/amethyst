@@ -32,17 +32,17 @@ void UI_TextBox::render(const TransMatrix& proj, const TransMatrix& mat)
     _shaderptr->Uniform1i(fntexUnitLoc.value , 0);
 
     _titlehdl.render();
-
 }
 
 void UI_TextBox::update()
 {
 }
 
-void UI_TextBox::setText(const std::string& text)
+void UI_TextBox::setText(const std::string& newtext)
 {
+    _text = newtext;
     _shaderptr->use();
-    _font.Compose(text, _titlehdl);
+    _font.Compose(_text, _titlehdl);
     _titlehdl.bind(_shaderptr->getHandle(), fnvertexLoc.value, fntexcoordLoc.value, -1, -1);
 }
 

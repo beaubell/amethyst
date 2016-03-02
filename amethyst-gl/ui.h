@@ -69,7 +69,7 @@ class UI_Window : public UI_Object
     virtual ~UI_Window();
 
     virtual void resize(const glm::vec2 &newsize);
-    virtual void render(const TransMatrix& proj, const TransMatrix& mat);
+    virtual void render(const TransMatrix& proj, const TransMatrix& window);
     virtual void update();
     virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
     
@@ -77,6 +77,7 @@ class UI_Window : public UI_Object
 
     bool resizable;
     bool focused;
+    bool framed;
     std::string title;
     
     ShaderProgram::sptr ui_shader;
@@ -87,9 +88,9 @@ class UI_Window : public UI_Object
 
     uint _vao_frame[1]; // Vertex Array Objects Identifier
     uint _framebuffer[1];
-    
+
     std::set<UI_Widget::sptr> _widgets;
-    
+
     UI_TextBox _titlewidget;
 };
 

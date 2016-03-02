@@ -5,6 +5,7 @@ namespace client {
 
 
 UI_Object::UI_Object()
+: _visibile(true)
 {
 
 }
@@ -29,18 +30,33 @@ bool UI_Object::operator==(const UI_Object& other) const
 
 }
 
-void UI_Object::setPosition(glm::vec2 newpos)
+void UI_Object::setPosition(const glm::vec2& newpos)
 {
     _position = newpos;
 }
 
+const glm::vec2& UI_Object::getPosition()
+{
+    return _position;
+}
 
-void UI_Object::Render(const TransMatrix& proj, const TransMatrix& mat)
+void UI_Object::setVisible(bool vis)
+{
+    _visibile = vis;
+}
+
+bool UI_Object::isVisible()
+{
+    return _visibile;
+}
+
+
+void UI_Object::render(const TransMatrix& proj, const TransMatrix& mat)
 {
   
 }
 
-void UI_Object::Update()
+void UI_Object::update()
 {
   
 }
