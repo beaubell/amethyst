@@ -10,7 +10,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#include "mod_uiw_debug.h"
+#include "mod_uiw_shipstats.h"
 
 #include "../opengl.h"
 #include "../module.h"
@@ -29,7 +29,7 @@ namespace client {
 namespace module {
 
 /// Module Static Objects
-static const std::string module_name = "uiw_shipstat";
+static const std::string module_name = "uiw_shipstats";
 static const std::string module_version = "0.0.1";
 
 static UI_Window_ptr window;
@@ -40,24 +40,66 @@ static Amethyst_GL*            agl = NULL;
 
 
 UIW_Shipstat::UIW_Shipstat(UI &ui)
-    : UI_Window(ui, std::string("Ship Stats"))
+    : UI_Window(ui, std::string("Ship Stats")),
+      _tbLocHead(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbLocX(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbLocY(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbLocZ(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbAttHead(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbAttW(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbAttX(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbAttY(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
+      _tbAttZ(new UI_TextBox(ui.get_font(), ui.uifont_shader))
       
 {
-  position_x = 0;
-  position_y = 500;
-  size_x = 520;
-  size_y = 40;
+    setPosition(glm::vec2(10.0f, 10.0f));
+    resize(glm::vec2(520.0f, 40.0f));
+
+    glm::vec2 pos(10.0f, 2.0f);
+    
+    _tbLocHead->setText("Location - ");
+    _tbLocHead->setPosition(pos);
+    addWidget(_tbLocHead);
+    
+    pos.x += 100.0f;
+    _tbLocX->setPosition(pos);
+    addWidget(_tbLocX);
+    
+    pos.x += 100.0f;
+    _tbLocY->setPosition(pos);
+    addWidget(_tbLocY);
+    
+    pos.x += 100.0f;
+    _tbLocZ->setPosition(pos);
+    addWidget(_tbLocZ);
+    
+    pos = glm::vec2(10.0f, 12.0f);
+	  
+    _tbAttHead->setText("Attitude - ");
+    _tbAttHead->setPosition(pos);
+    addWidget(_tbAttHead);
+	  
+    pos.x += 100.0f;
+    _tbAttW->setPosition(pos);
+    addWidget(_tbAttW);
+    
+    pos.x += 100.0f;
+    _tbAttX->setPosition(pos);
+    addWidget(_tbAttX);
+    
+    pos.x += 100.0f;
+    _tbAttY->setPosition(pos);
+    addWidget(_tbAttY);
+    
+    pos.x += 100.0f;
+    _tbAttZ->setPosition(pos);
+    addWidget(_tbAttZ);
+    
+    update();
 }
 
-void UIW_Shipstat::render()
+void UIW_Shipstat::update()
 {
-    position_y = Global.screen_y - 20;
-  
-    UI_Window::render();
-    glPushMatrix();
-    glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);  // FIXME Seeing if this fixes the only on vertex pointer call problem
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    
     if(agl)
     {
         using lib::Cartesian_Vector;
@@ -71,82 +113,50 @@ void UIW_Shipstat::render()
 	std::stringstream temp;
 	std::string temp2;
         temp.precision(8);
-        //temp.setf(std::ios::scientific, std::ios::floatfield);
-        //temp.setf(std::ios::floatfield);
-	
-	float pos_y = position_y - 24.0f;
 	
 	temp << ref.x;
 	temp >> temp2;
-        buffer = "Location - X:" + temp2;
-	glPushMatrix();
-	glTranslatef(position_x+20, pos_y, 0.0f);
-        font.Render(buffer.c_str());
-	glPopMatrix();
+        buffer = "X:" + temp2;
+        _tbLocX->setText(buffer);
 
 	temp.clear();
 	temp << ref.y;
 	temp >> temp2;
 	buffer = "Y:" + temp2;
-	glPushMatrix();
-	glTranslatef(position_x +210, pos_y, 0.0f);
-        font.Render(buffer.c_str());
-	glPopMatrix();
+	_tbLocY->setText(buffer);
 
-	glPushMatrix();
 	temp.clear();
 	temp << ref.z;
 	temp >> temp2;
 	buffer = "Z:" + temp2;
-        glTranslatef(position_x +310, pos_y, 0.0f);
-        font.Render(buffer.c_str());
-        glPopMatrix();
-	
+        _tbLocZ->setText(buffer);
 	
 	// Attitude 
-	pos_y = pos_y - 10;
 	temp.precision(6);
-	
-	glPushMatrix();
+
 	temp.clear();
 	temp << att.z;
 	temp >> temp2;
-	buffer = "Attitude - W:" + temp2;
-        glTranslatef(position_x + 20, pos_y, 0.0f);
-        font.Render(buffer.c_str());
-        glPopMatrix();
+	buffer = "W:" + temp2;
+        _tbAttW->setText(buffer);
 	
 	temp << att.x;
 	temp >> temp2;
         buffer = "X:" + temp2;
-	glPushMatrix();
-	glTranslatef(position_x+ 210, pos_y, 0.0f);
-        font.Render(buffer.c_str());
-	glPopMatrix();
-
+        _tbAttX->setText(buffer);
+	
 	temp.clear();
 	temp << att.y;
 	temp >> temp2;
 	buffer = "Y:" + temp2;
-	glPushMatrix();
-	glTranslatef(position_x +310, pos_y, 0.0f);
-        font.Render(buffer.c_str());
-	glPopMatrix();
+        _tbAttY->setText(buffer);
 
-	glPushMatrix();
 	temp.clear();
 	temp << att.z;
 	temp >> temp2;
 	buffer = "Z:" + temp2;
-        glTranslatef(position_x +410, pos_y, 0.0f);
-        font.Render(buffer.c_str());
-        glPopMatrix();
-	
-	
+        _tbAttZ->setText(buffer);
     }
-    glPopAttrib();
-    glPopClientAttrib();
-    glPopMatrix();
 }
 
 bool UIW_Shipstat::check_focus(unsigned short /*x unused*/, unsigned short /*y unused*/)

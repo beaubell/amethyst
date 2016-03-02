@@ -14,8 +14,8 @@ SET(mod_uiw_log_SRCS
   mod_uiw_log.cpp
 )
 
-SET(mod_uiw_debug_SRCS
-  mod_uiw_debug.cpp
+SET(mod_uiw_shipstats_SRCS
+  mod_uiw_shipstats.cpp
   )
 
 INCLUDE_DIRECTORIES(
@@ -27,9 +27,9 @@ INCLUDE_DIRECTORIES(
 ADD_LIBRARY(uiw_fps MODULE ${mod_uiw_fps_SRCS})
 ADD_LIBRARY(uiw_test MODULE ${mod_uiw_test_SRCS})
 ADD_LIBRARY(uiw_log MODULE ${mod_uiw_log_SRCS})
-ADD_LIBRARY(uiw_debug MODULE ${mod_uiw_debug_SRCS})
+ADD_LIBRARY(uiw_shipstats MODULE ${mod_uiw_shipstats_SRCS})
 
-INSTALL(TARGETS uiw_fps uiw_test uiw_log uiw_debug DESTINATION lib)
+INSTALL(TARGETS uiw_fps uiw_test uiw_log uiw_shipstats DESTINATION lib)
 #TARGET_LINK_LIBRARIES(
 #  uiwfps
 #  libamethyst

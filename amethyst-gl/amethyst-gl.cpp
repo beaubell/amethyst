@@ -72,14 +72,14 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   //if (module_manager.load("uiw_test"))
   //    module_manager.start("uiw_test", *this);
 
-  if  (module_manager.load("uiw_fps"))
-      module_manager.start("uiw_fps", *this);
+  //if  (module_manager.load("uiw_fps"))
+  //    module_manager.start("uiw_fps", *this);
 
-  if  (module_manager.load("uiw_log"))
-      module_manager.start("uiw_log", *this);
+  //if  (module_manager.load("uiw_log"))
+  //    module_manager.start("uiw_log", *this);
 
-  if  (module_manager.load("uiw_debug"))
-      module_manager.start("uiw_debug", *this);
+  if  (module_manager.load("uiw_shipstats"))
+      module_manager.start("uiw_shipstats", *this);
 
   hud_setup();
 
@@ -219,9 +219,10 @@ void Amethyst_GL::render()
   scene_render();
 
   sig_render_scene(Global.obj_view->location);
+  
   // Display HUD XXX being replaced.
 
-  if(show_hud)
+  if(show_hud && 0) // FIXME
     hud_render();
 
   if(show_ui)
