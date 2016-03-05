@@ -12,10 +12,11 @@
 
 #include "../module.h"
 #include "../ui.h"
+#include "../ui_textbox.h"
 #include "../global.h"
 
 #include <iostream>
-#include <boost/lexical_cast.hpp>
+#include <vector>
 
 #ifdef WIN32
 #include "windows.h"
@@ -41,11 +42,12 @@ class UIW_Log : public UI_Window
 {
   public:
     UIW_Log(UI &ui);
-    void render();
+    void update();
     bool check_focus(unsigned short x, unsigned short y);
 
   private:
     unsigned int scroll_offset;
+    std::vector<UI_TextBox::sptr> _logline;
 };
 
 UIW_Log::UIW_Log(UI &ui)
@@ -53,25 +55,29 @@ UIW_Log::UIW_Log(UI &ui)
       scroll_offset(0)
       
 {
-  int max_size = 10;
+  uint num_lines = 10;
+  float line_height = 12.0f;
   
-  position_x = 400;
-  position_y = 400;
-  size_x = 700;
-  size_y = (static_cast<float>(max_size+1)*14.0f);
+  for (uint i = 0; i < num_lines; i++)
+  {
+    UI_TextBox::sptr line(new UI_TextBox(ui.get_font(), ui.uifont_shader));
+    _logline.push_back(line);
+    _logline[i]->setPosition(glm::vec2(5.0f, static_cast<float>(i)*line_height));
+    _logline[i]->setText(to_string(i));
+    addWidget(_logline[i]);
+  }
   
+  float hsize = 700.0f;
+  float vsize = static_cast<float>(num_lines+1)*line_height;
+  
+  setPosition(glm::vec2(-hsize-10.0f, -vsize-10.0f));
+  resize(glm::vec2(hsize, vsize));
+  
+  update();
 }
 
-void UIW_Log::render()
-{
-    position_y = (static_cast<float>(11)*14.0f);
-    position_x = Global.screen_x - size_x;
-  
-    UI_Window::render();
-    glPushMatrix();
-    glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);  // FIXME Seeing if this fixes the only on vertex pointer call problem
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    
+void UIW_Log::update()
+{ 
     if(agl)
     {
         int max_size = 10;
@@ -81,18 +87,12 @@ void UIW_Log::render()
         if (length > max_size)
             start = length - max_size - scroll_offset;
 
-        for(int i = start; i < length; i++)
+        for(int i = 0; i < length; i++)
         {
-            glPushMatrix();
-            glTranslatef(position_x +20, position_y - (static_cast<float>(i-start+2)*14.0f), 0.0f);
-            font.Render(Global.log.log()[i].c_str());
-            glPopMatrix();
+            _logline[i]->setText(Global.log.log()[i+start]);
         }
 
     }
-    glPopAttrib();
-    glPopClientAttrib();
-    glPopMatrix();
 }
 
 bool UIW_Log::check_focus(unsigned short /*x*/, unsigned short /*y*/)
