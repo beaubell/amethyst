@@ -212,6 +212,7 @@ int Input::event_mouse_wheel(const SDL_MouseWheelEvent &wheel)
 
     if (Global.cam_zoom < 10) Global.cam_zoom = 10;
 
+    return 0;
 }
 
 int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
