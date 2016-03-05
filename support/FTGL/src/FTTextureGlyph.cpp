@@ -86,22 +86,24 @@ const FTPoint& FTTextureGlyph::Render( const FTPoint& pen)
 
 FTPoint FTTextureGlyph::Compose( const FTPoint& pen, TextHandle &hdl)
 {
+    float offset = 9.0f; //FIXME
     glm::vec2 texcoord1 = glm::vec2(uv[0].X(), uv[0].Y());
-    glm::vec4 vertex1   = glm::vec4(pen.X(), pen.Y(), 0.0f, 1.0f);
+    glm::vec4 vertex1   = glm::vec4(pen.X()+pos.X(), offset + pen.Y()-pos.Y(), 0.0f, 1.0f);
 
     glm::vec2 texcoord2 = glm::vec2(uv[0].X(), uv[1].Y());
-    glm::vec4 vertex2   = glm::vec4(pen.X(), pen.Y() + destHeight, 0.0f, 1.0f);
+    glm::vec4 vertex2   = glm::vec4(pen.X()+pos.X(), offset + pen.Y()-pos.Y() + destHeight, 0.0f, 1.0f);
 
     glm::vec2 texcoord3 = glm::vec2( uv[1].X(), uv[1].Y());
-    glm::vec4 vertex3   = glm::vec4(pen.X()+destWidth, pen.Y() + destHeight, 0.0f, 1.0f);
+    glm::vec4 vertex3   = glm::vec4(pen.X()+pos.X()+destWidth, offset + pen.Y()-pos.Y() + destHeight, 0.0f, 1.0f);
     
     glm::vec2 texcoord4 = glm::vec2(uv[1].X(), uv[0].Y());
-    glm::vec4 vertex4   = glm::vec4(pen.X()+destWidth, pen.Y(), 0.0f, 1.0f);
+    glm::vec4 vertex4   = glm::vec4(pen.X()+pos.X()+destWidth, offset + pen.Y()-pos.Y(), 0.0f, 1.0f);
 
     hdl.addTriangle(glTextureID, vertex1, texcoord1, vertex2, texcoord2, vertex4, texcoord4);
     hdl.addTriangle(glTextureID, vertex2, texcoord2, vertex3, texcoord3, vertex4, texcoord4);
     
     return advance + pen;
+    //return advance;
 }
 
 } //namespace ftgl
