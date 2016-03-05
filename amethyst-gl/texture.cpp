@@ -37,13 +37,29 @@ GLuint TexIDSkyBox[10];
 #define LEFT_ID 5
 
 
-std::list<Texture *>  texture_list;
+std::list<Texture::sptr>  texture_list;
 
+Texture::Texture()
+{
+}
 
-GLuint texture_load(const std::string &texture_name)
+Texture::~Texture()
+{
+    glDeleteTextures(1, &gl_id);
+}
+
+void Texture::bind()
+{
+    glBindTexture(GL_TEXTURE_2D, gl_id);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+}
+
+Texture::sptr texture_load(const std::string &texture_name)
 {
 
-    Texture *texture = NULL;
+    Texture::sptr texture;;
 
     texture = texture_find(texture_name);
 
@@ -51,13 +67,12 @@ GLuint texture_load(const std::string &texture_name)
     {
         try
         {
-            texture = new Texture;
+            texture = Texture::sptr(new Texture);
             std::string texture_path = Global.dir_textures + texture_name;
             texture->gl_id = image_load(texture_path.c_str());
         }
         catch(std::runtime_error &e)
         {
-            delete texture;
             texture = NULL;
             throw e;
         }
@@ -65,11 +80,11 @@ GLuint texture_load(const std::string &texture_name)
         texture_add(texture);
     }
 
-    return texture->gl_id;
+    return texture;
 }
 
 
-void texture_add(Texture *newtexture)
+void texture_add(Texture::sptr newtexture)
 {
     if (newtexture)
       texture_list.push_back(newtexture);
@@ -78,11 +93,11 @@ void texture_add(Texture *newtexture)
 }
 
 
-Texture* texture_find(const std::string &name)
+Texture::sptr texture_find(const std::string &name)
 {
     if(!texture_list.empty())
     {
-        std::list<Texture *>::iterator obj1 = texture_list.begin();
+        auto obj1 = texture_list.begin();
         do
         {
             if(name == (*obj1)->name)
@@ -96,21 +111,8 @@ Texture* texture_find(const std::string &name)
 
 void textures_free(void)
 {
-    if(!texture_list.empty())
-    {
-        std::list<Texture *>::iterator obj1 = texture_list.begin();
-        do
-        {
-            glDeleteTextures(1, &((*obj1)->gl_id));
-	    delete *obj1;
-
-            obj1++;
-        }  while (obj1 != texture_list.end());
-    }
-    
     texture_list.clear();
 }
-  
 
 
 // FIXME figure out how to pass errors downstream

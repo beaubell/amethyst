@@ -17,6 +17,7 @@
 #include "opengl.h"
 #include <string>
 #include <list>
+#include <memory>
 
 namespace amethyst {
 namespace client {
@@ -30,6 +31,13 @@ typedef struct {
 class Texture
 {
    public:
+    typedef std::shared_ptr<Texture> sptr;
+    
+    Texture();
+    virtual ~Texture();
+
+    virtual void bind();
+
     std::string    name;
     unsigned int   width;
     unsigned int   height;
@@ -37,11 +45,11 @@ class Texture
 
 };
 
-extern std::list<Texture *>  texture_list;
+extern std::list<Texture::sptr>  texture_list;
 
-GLuint texture_load(const std::string &texture_name);
-void texture_add(Texture *newtexture);
-Texture* texture_find(const std::string &name);
+Texture::sptr texture_load(const std::string &texture_name);
+void texture_add(Texture::sptr newtexture);
+Texture::sptr texture_find(const std::string &name);
 void textures_free(void);
 
 GLuint image_load  (const char *file);
