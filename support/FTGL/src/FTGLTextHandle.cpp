@@ -27,6 +27,9 @@ TextHandle::~TextHandle()
 
 void TextHandle::render()
 {
+    if(_programloc == -1)
+      return;
+
     glUseProgram(_programloc);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture( GL_TEXTURE_2D, texture);
@@ -44,11 +47,15 @@ void TextHandle::bind(int program, int vertexloc, int texcoordloc, int texUnitLo
     _normalloc   = normalloc;
     _texUnitLoc  = texcoordloc;
 
-    glGenVertexArrays(1, _vao);
+    // Generate handle for Vertex Array is doesn't exist
+    if (_vao[0] == -1)
+      glGenVertexArrays(1, _vao);
+
     glBindVertexArray(_vao[0]);
 
-    // Generate buffer for frame;
-    glGenBuffers(3, _buffer);
+    // Generate handle for buffers if don't exist;
+    if (_buffer[0]== -1)
+      glGenBuffers(3, _buffer);
 
     glBindBuffer(GL_ARRAY_BUFFER, _buffer[0]);
     glBufferData(GL_ARRAY_BUFFER, vertex.size()*sizeof(float)*4, &vertex[0], GL_STATIC_DRAW);
@@ -74,8 +81,18 @@ void TextHandle::bind(int program, int vertexloc, int texcoordloc, int texUnitLo
 }
 
 void TextHandle::clear()
-{
+{   
+    if(_vao[0] > -1)
+	glDeleteVertexArrays(1, _vao);
   
+    vertex.clear();
+    texcoords.clear();
+    
+    _programloc  = -1;
+    _vertexloc   = -1;
+    _texcoordloc = -1;
+    _normalloc   = -1;
+    _texUnitLoc  = -1;
   
 }
 

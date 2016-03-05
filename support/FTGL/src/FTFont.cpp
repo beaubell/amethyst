@@ -269,6 +269,9 @@ void FTFont::Render( const wchar_t* string )
 
 void FTFont::Compose( const std::string text, TextHandle &hdl)
 {
+    // Clear out text handle
+    hdl.clear();
+    
     const unsigned char* c = (unsigned char*)text.c_str();
     pen.X(0); pen.Y(0);
 
