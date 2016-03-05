@@ -41,7 +41,7 @@ void Scene_Object::render(const lib::Cartesian_Vector& reference)
 
    // Render Object
    if(meta)
-           glCallList(reinterpret_cast<Model *>(meta)->dl);
+           //FIXME reinterpret_cast<Model *>(meta)->render();
 
     glPopMatrix();
 }
@@ -64,7 +64,7 @@ void Scene_Ship::render(const lib::Cartesian_Vector& reference)
 
    // Render Object
    if(meta)
-           glCallList(reinterpret_cast<Model *>(meta)->dl);
+           //FIXME reinterpret_cast<Model::sptr>(meta)->render();
 
     glPopMatrix();
 }

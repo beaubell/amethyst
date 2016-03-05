@@ -105,15 +105,18 @@ void scene_render(void)
   // Get Gobal State
   const Cartesian_Vector &reference = Global.obj_view->location;
   const Quaternion       &attitude  = Global.obj_view->attitude;
+  
+  float x = Global.screen_x;
+  float y = Global.screen_y;
 
-  glMatrixMode(GL_MODELVIEW);
+  glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), y/x, 0.1f, 10e10f);
 
   //Stars
   {
     // Set camera position without respect to camera zoom-out so that stars appear far away.
-    glm::dmat4 m_model = set_camera(attitude, 1.0);
-    glLoadMatrixd(&m_model[0][0]);
-    stars_render();
+    glm::mat4 m_view = set_camera(attitude, 1.0);
+    stars_render(m_proj, m_view);
+    return;
   }
 
   // Now consider camera zoom-out.

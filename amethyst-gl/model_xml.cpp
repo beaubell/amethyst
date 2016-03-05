@@ -25,8 +25,8 @@
 namespace amethyst {
 namespace client {
 
-void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model);
-void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model);
+void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex);
+void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex);
 
 void model_xml_load(std::string &name, Model &model)
 {
@@ -59,6 +59,7 @@ void model_xml_load(std::string &name, Model &model)
 
     cur = cur->xmlChildrenNode;
     xmlChar *key = NULL;
+    Texture::sptr tex; //FIXME Textures Should Load At Primative Level
 
     // Run through root tree
     try
@@ -69,23 +70,25 @@ void model_xml_load(std::string &name, Model &model)
             if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("name")) )
             {
                 key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-                model.name = reinterpret_cast<char *>(key);
+                model.setName(reinterpret_cast<char *>(key));
                 xmlFree(key);
             }
             if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("texture")) )
             {
                 key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                 std::string texture_name = reinterpret_cast<char *>(key);
-                model.texture = texture_load(texture_name);
+                tex = texture_load(texture_name);
                 xmlFree(key);
             }
             if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("sphere")) )
             {
-                model_xml_parse_sphere (doc, cur, model);
+                if(tex)
+                  model_xml_parse_sphere (doc, cur, model, tex);
             }
             if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("extfile")) )
             {
-                model_xml_parse_extfile (doc, cur, model);
+                if(tex)
+                  model_xml_parse_extfile (doc, cur, model, tex);
             }
 
             cur = cur->next;
@@ -93,8 +96,10 @@ void model_xml_load(std::string &name, Model &model)
     }
     catch(std::runtime_error &e)
     {
-        xmlFree(key);
-        xmlFreeDoc(doc);
+        if(key)
+          xmlFree(key);
+        if(doc)
+          xmlFreeDoc(doc);
         throw e;
     }
 
@@ -103,7 +108,7 @@ void model_xml_load(std::string &name, Model &model)
 }
 
 
-void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model)
+void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex)
 {
 
     xmlChar *temp;
@@ -125,21 +130,21 @@ void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mod
     } else throw(std::runtime_error("precision= property not found in sphere"));
 
     // FIXME This should just store the values in a vector list...
-    model.dl = glGenLists(1);
-    glNewList(model.dl, GL_COMPILE);
-    glBindTexture(GL_TEXTURE_2D, model.texture);
-     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    //glBindTexture(GL_TEXTURE_2D, model.texture);
+    // glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
-     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    model_sphere_create(0.0, 0.0, 0.0, radius, precision);
-    glEndList();
+    // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    TriangleStrip::sptr sphere = model_sphere_create(0.0, 0.0, 0.0, radius, precision);
+    sphere->setTexture(tex);
+    
+    model.addPrimative(sphere);
 
     return;
 }
 
 
-void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model)
+void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex)
 {
 
     xmlChar *temp;
@@ -153,10 +158,7 @@ void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mo
 
     std::string filepath = Global.dir_models + extfile;
 
-    model.dl = glGenLists(1);
-    glNewList(model.dl, GL_COMPILE);
-    model_load_file(filepath.c_str(), model);
-    glEndList();
+    model_load_file(filepath.c_str(), model, tex);
 
     return;
 }
