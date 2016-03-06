@@ -175,7 +175,7 @@ extern "C" bool mod_start(Amethyst_GL &agl_temp)
     {
         agl = &agl_temp;
 
-        window = UI_Window_ptr(new UIW_Test(agl->ui));
+        window = std::make_shared<UIW_Test>(agl->ui);
         agl->ui.add(window);
 
         module_active = true;

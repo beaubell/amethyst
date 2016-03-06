@@ -25,7 +25,7 @@
 #include <string>
 #include <set>
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #ifdef WIN32
 #include "file.h"
@@ -38,6 +38,9 @@ namespace client {
 class Module
 {
    public:
+    typedef std::shared_ptr<Module> sptr;
+    typedef std::weak_ptr<Module> wptr;
+
     Module(const std::string &module_name, const std::string &module_path);
     ~Module();
 
@@ -73,14 +76,11 @@ class Module
     #endif
 };
 
-typedef boost::shared_ptr<Module> Module_ptr;
-
-
 class Module_Manager
 {
    public:
-    void reg(Module_ptr);
-    void unreg(Module_ptr);
+    void reg(Module::sptr);
+    void unreg(Module::sptr);
 
     void start(const std::string &module_name, Amethyst_GL &);
     void stop(const std::string &module_name);
@@ -91,7 +91,7 @@ class Module_Manager
     void unload_all();
 
    private:
-    std::set<Module_ptr> modules_;
+    std::set<Module::sptr> modules_;
 };
 
 /// Module Manager

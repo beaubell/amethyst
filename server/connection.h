@@ -18,10 +18,11 @@
 #include <string>
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 #include "lib/manifest.h"
+
+#include <memory>
 
 using namespace boost;
 using boost::asio::ip::tcp;
@@ -34,9 +35,11 @@ class Connection_Manager;
 
 
 class TCP_Connection
-  : public boost::enable_shared_from_this<TCP_Connection>
+  : public std::enable_shared_from_this<TCP_Connection>
 {
    public:
+    typedef std::shared_ptr<TCP_Connection> sptr;
+
     TCP_Connection(boost::asio::io_service& io_service,
                    Connection_Manager& manager,
                    lib::FileManifest& manifest)
@@ -99,8 +102,6 @@ class TCP_Connection
 
     short client_login_attempts;
 };
-
-typedef boost::shared_ptr<TCP_Connection> connection_ptr;
 
 } // namespace server
 } // Namespace amethyst

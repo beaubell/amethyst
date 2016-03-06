@@ -32,6 +32,7 @@ class Texture
 {
    public:
     typedef std::shared_ptr<Texture> sptr;
+    typedef std::weak_ptr<Texture>   wptr;
     
     Texture();
     virtual ~Texture();

@@ -41,15 +41,15 @@ static Amethyst_GL*            agl = NULL;
 
 UIW_Shipstat::UIW_Shipstat(UI &ui)
     : UI_Window(ui, std::string("Ship Stats")),
-      _tbLocHead(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbLocX(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbLocY(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbLocZ(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbAttHead(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbAttW(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbAttX(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbAttY(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-      _tbAttZ(new UI_TextBox(ui.get_font(), ui.uifont_shader))
+      _tbLocHead(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbLocX(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbLocY(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbLocZ(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbAttHead(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbAttW(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbAttX(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbAttY(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+      _tbAttZ(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader))
       
 {
     setPosition(glm::vec2(10.0f, 10.0f));
@@ -226,7 +226,7 @@ extern "C" bool mod_start(Amethyst_GL &agl_temp)
     {
         agl = &agl_temp;
 
-        window = UI_Window_ptr(new UIW_Shipstat(agl->ui));
+        window = std::make_shared<UIW_Shipstat>(agl->ui);
         agl->ui.add(window);
 
         module_active = true;

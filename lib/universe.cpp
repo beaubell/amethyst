@@ -33,7 +33,7 @@ Universe::Universe(void)
 }
 
 
-void Universe::object_add(Object::ptr new_object)
+void Universe::object_add(Object::sptr new_object)
 {
   if (_using_cl)
     throw (std::runtime_error("Adding objects after OpenCL runtime is initialized is not supported!"));
@@ -44,9 +44,9 @@ void Universe::object_add(Object::ptr new_object)
 }
 
 
-void Universe::object_del(const Object::ptr del_object)
+void Universe::object_del(const Object::sptr del_object)
 {
-  std::list<Object::ptr>::iterator obj1 = _object_list.begin();
+  auto obj1 = _object_list.begin();
 
   do
   {
@@ -60,11 +60,11 @@ void Universe::object_del(const Object::ptr del_object)
 }
 
 
-Object::ptr Universe::object_find(const std::string &name)
+Object::sptr Universe::object_find(const std::string &name)
 {
   if(!_object_list.empty())
   {
-      std::list<Object::ptr>::iterator obj1 = _object_list.begin();
+      auto obj1 = _object_list.begin();
 
       do
       {
@@ -74,7 +74,7 @@ Object::ptr Universe::object_find(const std::string &name)
         obj1++;
       }  while (obj1 != _object_list.end());
   }
-  return Object::ptr();
+  return Object::sptr();
 }
 
 
@@ -430,8 +430,8 @@ void Universe::iterate_cpu(const double &dtime)
 {
   if(!_object_list.empty())
   {
-    std::list<Object::ptr>::iterator obj1;
-    std::list<Object::ptr>::iterator obj2;
+    std::list<Object::sptr>::iterator obj1;
+    std::list<Object::sptr>::iterator obj2;
 
     // Zero Forces out
     obj1 = _object_list.begin();
@@ -500,7 +500,7 @@ void Universe::iterate_cpu(const double &dtime)
   } // If
 }
 
-std::list<Object::ptr>& Universe::list(void)
+std::list<Object::sptr>& Universe::list(void)
 {
   return _object_list;
 
@@ -588,7 +588,7 @@ void Universe::cl_copytogpu()
 
   // FIXME FIll out buffer before this step.
   size_t objects = _object_list.size();
-  std::list<Object::ptr>::iterator obj = _object_list.begin();
+  auto obj = _object_list.begin();
 
   for (std::size_t i = 0; i < objects; i++)
   {
@@ -653,7 +653,7 @@ void Universe::cl_copyfrgpu()
 
   queue_rk4.finish();
 
-  std::list<Object::ptr>::iterator obj = _object_list.begin();
+  auto obj = _object_list.begin();
 
   for (std::size_t i = 0; i < objects; i++)
   {
@@ -804,7 +804,7 @@ uint Universe::count_sig_objects()
 {
   uint count = 0;
   
-  for (std::list<Object::ptr>::iterator obj = _object_list.begin(); obj != _object_list.end(); obj++)
+  for (auto obj = _object_list.begin(); obj != _object_list.end(); obj++)
   {
     if((*obj)->mass > mass_cutoff)
     count++;
@@ -815,7 +815,7 @@ uint Universe::count_sig_objects()
 
 
 
-bool PComp(const Object::ptr &a, const Object::ptr &b)
+bool PComp(const Object::sptr &a, const Object::sptr &b)
 {
      return (*a).mass > (*b).mass;
 }

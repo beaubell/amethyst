@@ -25,6 +25,8 @@ class ShaderProgram
 {
 public:
   typedef std::shared_ptr<ShaderProgram> sptr;
+  typedef std::weak_ptr<ShaderProgram>   wptr;
+
   class AttribHDL {
   public:
     int value;

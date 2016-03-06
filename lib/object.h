@@ -19,7 +19,7 @@
 #include "orientation.h"
 #include "matrix.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace amethyst {
 namespace lib {
@@ -55,7 +55,8 @@ namespace lib {
        Object(const Object&);
        virtual ~Object() {};
 
-       typedef boost::shared_ptr<Object> ptr;
+       typedef std::shared_ptr<Object> sptr;
+       typedef std::weak_ptr<Object>   wptr;
 
        void force_add(const Cartesian_Vector &force);
        void force_add(const Spherical_Vector &force);

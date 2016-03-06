@@ -43,8 +43,8 @@ UI::UI(const std::string &fontfile)
     const std::string fontpath = Global.dir_fonts + fontfile;
 
     // Setup Shaders;
-    ui_shader = ShaderProgram::sptr(new ShaderProgram("ui.vert", "ui.frag"));
-    uifont_shader = ShaderProgram::sptr(new ShaderProgram("uifont.vert", "uifont.frag"));
+    ui_shader = std::make_shared<ShaderProgram>("ui.vert", "ui.frag");
+    uifont_shader = std::make_shared<ShaderProgram>("uifont.vert", "uifont.frag");
 
     uivertexLoc     = ui_shader->GetAttribLocation("vertexData");
 
@@ -69,8 +69,8 @@ UI::~UI()
 
     // Delete fonts
     delete font_;
-    
-    ui_shader = NULL;
+
+    ui_shader = nullptr;
 }
 
 void UI::render(void)
@@ -153,8 +153,8 @@ UI_Window::UI_Window(UI &ui, const std::string &newtitle)
       focused(false),
       framed(true),
       title(newtitle),
-      font(ui.get_font()),
       ui_shader(ui.ui_shader),
+      font(ui.get_font()),
       _titlewidget(font, ui.uifont_shader)
 {
   

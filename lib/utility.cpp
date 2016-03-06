@@ -73,7 +73,7 @@ void readTextFile(const std::string& filename, std::string& in_buffer)
 
 void gen_model_solarsystem(Universe &uni)
 {
-  lib::Object::ptr sol, earth, moon, merc, v, p1, p2, mars, jup, sat, ura, nep;
+  lib::Object::sptr sol, earth, moon, merc, v, p1, p2, mars, jup, sat, ura, nep;
   sol = uni.object_find("Sol");
   if(sol != NULL)
   {
@@ -172,7 +172,7 @@ void gen_model_solarsystem(Universe &uni)
   }
 #endif
     
-    Object::ptr SEl2 = uni.object_find("S-E L2 Probe");
+    Object::sptr SEl2 = uni.object_find("S-E L2 Probe");
     SEl2->mass = 1;
     lib::placement_L2(*sol, *earth, *SEl2);
 
@@ -232,10 +232,10 @@ void gen_model_solarsystem(Universe &uni)
   nep->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *nep, 4504.450e9);
 
-  Object::ptr solmercl1 = uni.object_find("S-Merc L1 Probe");
+  Object::sptr solmercl1 = uni.object_find("S-Merc L1 Probe");
   //lib::placement_L1(*sol, *merc, *solmercl1);
 
-  Object::ptr solmarsl1 = uni.object_find("S-Mars L1 Probe");
+  Object::sptr solmarsl1 = uni.object_find("S-Mars L1 Probe");
   //lib::placement_L1(*sol, *mars, *solmarsl1);
 
 
@@ -291,7 +291,7 @@ void gen_object_variation(Universe &uni,
               double vz = source.velocity.z + double(vzi+v_stepoff[2])*v_stepsize.z;
 
               // Create new object
-              Object::ptr obj = Object::ptr(new Object(source));
+              Object::sptr obj = std::make_shared<Object>(source);
 
               // Copy Source Data
               //(*Object) = source;

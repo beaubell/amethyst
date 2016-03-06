@@ -26,8 +26,8 @@ Server::Server(const std::string& address, const std::string& port,
     acceptorV4_(io_service_),
     acceptorV6_(io_service_),
     connection_manager_(),
-    new_connectionV4_(new TCP_Connection(io_service_, connection_manager_, manifest_)),
-    new_connectionV6_(new TCP_Connection(io_service_, connection_manager_, manifest_)),
+    new_connectionV4_(std::make_shared<TCP_Connection>(io_service_, connection_manager_, manifest_)),
+    new_connectionV6_(std::make_shared<TCP_Connection>(io_service_, connection_manager_, manifest_)),
     file_root(config_root)
 {
     // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).

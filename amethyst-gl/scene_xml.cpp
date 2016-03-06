@@ -33,11 +33,10 @@ namespace client {
 using lib::Cartesian_Vector;
 using lib::Object;
 using lib::Ship;
-using lib::Ship_ptr;
 
 static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected);
 static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object& obj);
-static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship_ptr ship);
+static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship::sptr ship);
 static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur);
 static void scene_xml_parse_vector(xmlDocPtr doc, xmlNodePtr cur, Cartesian_Vector &vector);
 static void scene_xml_parse_quat(xmlDocPtr doc, xmlNodePtr cur, Quaternion &quat);
@@ -107,10 +106,10 @@ void scene_load(const std::string &name)
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
         {
-            Scene_Object::ptr temp;
+            Scene_Object::sptr temp;
             try
             {
-                temp = Scene_Object::ptr(new Scene_Object);
+                temp = std::make_shared<Scene_Object>();
                 scene_xml_parse_object (doc, cur, *temp);
             }
             catch (parse_error& e)
@@ -125,10 +124,10 @@ void scene_load(const std::string &name)
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("ship") ))
         {
-            Scene_Ship::ptr temp;
+            Scene_Ship::sptr temp;
             try
             {
-                temp = Scene_Ship::ptr(new Scene_Ship());
+                temp = std::make_shared<Scene_Ship>();
                 scene_xml_parse_ship (doc, cur, temp);
             }
             catch (parse_error& e)
@@ -148,20 +147,20 @@ void scene_load(const std::string &name)
     xmlFreeDoc(doc);
 
     //Find Player and set
-    Global.obj_view = Global.universe.object_find(selected_object).get();
-    if (Global.obj_view == NULL)
+    Global.obj_view = Global.universe.object_find(selected_object);
+    if (!Global.obj_view)
     {
-        Global.obj_view = &Global.reference_object;
+        Global.obj_view = Global.reference_object;
         throw parse_error("Selected object \"" + selected_object + "\" is not specified in scene file");
     }
 
-    if(Global.obj_view != &Global.reference_object)
-        Global.ship = dynamic_cast<Ship*>(Global.obj_view);
+    if(Global.obj_view != Global.reference_object)
+        Global.ship = std::dynamic_pointer_cast<Ship>(Global.obj_view);
 
     if(Global.ship == NULL)
     {
         Global.log.add("Object: " + Global.obj_view->name + ", is not pilotable.");
-        Global.ship = &Global.reference_ship;
+        Global.ship = Global.reference_ship;
     }
 
     return;
@@ -349,7 +348,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object &new_ob
 }
 
 
-static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship_ptr new_ship)
+static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship::sptr new_ship)
 {
 
     cur = cur->xmlChildrenNode;
@@ -472,7 +471,7 @@ void scene_xml_write (const std::string &name)
 
     if(!object_list.empty())
     {
-        std::list<Object::ptr>::iterator obj1 = Global.universe.list().begin();
+        auto obj1 = Global.universe.list().begin();
         do
         {
             outfile << "  <object name=\"" << (*obj1)->name << "\">" << std::endl;

@@ -67,7 +67,7 @@ Texture::sptr texture_load(const std::string &texture_name)
     {
         try
         {
-            texture = Texture::sptr(new Texture);
+            texture = std::make_shared<Texture>();
             std::string texture_path = Global.dir_textures + texture_name;
             texture->gl_id = image_load(texture_path.c_str());
         }

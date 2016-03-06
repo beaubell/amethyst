@@ -28,10 +28,10 @@ class Connection_Manager
 {
    public:
     /// Add the specified connection to the manager and start it.
-    void start(connection_ptr c);
+    void start(TCP_Connection::sptr c);
 
     /// Stop the specified connection.
-    void stop(connection_ptr c);
+    void stop(TCP_Connection::sptr c);
 
     /// Stop all connections.
     void stop_all();
@@ -39,12 +39,12 @@ class Connection_Manager
     /// Query number of active connections.
     int  get_number_of_connections();
     
-    const std::set<connection_ptr>::const_iterator iterator_begin();
-    const std::set<connection_ptr>::const_iterator iterator_end();
+    const std::set<TCP_Connection::sptr>::const_iterator iterator_begin();
+    const std::set<TCP_Connection::sptr>::const_iterator iterator_end();
     
    private:
     /// The managed connections.
-    std::set<connection_ptr> connections_;
+    std::set<TCP_Connection::sptr> connections_;
 };
 
 } // namespace server

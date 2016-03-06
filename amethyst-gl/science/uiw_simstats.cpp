@@ -21,15 +21,15 @@ namespace client {
 UIW_SimStats::UIW_SimStats(Amethyst_GL &amgl,  UI &ui)
  : UI_Window(ui, std::string("Simulation Stats")),
    _amgl(amgl),
-   _tbtime(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbCOMtitle(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbCOMx(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbCOMy(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbCOMz(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbVOMtitle(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbVOMx(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbVOMy(new UI_TextBox(ui.get_font(), ui.uifont_shader)),
-   _tbVOMz(new UI_TextBox(ui.get_font(), ui.uifont_shader))
+   _tbtime(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbCOMtitle(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbCOMx(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbCOMy(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbCOMz(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbVOMtitle(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbVOMx(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbVOMy(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader)),
+   _tbVOMz(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader))
 {
   setPosition(glm::vec2(10.0, -200.0));
   resize(glm::vec2(520.0, 100.0));
@@ -104,7 +104,7 @@ void UIW_SimStats::update()
     Universe &uni = Global.universe;
     if(!uni.list().empty())
     {
-        std::list<lib::Object::ptr>::iterator obj1 = uni.list().begin();
+        auto obj1 = uni.list().begin();
 
         do
         {

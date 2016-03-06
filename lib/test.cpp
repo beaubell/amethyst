@@ -22,9 +22,6 @@
 #include "net.h"
 #include "datatypes.h"
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 namespace amethyst {
 namespace lib {
@@ -85,10 +82,10 @@ namespace lib {
 
   bool test_engine(bool quiet, bool /* debug unused*/)
   {
-       Object::ptr a = Object::ptr(new (Object));
-       Object::ptr b = Object::ptr(new (Object));
-       Object::ptr c = Object::ptr(new (Object));
-       Object::ptr d = Object::ptr(new (Object));
+       Object::sptr a = std::make_shared<Object>();
+       Object::sptr b = std::make_shared<Object>();
+       Object::sptr c = std::make_shared<Object>();
+       Object::sptr d = std::make_shared<Object>();
 
        Universe universe;
 
@@ -203,10 +200,10 @@ void test_rk4()
 {
   cl_init();
 
-  Object::ptr a = Object::ptr(new (Object));
-  Object::ptr b = Object::ptr(new (Object));
-  Object::ptr c = Object::ptr(new (Object));
-  Object::ptr d = Object::ptr(new (Object));
+  Object::sptr a = std::make_shared<Object>();
+  Object::sptr b = std::make_shared<Object>();
+  Object::sptr c = std::make_shared<Object>();
+  Object::sptr d = std::make_shared<Object>();
 
   Universe universe;
 

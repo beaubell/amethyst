@@ -17,6 +17,8 @@
 #include "boost/date_time/local_time/local_time.hpp"
 
 
+
+
 namespace amethyst {
 namespace server {
 
@@ -266,7 +268,7 @@ void TCP_Connection::connectionlist_send()
 {
     //connection_manager_
     message_ = "Ok. " + lexical_cast<std::string>(connection_manager_.get_number_of_connections()) + "Entries\r\n";
-    for (std::set<connection_ptr>::const_iterator i = connection_manager_.iterator_begin();i!=connection_manager_.iterator_end();i++)
+    for (std::set<TCP_Connection::sptr>::const_iterator i = connection_manager_.iterator_begin();i!=connection_manager_.iterator_end();i++)
         message_ += "user: " + lexical_cast<std::string>((*i)->client_user) + ":" + lexical_cast<std::string>((*i)->socket().remote_endpoint()) +  "\r\n";
 
     message_ += ":Command Completed.\r\n";

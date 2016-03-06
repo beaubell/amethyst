@@ -18,13 +18,13 @@ namespace amethyst {
 namespace server {
 
 
-void Connection_Manager::start(connection_ptr c)
+void Connection_Manager::start(TCP_Connection::sptr c)
 {
     connections_.insert(c);
     c->start();
 }
 
-void Connection_Manager::stop(connection_ptr c)
+void Connection_Manager::stop(TCP_Connection::sptr c)
 {
     connections_.erase(c);
     c->stop();
@@ -42,12 +42,12 @@ int  Connection_Manager::get_number_of_connections()
     return connections_.size();
 }
 
-const std::set<connection_ptr>::const_iterator Connection_Manager::iterator_begin()
+const std::set<TCP_Connection::sptr>::const_iterator Connection_Manager::iterator_begin()
 {
     return connections_.begin();
 }
 
-const std::set<connection_ptr>::const_iterator Connection_Manager::iterator_end()
+const std::set<TCP_Connection::sptr>::const_iterator Connection_Manager::iterator_end()
 {
     return connections_.end();
 }

@@ -54,13 +54,13 @@ class __global {
       std::string scene;
 
       // Your Ship
-      lib::Ship *ship;
+      lib::Ship::sptr ship;
 
       // Targeted Object
-      lib::Object *obj_target;
+      lib::Object::sptr obj_target;
 
       // Viewed Object
-      lib::Object *obj_view;
+      lib::Object::sptr obj_view;
 
       // Field of View
       float   fov;
@@ -127,12 +127,12 @@ class __global {
       //int          net_ships;
 
       // Reference Objects
-      Scene_Object reference_object;
-      Scene_Ship   reference_ship;
+      Scene_Object::sptr reference_object;
+      Scene_Ship::sptr   reference_ship;
 
       Log    log;
 
-      std::set<Scene_Ship::ptr> ships;
+      std::set<Scene_Ship::sptr> ships;
 };
 
 // Tell all c files that Global is instantiated somewhere externally

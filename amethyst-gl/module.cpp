@@ -122,13 +122,13 @@ bool Module::is_active()
 }
 
 /// Module Manager Class Functions
-void Module_Manager::reg(Module_ptr module)
+void Module_Manager::reg(Module::sptr module)
 {
     modules_.insert(module);
     std::cout << "Module: " << module->name() << " Registered." << std::endl;
 }
 
-void Module_Manager::unreg(Module_ptr module)
+void Module_Manager::unreg(Module::sptr module)
 {
     modules_.erase(module);
     std::cout << "Module: " << module->name() << " Unregistered." << std::endl;
@@ -138,7 +138,7 @@ void Module_Manager::start(const std::string &name,Amethyst_GL &agl)
 {
     std::cerr << "Finding Module, " << name << ", to Start." << std::endl;
     /// Find Module name "name"
-    std::set<Module_ptr>::iterator mod =
+    std::set<Module::sptr>::iterator mod =
             std::find_if(modules_.begin(), modules_.end(),  (bind(&Module::name, _1) == name) );
 
     /// Call start on it.
@@ -152,7 +152,7 @@ void Module_Manager::start(const std::string &name,Amethyst_GL &agl)
 void Module_Manager::stop(const std::string &name)
 {
     /// Find Module name "name"
-    std::set<Module_ptr>::iterator mod =
+    std::set<Module::sptr>::iterator mod =
             std::find_if(modules_.begin(), modules_.end(),  (bind(&Module::name, _1) == name) );
 
     /// Call start on it.
@@ -184,10 +184,10 @@ bool Module_Manager::load(const std::string &module_name)
     /// Verify Module
 
     /// Load module
-    Module_ptr module;
+    Module::sptr module;
     try
     {
-        module = Module_ptr(new Module(module_name, module_path));
+        module = std::make_shared<Module>(module_name, module_path);
     }
     catch (...)
     {

@@ -58,8 +58,8 @@ class Server
     Connection_Manager connection_manager_;
 
     /// The next connection to be accepted.
-    connection_ptr new_connectionV4_;
-    connection_ptr new_connectionV6_;
+    TCP_Connection::sptr new_connectionV4_;
+    TCP_Connection::sptr new_connectionV6_;
 
     /// The handler for all incoming requests.
     //request_handler request_handler_;

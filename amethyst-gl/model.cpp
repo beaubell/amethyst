@@ -185,7 +185,7 @@ Model::sptr model_load(std::string &model_name)
     // If model doesn't already exist, load and add to linked list
     if(!model)
     {
-        model = Model::sptr(new Model());
+        model = std::make_shared<Model>();
 
         try
         {
@@ -193,8 +193,6 @@ Model::sptr model_load(std::string &model_name)
         }
         catch (std::runtime_error &e)
         {
-            //delete model;
-            model = NULL;
             throw e;
         }
         model->setName(model_name);
@@ -242,7 +240,7 @@ void models_free(void)
 TriangleStrip::sptr model_sphere_create(const double cx, const double cy, const double cz, double r, int p )
 {
     // Make new Triangle Strip object
-    TriangleStrip::sptr sphere = TriangleStrip::sptr(new TriangleStrip);
+    TriangleStrip::sptr sphere = std::make_shared<TriangleStrip>();
 
     TriangleStrip::vertex_type point;
     TriangleStrip::texcoord_type tex;
@@ -318,7 +316,7 @@ void model_load_file(const std::string &filename, Model &model, Texture::sptr te
         throw(std::runtime_error("Failed to open model file"));
 
     //Create New Primative
-    TriangleStrip::sptr prim = TriangleStrip::sptr(new TriangleStrip);
+    TriangleStrip::sptr prim = std::make_shared<TriangleStrip>();
 
     TriangleStrip::vertex_type point;
     TriangleStrip::texcoord_type texcoord;

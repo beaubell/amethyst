@@ -60,7 +60,7 @@ UIW_Log::UIW_Log(UI &ui)
   
   for (uint i = 0; i < num_lines; i++)
   {
-    UI_TextBox::sptr line(new UI_TextBox(ui.get_font(), ui.uifont_shader));
+    UI_TextBox::sptr line = std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader);
     _logline.push_back(line);
     _logline[i]->setPosition(glm::vec2(5.0f, static_cast<float>(i)*line_height));
     _logline[i]->setText(to_string(i));
@@ -162,7 +162,7 @@ extern "C" bool mod_start(Amethyst_GL &agl_temp)
     {
         agl = &agl_temp;
 
-        window = UI_Window_ptr(new UIW_Log(agl->ui));
+        window = std::make_shared<UIW_Log>(agl->ui);
         agl->ui.add(window);
 
         module_active = true;

@@ -65,6 +65,8 @@ class UI_Window : public UI_Object
 {
    public:
     typedef std::shared_ptr<UI_Window> sptr;
+    typedef std::weak_ptr<UI_Window>   wptr;
+
     UI_Window(UI &ui, const std::string &title);
     virtual ~UI_Window();
 

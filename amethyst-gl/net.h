@@ -21,12 +21,13 @@
 
 #include "thread.h"
 
+#include "lib/manifest.h"
+
 #include <boost/array.hpp>
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
-#include "lib/manifest.h"
+
 
 namespace amethyst {
 namespace client {

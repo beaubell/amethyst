@@ -53,7 +53,7 @@ static void hud_widget_vectorbox(int x, int y, float xaxis, float yaxis, float z
 static void hud_radials();
 static void hud_orbits();
 
-static FTFont* fonts[6];
+static ftgl::FTFont* fonts[6];
 //static FTGLPixmapFont* infoFont;
 
 static unsigned int frames = 0, benchmark = 0;
@@ -62,7 +62,7 @@ static float fps = 0.0f;
 void hud_setup(void)
 {
     std::string fontfile = Global.dir_fonts + "/spacefri.ttf";
-    fonts[0] = new FTGLPixmapFont( fontfile.c_str());
+    fonts[0] = new ftgl::FTGLPixmapFont( fontfile.c_str());
 
     // Check to see if font loaded correctly
     if(fonts[0]->Error())
@@ -128,7 +128,7 @@ static void hud_widget_object_text(void)
     // Print names on the objects
     if(!object_list.empty())
     {
-        std::list<lib::Object::ptr>::iterator obj1 = Global.universe.list().begin();
+        auto obj1 = Global.universe.list().begin();
 
         do
         {
@@ -171,12 +171,12 @@ static void hud_widget_memory(int x, int y)
     char status[100];
     snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
     //glRasterPos3f(-45.0f, 30.0f,-100.0f);
-    glWindowPos2i(x, y);
+    //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
 
     snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Free: %d",mstats.fordblks);
     //glRasterPos3f(-45.0f, 29.0f,-100.0f);
-    glWindowPos2i(x, y - 13);
+    //DEPRECATED glWindowPos2i(x, y - 13);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
 }
 #endif
@@ -186,20 +186,20 @@ static void hud_widget_location(int x, int y, const Cartesian_Vector &ref)
 {
     char buffer[13];
 
-    glWindowPos2i(x, y);
+    //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(" Location - ");
 
     //FIXME convert to use std::string
     snprintf(reinterpret_cast<char*>(&buffer), 12, "Z:%f", ref.x);
-    glWindowPos2i(x += 110, y);
+    //DEPRECATED glWindowPos2i(x += 110, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
     snprintf(reinterpret_cast<char*>(&buffer), 12, "Y:%f", ref.y);
-    glWindowPos2i(x += 100, y);
+    //DEPRECATED glWindowPos2i(x += 100, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
     snprintf(reinterpret_cast<char*>(&buffer), 12, "Z:%f", ref.z);
-    glWindowPos2i(x += 100, y);
+    //DEPRECATED glWindowPos2i(x += 100, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 }
 
@@ -208,24 +208,24 @@ static void hud_widget_attitude(int x, int y, const Quaternion &ref)
 {
     char buffer[20];
 
-    glWindowPos2i(x, y);
+    //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(" Attitude - ");
 
     //FIXME convert to use std::string
     snprintf(reinterpret_cast<char*>(&buffer), 20, "W:%f", ref.w);
-    glWindowPos2i(x += 110, y);
+    //DEPRECATED glWindowPos2i(x += 110, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
     snprintf(reinterpret_cast<char*>(&buffer), 20, "X:%f", ref.x);
-    glWindowPos2i(x += 100, y);
+    //DEPRECATED glWindowPos2i(x += 100, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
     snprintf(reinterpret_cast<char*>(&buffer), 20, "Y:%f", ref.y);
-    glWindowPos2i(x += 100, y);
+    //DEPRECATED glWindowPos2i(x += 100, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 
     snprintf(reinterpret_cast<char*>(&buffer), 20, "Z:%f", ref.z);
-    glWindowPos2i(x += 100, y);
+    //DEPRECATED glWindowPos2i(x += 100, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 }
 
@@ -235,7 +235,7 @@ static void hud_widget_camera(int x, int y) // FIXME
     char buffer[50];
 
     snprintf(reinterpret_cast<char*>(&buffer), 50, " Cam: X:%f deg, Y:%f deg, Z:%fx",Global.cam_yaw, Global.cam_pitch, Global.cam_zoom);
-    glWindowPos2i(x, y);
+    //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 }
 
@@ -253,7 +253,7 @@ static void hud_widget_fps(int x, int y)
     char fpsstring[30];
     snprintf(reinterpret_cast<char*>(&fpsstring), 30, "FPS: %.1f (Tick: %u )",fps, Global.time_ticks);
 
-    glWindowPos2i(x, y);
+    //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&fpsstring));
 
     frames++;
@@ -262,27 +262,27 @@ static void hud_widget_fps(int x, int y)
 
 static void hud_widget_select(const int x, const int y)
 {
-    const lib::Ship     &ship = *Global.ship;
-    const lib::Object   &view = *Global.obj_view;
-    const lib::Object &target = *Global.obj_target;
+    const lib::Ship::sptr     ship = Global.ship;
+    const lib::Object::sptr   view = Global.obj_view;
+    const lib::Object::sptr   target = Global.obj_target;
 
-    std::string text = "Piloting: " + ship.name;
-    glWindowPos2i(x, y);
+    std::string text = "Piloting: " + ship->name;
+    //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(text.c_str());
 
-    text = "Viewing : " + view.name;
-    glWindowPos2i(x, y - 13);
+    text = "Viewing : " + view->name;
+    //DEPRECATED glWindowPos2i(x, y - 13);
     fonts[0]->Render(text.c_str());
 
-    if((&view != &target) && (&target != &Global.reference_object))
+    if((view != target) && (target != Global.reference_object))
     {
-        const double distance = lib::phys_distance(view.location, target.location);
-        text = "Targeted: " + target.name;
+        const double distance = lib::phys_distance(view->location, target->location);
+        text = "Targeted: " + target->name;
         text += "  Distance: " + lexical_cast<std::string>(distance);
 
-        const Cartesian_Vector speed = Cartesian_Vector(target.velocity - view.velocity);
+        const Cartesian_Vector speed = Cartesian_Vector(target->velocity - view->velocity);
         text += "  Speed: " + lexical_cast<std::string>(speed.magnitude());
-        glWindowPos2i(x, y - 26);
+        //DEPRECATED glWindowPos2i(x, y - 26);
         fonts[0]->Render(text.c_str());
     }
 }
@@ -387,10 +387,10 @@ static void hud_radials()
     radialcolors[i][0][2] = radialcolors[i][1][2] = (i != 0)?1.0f:0.0f;
   }
 
-  lib::Object::ptr earth = Global.universe.object_find("Earth");
-  lib::Object::ptr probe1 = Global.universe.object_find("S-E L1 Probe");
-  lib::Object::ptr probe2 = Global.universe.object_find("S-E L2 Probe");
-  lib::Object::ptr sol = Global.universe.object_find("Sol");
+  lib::Object::sptr earth = Global.universe.object_find("Earth");
+  lib::Object::sptr probe1 = Global.universe.object_find("S-E L1 Probe");
+  lib::Object::sptr probe2 = Global.universe.object_find("S-E L2 Probe");
+  lib::Object::sptr sol = Global.universe.object_find("Sol");
 
   if (probe1 != NULL && probe2 != NULL && sol != NULL && earth != NULL)
   {
@@ -434,7 +434,7 @@ static void hud_radials()
     temp << (L1_exact.location - probe1->location).magnitude();
     temp >> temp2;
     std::string text = "L1 Probe Distance: " + temp2;
-    glWindowPos2i(10, 80);
+    //DEPRECATED glWindowPos2i(10, 80);
     fonts[0]->Render(text.c_str());
 
     temp.clear();
@@ -442,7 +442,7 @@ static void hud_radials()
     temp << (L2_exact.location - probe2->location).magnitude();
     temp >> temp2;
     text = "L2 Probe Distance: " + temp2;
-    glWindowPos2i(10, 67);
+    //DEPRECATED glWindowPos2i(10, 67);
     fonts[0]->Render(text.c_str());
 
   }
@@ -516,7 +516,7 @@ static void hud_orbits()
   Cartesian_Vector &reference = Global.obj_view->location;
 
   // Place "Sol" at the origin of radials
-  lib::Object::ptr sol = Global.universe.object_find("Sol");
+  lib::Object::sptr sol = Global.universe.object_find("Sol");
   if (sol != NULL)
   {
     glPushMatrix();
@@ -527,7 +527,7 @@ static void hud_orbits()
     glPopMatrix();
   }
 
-  lib::Object::ptr earth = Global.universe.object_find("Earth");
+  lib::Object::sptr earth = Global.universe.object_find("Earth");
   if (earth != NULL)
   {
     glPushMatrix();

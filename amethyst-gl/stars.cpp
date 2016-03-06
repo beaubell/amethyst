@@ -13,6 +13,7 @@
 
 #include "file.h"
 #include <stdlib.h> // malloc
+#include <unistd.h>
 #include <errno.h>  //
 #include <iostream>
 #include <cmath>
@@ -167,7 +168,7 @@ void stars_load(std::string &filestr)
     fclose(file);
 
     // Setup Shaders;
-    star_shader = ShaderProgram::sptr(new ShaderProgram("baseline.vert", "baseline.frag"));
+    star_shader = std::make_shared<ShaderProgram>("baseline.vert", "baseline.frag");
 
     vertexLoc = star_shader->GetAttribLocation("positionData");
     colorLoc  = star_shader->GetAttribLocation("colorData"); 

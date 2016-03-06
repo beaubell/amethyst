@@ -29,6 +29,7 @@ class Primative
 {
   public:
     typedef std::shared_ptr<Primative> sptr;
+    typedef std::weak_ptr<Primative>   wptr;
 
     Primative(const std::string& name);
     virtual ~Primative();
@@ -48,6 +49,8 @@ class TriangleStrip : public Primative
 {
   public:
     typedef std::shared_ptr<TriangleStrip> sptr;
+    typedef std::weak_ptr<TriangleStrip>   wptr;
+
     typedef glm::vec3 vertex_type;
     typedef glm::vec2 texcoord_type;
     typedef glm::vec3 normal_type;
@@ -90,6 +93,7 @@ class Model
 {
    public:
     typedef std::shared_ptr<Model> sptr;
+    typedef std::weak_ptr<Model>   wptr;
 
     Model();
     virtual ~Model();

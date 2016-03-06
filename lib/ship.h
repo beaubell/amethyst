@@ -15,7 +15,7 @@
 
 #include "object.h"
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace amethyst {
 namespace lib {
@@ -24,6 +24,9 @@ namespace lib {
 class Ship : public Object
 {
    public:
+    typedef std::shared_ptr<Ship> sptr;
+    typedef std::weak_ptr<Ship>   wptr;
+
     Ship();
     ~Ship();
 
@@ -48,8 +51,6 @@ class Ship : public Object
 
     Cartesian_Vector thrust_;
 };
-
-typedef boost::shared_ptr<Ship> Ship_ptr;
 
 } // namespace lib
 } // namespace amethyst

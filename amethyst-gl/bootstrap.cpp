@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
 
     lib::gen_model_solarsystem(Global.universe);
 
-    lib::Object::ptr p1 = Global.universe.object_find("S-E L1 Probe");
+    lib::Object::sptr p1 = Global.universe.object_find("S-E L1 Probe");
 
     uint r_step[3] = {1,1,1};
     uint v_step[3] = {7,7,1};

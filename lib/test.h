@@ -13,9 +13,6 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#ifdef __GNUG__
-#pragma interface
-#endif
 
 namespace amethyst {
 namespace lib {

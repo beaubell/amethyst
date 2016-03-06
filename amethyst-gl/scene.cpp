@@ -35,7 +35,7 @@ namespace client {
 //using lib::Object;
 using lib::Cartesian_Vector;
 
-std::list<Scene_Object_Base::ptr>  object_list;
+std::list<Scene_Object_Base::sptr>  object_list;
 
 double sun_rot = 0;
 
@@ -157,7 +157,7 @@ void scene_render(void)
   }
 
   /// FIXME Special case for Sol
-  Scene_Object::ptr sol = boost::dynamic_pointer_cast<Scene_Object>(Global.universe.object_find("Sol"));
+  Scene_Object::sptr sol = std::dynamic_pointer_cast<Scene_Object>(Global.universe.object_find("Sol"));
   if (sol != NULL)
   {
     Cartesian_Vector temp = sol->location - reference;
@@ -170,7 +170,7 @@ void scene_render(void)
   // Draw Objects in List.
   if(!object_list.empty())
   {
-    std::list<Scene_Object_Base::ptr>::iterator obj1 = object_list.begin();
+    auto obj1 = object_list.begin();
     do
     {
         if(sol != *obj1)
@@ -210,9 +210,9 @@ void scene_render(void)
 }
 
 
-void scene_add_object(Scene_Object_Base::ptr newobject)
+void scene_add_object(Scene_Object_Base::sptr newobject)
 {
-    if (newobject != NULL)
+    if (newobject)
       object_list.push_back(newobject);
 
 }
@@ -220,32 +220,32 @@ void scene_add_object(Scene_Object_Base::ptr newobject)
 
 void scene_select_object_next()
 {
-    lib::Object* &selected = Global.obj_view  ;            // Reference to ship pointer
-    lib::Object* reference = &Global.reference_object; // Pointer to reference_object
+    lib::Object::sptr &selected = Global.obj_view;            // Reference to ship pointer
+    Scene_Object::sptr &reference = Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
     {
-        std::list<lib::Object::ptr>::iterator obj1 = Global.universe.list().begin();
+        auto obj1 = Global.universe.list().begin();
 
         if(reference == selected)
         {
-            selected = obj1->get();
+            selected = *obj1;
             return;
         }
 
         do
         {
             // Find Object
-            if(selected == obj1->get())
+            if(selected == *obj1)
             {
                 obj1++;
                 if (obj1 == Global.universe.list().end())
                 {
                     obj1 = Global.universe.list().begin();
-                    selected = obj1->get();
+                    selected = *obj1;
                 }
                 else
-                    selected = obj1->get();
+                    selected = *obj1;
                 return;
             }
 
@@ -262,32 +262,32 @@ void scene_select_object_next()
 
 void scene_target_object_next()
 {
-    lib::Object* &target   = Global.obj_target;            // Reference to target pointer
-    lib::Object* reference = &Global.reference_object; // Pointer to reference_object
+    lib::Object::sptr& target   = Global.obj_target;            // Reference to target pointer
+    Scene_Object::sptr& reference = Global.reference_object; // Pointer to reference_object
 
     if(!object_list.empty())
     {
-        std::list<lib::Object::ptr>::iterator obj1 = Global.universe.list().begin();
+        auto obj1 = Global.universe.list().begin();
 
         if(reference == target)
         {
-            target = obj1->get();
+            target = *obj1;
             return;
         }
 
         do
         {
             // Find Object
-            if(target == obj1->get())
+            if(target == *obj1)
             {
                 obj1++;
                 if (obj1 == Global.universe.list().end())
                 {
                     obj1 = Global.universe.list().begin();
-                    target = obj1->get();
+                    target = *obj1;
                 }
                 else
-                    target = obj1->get();
+                    target = *obj1;
                 return;
             }
 
@@ -303,23 +303,23 @@ void scene_target_object_next()
 
 void scene_control_ship_next()
 {
-    lib::Ship* &control  = Global.ship;            // Reference to control ship
-    lib::Ship* reference = &Global.reference_ship; // Pointer to reference_ship
+    lib::Ship::sptr& control  = Global.ship;            // Reference to control ship
+    Scene_Ship::sptr& reference = Global.reference_ship; // Pointer to reference_ship
 
     if(!object_list.empty())
     {
-        std::set<Scene_Ship::ptr>::iterator obj1 = Global.ships.begin();
+        auto obj1 = Global.ships.begin();
 
         if(reference == control)
         {
-            control = obj1->get();
+            control = *obj1;
             return;
         }
 
         do
         {
             // Find Object
-            if(control == get_pointer(*obj1))
+            if(control == *obj1)
             {
                 obj1++;
                 if (obj1 == Global.ships.end())
@@ -329,7 +329,7 @@ void scene_control_ship_next()
                     control = reference;
                 }
                 else
-                    control = get_pointer(*obj1);
+                    control = *obj1;
                 return;
             }
 

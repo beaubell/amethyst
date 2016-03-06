@@ -41,7 +41,7 @@ UIW_FPS::UIW_FPS(UI &ui)
       frames(0),
       benchmark(0),
       fps(0.0f),
-      _tbfps(new UI_TextBox(ui.get_font(), ui.uifont_shader))
+      _tbfps(std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader))
 {
   setPosition(glm::vec2(10.0f, -10.0f));
 
@@ -144,7 +144,7 @@ extern "C" bool mod_start(Amethyst_GL &agl_temp)
     {
         agl = &agl_temp;
 
-        window = UI_Window_ptr(new UIW_FPS(agl->ui));
+        window = std::make_shared<UIW_FPS>(agl->ui);
         agl->ui.add(window);
 
         module_active = true;
