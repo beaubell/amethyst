@@ -159,7 +159,8 @@ UI_Window::UI_Window(UI &ui, const std::string &newtitle)
 {
   
     _vao_frame[0] = 0;
-    _framebuffer[0] = 0;
+    _vbo_frame[0] = 0;
+    _ibo_frame[0] = 0;
 
     resize(glm::vec2(100.0f, 100.0f));
 
@@ -168,7 +169,7 @@ UI_Window::UI_Window(UI &ui, const std::string &newtitle)
 
     // Prepare title text
     _titlewidget.setText(newtitle);
-    
+
 }
 
 UI_Window::~UI_Window()
@@ -181,33 +182,39 @@ void UI_Window::resize(const glm::vec2 &newsize)
      GLfloat window_frame[] =  { 0.0f   ,0.0f    ,0.0f, 1.0f,
                                 _size.x ,0.0f    ,0.0f, 1.0f,
                                 _size.x ,_size.y ,0.0f, 1.0f,
-				0.0f    ,_size.y ,0.0f, 1.0f,
+                                 0.0f   ,_size.y ,0.0f, 1.0f,
                                 0.0f    ,0.0f    ,0.0f, 1.0f}; 
-  
-    if(_vao_frame[0] == 0 || _framebuffer[0] == 0)
+
+    GLushort background_idx[] = {0,3,1,2};
+    GLushort frame_idx[] = {0,1,2,3,0};
+
+    if(_vao_frame[0] == 0 || _vbo_frame[0] == 0)
     {
       glGenVertexArrays(1, _vao_frame);
 
       glBindVertexArray(_vao_frame[0]);
 
       // Generate buffer for frame;
-      glGenBuffers(1, _framebuffer);
+      glGenBuffers(1, _vbo_frame);
+      glGenBuffers(1, _ibo_frame);
     }
     else {
       //std::cout << "check" << std::endl;
     }
     glBindVertexArray(_vao_frame[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, _framebuffer[0]);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_frame[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(window_frame), window_frame, GL_STATIC_DRAW);
     glEnableVertexAttribArray(uivertexLoc.value);
     glVertexAttribPointer(uivertexLoc.value, 4, GL_FLOAT, 0, 0, 0);
+
+    // IBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo_frame[0]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(background_idx), background_idx, GL_STATIC_DRAW);
 }
 
 void UI_Window::render(const TransMatrix& proj, const TransMatrix& m_window)
 {
     glLineWidth(1);
-    GLushort background_idx[] = {0,3,1,2};
-    GLushort frame_idx[] = {0,1,2,3,0};
 
     glm::vec2 frameoffset(0.0f, 0.0f);
 
@@ -220,11 +227,11 @@ void UI_Window::render(const TransMatrix& proj, const TransMatrix& m_window)
 
         //Draw Background
         ui_shader->Uniform4f(uicolorLoc, glm::vec4(0.0f, 0.1f, 0.0f, 0.5f));
-        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, background_idx);
+        glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, nullptr);
 
         //Draw Window Frame
         ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-        glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_SHORT, frame_idx);
+        glDrawArrays(GL_LINE_STRIP, 0, 5);
 
         //Draw Title
         glm::mat4 m_titlepos = glm::translate(m_window, glm::vec3(1.0f, 1.0f, 0.0f));

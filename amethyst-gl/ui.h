@@ -89,7 +89,8 @@ class UI_Window : public UI_Object
     glm::vec2 _size;
 
     uint _vao_frame[1]; // Vertex Array Objects Identifier
-    uint _framebuffer[1];
+    uint _vbo_frame[1];
+    uint _ibo_frame[1];
 
     std::set<UI_Widget::sptr> _widgets;
 
