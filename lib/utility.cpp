@@ -20,10 +20,6 @@
 
 #include <boost/lexical_cast.hpp>
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 namespace amethyst {
 namespace lib{
 

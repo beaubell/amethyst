@@ -13,10 +13,6 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #define AMETHYST_VER "Amethyst Physics Library (v0.0.1) - (c) 2008, Beau V.C. Bellamy"
 
 namespace amethyst {

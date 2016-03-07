@@ -10,10 +10,6 @@
 #ifndef CONSOLE_IO_H
 #define CONSOLE_IO_H
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 namespace amethyst {
 
   int  getch(char &c);

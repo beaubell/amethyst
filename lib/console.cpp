@@ -25,10 +25,6 @@
 #include "version.h"
 #include "cl.h"
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 using namespace std;
 
 namespace amethyst {

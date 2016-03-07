@@ -13,10 +13,6 @@
 #include "console_io.h"
 #include "console_defs.h"
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 using namespace std;
 
 namespace amethyst {

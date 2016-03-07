@@ -11,10 +11,6 @@
 
 #include "console.h"
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 using namespace amethyst;
 
 int main(int argc, char** argv)
