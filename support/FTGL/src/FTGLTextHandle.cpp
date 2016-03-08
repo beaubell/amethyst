@@ -82,18 +82,19 @@ void TextHandle::bind(int program, int vertexloc, int texcoordloc, int texUnitLo
 
 void TextHandle::clear()
 {   
+  /*
     if(_vao[0] > -1)
 	glDeleteVertexArrays(1, _vao);
-  
+  */
     vertex.clear();
     texcoords.clear();
-    
+    /*
     _programloc  = -1;
     _vertexloc   = -1;
     _texcoordloc = -1;
     _normalloc   = -1;
     _texUnitLoc  = -1;
-  
+  */
 }
 
 void TextHandle::addTriangle(uint newtexture, 
