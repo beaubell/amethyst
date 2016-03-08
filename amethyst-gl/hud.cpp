@@ -106,8 +106,6 @@ void hud_render(void)
     hud_widget_attitude(10, screen_y - 66, Global.ship->attitude);
     // Display Camera Look Angles
     hud_widget_camera(10, screen_y - 76);
-    // FPS/Ticks indicator
-    hud_widget_fps(10,4);
 */
     hud_widget_select(10,40);
 
@@ -237,26 +235,6 @@ static void hud_widget_camera(int x, int y) // FIXME
     snprintf(reinterpret_cast<char*>(&buffer), 50, " Cam: X:%f deg, Y:%f deg, Z:%fx",Global.cam_yaw, Global.cam_pitch, Global.cam_zoom);
     //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
-}
-
-
-static void hud_widget_fps(int x, int y)
-{
-    if(frames > 100)
-    {
-        unsigned int elapsed = SDL_GetTicks() - benchmark;
-        fps = static_cast<float>(frames)/(static_cast<float>(elapsed)/1000.0f);
-        benchmark += elapsed;
-        frames = 0;
-    }
-
-    char fpsstring[30];
-    snprintf(reinterpret_cast<char*>(&fpsstring), 30, "FPS: %.1f (Tick: %u )",fps, Global.time_ticks);
-
-    //DEPRECATED glWindowPos2i(x, y);
-    fonts[0]->Render(reinterpret_cast<char*>(&fpsstring));
-
-    frames++;
 }
 
 

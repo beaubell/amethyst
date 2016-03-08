@@ -14,6 +14,7 @@
 #include "../ui.h"
 #include "../global.h"
 #include "mod_uiw_fps.h"
+#include "lib/utility.h"
 
 #include <iostream>
 
@@ -64,14 +65,7 @@ void UIW_FPS::update()
         frames = 0;
     }
 
-    std::stringstream temp;
-    std::string temp1;
-    temp.precision(1);
-    temp.setf(std::ios::fixed, std::ios::floatfield);
-    temp << fps;
-
-    temp >> temp1;
-    fpsstring = "FPS: " + temp1;
+    fpsstring = "FPS: " + lib::to_string(fps,1) + " (tick: " + std::to_string(Global.time_ticks) + ")";
 
     _tbfps->setText(fpsstring);
 
