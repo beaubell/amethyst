@@ -46,7 +46,7 @@ class Texture
 
 };
 
-extern std::list<Texture::sptr>  texture_list;
+extern std::list<Texture::wptr>  texture_list;
 
 Texture::sptr texture_load(const std::string &texture_name);
 void texture_add(Texture::sptr newtexture);

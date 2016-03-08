@@ -37,7 +37,7 @@ GLuint TexIDSkyBox[10];
 #define LEFT_ID 5
 
 
-std::list<Texture::sptr>  texture_list;
+std::list<Texture::wptr>  texture_list;
 
 Texture::Texture()
 {
@@ -97,14 +97,22 @@ Texture::sptr texture_find(const std::string &name)
 {
     if(!texture_list.empty())
     {
-        auto obj1 = texture_list.begin();
+        auto texwptr_it = texture_list.begin();
         do
         {
-            if(name == (*obj1)->name)
-                return *obj1;
+	    if(auto texsptr = texwptr_it->lock())
+	    {
+                if(name == texsptr->name)
+                   return texsptr;
 
-            obj1++;
-        }  while (obj1 != texture_list.end());
+		texwptr_it++;
+	    }
+	    else // Purge hanging weak_ptr
+	    {
+	        texwptr_it = texture_list.erase(texwptr_it);
+	    }
+
+        }  while (texwptr_it != texture_list.end());
     }
     return NULL;
 }
