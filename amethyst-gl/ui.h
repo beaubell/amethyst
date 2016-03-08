@@ -36,10 +36,10 @@ class UI
    public:
     UI(const std::string &font);
     virtual ~UI();
-    
+
     void add(UI_Window_ptr);
     void remove(UI_Window_ptr);
-    
+
     // Render UI
     virtual void render(void);
     virtual void update();
@@ -57,7 +57,7 @@ class UI
    private:
     ftgl::FTFont *font_;
     std::set<UI_Window_ptr> windows_;
-    
+
 };
 
 
@@ -74,14 +74,16 @@ class UI_Window : public UI_Object
     virtual void render(const TransMatrix& proj, const TransMatrix& window);
     virtual void update();
     virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
-    
+
     virtual void addWidget(UI_Widget::sptr newwidget);
+    virtual void delWidget(UI_Widget::sptr newwidget);
+    virtual void clearWidgets();
 
     bool resizable;
     bool focused;
     bool framed;
     std::string title;
-    
+
     ShaderProgram::sptr ui_shader;
 
    protected:

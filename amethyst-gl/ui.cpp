@@ -277,5 +277,15 @@ void UI_Window::addWidget(UI_Widget::sptr newwidget)
     _widgets.insert(newwidget);
 }
 
+void UI_Window::delWidget(UI_Widget::sptr byewidget)
+{
+    _widgets.erase(byewidget);
+}
+
+void UI_Window::clearWidgets()
+{
+    _widgets.clear();
+}
+
 } // namespace client
 } // namespace amethyst
