@@ -44,35 +44,23 @@ class UIW_Log : public UI_Window
     UIW_Log(UI &ui);
     void update();
     bool check_focus(unsigned short x, unsigned short y);
+    void setLines(uint lines);
 
   private:
     unsigned int scroll_offset;
     std::vector<UI_TextBox::sptr> _logline;
+    uint num_lines_;
+    ShaderProgram::sptr fontshdr;
 };
 
 UIW_Log::UIW_Log(UI &ui)
     : UI_Window(ui, std::string("Message Log")),
-      scroll_offset(0)
-      
+      scroll_offset(0),
+      num_lines_(10),
+      fontshdr(ui.uifont_shader)
 {
-  uint num_lines = 10;
-  float line_height = 12.0f;
-  
-  for (uint i = 0; i < num_lines; i++)
-  {
-    UI_TextBox::sptr line = std::make_shared<UI_TextBox>(ui.get_font(), ui.uifont_shader);
-    _logline.push_back(line);
-    _logline[i]->setPosition(glm::vec2(5.0f, static_cast<float>(i)*line_height));
-    _logline[i]->setText(to_string(i));
-    addWidget(_logline[i]);
-  }
-  
-  float hsize = 700.0f;
-  float vsize = static_cast<float>(num_lines+1)*line_height;
-  
-  setPosition(glm::vec2(-hsize-10.0f, -vsize-10.0f));
-  resize(glm::vec2(hsize, vsize));
-  
+  setLines(num_lines_);
+
   update();
 }
 
@@ -80,14 +68,21 @@ void UIW_Log::update()
 { 
     if(agl)
     {
-        int max_size = 10;
-        int start    = 0;
-        int length   = Global.log.log().size();
+        uint start    = 0;
+        uint end      = 0;
+        uint length   = Global.log.log().size();
 
-        if (length > max_size)
-            start = length - max_size - scroll_offset;
+        if (length > num_lines_)
+            start = length - num_lines_ - scroll_offset;
 
-        for(int i = 0; i < length; i++)
+        if (length <= num_lines_)
+            end = length;
+        else
+            end = num_lines_;
+
+        std::cout << _logline.size() << std::endl;
+
+        for(uint i = 0; i < end; i++)
         {
             _logline[i]->setText(Global.log.log()[i+start]);
         }
@@ -99,6 +94,41 @@ bool UIW_Log::check_focus(unsigned short /*x*/, unsigned short /*y*/)
 {
   
   return false;
+}
+
+void UIW_Log::setLines(uint new_lines)
+{
+    float line_height = 12.0f;
+
+    if (new_lines > _logline.size())
+    {
+
+        for (uint i = _logline.size(); i < num_lines_; i++)
+        {
+            UI_TextBox::sptr line = std::make_shared<UI_TextBox>(font, fontshdr);
+            _logline.push_back(line);
+            _logline[i]->setPosition(glm::vec2(5.0f, static_cast<float>(i)*line_height));
+            _logline[i]->setText(to_string(i));
+            addWidget(_logline[i]);
+        }
+    } 
+    else if (new_lines < _logline.size())
+    {
+
+        for (uint i = _logline.size(); i > new_lines; i--)
+        {
+            delWidget(_logline[i-1]);
+            _logline.pop_back();
+        }
+    }
+    
+    num_lines_ = new_lines;
+
+    float hsize = 700.0f;
+    float vsize = static_cast<float>(num_lines_+1)*line_height;
+
+    setPosition(glm::vec2(-hsize-10.0f, -vsize-10.0f));
+    resize(glm::vec2(hsize, vsize));
 }
 
 } // namespace module
