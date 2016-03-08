@@ -15,6 +15,7 @@
 #include "universe.h"
 
 #include <vector>
+#include <iomanip>
 
 namespace amethyst {
 namespace lib {
@@ -35,6 +36,15 @@ namespace lib {
                             const uint v_steps[3],
                             const int  r_stepoff[3],
                             const int  v_stepoff[3]);
+
+template <typename T>
+std::string to_string(const T a_value, const int n = 6)
+{
+    std::ostringstream out;
+    out << std::setprecision(n) << std::fixed << a_value;
+    return out.str();
+}
+
 
 } // namespace lib
 } // namespace amethyst
