@@ -225,6 +225,8 @@ void Amethyst_GL::render()
   if(show_hud && 0) // FIXME
     hud_render();
 
+  ui.update();
+  
   if(show_ui)
     ui.render();
 
