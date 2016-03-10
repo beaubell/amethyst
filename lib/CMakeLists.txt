@@ -17,6 +17,7 @@ SET(libamethyst_SRCS
   object_group.cpp
   orientation.cpp
   physics.cpp
+  rendermodel.cpp
   ship.cpp
   test.cpp
   universe.cpp
