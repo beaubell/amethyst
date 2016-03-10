@@ -159,16 +159,6 @@ void Model::render(const TransMatrix& m_proj, const TransMatrix& m_view, const T
        std::bind(&Primative::render, _1, m_proj, m_view, m_model));
 }
 
-void Model::setName(const std::string& name)
-{
-    _name = name;
-}
-
-const std::string& Model::getName()
-{
-    return _name;
-}
-
 void Model::addPrimative(Primative::sptr newprim)
 {
     _primatives.push_back(newprim);

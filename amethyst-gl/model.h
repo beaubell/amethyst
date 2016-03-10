@@ -16,6 +16,7 @@
 #include "texture.h"
 
 #include "lib/types.h"
+#include "lib/rendermodel.h"
 #include "opengl_shader.h"
 
 #include <string>
@@ -89,7 +90,7 @@ class TriangleStrip : public Primative
 
 };
 
-class Model
+class Model : public lib::RenderModel
 {
    public:
     typedef std::shared_ptr<Model> sptr;
@@ -100,13 +101,12 @@ class Model
     virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
     //virtual void clear();
 
-    void setName(const std::string& name);
-    const std::string& getName();
+    //void setName(const std::string& name);
+    //const std::string& getName();
 
     void addPrimative(Primative::sptr newprim);
 
   private:
-    std::string _name;
     std::list<Primative::sptr> _primatives;
 };
 
