@@ -21,22 +21,14 @@ namespace amethyst {
 namespace lib {
 
     Object::Object()
+    : mass(1)
     {
-        mass = 1;
-
-        next = NULL;
-        meta = NULL;
-
         //printf("NEW OBJECT!");
-
     }
 
     Object::Object(const Object &right)
     {
         mass = right.mass;
-
-        next = NULL;       // FIXME
-        meta = right.meta; // FIXME, Do i want to copy?
 
         location     = right.location;
         velocity     = right.velocity;

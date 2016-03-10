@@ -35,7 +35,7 @@ namespace client {
 //using lib::Object;
 using lib::Cartesian_Vector;
 
-std::list<Scene_Object_Base::sptr>  object_list;
+std::list<lib::Object::sptr>  object_list;
 
 double sun_rot = 0;
 
@@ -120,8 +120,9 @@ void scene_render(void)
   }
 
   // Now consider camera zoom-out.
-  glm::dmat4 m_model = set_camera(attitude, Global.cam_zoom);
-  glLoadMatrixd(&m_model[0][0]); // FIXME - this is temporary. We'll eventually move this call higher in the chain as the gl fixed function calls are replaced.
+  glm::mat4 m_view = set_camera(attitude, Global.cam_zoom);
+  glm::mat4 m_model = glm::mat4(1);
+  //glLoadMatrix(&m_view[0][0]); // FIXME - this is temporary. We'll eventually move this call higher in the chain as the gl fixed function calls are replaced.
 
 #if 0
   //Draw Sun
@@ -163,7 +164,8 @@ void scene_render(void)
     Cartesian_Vector temp = sol->location - reference;
     GLfloat lightPos[] = {(float)temp.x, (float)temp.y, (float)temp.z, 1.0f };
     glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-    sol->render(reference);
+    //sol->render(reference)
+    sol->render(m_proj, m_view, m_model);
   }
 
   glEnable(GL_LIGHTING);
@@ -174,7 +176,9 @@ void scene_render(void)
     do
     {
         if(sol != *obj1)
-          (*obj1)->render(reference);
+          //(*obj1)->render(reference);
+          if((*obj1)->model)
+          (*obj1)->model->render(m_proj, m_view, m_model);
         obj1++;
     }  while (obj1 != object_list.end());
 
@@ -210,7 +214,7 @@ void scene_render(void)
 }
 
 
-void scene_add_object(Scene_Object_Base::sptr newobject)
+void scene_add_object(lib::Object::sptr newobject)
 {
     if (newobject)
       object_list.push_back(newobject);

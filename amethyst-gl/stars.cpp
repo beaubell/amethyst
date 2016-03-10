@@ -10,23 +10,23 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "stars.h"
+#include "opengl.h"
 
 #include "file.h"
-#include <stdlib.h> // malloc
-#include <unistd.h>
-#include <errno.h>  //
-#include <iostream>
-#include <cmath>
 
 #include "lib/physics.h"
-
-#include "opengl.h"
-#include "stars.h"
 #include "opengl_shader.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
+
+#include <stdlib.h> // malloc
+#include <unistd.h>
+#include <errno.h>  //
+#include <iostream>
+#include <cmath>
 
 namespace amethyst {
 namespace client {

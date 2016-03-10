@@ -14,7 +14,7 @@
  ***********************************************************************/
 
 #include <list>
-#include "scene_object.h"
+#include "lib/object.h"
 
 namespace amethyst {
 namespace client {
@@ -22,12 +22,12 @@ namespace client {
 
 void scene_render(void);
 
-void scene_add_object(Scene_Object_Base::sptr);
+void scene_add_object(lib::Object::sptr);
 void scene_select_object_next();
 void scene_target_object_next();
 void scene_control_ship_next();
 
-extern std::list<Scene_Object_Base::sptr>  object_list;
+extern std::list<lib::Object::sptr>  object_list;
 
 } // namespace client
 } // namespace amethyst

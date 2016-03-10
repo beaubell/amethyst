@@ -32,8 +32,10 @@ class Scene_Object_Base
         Scene_Object_Base(void);
         virtual ~Scene_Object_Base(void);
 
-        virtual void render(const lib::Cartesian_Vector& reference) = 0;
+        //Model::sptr model;
 
+        //virtual void render(const lib::Cartesian_Vector& reference);
+        virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
 };
 
 
@@ -42,10 +44,9 @@ class Scene_Object : public Scene_Object_Base, public lib::Object
     public:
         typedef std::shared_ptr<Scene_Object> sptr;
         typedef std::weak_ptr<Scene_Object>   wptr;
-
-        Model::sptr model;
-
-        void render(const lib::Cartesian_Vector& reference);
+        
+        //virtual void render(const lib::Cartesian_Vector& reference);
+        virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
 };
 
 
@@ -55,9 +56,8 @@ class Scene_Ship : public Scene_Object_Base, public lib::Ship
         typedef std::shared_ptr<Scene_Ship> sptr;
         typedef std::weak_ptr<Scene_Ship>   wptr;
 
-        Model::sptr model;
-
-        void render(const lib::Cartesian_Vector& reference);
+        //virtual void render(const lib::Cartesian_Vector& reference);
+        //virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
 };
 
 
@@ -66,10 +66,6 @@ class Scene_Star : public Scene_Object_Base //, public lib::Star  FIXME No stars
     public:
         typedef std::shared_ptr<Scene_Star> sptr;
         typedef std::weak_ptr<Scene_Star>   wptr;
-
-        Model::sptr model;
-
-        void render(const lib::Cartesian_Vector& reference);
 };
 
 
@@ -78,10 +74,6 @@ class Scene_Planet : public Scene_Object_Base //, public lib::Planet  FIXME No P
     public:
         typedef std::shared_ptr<Scene_Planet> sptr;
         typedef std::shared_ptr<Scene_Planet> wptr;
-        
-        Model::sptr model;
-
-        void render(const lib::Cartesian_Vector& reference);
 };
 
 

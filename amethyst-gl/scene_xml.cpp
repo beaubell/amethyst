@@ -106,7 +106,7 @@ void scene_load(const std::string &name)
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("object") ))
         {
-            Scene_Object::sptr temp;
+            Object::sptr temp;
             try
             {
                 temp = std::make_shared<Scene_Object>();
@@ -259,7 +259,7 @@ static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object &new_ob
             {
                 temp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
                 std::string model_name = reinterpret_cast<char *>(temp);
-                new_obj.meta = model_load(model_name).get();  //FIXME!!  Defeats purpose of shared_ptr
+                new_obj.model = model_load(model_name);
             }
             catch(parse_error &e)
             {
@@ -475,7 +475,7 @@ void scene_xml_write (const std::string &name)
         do
         {
             outfile << "  <object name=\"" << (*obj1)->name << "\">" << std::endl;
-            outfile << "    <model>" << reinterpret_cast<Model *>((*obj1)->meta)->getName() << "</model>" << std::endl;
+            outfile << "    <model>" << ((*obj1)->model)->getName() << "</model>" << std::endl;
             scene_xml_write_vector(outfile, (*obj1)->location, "location");
             scene_xml_write_vector(outfile, (*obj1)->velocity, "velocity");
             scene_xml_write_vector(outfile, (*obj1)->acceleration, "acceleration");

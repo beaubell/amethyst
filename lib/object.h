@@ -13,12 +13,12 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#include <string>
-
 #include "vector.h"
 #include "orientation.h"
 #include "matrix.h"
+#include "rendermodel.h"
 
+#include <string>
 #include <memory>
 
 namespace amethyst {
@@ -107,13 +107,10 @@ namespace lib {
        //struct force *ext_forces;  // deprecated
 
        /* Pointer to internal forces (Main and Attitude Thrusters) */
-       struct force *int_forces;
+       //struct force *int_forces; //deprecated
 
-       /* Pointer to next object class, if applicable */
-       Object *next;
-
-       /* Pointer to Meta data. (like object graphics) */
-       void *meta;
+       /* Virtual Class Pointer to hold rendering functions */
+       RenderModel::sptr model;
 
        // let other threads know that this object is presently being modified.
        bool        lock;
