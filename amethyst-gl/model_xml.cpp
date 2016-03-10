@@ -137,7 +137,7 @@ void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mod
     // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     TriangleStrip::sptr sphere = model_sphere_create(0.0, 0.0, 0.0, radius, precision);
     sphere->setTexture(tex);
-    
+
     model.addPrimative(sphere);
 
     return;
