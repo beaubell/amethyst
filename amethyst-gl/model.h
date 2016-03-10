@@ -82,8 +82,8 @@ class TriangleStrip : public Primative
     ShaderProgram::AttribHDL _vertexloc;
     ShaderProgram::AttribHDL _texcoordloc;
     ShaderProgram::AttribHDL _normalloc;
-    ShaderProgram::AttribHDL _texunitloc;
-    
+    ShaderProgram::UniformHDL _texunitloc;
+
     // VAO Buffer Objects
     unsigned int _vao[1]; // Vertex Array Objects Identifier
     unsigned int _buffer[3]; // 0=quads, 1=textures, 2=normals

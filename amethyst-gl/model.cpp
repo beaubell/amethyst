@@ -97,7 +97,11 @@ void TriangleStrip::bind(ShaderProgram::sptr shaderprog)
     _vertexloc = _shader->GetAttribLocation("vertexPosition");
     _texcoordloc = _shader->GetAttribLocation("texcoordData");
     //_normalloc   = _shader->GetAttribLocation("vertexNormal");
-    _texunitloc  = _shader->GetAttribLocation("baseTex");
+
+    _texunitloc  = _shader->GetUniformLocation("baseTex");
+    _mprojloc  = _shader->GetUniformLocation("projMatrix");
+    _mviewloc  = _shader->GetUniformLocation("viewMatrix");
+    _mmodeloc  = _shader->GetUniformLocation("modelMatrix");
 
     glGenVertexArrays(1, _vao);
     glBindVertexArray(_vao[0]);
@@ -115,10 +119,10 @@ void TriangleStrip::bind(ShaderProgram::sptr shaderprog)
     glEnableVertexAttribArray(_texcoordloc.value);
     glVertexAttribPointer(_texcoordloc.value, 2, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[2]);
-    glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(_normalloc.value);
-    glVertexAttribPointer(_normalloc.value, 3, GL_FLOAT, 0, 0, 0);
+    //glBindBuffer(GL_ARRAY_BUFFER, _buffer[2]);
+    //glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
+    //glEnableVertexAttribArray(_normalloc.value);
+    //glVertexAttribPointer(_normalloc.value, 3, GL_FLOAT, 0, 0, 0);
 }
 
 void TriangleStrip::clear()
