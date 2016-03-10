@@ -109,7 +109,7 @@ void scene_render(void)
   float x = Global.screen_x;
   float y = Global.screen_y;
 
-  glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), y/x, 0.1f, 10e10f);
+  glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
 
   //Stars
   {
@@ -174,9 +174,8 @@ void scene_render(void)
     auto obj1 = object_list.begin();
     do
     {
-        if(sol != *obj1)
+        if(sol != *obj1 && (*obj1)->model)
           //(*obj1)->render(reference);
-          if((*obj1)->model)
           (*obj1)->model->render(m_proj, m_view, m_model);
         obj1++;
     }  while (obj1 != object_list.end());
