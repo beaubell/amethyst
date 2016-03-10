@@ -119,7 +119,7 @@ void models_free(void);
 Model::sptr model_load(std::string &model_name);
 
 
-void model_load_file(const std::string &filename, Model &model, Texture::sptr tex);
+void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr);
 
 TriangleStrip::sptr model_sphere_create(double cx, double cy, double cz, double r, int p );
 

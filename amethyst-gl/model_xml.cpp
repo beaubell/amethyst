@@ -16,6 +16,7 @@
 #include "model.h"
 #include "model_xml.h"
 #include "global.h"
+#include "opengl_shader.h"
 
 #include "lib/vector.h"
 
@@ -25,8 +26,8 @@
 namespace amethyst {
 namespace client {
 
-void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex);
-void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex);
+void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr);
+void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr);
 
 void model_xml_load(std::string &name, Model &model)
 {
@@ -61,6 +62,8 @@ void model_xml_load(std::string &name, Model &model)
     xmlChar *key = NULL;
     Texture::sptr tex; //FIXME Textures Should Load At Primative Level
 
+    ShaderProgram::sptr shdr = std::make_shared<ShaderProgram>("model.vert", "model.frag"); //FIXME
+
     // Run through root tree
     try
     {
@@ -83,12 +86,12 @@ void model_xml_load(std::string &name, Model &model)
             if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("sphere")) )
             {
                 if(tex)
-                  model_xml_parse_sphere (doc, cur, model, tex);
+                  model_xml_parse_sphere (doc, cur, model, tex, shdr);
             }
             if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("extfile")) )
             {
                 if(tex)
-                  model_xml_parse_extfile (doc, cur, model, tex);
+                  model_xml_parse_extfile (doc, cur, model, tex, shdr);
             }
 
             cur = cur->next;
@@ -108,7 +111,7 @@ void model_xml_load(std::string &name, Model &model)
 }
 
 
-void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex)
+void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr)
 {
 
     xmlChar *temp;
@@ -137,6 +140,7 @@ void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mod
     // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     TriangleStrip::sptr sphere = model_sphere_create(0.0, 0.0, 0.0, radius, precision);
     sphere->setTexture(tex);
+    sphere->bind(shdr);
 
     model.addPrimative(sphere);
 
@@ -144,7 +148,7 @@ void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mod
 }
 
 
-void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex)
+void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr)
 {
 
     xmlChar *temp;
@@ -158,7 +162,7 @@ void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mo
 
     std::string filepath = Global.dir_models + extfile;
 
-    model_load_file(filepath.c_str(), model, tex);
+    model_load_file(filepath.c_str(), model, tex, shdr);
 
     return;
 }

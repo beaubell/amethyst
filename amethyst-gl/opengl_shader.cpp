@@ -42,7 +42,10 @@ ShaderProgram::ShaderProgram(const std::string &vname, const std::string &fname)
 
 ShaderProgram::~ShaderProgram()
 {
-    glDeleteProgram(_program_hdl);
+    //FIXME
+    //if(_program_hdl != -1)
+    //  glDeleteProgram(_program_hdl);
+    //
 }
 
 ShaderProgram::AttribHDL ShaderProgram::GetAttribLocation(const std::string& attrib)

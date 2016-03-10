@@ -116,7 +116,6 @@ void scene_render(void)
     // Set camera position without respect to camera zoom-out so that stars appear far away.
     glm::mat4 m_view = set_camera(attitude, 1.0);
     stars_render(m_proj, m_view);
-    return;
   }
 
   // Now consider camera zoom-out.
@@ -151,24 +150,24 @@ void scene_render(void)
 #endif
 
   
-  glDisable(GL_LIGHTING);
+  //DEPRECATED glDisable(GL_LIGHTING);
   { // Set light to white
     GLfloat fDiffLight[] =  { 1.0f, 0.9f, 0.9f, 1.0f };
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
+    //DEPRECATEDglLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
   }
 
-  /// FIXME Special case for Sol
+  /// FIXME Special case for Sol 
   Scene_Object::sptr sol = std::dynamic_pointer_cast<Scene_Object>(Global.universe.object_find("Sol"));
   if (sol != NULL)
   {
     Cartesian_Vector temp = sol->location - reference;
     GLfloat lightPos[] = {(float)temp.x, (float)temp.y, (float)temp.z, 1.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+    //DEPRECATED glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
     //sol->render(reference)
     sol->render(m_proj, m_view, m_model);
   }
 
-  glEnable(GL_LIGHTING);
+  //DEPRECATED glEnable(GL_LIGHTING);
   // Draw Objects in List.
   if(!object_list.empty())
   {
@@ -184,7 +183,7 @@ void scene_render(void)
 
   }
 
-  glDisable(GL_LIGHTING);
+  //DEPRECATED glDisable(GL_LIGHTING);
 
 #if 0
   // Draw Network Objects

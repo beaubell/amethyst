@@ -77,6 +77,9 @@ TriangleStrip::~TriangleStrip()
 
 void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model)
 {
+    if(!_shader)
+        throw std::runtime_error("TriangleStrip not bound to shader " + this->getName());
+
     _shader->use();
     _shader->UniformMatrix4f(_mprojloc, m_proj);
     _shader->UniformMatrix4f(_mviewloc, m_view);
@@ -91,10 +94,10 @@ void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view,
 void TriangleStrip::bind(ShaderProgram::sptr shaderprog)
 {
     _shader  = shaderprog;
-    _vertexloc = _shader->GetAttribLocation("vertex");
-    _texcoordloc = _shader->GetAttribLocation("texcoord");
-    _normalloc   = _shader->GetAttribLocation("normal");
-    _texunitloc  = _shader->GetAttribLocation("texunit");
+    _vertexloc = _shader->GetAttribLocation("vertexPosition");
+    _texcoordloc = _shader->GetAttribLocation("texcoordData");
+    //_normalloc   = _shader->GetAttribLocation("vertexNormal");
+    _texunitloc  = _shader->GetAttribLocation("baseTex");
 
     glGenVertexArrays(1, _vao);
     glBindVertexArray(_vao[0]);
@@ -231,6 +234,7 @@ TriangleStrip::sptr model_sphere_create(const double cx, const double cy, const 
 {
     // Make new Triangle Strip object
     TriangleStrip::sptr sphere = std::make_shared<TriangleStrip>();
+    sphere->setName("Sphere");
 
     TriangleStrip::vertex_type point;
     TriangleStrip::texcoord_type tex;
@@ -289,7 +293,7 @@ TriangleStrip::sptr model_sphere_create(const double cx, const double cy, const 
 }
 
 
-void model_load_file(const std::string &filename, Model &model, Texture::sptr tex)
+void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr)
 {
     if (access(filename.c_str(), R_OK) < 0) {
         if (errno == ENOENT)
@@ -333,6 +337,7 @@ void model_load_file(const std::string &filename, Model &model, Texture::sptr te
     }
 
     prim->setTexture(tex);
+    prim->bind(shdr);
     model.addPrimative(prim);
 
     fclose(file);
