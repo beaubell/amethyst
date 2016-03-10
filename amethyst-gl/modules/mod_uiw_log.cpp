@@ -80,8 +80,6 @@ void UIW_Log::update()
         else
             end = num_lines_;
 
-        std::cout << _logline.size() << std::endl;
-
         for(uint i = 0; i < end; i++)
         {
             _logline[i]->setText(Global.log.log()[i+start]);
