@@ -28,8 +28,8 @@ class UI_TextBox : public UI_Widget
     ShaderProgram::sptr _shaderptr;
     ftgl::FTFont &_font;
     ftgl::TextHandle _titlehdl;
-    
-        // Vertex Attribute Locations
+
+    // Vertex Attribute Locations
     ShaderProgram::AttribHDL fnvertexLoc;
     ShaderProgram::AttribHDL fntexcoordLoc;
  

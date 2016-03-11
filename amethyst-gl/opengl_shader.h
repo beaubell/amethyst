@@ -125,9 +125,9 @@ public:
   
 private:
   int _program_hdl;
-  ShaderVertex::sptr vert_shdr_;
-  ShaderFragment::sptr frag_shdr_;
-  ShaderGeometry::sptr geo_shdr_;
+  ShaderVertex::sptr      vert_shdr_;
+  ShaderFragment::sptr    frag_shdr_;
+  ShaderGeometry::sptr    geo_shdr_;
   ShaderTessControl::sptr tessctl_shdr_;
   ShaderTessEval::sptr    tessevl_shdr_;
   ShaderCompute::sptr     comp_shdr;

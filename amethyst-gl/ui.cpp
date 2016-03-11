@@ -15,6 +15,7 @@
 #include "global.h"
 #include "opengl_shader.h"
 #include "scene.h" // For set_camera
+#include "shaderprog_ui.h"
 
 #include <iostream>
 #include <sstream>
@@ -29,28 +30,14 @@ using namespace std::placeholders;
 namespace amethyst {
 namespace client {
 
-// Vertex Attribute Locations
-static ShaderProgram::AttribHDL uivertexLoc;
- 
-// Uniform variable Locations
-static ShaderProgram::UniformHDL uicolorLoc;
-static ShaderProgram::UniformHDL uiprojMatrixLoc, uiviewMatrixLoc;
-
-
 
 UI::UI(const std::string &fontfile)
 {
     const std::string fontpath = Global.dir_fonts + fontfile;
 
     // Setup Shaders;
-    ui_shader = std::make_shared<ShaderProgram>("ui.vert", "ui.frag");
+    ui_shader = std::make_shared<ShaderProgramUI>();
     uifont_shader = std::make_shared<ShaderProgram>("uifont.vert", "uifont.frag");
-
-    uivertexLoc     = ui_shader->GetAttribLocation("vertexData");
-
-    uicolorLoc      = ui_shader->GetUniformLocation("color"); 
-    uiprojMatrixLoc = ui_shader->GetUniformLocation("projMatrix");
-    uiviewMatrixLoc = ui_shader->GetUniformLocation("viewMatrix");
 
     font_ = new ftgl::FTGLTextureFont( fontpath.c_str());
 
@@ -69,8 +56,6 @@ UI::~UI()
 
     // Delete fonts
     delete font_;
-
-    ui_shader = nullptr;
 }
 
 void UI::render(void)
@@ -86,9 +71,9 @@ void UI::render(void)
     glm::mat4 m_identity(1.0);
 
     ui_shader->use();
-    ui_shader->UniformMatrix4f(uiprojMatrixLoc, m_proj);
-    ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_identity);
-    ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    ui_shader->setProjM(m_proj);
+    ui_shader->setViewM(m_identity);
+    ui_shader->setColorV4(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     /// Render each window
     for(auto windowit = windows_.begin(); windowit != windows_.end(); windowit++)
@@ -204,15 +189,15 @@ void UI_Window::resize(const glm::vec2 &newsize)
     glBindVertexArray(_vao_frame[0]);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo_frame[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(window_frame), window_frame, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(uivertexLoc.value);
-    glVertexAttribPointer(uivertexLoc.value, 4, GL_FLOAT, 0, 0, 0);
+    glEnableVertexAttribArray(ui_shader->getVertexLoc());
+    glVertexAttribPointer(ui_shader->getVertexLoc(), 4, GL_FLOAT, 0, 0, 0);
 
     // IBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo_frame[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(background_idx), background_idx, GL_STATIC_DRAW);
 }
 
-void UI_Window::render(const TransMatrix& proj, const TransMatrix& m_window)
+void UI_Window::render(const TransMatrix& m_proj, const TransMatrix& m_window)
 {
     glLineWidth(1);
 
@@ -221,21 +206,21 @@ void UI_Window::render(const TransMatrix& proj, const TransMatrix& m_window)
     if (framed)
     {
         ui_shader->use();
-        ui_shader->UniformMatrix4f(uiprojMatrixLoc, proj);
-        ui_shader->UniformMatrix4f(uiviewMatrixLoc, m_window);
+        ui_shader->setProjM(m_proj);
+        ui_shader->setViewM(m_window);
         glBindVertexArray(_vao_frame[0]);
 
         //Draw Background
-        ui_shader->Uniform4f(uicolorLoc, glm::vec4(0.0f, 0.1f, 0.0f, 0.5f));
+        ui_shader->setColorV4(Color(0.0f, 0.1f, 0.0f, 0.5f));
         glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, nullptr);
 
         //Draw Window Frame
-        ui_shader->Uniform4f(uicolorLoc, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        ui_shader->setColorV4(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         glDrawArrays(GL_LINE_STRIP, 0, 5);
 
         //Draw Title
         glm::mat4 m_titlepos = glm::translate(m_window, glm::vec3(1.0f, 1.0f, 0.0f));
-        _titlewidget.render(proj, m_titlepos);
+        _titlewidget.render(m_proj, m_titlepos);
 	
 	//Set Frame Offset due to title
 	frameoffset = glm::vec2(1.0f, 15.0f);
@@ -250,7 +235,7 @@ void UI_Window::render(const TransMatrix& proj, const TransMatrix& m_window)
         if ((*widit)->isVisible())
 	{
 	    glm::mat4 m_widgetpos = glm::translate(m_widgetref, glm::vec3((*widit)->getPosition(), 0.0f));
-	    (*widit)->render(proj, m_widgetpos);  
+	    (*widit)->render(m_proj, m_widgetpos);  
 	}
     }
 }
