@@ -50,6 +50,7 @@ class UIW_Log : public UI_Window
     unsigned int scroll_offset;
     std::vector<UI_TextBox::sptr> _logline;
     uint num_lines_;
+    uint num_lines_log;
     ShaderProgram::sptr fontshdr;
 };
 
@@ -57,6 +58,7 @@ UIW_Log::UIW_Log(UI &ui)
     : UI_Window(ui, std::string("Message Log")),
       scroll_offset(0),
       num_lines_(10),
+      num_lines_log(0),
       fontshdr(ui.uifont_shader)
 {
   setLines(num_lines_);
@@ -65,12 +67,13 @@ UIW_Log::UIW_Log(UI &ui)
 }
 
 void UIW_Log::update()
-{ 
-    if(agl)
+{
+    uint length   = Global.log.log().size();
+
+    if(agl && (num_lines_log != length))
     {
         uint start    = 0;
         uint end      = 0;
-        uint length   = Global.log.log().size();
 
         if (length > num_lines_)
             start = length - num_lines_ - scroll_offset;
@@ -84,6 +87,8 @@ void UIW_Log::update()
         {
             _logline[i]->setText(Global.log.log()[i+start]);
         }
+
+        num_lines_log = length;
 
     }
 }
