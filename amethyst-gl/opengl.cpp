@@ -141,7 +141,7 @@ void GLDebugCallBack (GLenum source, GLenum type, GLuint id, GLenum severity, GL
     //fprintf(stderr, "Error: signal %d:\n", sig);
     //backtrace_symbols_fd(array, size, STDERR_FILENO);
     //exit(1);
-    throw std::runtime_error(logmessage);
+    //throw std::runtime_error(logmessage);
 }
 
 

@@ -38,7 +38,6 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
   _scon_dec_scaler( _amgl.input->sig_kb[SDL_SCANCODE_D].connect(bind(&GravPotential::dec_scaler,this)) ),
   _scon_render( _amgl.sig_render_scene.connect(bind(&GravPotential::render,this, _1)) ),  // Add to Render List
   _texname(0),
-  _shaderProgram(0),
   _shader_min(20.0f),
   _shader_max(29.0f),
   _shader_scaler(0.01f),
@@ -89,7 +88,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
 
     // Make CL texture fom GL one
     try {
-      _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
+      //FIXME _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
     }
     catch(cl::Error e)
     {
@@ -101,16 +100,16 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     glEnable( GL_TEXTURE_2D );
 
     //Load Shaders
-    _shaderProgram = load_shader(std::string("fixed.vert"),std::string("colorizer.frag"));
+    _shaderprog = std::make_shared<ShaderProgram>(std::string("fixed.vert"),std::string("colorizer.frag"));
 
     //Get handles to shader parameters
-    glUseProgram(_shaderProgram);
-    _shader_min_loc = glGetUniformLocation(_shaderProgram, "data_min");
+    _shaderprog->use();
+    _shader_min_loc = glGetUniformLocation(_shaderprog->getHandle(), "data_min");
     GLenum err = glGetError();
     if(err)
       std::cout << "OpenGL ERROR (glGetUniformLocation(shaderProgram, data_min): " << err << std::endl;
 
-    _shader_max_loc = glGetUniformLocation(_shaderProgram, "data_max");
+    _shader_max_loc = glGetUniformLocation(_shaderprog->getHandle(), "data_max");
     err = glGetError();
     if(err)
       std::cout << "OpenGL ERROR (glGetUniformLocation(shaderProgram, data_max): " << err << std::endl;
@@ -141,7 +140,7 @@ void GravPotential::update()
 
     // Aquire GL Buffer
     mem_objects.push_back(_cl_tex);
-    queue.enqueueAcquireGLObjects(&mem_objects);
+    //FIXME queue.enqueueAcquireGLObjects(&mem_objects);
 
     // Set Kernel Arguments
     kern_pot.setArg(0, (unsigned int)Global.universe.object_count());
@@ -156,7 +155,7 @@ void GravPotential::update()
     queue.finish();
 
     //Release GL Buffer
-    queue.enqueueReleaseGLObjects(&mem_objects);
+    //FIXME queue.enqueueReleaseGLObjects(&mem_objects);
 
     std::string msg = "Finished. Elapsed: " + lexical_cast<std::string>(get_seconds_elapsed(kernel_event)) + " (s)";
     Global.log.add(msg);
@@ -180,7 +179,7 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
     glEnable( GL_TEXTURE_RECTANGLE_ARB );
 
     // Switch Shader and set boounds
-    glUseProgram(_shaderProgram);
+    _shaderprog->use();
     //set_min(_shader_min);
     //set_max(_shader_max);
     
@@ -219,7 +218,7 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
 
 void GravPotential::set_min(float bound)
 {
-    glUseProgram(_shaderProgram);
+    _shaderprog->use();
     _shader_min = bound;
     glUniform1f(_shader_min_loc, _shader_min);
     GLint err = glGetError();
@@ -241,7 +240,7 @@ void GravPotential::dec_min()
 
 void GravPotential::set_max(float bound)
 {
-    glUseProgram(_shaderProgram);
+    _shaderprog->use();
     _shader_max = bound;
     glUniform1f(_shader_max_loc, _shader_max);
     GLint err = glGetError();

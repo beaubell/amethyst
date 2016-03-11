@@ -28,6 +28,85 @@ namespace client {
 
 void printInfoLog(GLuint obj);
 
+Shader::Shader(const std::string& new_shdr, uint shdr_hdl)
+: shdr_(shdr_hdl),
+  name_(new_shdr)
+{
+    std::string path = Global.dir_shaders + new_shdr;
+
+    lib::readTextFile(path, source_);
+
+    const char * source_ptr = source_.c_str();
+
+    glShaderSource(shdr_, 1, &(source_ptr), NULL);
+
+    glCompileShader(shdr_);
+
+    GLint success;
+    glGetShaderiv(shdr_, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        GLchar infoLog[1000];
+	GLsizei length;
+        glGetShaderInfoLog(shdr_, 1000, &length, infoLog);
+        Global.log.add("Error in shader compilation!");
+        std::cout << "Info Log (" << length << "): " << infoLog << std::endl;
+	glDeleteShader(shdr_);
+        throw std::runtime_error(infoLog);
+    }
+
+}
+
+
+Shader::~Shader()
+{
+    glDeleteShader(shdr_);
+}
+
+
+const std::string& Shader::getName()
+{
+    return name_;
+}
+
+
+uint Shader::operator()()
+{
+    return shdr_;
+}
+
+
+ShaderVertex::ShaderVertex(const std::string& new_shdr)
+ : Shader(new_shdr, glCreateShader(GL_VERTEX_SHADER))
+{
+}
+
+ShaderFragment::ShaderFragment(const std::string& new_shdr)
+ : Shader(new_shdr, glCreateShader(GL_FRAGMENT_SHADER))
+{
+}
+
+ShaderGeometry::ShaderGeometry(const std::string& new_shdr)
+ : Shader(new_shdr, glCreateShader(GL_GEOMETRY_SHADER))
+{
+}
+
+ShaderTessControl::ShaderTessControl(const std::string& new_shdr)
+ : Shader(new_shdr, glCreateShader(GL_TESS_CONTROL_SHADER))
+{
+}
+
+ShaderTessEval::ShaderTessEval(const std::string& new_shdr)
+ : Shader(new_shdr, glCreateShader(GL_TESS_EVALUATION_SHADER))
+{
+}
+
+ShaderCompute::ShaderCompute(const std::string& new_shdr)
+ : Shader(new_shdr, glCreateShader(GL_COMPUTE_SHADER))
+{
+}
+
+
 ShaderProgram::ShaderProgram()
  : _program_hdl(-1)
 {
@@ -35,9 +114,35 @@ ShaderProgram::ShaderProgram()
 }
 
 ShaderProgram::ShaderProgram(const std::string &vname, const std::string &fname)
- : _program_hdl(-1)
+ : _program_hdl(glCreateProgram())
 {
-    _program_hdl = load_shader(vname, fname);
+    //_program_hdl = load_shader(vname, fname);
+    try
+    {
+        vert_shdr_ = std::make_shared<ShaderVertex>(vname);
+        frag_shdr_ = std::make_shared<ShaderFragment>(fname);
+	
+	glAttachShader(_program_hdl, (*vert_shdr_)());
+	glAttachShader(_program_hdl, (*frag_shdr_)());
+
+	GLint success = 0;
+	glLinkProgram(_program_hdl);
+	glGetProgramiv(_program_hdl, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+	    GLchar infoLog[1000];
+	    GLsizei length;
+	    glGetProgramInfoLog(_program_hdl, 1000, &length, infoLog);
+	    //printInfoLog(_program_hdl);
+	    throw std::runtime_error(infoLog);
+	}
+    
+    }
+    catch (...)
+    {
+        glDeleteProgram(_program_hdl);
+	throw;
+    }
 }
 
 ShaderProgram::~ShaderProgram()
@@ -126,84 +231,12 @@ ScopedUse::~ScopedUse()
     glUseProgram(oldProgram);
 }
 
+
 int GetActiveShader()
 {
     int actProgram = -1;
     glGetIntegerv(GL_CURRENT_PROGRAM, &actProgram);
     return actProgram;
-}
-
-unsigned int load_shader(const std::string &vname, const std::string &fname)
-{
-
-    std::string   v_path = Global.dir_shaders + vname;
-    std::string   f_path = Global.dir_shaders + fname;
-
-    GLuint myVertexShader = glCreateShader(GL_VERTEX_SHADER);
-    GLuint myFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    std::string v_source;
-    std::string f_source;
-    lib::readTextFile(v_path, v_source);
-    lib::readTextFile(f_path, f_source);
-
-    const char * v_source_ptr = v_source.c_str();
-    const char * f_source_ptr = f_source.c_str();
-
-    glShaderSource(myVertexShader, 1, &(v_source_ptr), NULL);
-    glShaderSource(myFragmentShader, 1, &(f_source_ptr), NULL);
-
-    glCompileShader(myVertexShader);
-
-    GLint success;
-    glGetShaderiv(myVertexShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        GLchar infoLog[1000];
-	GLsizei length;
-        glGetShaderInfoLog(myVertexShader, 1000, &length, infoLog);
-        Global.log.add("Error in vertex shader compilation!");
-        std::cout << "Info Log (" << length << "): " << infoLog << std::endl;
-        throw std::runtime_error(infoLog);
-    }
-
-    success = 0;
-    glCompileShader(myFragmentShader);
-    glGetShaderiv(myFragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        GLchar infoLog[1000];
-	GLsizei length;
-        glGetShaderInfoLog(myFragmentShader, 1000, &length, infoLog);
-        std::cout << "Error in fragment shader compilation!" << std::endl;
-        std::cout << "Info Log: " << infoLog << std::endl;
-        throw std::runtime_error(infoLog);
-    }
-
-
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, myFragmentShader);
-    glAttachShader(shaderProgram, myVertexShader);
-
-    success = 0;
-    
-    glLinkProgram(shaderProgram);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        GLchar infoLog[1000];
-	GLsizei length;
-	glGetProgramInfoLog(shaderProgram, 1000, &length, infoLog);
-        //printInfoLog(shaderProgram);
-	throw std::runtime_error(infoLog);
-    }
-
-    success = 0;
-
-    glDeleteShader(myVertexShader);
-    glDeleteShader(myFragmentShader);
-    
-    return shaderProgram;
 }
 
 
