@@ -164,7 +164,8 @@ void scene_render(void)
     GLfloat lightPos[] = {(float)temp.x, (float)temp.y, (float)temp.z, 1.0f };
     //DEPRECATED glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
     //sol->render(reference)
-    sol->render(m_proj, m_view, m_model);
+    glm::mat4 m_sun = glm::translate(m_model, glm::vec3(temp.x, temp.y, temp.z));
+    sol->render(m_proj, m_view, m_sun);
   }
 
   //DEPRECATED glEnable(GL_LIGHTING);
@@ -175,8 +176,11 @@ void scene_render(void)
     do
     {
         if(sol != *obj1 && (*obj1)->model)
-          //(*obj1)->render(reference);
-          (*obj1)->model->render(m_proj, m_view, m_model);
+        {
+            Cartesian_Vector temp = (*obj1)->location - reference;
+            glm::mat4 m_mdlref = glm::translate(m_model, glm::vec3(temp.x, temp.y, temp.z));
+            (*obj1)->model->render(m_proj, m_view, m_mdlref);
+        }
         obj1++;
     }  while (obj1 != object_list.end());
 
