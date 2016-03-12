@@ -13,6 +13,8 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "shader.h"
+
 #include "glm/glm.hpp"
 
 #include <string>
@@ -21,77 +23,6 @@
 namespace amethyst {
 namespace client {
 
-class Shader
-{
-  public:
-    typedef std::shared_ptr<Shader> sptr;
-    typedef std::weak_ptr<Shader>   wptr;
-
-    Shader(const std::string& new_shdr, uint shdr_hdl);
-    virtual ~Shader();
-    const std::string& getName();
-
-    uint operator()();
-
-  private:
-    uint shdr_;
-    std::string name_;
-    std::string source_;
-};
-
-class ShaderVertex : public Shader
-{
-  public:
-  typedef std::shared_ptr<ShaderVertex> sptr;
-  typedef std::weak_ptr<ShaderVertex>   wptr;
-
-   ShaderVertex(const std::string& new_shdr);
-};
-
-class ShaderFragment : public Shader
-{
-  public:
-  typedef std::shared_ptr<ShaderFragment> sptr;
-  typedef std::weak_ptr<ShaderFragment>   wptr;
-
-  ShaderFragment(const std::string& new_shdr);
-};
-
-class ShaderGeometry : public Shader
-{
-  public:
-  typedef std::shared_ptr<ShaderGeometry> sptr;
-  typedef std::weak_ptr<ShaderGeometry>   wptr;
-
-  ShaderGeometry(const std::string& new_shdr);
-};
-
-class ShaderTessControl : public Shader
-{
-  public:
-  typedef std::shared_ptr<ShaderTessControl> sptr;
-  typedef std::weak_ptr<ShaderTessControl>   wptr;
-
-  ShaderTessControl(const std::string& new_shdr);
-};
-
-class ShaderTessEval : public Shader
-{
-  public:
-  typedef std::shared_ptr<ShaderTessEval> sptr;
-  typedef std::weak_ptr<ShaderTessEval>   wptr;
-
-  ShaderTessEval(const std::string& new_shdr);
-};
-
-class ShaderCompute : public Shader
-{
-  public:
-  typedef std::shared_ptr<ShaderCompute> sptr;
-  typedef std::weak_ptr<ShaderCompute>   wptr;
-
-  ShaderCompute(const std::string& new_shdr);
-};
 
 class ShaderProgram
 {
@@ -122,7 +53,7 @@ public:
   void       Uniform1i(UniformHDL hdl, const int iin);
   void use();
   int  getHandle();
-  
+
 private:
   int _program_hdl;
   ShaderVertex::sptr      vert_shdr_;

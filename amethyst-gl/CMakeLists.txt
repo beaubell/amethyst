@@ -20,6 +20,7 @@ SET(amethystgl_SRCS
   scene.cpp
   scene_object.cpp
   scene_xml.cpp
+  shader.cpp
   shaderprog_ui.cpp
   shaderprog_uifont.cpp
   sound.cpp
