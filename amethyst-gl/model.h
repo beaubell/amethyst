@@ -17,7 +17,7 @@
 
 #include "lib/types.h"
 #include "lib/rendermodel.h"
-#include "opengl_shader.h"
+#include "shaderprog.h"
 
 #include <string>
 #include <list>

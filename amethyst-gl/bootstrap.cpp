@@ -16,7 +16,7 @@
 #include "stars.h"
 #include "module.h"
 #include "opengl.h"
-#include "opengl_shader.h"
+#include "shaderprog.h"
 #include "scene.h"
 #include "scene_xml.h"
 #include "config_xml.h"

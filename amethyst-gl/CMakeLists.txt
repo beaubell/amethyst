@@ -16,11 +16,11 @@ SET(amethystgl_SRCS
   module.cpp
   net.cpp
   opengl.cpp
-  opengl_shader.cpp
   scene.cpp
   scene_object.cpp
   scene_xml.cpp
   shader.cpp
+  shaderprog.cpp
   shaderprog_ui.cpp
   shaderprog_uifont.cpp
   sound.cpp

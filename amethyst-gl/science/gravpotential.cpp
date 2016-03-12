@@ -3,7 +3,7 @@
 #include "lib/utility.h"
 #include "lib/cl.h"
 #include "../opengl.h"
-#include "../opengl_shader.h"
+#include "../shaderprog.h"
 #include "../global.h"
 #include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>

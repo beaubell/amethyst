@@ -13,7 +13,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#include "opengl_shader.h"
+#include "shaderprog.h"
 #include "lib/types.h"
 
 namespace amethyst {

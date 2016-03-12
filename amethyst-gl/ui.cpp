@@ -13,7 +13,7 @@
 #include "opengl.h"
 #include "ui.h"
 #include "global.h"
-#include "opengl_shader.h"
+#include "shaderprog.h"
 #include "scene.h" // For set_camera
 #include "shaderprog_ui.h"
 #include "shaderprog_uifont.h"

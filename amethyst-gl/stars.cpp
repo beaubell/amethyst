@@ -16,7 +16,7 @@
 #include "file.h"
 
 #include "lib/physics.h"
-#include "opengl_shader.h"
+#include "shaderprog.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"

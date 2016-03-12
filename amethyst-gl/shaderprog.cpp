@@ -12,7 +12,7 @@
 
 #include "opengl.h"
 #include "shader.h"
-#include "opengl_shader.h"
+#include "shaderprog.h"
 #include "global.h"
 #include "lib/utility.h"
 

@@ -2,7 +2,7 @@
 #define AMETHYST_UI_TEXTBOX_H
 
 #include "ui_widget.h"
-#include "opengl_shader.h"
+#include "shaderprog.h"
 #include "shaderprog_uifont.h"
 #include "lib/types.h"
 #include "FTGLTextHandle.h"

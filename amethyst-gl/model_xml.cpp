@@ -16,7 +16,7 @@
 #include "model.h"
 #include "model_xml.h"
 #include "global.h"
-#include "opengl_shader.h"
+#include "shaderprog.h"
 
 #include "lib/vector.h"
 
