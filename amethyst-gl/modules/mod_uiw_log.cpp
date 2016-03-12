@@ -51,7 +51,7 @@ class UIW_Log : public UI_Window
     std::vector<UI_TextBox::sptr> _logline;
     uint num_lines_;
     uint num_lines_log;
-    ShaderProgram::sptr fontshdr;
+    ShaderProgramFont::sptr fontshdr;
 };
 
 UIW_Log::UIW_Log(UI &ui)

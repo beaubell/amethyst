@@ -21,6 +21,7 @@ SET(amethystgl_SRCS
   scene_object.cpp
   scene_xml.cpp
   shaderprog_ui.cpp
+  shaderprog_uifont.cpp
   sound.cpp
   stars.cpp
   texture.cpp

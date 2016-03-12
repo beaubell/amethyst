@@ -3,6 +3,7 @@
 
 #include "ui_widget.h"
 #include "opengl_shader.h"
+#include "shaderprog_uifont.h"
 #include "lib/types.h"
 #include "FTGLTextHandle.h"
 #include "FTFont.h"
@@ -14,7 +15,7 @@ class UI_TextBox : public UI_Widget
 {
   public:
     typedef std::shared_ptr<UI_TextBox> sptr;
-    UI_TextBox(ftgl::FTFont &font, ShaderProgram::sptr shader);
+    UI_TextBox(ftgl::FTFont &font, ShaderProgramFont::sptr shader);
     virtual ~UI_TextBox();
    
     virtual void render(const TransMatrix& proj, const TransMatrix& mat);
@@ -25,19 +26,9 @@ class UI_TextBox : public UI_Widget
     std::string _text;
 
   private:
-    ShaderProgram::sptr _shaderptr;
+    ShaderProgramFont::sptr _shaderptr;
     ftgl::FTFont &_font;
     ftgl::TextHandle _titlehdl;
-
-    // Vertex Attribute Locations
-    ShaderProgram::AttribHDL fnvertexLoc;
-    ShaderProgram::AttribHDL fntexcoordLoc;
- 
-    // Uniform variable Locations
-    ShaderProgram::UniformHDL fncolorLoc;
-    ShaderProgram::UniformHDL fnprojMatrixLoc, fnviewMatrixLoc;
-    ShaderProgram::UniformHDL fntexUnitLoc;
-    
 };
 
 } // namespace client

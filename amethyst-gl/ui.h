@@ -19,6 +19,7 @@
 #include "FTGLTextureFont.h"
 #include "glm/glm.hpp"
 #include "shaderprog_ui.h"
+#include "shaderprog_uifont.h"
 #include "ui_textbox.h"
 
 #include <string>
@@ -52,8 +53,8 @@ class UI
     ftgl::FTFont &get_font();
 
     // Shader Program Location
-    ShaderProgramUI::sptr ui_shader;
-    ShaderProgram::sptr uifont_shader;
+    ShaderProgramUI::sptr   ui_shader;
+    ShaderProgramFont::sptr uifont_shader;
 
    private:
     ftgl::FTFont *font_;

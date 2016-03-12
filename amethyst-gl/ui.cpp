@@ -16,6 +16,7 @@
 #include "opengl_shader.h"
 #include "scene.h" // For set_camera
 #include "shaderprog_ui.h"
+#include "shaderprog_uifont.h"
 
 #include <iostream>
 #include <sstream>
@@ -37,7 +38,7 @@ UI::UI(const std::string &fontfile)
 
     // Setup Shaders;
     ui_shader = std::make_shared<ShaderProgramUI>();
-    uifont_shader = std::make_shared<ShaderProgram>("uifont.vert", "uifont.frag");
+    uifont_shader = std::make_shared<ShaderProgramFont>();
 
     font_ = new ftgl::FTGLTextureFont( fontpath.c_str());
 
