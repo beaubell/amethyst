@@ -29,6 +29,8 @@ void scene_control_ship_next();
 
 extern std::list<lib::Object::sptr>  object_list;
 
+glm::dmat4 set_camera(const lib::Quaternion &attitude, const double distance);
+
 } // namespace client
 } // namespace amethyst
 

@@ -131,6 +131,16 @@ void ShaderProgram::Uniform1i(UniformHDL hdl, const int iin)
     glUniform1i(hdl.value, iin);
 }
 
+void ShaderProgram::Uniform1f(UniformHDL hdl, const float fin)
+{
+    if(GetActiveShader() != _program_hdl)
+    {
+        Global.log.add("Shader not bound during Uniform4f, dumbass.");
+	throw std::runtime_error("Shader not bound during UniformMatrix4f");
+        //glUseProgram(_program_hdl);
+    }
+    glUniform1f(hdl.value, fin);
+}
 
 void ShaderProgram::use()
 {

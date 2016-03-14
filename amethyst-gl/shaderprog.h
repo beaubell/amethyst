@@ -51,6 +51,7 @@ public:
   void       UniformMatrix4f(UniformHDL hdl, const glm::mat4 &mat4in);
   void       Uniform4f(UniformHDL hdl, const glm::vec4 &vec4in);
   void       Uniform1i(UniformHDL hdl, const int iin);
+  void       Uniform1f(UniformHDL hdl, const float fin);
   void use();
   int  getHandle();
 
