@@ -8,6 +8,7 @@ SET(amethystgl_SRCS
   debug.cpp
   global.cpp
   hud.cpp
+  hud_widget.cpp
   input.cpp
   joystick.cpp
   log.cpp
@@ -21,6 +22,7 @@ SET(amethystgl_SRCS
   scene_xml.cpp
   shader.cpp
   shaderprog.cpp
+  shaderprog_hud.cpp
   shaderprog_ui.cpp
   shaderprog_uifont.cpp
   sound.cpp

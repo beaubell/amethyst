@@ -219,14 +219,14 @@ void Amethyst_GL::render()
   scene_render();
 
   sig_render_scene(Global.obj_view->location);
-  
+
   // Display HUD XXX being replaced.
 
-  if(show_hud && 0) // FIXME
+  if(show_hud)
     hud_render();
 
   ui.update();
-  
+
   if(show_ui)
     ui.render();
 

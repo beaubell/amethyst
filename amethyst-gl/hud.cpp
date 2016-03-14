@@ -16,9 +16,14 @@
 #include "opengl.h"
 #include "lib/physics.h"
 #include "lib/utility.h"
+#include "hud_widget.h"
 
 #include "FTGL.h"
-#include "FTGLPixmapFont.h"
+#include "FTGLTextureFont.h"
+
+#include "shaderprog_hud.h"
+#include "shaderprog_uifont.h"
+
 #include <string>
 #include <boost/lexical_cast.hpp>
 
@@ -54,15 +59,18 @@ static void hud_radials();
 static void hud_orbits();
 
 static ftgl::FTFont* fonts[6];
-//static FTGLPixmapFont* infoFont;
+static ShaderProgramHUD::sptr ui_shader;
+static ShaderProgramFont::sptr uifont_shader;
 
 static unsigned int frames = 0, benchmark = 0;
 static float fps = 0.0f;
 
+HUDRadial* hudradial;
+
 void hud_setup(void)
 {
     std::string fontfile = Global.dir_fonts + "/spacefri.ttf";
-    fonts[0] = new ftgl::FTGLPixmapFont( fontfile.c_str());
+    fonts[0] = new ftgl::FTGLTextureFont( fontfile.c_str());
 
     // Check to see if font loaded correctly
     if(fonts[0]->Error())
@@ -72,6 +80,10 @@ void hud_setup(void)
 
     fonts[0]->FaceSize( 13);
 
+    ui_shader = std::make_shared<ShaderProgramHUD>();
+    uifont_shader = std::make_shared<ShaderProgramFont>();
+    
+    hudradial = new HUDRadial(ui_shader);
 }
 
 void hud_shutdown(void)
@@ -83,14 +95,14 @@ void hud_render(void)
 {
     // unsigned int screen_y = Global.screen_y; /*unused*/
 
-    glColor3f(1.0f,1.0f,1.0f);
     glDisable( GL_DEPTH_TEST);
-    glDisable( GL_LIGHTING);
 
-    hud_radials();
-    hud_orbits();
-    
-    hud_widget_object_text();
+    //hud_radials();
+    if (hudradial)
+      hudradial->render();
+    //TEMP hud_orbits();
+
+    //TEMP hud_widget_object_text();
 
     #ifdef HAVE_MALLOC_H
 //        hud_widget_memory(10, screen_y - 13);
@@ -107,14 +119,13 @@ void hud_render(void)
     // Display Camera Look Angles
     hud_widget_camera(10, screen_y - 76);
 */
-    hud_widget_select(10,40);
+    //TEMP hud_widget_select(10,40);
 
     
 
 
-    hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
+    //TEMP hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
 
-    glEnable( GL_LIGHTING);
     glEnable( GL_DEPTH_TEST);
 }
 
@@ -130,15 +141,13 @@ static void hud_widget_object_text(void)
 
         do
         {
-            glPushMatrix();
 
-        // Move to object location
+            // Move to object location
             Cartesian_Vector temp = (*obj1)->location - reference;
             glRasterPos3d(temp.x, temp.y, temp.z);
 
             fonts[0]->Render((*obj1)->name.c_str());
 
-            glPopMatrix();
             obj1++;
         }  while (obj1 != Global.universe.list().end());
 
@@ -341,119 +350,6 @@ static void hud_widget_vectorbox(int /*x unused*/, int /*y unused*/, float xvect
     glPopAttrib();
 }
 
-static void hud_radials()
-{
-  const unsigned int radials       = 365;
-  const double       radial_length = 1e12;
-
-  double radialvectors[radials + 3][2][3];
-  float  radialcolors[radials + 3][2][3];
-
-  double radial_angle = 2.0*M_PI/static_cast<double>(radials);
-
-  for(unsigned int i = 0; i < radials; i++)
-  {
-    radialvectors[i][0][0] = 0;
-    radialvectors[i][0][1] = 0;
-    radialvectors[i][0][2] = 0;
-    radialvectors[i][1][0] = cos(static_cast<double>(i)*radial_angle)*radial_length;
-    radialvectors[i][1][1] = sin(static_cast<double>(i)*radial_angle)*radial_length;
-    radialvectors[i][1][2] = 0;
-
-    radialcolors[i][0][0] = radialcolors[i][1][0] = (i == 0)?1.0f:0.0f;
-    radialcolors[i][0][1] = radialcolors[i][1][1] = (i == 32 || i == 60 || i == 91 || i == 121 || i == 152 || i == 182 || i == 213 || i == 244 || i == 274 || i == 305  || i == 335  )?1.0:0.0f;
-    radialcolors[i][0][2] = radialcolors[i][1][2] = (i != 0)?1.0f:0.0f;
-  }
-
-  lib::Object::sptr earth = Global.universe.object_find("Earth");
-  lib::Object::sptr probe1 = Global.universe.object_find("S-E L1 Probe");
-  lib::Object::sptr probe2 = Global.universe.object_find("S-E L2 Probe");
-  lib::Object::sptr sol = Global.universe.object_find("Sol");
-
-  if (probe1 != NULL && probe2 != NULL && sol != NULL && earth != NULL)
-  {
-    lib::Object L1_exact;
-    lib::placement_L1(*sol, *earth, L1_exact);
-
-    lib::Object L2_exact;
-    lib::placement_L2(*sol, *earth, L2_exact);
-
-    lib::Cartesian_Vector diff = L2_exact.location - sol->location;
-    unsigned int i = 365;
-    radialvectors[i][0][0] = 0;
-    radialvectors[i][0][1] = 0;
-    radialvectors[i][0][2] = 0;
-    radialvectors[i][1][0] = diff.x;
-    radialvectors[i][1][1] = diff.y;
-    radialvectors[i][1][2] = 0;
-
-    radialcolors[i][0][0] = radialcolors[i][1][0] = 1.0f;
-    radialcolors[i][0][1] = radialcolors[i][1][1] = 1.0f;
-    radialcolors[i][0][2] = radialcolors[i][1][2] = 1.0f;
-
-    lib::Cartesian_Vector L1_diff = L1_exact.location - sol->location;
-    lib::Cartesian_Vector probe_diff = probe1->location - sol->location;
-    i = 366;
-    radialvectors[i][0][0] = L1_diff.x;
-    radialvectors[i][0][1] = L1_diff.y;
-    radialvectors[i][0][2] = L1_diff.z;
-    radialvectors[i][1][0] = probe_diff.x;
-    radialvectors[i][1][1] = probe_diff.y;
-    radialvectors[i][1][2] = probe_diff.z;
-
-    radialcolors[i][0][0] = radialcolors[i][1][0] = 1.0f;
-    radialcolors[i][0][1] = radialcolors[i][1][1] = 1.0f;
-    radialcolors[i][0][2] = radialcolors[i][1][2] = 1.0f;
-
-    std::stringstream temp;
-    std::string temp2;
-    temp.precision(8);
-
-    temp << (L1_exact.location - probe1->location).magnitude();
-    temp >> temp2;
-    std::string text = "L1 Probe Distance: " + temp2;
-    //DEPRECATED glWindowPos2i(10, 80);
-    fonts[0]->Render(text.c_str());
-
-    temp.clear();
-    temp2.clear();
-    temp << (L2_exact.location - probe2->location).magnitude();
-    temp >> temp2;
-    text = "L2 Probe Distance: " + temp2;
-    //DEPRECATED glWindowPos2i(10, 67);
-    fonts[0]->Render(text.c_str());
-
-  }
-  glEnable(GL_FOG);
-
-  float FogCol[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-  glFogfv(GL_FOG_COLOR, FogCol);
-  glFogi(GL_FOG_MODE, GL_LINEAR); // Note the 'i' after glFog - the GL_LINEAR constant is an integer.
-  glFogf(GL_FOG_START, 10.0);
-  glFogf(GL_FOG_END, Global.cam_zoom*10.0);
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(3, GL_DOUBLE, 0, radialvectors);
-  glColorPointer(3, GL_FLOAT, 0, radialcolors);
-
-  // draw radials
-  Cartesian_Vector &reference = Global.obj_view->location;
-
-  // Place "Sol" at the origin of radials
-  if (sol != NULL)
-  {
-    glPushMatrix();
-    Cartesian_Vector temp = sol->location - reference;
-    glTranslated(temp.x, temp.y, temp.z);
-  
-    glDrawArrays(GL_LINES, 0, radials*2 + 4); // Plus four for earth radial and L1/Probe line.
-    glPopMatrix();
-  }
-  
-  // deactivate vertex arrays after drawing
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisable(GL_FOG);
-}
 
 static void hud_orbits()
 {
