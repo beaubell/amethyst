@@ -109,6 +109,7 @@ void opengl_change_aspect(GLsizei w, GLsizei h)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glFrontFace(GL_CCW);
+    glEnable(GL_MULTISAMPLE);
 
     glDepthFunc(GL_LEQUAL);
     glDepthRange(-1.0,1e10);
