@@ -128,6 +128,7 @@ GLuint image_load(const char *file) {
 
     GLuint texture;
     textureImage *texti;
+    uint num_mipmaps = 2;
 
     if (access(file, R_OK) < 0) {
        if (errno == ENOENT)
@@ -149,10 +150,19 @@ GLuint image_load(const char *file) {
     // Tell opengl we want to start playing with texture number assigned to 'texture'
     glBindTexture(GL_TEXTURE_2D, texture);
 
+    // Create texture storage space
+    glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, GL_RGB8, texti->width, texti->height);
+
     // Load
-    //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, image->w,image->h,GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-    //glTexImage2D(GL_TEXTURE_2D, 0, 3, test->w, test->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texti->width, texti->height, 0, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texti->width, texti->height, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
+
+    // Generate mipmap levels
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     delete [] texti->data;
     delete texti;
