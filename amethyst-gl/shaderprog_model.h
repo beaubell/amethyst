@@ -14,7 +14,6 @@
  ***********************************************************************/
 
 #include "shaderprog.h"
-#include "shaderprog_base.h"
 #include "lib/types.h"
 
 namespace amethyst {
