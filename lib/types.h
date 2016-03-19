@@ -20,6 +20,7 @@ typedef boost::multi_array<double , 3> Am3DArrayD;
 typedef boost::multi_array<double , 4> Am4DArrayD;
 
 typedef glm::mat4 TransMatrix;
+typedef glm::mat3 NormalMatrix;
 typedef glm::vec3 Vertex;
 typedef glm::vec4 Vertex4;
 typedef glm::vec2 TexCoord;
