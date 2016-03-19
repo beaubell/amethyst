@@ -17,7 +17,7 @@
 
 #include "lib/types.h"
 #include "lib/rendermodel.h"
-#include "shaderprog.h"
+#include "shaderprog_model.h"
 
 #include <string>
 #include <list>
@@ -35,7 +35,7 @@ class Primative
     Primative(const std::string& name);
     virtual ~Primative();
     virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) = 0;
-    virtual void bind(ShaderProgram::sptr shaderprog) = 0;
+    virtual void bind(ShaderProgramModel::sptr shaderprog) = 0;
     virtual void clear() = 0;
 
     void setName(const std::string& name);
@@ -60,34 +60,23 @@ class TriangleStrip : public Primative
     TriangleStrip(const std::string& name, Texture::sptr texturein);
     virtual ~TriangleStrip();
     virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
-    virtual void bind(ShaderProgram::sptr shaderprog);
+    virtual void bind(ShaderProgramModel::sptr shaderprog);
     virtual void clear();
 
     void setTexture(Texture::sptr texturein);
     void addVertex(const vertex_type &vertex, const texcoord_type &texcoord, const normal_type normal);
 
   private:
-    ShaderProgram::sptr _shader;
+    ShaderProgramModel::sptr _shader;
     Texture::sptr  _texture;
     uint _vertcount;
     std::vector<vertex_type> _vertii;
     std::vector<texcoord_type> _texcoords;
     std::vector<normal_type> _normals;
 
-    ShaderProgram::UniformHDL _mprojloc;
-    ShaderProgram::UniformHDL _mviewloc;
-    ShaderProgram::UniformHDL _mmodeloc;
-    ShaderProgram::UniformHDL _vlightloc;
-
-    ShaderProgram::AttribHDL _vertexloc;
-    ShaderProgram::AttribHDL _texcoordloc;
-    ShaderProgram::AttribHDL _normalloc;
-    ShaderProgram::UniformHDL _texunitloc;
-
     // VAO Buffer Objects
     unsigned int _vao[1]; // Vertex Array Objects Identifier
     unsigned int _buffer[3]; // 0=quads, 1=textures, 2=normals
-
 };
 
 class Model : public lib::RenderModel
@@ -119,7 +108,7 @@ void models_free(void);
 Model::sptr model_load(std::string &model_name);
 
 
-void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr);
+void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr);
 
 TriangleStrip::sptr model_sphere_create(double cx, double cy, double cz, double r, int p );
 

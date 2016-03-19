@@ -16,7 +16,7 @@
 #include "model.h"
 #include "model_xml.h"
 #include "global.h"
-#include "shaderprog.h"
+#include "shaderprog_model.h"
 
 #include "lib/vector.h"
 
@@ -26,8 +26,8 @@
 namespace amethyst {
 namespace client {
 
-void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr);
-void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr);
+void model_xml_parse_sphere(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr);
+void model_xml_parse_extfile(xmlDocPtr doc, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr);
 
 void model_xml_load(std::string &name, Model &model)
 {
@@ -62,7 +62,7 @@ void model_xml_load(std::string &name, Model &model)
     xmlChar *key = NULL;
     Texture::sptr tex; //FIXME Textures Should Load At Primative Level
 
-    ShaderProgram::sptr shdr = std::make_shared<ShaderProgram>("model.vert", "model.frag"); //FIXME
+    ShaderProgramModel::sptr shdr = std::make_shared<ShaderProgramModel>();
 
     // Run through root tree
     try
@@ -111,7 +111,7 @@ void model_xml_load(std::string &name, Model &model)
 }
 
 
-void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr)
+void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr)
 {
 
     xmlChar *temp;
@@ -148,7 +148,7 @@ void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mod
 }
 
 
-void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr)
+void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr)
 {
 
     xmlChar *temp;

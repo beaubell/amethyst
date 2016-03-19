@@ -79,11 +79,27 @@ void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view,
 {
     if(!_shader)
         throw std::runtime_error("TriangleStrip not bound to shader " + this->getName());
+    
+    const lib::Cartesian_Vector &reference = Global.obj_view->location;
+
+    LightInfo light;
+    light.Position = m_view*m_model*glm::vec4(-reference.x, -reference.y, -reference.z, 1.0f);
+    light.Intensity = glm::vec3(1.0f, 1.0f, 1.0f);
+
+    MaterialInfo matinfo;
+    matinfo.Ka = glm::vec3(0.0f, 0.0f, 0.0f);
+    matinfo.Kd = glm::vec3(1.0f, 1.0f, 1.0f);
+    matinfo.Ks = glm::vec3(1.0f, 1.0f, 1.1f);
+    matinfo.Shininess = 200.0f;
+
 
     _shader->use();
-    _shader->UniformMatrix4f(_mprojloc, m_proj);
-    _shader->UniformMatrix4f(_mviewloc, m_view);
-    _shader->UniformMatrix4f(_mmodeloc, m_model);
+    _shader->setProjM(m_proj);
+    _shader->setModelViewM(m_view * m_model);
+    _shader->setNormalM(glm::mat3(m_view*m_model));
+    _shader->setMVP(m_proj*m_view*m_model);
+    _shader->setLight(light);
+    _shader->setMaterial(matinfo);
     _texture->bind();
 
     // Render vao objects
@@ -91,17 +107,9 @@ void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view,
     glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertii.size());
 }
 
-void TriangleStrip::bind(ShaderProgram::sptr shaderprog)
+void TriangleStrip::bind(ShaderProgramModel::sptr shaderprog)
 {
     _shader  = shaderprog;
-    _vertexloc = _shader->GetAttribLocation("vertexPosition");
-    _texcoordloc = _shader->GetAttribLocation("texcoordData");
-    //_normalloc   = _shader->GetAttribLocation("vertexNormal");
-
-    _texunitloc  = _shader->GetUniformLocation("baseTex");
-    _mprojloc  = _shader->GetUniformLocation("projMatrix");
-    _mviewloc  = _shader->GetUniformLocation("viewMatrix");
-    _mmodeloc  = _shader->GetUniformLocation("modelMatrix");
 
     glGenVertexArrays(1, _vao);
     glBindVertexArray(_vao[0]);
@@ -111,18 +119,18 @@ void TriangleStrip::bind(ShaderProgram::sptr shaderprog)
 
     glBindBuffer(GL_ARRAY_BUFFER, _buffer[0]);
     glBufferData(GL_ARRAY_BUFFER, _vertii.size()*sizeof(vertex_type), &_vertii[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(_vertexloc.value);
-    glVertexAttribPointer(_vertexloc.value, 3, GL_FLOAT, 0, 0, 0);
+    glEnableVertexAttribArray(_shader->getVertexLoc());
+    glVertexAttribPointer(_shader->getVertexLoc(), 3, GL_FLOAT, 0, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, _buffer[1]);
     glBufferData(GL_ARRAY_BUFFER, _texcoords.size()*sizeof(texcoord_type), &_texcoords[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(_texcoordloc.value);
-    glVertexAttribPointer(_texcoordloc.value, 2, GL_FLOAT, 0, 0, 0);
+    glEnableVertexAttribArray(_shader->getTexCoordLoc());
+    glVertexAttribPointer(_shader->getTexCoordLoc(), 2, GL_FLOAT, 0, 0, 0);
 
-    //glBindBuffer(GL_ARRAY_BUFFER, _buffer[2]);
-    //glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
-    //glEnableVertexAttribArray(_normalloc.value);
-    //glVertexAttribPointer(_normalloc.value, 3, GL_FLOAT, 0, 0, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, _buffer[2]);
+    glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
+    glEnableVertexAttribArray(_shader->getNormalLoc());
+    glVertexAttribPointer(_shader->getNormalLoc(), 3, GL_FLOAT, 0, 0, 0);
 }
 
 void TriangleStrip::clear()
@@ -297,7 +305,7 @@ TriangleStrip::sptr model_sphere_create(const double cx, const double cy, const 
 }
 
 
-void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgram::sptr shdr)
+void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr)
 {
     if (access(filename.c_str(), R_OK) < 0) {
         if (errno == ENOENT)

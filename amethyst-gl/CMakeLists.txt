@@ -23,6 +23,7 @@ SET(amethystgl_SRCS
   shader.cpp
   shaderprog.cpp
   shaderprog_hud.cpp
+  shaderprog_model.cpp
   shaderprog_ui.cpp
   shaderprog_uifont.cpp
   sound.cpp

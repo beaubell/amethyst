@@ -109,6 +109,28 @@ void ShaderProgram::UniformMatrix4f(ShaderProgram::UniformHDL hdl, const glm::ma
     glUniformMatrix4fv(hdl.value,  1, false, glm::value_ptr(mat4in));
 }
 
+void ShaderProgram::UniformMatrix3f(ShaderProgram::UniformHDL hdl, const glm::mat3 &mat3in)
+{
+    if(GetActiveShader() != _program_hdl)
+    {
+        Global.log.add("Shader not bound during UniformMatrix4f, dumbass.");
+	throw std::runtime_error("Shader not bound during UniformMatrix4f");
+        //glUseProgram(_program_hdl);
+    }
+    glUniformMatrix3fv(hdl.value,  1, false, glm::value_ptr(mat3in));
+}
+
+void ShaderProgram::Uniform3f(UniformHDL hdl, const glm::vec3& vec3in)
+{
+    if(GetActiveShader() != _program_hdl)
+    {
+        Global.log.add("Shader not bound during Uniform4f, dumbass.");
+	throw std::runtime_error("Shader not bound during UniformMatrix4f");
+        //glUseProgram(_program_hdl);
+    }
+    glUniform3fv(hdl.value, 1, glm::value_ptr(vec3in));
+}
+
 void ShaderProgram::Uniform4f(UniformHDL hdl, const glm::vec4& vec4in)
 {
     if(GetActiveShader() != _program_hdl)
