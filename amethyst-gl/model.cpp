@@ -38,128 +38,6 @@ std::list<Model::sptr>  model_list;
 
 //
 //
-Primative::Primative(const std::string& name)
- : _name(name)
-{}
-
-
-Primative::~Primative()
-{}
-
-void Primative::setName(const std::string& name)
-{
-    _name = name;
-}
-
-const std::string& Primative::getName()
-{
-    return _name;
-}
-
-
-//
-//
-TriangleStrip::TriangleStrip()
- : Primative("TriangleStrip"),
-   _vertcount(0)
-{}
-
-TriangleStrip::TriangleStrip(const std::string& name, Texture::sptr texturein)
- : Primative(name),
-   _texture(texturein),
-   _vertcount(0)
-{
-}
-
-TriangleStrip::~TriangleStrip()
-{
-}
-
-void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model)
-{
-    if(!_shader)
-        throw std::runtime_error("TriangleStrip not bound to shader " + this->getName());
-    
-    const lib::Cartesian_Vector &reference = Global.obj_view->location;
-
-    LightInfo light;
-    light.Position = m_view*m_model*glm::vec4(-reference.x, -reference.y, -reference.z, 1.0f);
-    light.Intensity = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    MaterialInfo matinfo;
-    matinfo.Ka = glm::vec3(0.0f, 0.0f, 0.0f);
-    matinfo.Kd = glm::vec3(1.0f, 1.0f, 1.0f);
-    matinfo.Ks = glm::vec3(1.0f, 1.0f, 1.1f);
-    matinfo.Shininess = 200.0f;
-
-
-    _shader->use();
-    _shader->setProjM(m_proj);
-    _shader->setModelViewM(m_view * m_model);
-    _shader->setNormalM(glm::mat3(m_view*m_model));
-    _shader->setMVP(m_proj*m_view*m_model);
-    _shader->setLight(light);
-    _shader->setMaterial(matinfo);
-    _texture->bind();
-
-    // Render vao objects
-    glBindVertexArray(_vao[0]);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertii.size());
-}
-
-void TriangleStrip::bind(ShaderProgramModel::sptr shaderprog)
-{
-    _shader  = shaderprog;
-
-    glGenVertexArrays(1, _vao);
-    glBindVertexArray(_vao[0]);
-
-    // Generate buffer for frame;
-    glGenBuffers(3, _buffer);
-
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[0]);
-    glBufferData(GL_ARRAY_BUFFER, _vertii.size()*sizeof(vertex_type), &_vertii[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(_shader->getVertexLoc());
-    glVertexAttribPointer(_shader->getVertexLoc(), 3, GL_FLOAT, 0, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[1]);
-    glBufferData(GL_ARRAY_BUFFER, _texcoords.size()*sizeof(texcoord_type), &_texcoords[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(_shader->getTexCoordLoc());
-    glVertexAttribPointer(_shader->getTexCoordLoc(), 2, GL_FLOAT, 0, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[2]);
-    glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(_shader->getNormalLoc());
-    glVertexAttribPointer(_shader->getNormalLoc(), 3, GL_FLOAT, 0, 0, 0);
-}
-
-void TriangleStrip::clear()
-{
-    glDeleteVertexArrays(1, _vao);
-
-    _vertii.clear();
-    _texcoords.clear();
-    _normals.clear();
-
-    _vertcount = 0;
-}
-
-void TriangleStrip::setTexture(Texture::sptr texturein)
-{
-    _texture = texturein;
-}
-
-void TriangleStrip::addVertex(const vertex_type &vertex, const texcoord_type &texcoord, const normal_type normal)
-{
-    _vertii.push_back(vertex);
-    _texcoords.push_back(texcoord);
-    _normals.push_back(normal);
-
-    _vertcount++;
-}
-
-//
-//
 Model::Model()
 {}
 
@@ -322,11 +200,11 @@ void model_load_file(const std::string &filename, Model &model, Texture::sptr te
         throw(std::runtime_error("Failed to open model file"));
 
     //Create New Primative
-    TriangleStrip::sptr prim = std::make_shared<TriangleStrip>();
+    Triangles::sptr prim = std::make_shared<Triangles>();
 
-    TriangleStrip::vertex_type point;
-    TriangleStrip::texcoord_type texcoord;
-    TriangleStrip::normal_type normal;
+    Triangles::vertex_type point;
+    Triangles::texcoord_type texcoord;
+    Triangles::normal_type normal;
 
     prim->setName("Main");
 
