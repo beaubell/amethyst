@@ -40,7 +40,7 @@ class UIW_SimStats : public UI_Window
 };
 
 
-} // namespace lib
+} // namespace client
 } // namespace amethyst
 
 #endif //AMETHYST_LIB_SIMSTATS_H

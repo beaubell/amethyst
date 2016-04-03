@@ -3,6 +3,7 @@ SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
 
 SET(amethystgl_SRCS
   science/uiw_simstats.cpp
+  science/uiw_view.cpp
   science/gravpotential.cpp
   config_xml.cpp
   debug.cpp

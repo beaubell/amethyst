@@ -25,6 +25,7 @@
 #include "physics.h"
 #include "science/gravpotential.h"
 #include "science/uiw_simstats.h"
+#include "science/uiw_view.h"
 
 #include <iostream>
 
@@ -227,6 +228,8 @@ int main(int argc, char* argv[])
     // Create and add sim stats window
     UI_Window_ptr window = UI_Window_ptr(new UIW_SimStats(client, client.ui));
     client.ui.add(window);
+    UI_Window_ptr window_view = UI_Window_ptr(new UIW_View(client, client.ui));
+    client.ui.add(window_view);
     
     // Load shaders if supported
     //if (glShaderObjectsSupported)
