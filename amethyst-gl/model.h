@@ -41,10 +41,11 @@ class Model : public lib::RenderModel
     //void setName(const std::string& name);
     //const std::string& getName();
 
-    void addPrimative(Primative::sptr newprim);
+    void addPrimitive(Primitive::sptr newprim);
+    const std::list<Primitive::sptr>& getPrimitives();
 
   private:
-    std::list<Primative::sptr> _primatives;
+    std::list<Primitive::sptr> _primitives;
 };
 
 extern std::list<Model::sptr>  model_list;

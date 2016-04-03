@@ -90,8 +90,10 @@ void model_xml_load(std::string &name, Model &model)
             }
             if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("extfile")) )
             {
-                if(tex)
+                //if(tex)
                   model_xml_parse_extfile (doc, cur, model, tex, shdr);
+		//else
+		//  std::cout << "External Model Not Loaded Becuase Texture Doesn't Exist";
             }
 
             cur = cur->next;
@@ -142,7 +144,7 @@ void model_xml_parse_sphere(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mod
     sphere->setTexture(tex);
     sphere->bind(shdr);
 
-    model.addPrimative(sphere);
+    model.addPrimitive(sphere);
 
     return;
 }

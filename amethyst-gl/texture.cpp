@@ -40,6 +40,8 @@ GLuint TexIDSkyBox[10];
 std::list<Texture::wptr>  texture_list;
 
 Texture::Texture()
+ : name("null"),
+   gl_id(0)
 {
 }
 

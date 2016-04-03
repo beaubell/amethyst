@@ -15,25 +15,25 @@ namespace client {
 
 //
 //
-Primative::Primative(const std::string& name)
+Primitive::Primitive(const std::string& name)
  : _name(name)
 {}
 
 
-Primative::~Primative()
+Primitive::~Primitive()
 {}
 
-void Primative::setName(const std::string& name)
+void Primitive::setName(const std::string& name)
 {
     _name = name;
 }
 
-const std::string& Primative::getName()
+const std::string& Primitive::getName()
 {
     return _name;
 }
 
-void Primative::addVertex(const vertex_type &vertex, const texcoord_type &texcoord, const normal_type normal)
+void Primitive::addVertex(const vertex_type &vertex, const texcoord_type &texcoord, const normal_type normal)
 {
     _vertii.push_back(vertex);
     _texcoords.push_back(texcoord);
@@ -43,11 +43,11 @@ void Primative::addVertex(const vertex_type &vertex, const texcoord_type &texcoo
 //
 //
 Triangles::Triangles()
- : Primative("Triangles")
+ : Primitive("Triangles")
 {}
 
 Triangles::Triangles(const std::string& name, Texture::sptr texturein)
- : Primative(name),
+ : Primitive(name),
    _texture(texturein)
 {
 }
@@ -59,7 +59,7 @@ Triangles::~Triangles()
 void Triangles::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model)
 {
     if(!_shader)
-        throw std::runtime_error("TriangleStrip not bound to shader " + this->getName());
+        throw std::runtime_error("Triangles not bound to shader " + this->getName());
     
     const lib::Cartesian_Vector &reference = Global.obj_view->location;
 
@@ -81,7 +81,9 @@ void Triangles::render(const TransMatrix& m_proj, const TransMatrix& m_view, con
     _shader->setMVP(m_proj*m_view*m_model);
     _shader->setLight(light);
     _shader->setMaterial(matinfo);
-    _texture->bind();
+
+    if(_texture) //FIXME
+      _texture->bind();
 
     // Render vao objects
     glBindVertexArray(_vao[0]);
@@ -132,11 +134,11 @@ void Triangles::setTexture(Texture::sptr texturein)
 //
 //
 TriangleStrip::TriangleStrip()
- : Primative("TriangleStrip")
+ : Primitive("TriangleStrip")
 {}
 
 TriangleStrip::TriangleStrip(const std::string& name, Texture::sptr texturein)
- : Primative(name),
+ : Primitive(name),
    _texture(texturein)
 {
 }

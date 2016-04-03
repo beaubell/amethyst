@@ -48,13 +48,18 @@ Model::~Model()
 
 void Model::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model)
 {
-    std::for_each(_primatives.begin(), _primatives.end(),
-       std::bind(&Primative::render, _1, m_proj, m_view, m_model));
+    std::for_each(_primitives.begin(), _primitives.end(),
+       std::bind(&Primitive::render, _1, m_proj, m_view, m_model));
 }
 
-void Model::addPrimative(Primative::sptr newprim)
+void Model::addPrimitive(Primitive::sptr newprim)
 {
-    _primatives.push_back(newprim);
+    _primitives.push_back(newprim);
+}
+
+const std::list<Primitive::sptr>& Model::getPrimitives()
+{
+    return _primitives;
 }
 
 Model::sptr model_load(std::string &model_name)
@@ -185,6 +190,7 @@ TriangleStrip::sptr model_sphere_create(const double cx, const double cy, const 
 
 void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr)
 {
+    std::cout << "Loading Model File: " << filename << std::endl;
     if (access(filename.c_str(), R_OK) < 0) {
         if (errno == ENOENT)
             printf ("Model file doesn't exist: %s\n", filename.c_str());
@@ -228,7 +234,7 @@ void model_load_file(const std::string &filename, Model &model, Texture::sptr te
 
     prim->setTexture(tex);
     prim->bind(shdr);
-    model.addPrimative(prim);
+    model.addPrimitive(prim);
 
     fclose(file);
 }

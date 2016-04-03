@@ -19,18 +19,18 @@
 namespace amethyst {
 namespace client {
 
-class Primative
+class Primitive
 {
   public:
-    typedef std::shared_ptr<Primative> sptr;
-    typedef std::weak_ptr<Primative>   wptr;
+    typedef std::shared_ptr<Primitive> sptr;
+    typedef std::weak_ptr<Primitive>   wptr;
 
     typedef glm::vec3 vertex_type;
     typedef glm::vec2 texcoord_type;
     typedef glm::vec3 normal_type;
 
-    Primative(const std::string& name);
-    virtual ~Primative();
+    Primitive(const std::string& name);
+    virtual ~Primitive();
     virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) = 0;
     virtual void bind(ShaderProgramModel::sptr shaderprog) = 0;
     virtual void clear() = 0;
@@ -56,7 +56,7 @@ class Primative
 };
 
 
-class Triangles : public Primative
+class Triangles : public Primitive
 {
   public:
     typedef std::shared_ptr<Triangles> sptr;
@@ -77,7 +77,7 @@ class Triangles : public Primative
 };
 
 
-class TriangleStrip : public Primative
+class TriangleStrip : public Primitive
 {
   public:
     typedef std::shared_ptr<TriangleStrip> sptr;
