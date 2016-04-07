@@ -12,6 +12,7 @@
 
 #include "lib/types.h"        //TransMatrix
 #include "shaderprog_model.h"
+#include "bufferobj.h"
 
 #include <string>
 #include <vector>
@@ -48,11 +49,11 @@ class Primitive
     std::vector<normal_type> _normals;
 
     // VAO Buffer Objects
-    unsigned int _vao[1]; // Vertex Array Objects Identifier
-    unsigned int _buffer[3]; // 0=quads, 1=textures, 2=normals
+    VertexArray vao_; // Vertex Array Objects Identifier
+    ArrayBuffer buffer_[3]; // 0=quads, 1=textures, 2=normals
 
   private:
-    std::string _name;
+    std::string name_;
 };
 
 

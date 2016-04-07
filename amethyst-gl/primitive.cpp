@@ -16,7 +16,7 @@ namespace client {
 //
 //
 Primitive::Primitive(const std::string& name)
- : _name(name)
+ : name_(name)
 {}
 
 
@@ -25,12 +25,12 @@ Primitive::~Primitive()
 
 void Primitive::setName(const std::string& name)
 {
-    _name = name;
+    name_ = name;
 }
 
 const std::string& Primitive::getName()
 {
-    return _name;
+    return name_;
 }
 
 void Primitive::addVertex(const vertex_type &vertex, const texcoord_type &texcoord, const normal_type normal)
@@ -86,7 +86,7 @@ void Triangles::render(const TransMatrix& m_proj, const TransMatrix& m_view, con
       _texture->bind();
 
     // Render vao objects
-    glBindVertexArray(_vao[0]);
+    vao_.bind();
     glDrawArrays(GL_TRIANGLES, 0, _vertii.size());
 }
 
@@ -94,32 +94,28 @@ void Triangles::bind(ShaderProgramModel::sptr shaderprog)
 {
     _shader  = shaderprog;
 
-    glGenVertexArrays(1, _vao);
-    glBindVertexArray(_vao[0]);
+    // Bind Vextex Array Buffer Object to store state for buffers
+    vao_.bind();
 
-    // Generate buffer for frame;
-    glGenBuffers(3, _buffer);
-
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[0]);
-    glBufferData(GL_ARRAY_BUFFER, _vertii.size()*sizeof(vertex_type), &_vertii[0], GL_STATIC_DRAW);
+    // Bind buffer 0 to vao
+    buffer_[0].bind();
+    buffer_[0].data(_vertii.size()*sizeof(vertex_type), &_vertii[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(_shader->getVertexLoc());
     glVertexAttribPointer(_shader->getVertexLoc(), 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[1]);
-    glBufferData(GL_ARRAY_BUFFER, _texcoords.size()*sizeof(texcoord_type), &_texcoords[0], GL_STATIC_DRAW);
+    buffer_[1].bind();
+    buffer_[1].data(_texcoords.size()*sizeof(texcoord_type), &_texcoords[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(_shader->getTexCoordLoc());
     glVertexAttribPointer(_shader->getTexCoordLoc(), 2, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[2]);
-    glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
+    buffer_[2].bind();
+    buffer_[2].data(_normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(_shader->getNormalLoc());
     glVertexAttribPointer(_shader->getNormalLoc(), 3, GL_FLOAT, 0, 0, 0);
 }
 
 void Triangles::clear()
 {
-    glDeleteVertexArrays(1, _vao);
-
     _vertii.clear();
     _texcoords.clear();
     _normals.clear();
@@ -175,7 +171,7 @@ void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view,
     _texture->bind();
 
     // Render vao objects
-    glBindVertexArray(_vao[0]);
+    vao_.bind();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertii.size());
 }
 
@@ -183,32 +179,28 @@ void TriangleStrip::bind(ShaderProgramModel::sptr shaderprog)
 {
     _shader  = shaderprog;
 
-    glGenVertexArrays(1, _vao);
-    glBindVertexArray(_vao[0]);
+    // Bind Vextex Array Buffer Object to store state for buffers
+    vao_.bind();
 
-    // Generate buffer for frame;
-    glGenBuffers(3, _buffer);
-
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[0]);
-    glBufferData(GL_ARRAY_BUFFER, _vertii.size()*sizeof(vertex_type), &_vertii[0], GL_STATIC_DRAW);
+    // Bind buffer 0 to vao
+    buffer_[0].bind();
+    buffer_[0].data(_vertii.size()*sizeof(vertex_type), &_vertii[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(_shader->getVertexLoc());
     glVertexAttribPointer(_shader->getVertexLoc(), 3, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[1]);
-    glBufferData(GL_ARRAY_BUFFER, _texcoords.size()*sizeof(texcoord_type), &_texcoords[0], GL_STATIC_DRAW);
+    buffer_[1].bind();
+    buffer_[1].data(_texcoords.size()*sizeof(texcoord_type), &_texcoords[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(_shader->getTexCoordLoc());
     glVertexAttribPointer(_shader->getTexCoordLoc(), 2, GL_FLOAT, 0, 0, 0);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _buffer[2]);
-    glBufferData(GL_ARRAY_BUFFER, _normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
+    buffer_[2].bind();
+    buffer_[2].data(_normals.size()*sizeof(normal_type), &_normals[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(_shader->getNormalLoc());
     glVertexAttribPointer(_shader->getNormalLoc(), 3, GL_FLOAT, 0, 0, 0);
 }
 
 void TriangleStrip::clear()
 {
-    glDeleteVertexArrays(1, _vao);
-
     _vertii.clear();
     _texcoords.clear();
     _normals.clear();

@@ -14,6 +14,7 @@
  ***********************************************************************/
 
 #include "shaderprog_hud.h"
+#include "bufferobj.h"
 
 namespace amethyst {
 namespace client {
@@ -28,8 +29,8 @@ class HUDRadial
   private:
     ShaderProgramHUD::sptr hudshader_;
     
-    unsigned int _vao[1]; // Vertex Array Objects Identifier
-    unsigned int _buffer[2]; // 0=lines, 1=colors
+    VertexArray vao_; // Vertex Array Objects Identifier
+    ArrayBuffer buffer_[2]; // 0=lines, 1=colors
 
 };
 

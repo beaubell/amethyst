@@ -143,11 +143,6 @@ UI_Window::UI_Window(UI &ui, const std::string &newtitle)
       font(ui.get_font()),
       _titlewidget(font, ui.uifont_shader)
 {
-  
-    _vao_frame[0] = 0;
-    _vbo_frame[0] = 0;
-    _ibo_frame[0] = 0;
-
     resize(glm::vec2(100.0f, 100.0f));
 
     std::string entry = "Window created \"" + newtitle + "\" : size " + std::to_string(_size.x) + " x " + std::to_string(_size.y);
@@ -174,28 +169,16 @@ void UI_Window::resize(const glm::vec2 &newsize)
     GLushort background_idx[] = {0,3,1,2};
     GLushort frame_idx[] = {0,1,2,3,0};
 
-    if(_vao_frame[0] == 0 || _vbo_frame[0] == 0)
-    {
-      glGenVertexArrays(1, _vao_frame);
-
-      glBindVertexArray(_vao_frame[0]);
-
-      // Generate buffer for frame;
-      glGenBuffers(1, _vbo_frame);
-      glGenBuffers(1, _ibo_frame);
-    }
-    else {
-      //std::cout << "check" << std::endl;
-    }
-    glBindVertexArray(_vao_frame[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo_frame[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(window_frame), window_frame, GL_STATIC_DRAW);
+    vao_frame_.bind();
+    
+    vbo_frame_.bind();
+    vbo_frame_.data(sizeof(window_frame), window_frame, GL_STATIC_DRAW);
     glEnableVertexAttribArray(ui_shader->getVertexLoc());
     glVertexAttribPointer(ui_shader->getVertexLoc(), 4, GL_FLOAT, 0, 0, 0);
 
     // IBO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo_frame[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(background_idx), background_idx, GL_STATIC_DRAW);
+    ibo_frame_.bind();
+    ibo_frame_.data(sizeof(background_idx), background_idx, GL_STATIC_DRAW);
 }
 
 void UI_Window::render(const TransMatrix& m_proj, const TransMatrix& m_window)
@@ -209,7 +192,7 @@ void UI_Window::render(const TransMatrix& m_proj, const TransMatrix& m_window)
         ui_shader->use();
         ui_shader->setProjM(m_proj);
         ui_shader->setViewM(m_window);
-        glBindVertexArray(_vao_frame[0]);
+        vao_frame_.bind();
 
         //Draw Background
         ui_shader->setColorV4(Color(0.0f, 0.1f, 0.0f, 0.5f));

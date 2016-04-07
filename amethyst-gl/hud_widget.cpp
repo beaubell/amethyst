@@ -94,19 +94,15 @@ HUDRadial::HUDRadial(ShaderProgramHUD::sptr uishader)
 
   }
 
-  glGenVertexArrays(1, _vao);
-  glBindVertexArray(_vao[0]);
-
-  // Generate buffer for radials;
-  glGenBuffers(2, _buffer);
+  vao_.bind();
   
-  glBindBuffer(GL_ARRAY_BUFFER, _buffer[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(radialvectors), radialvectors, GL_STATIC_DRAW);
+  buffer_[0].bind();
+  buffer_[0].data(sizeof(radialvectors), radialvectors, GL_STATIC_DRAW);
   glEnableVertexAttribArray(hudshader_->getVertexLoc());
   glVertexAttribPointer(hudshader_->getVertexLoc(), 3, GL_FLOAT, 0, 0, 0);
 
-  glBindBuffer(GL_ARRAY_BUFFER, _buffer[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(radialcolors), radialcolors, GL_STATIC_DRAW);
+  buffer_[1].bind();
+  buffer_[1].data(sizeof(radialcolors), radialcolors, GL_STATIC_DRAW);
   glEnableVertexAttribArray(hudshader_->getVertexColorLoc());
   glVertexAttribPointer(hudshader_->getVertexColorLoc(), 3, GL_FLOAT, 0, 0, 0);
   
@@ -164,7 +160,7 @@ void HUDRadial::render()
     hudshader_->setFogColor(FogCol);
     hudshader_->setFogStart(10.0f);
     hudshader_->setFogEnd(Global.cam_zoom*10.0);
-    glBindVertexArray(_vao[0]);
+    vao_.bind();
     glDrawArrays(GL_LINES, 0, 365*2+4);
   }
 

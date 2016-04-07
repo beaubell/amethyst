@@ -21,6 +21,7 @@
 #include "shaderprog_ui.h"
 #include "shaderprog_uifont.h"
 #include "ui_textbox.h"
+#include "bufferobj.h"
 
 #include <string>
 #include <set>
@@ -92,10 +93,12 @@ class UI_Window : public UI_Object
     ftgl::FTFont &font;
     glm::vec2 _size;
 
-    uint _vao_frame[1]; // Vertex Array Objects Identifier
-    uint _vbo_frame[1];
-    uint _ibo_frame[1];
+    // Window Frame Graphics Data
+    VertexArray        vao_frame_; // Vertex Array Objects Identifier
+    ArrayBuffer        vbo_frame_;
+    ElementArrayBuffer ibo_frame_;
 
+    // Window Widget List
     std::set<UI_Widget::sptr> _widgets;
 
     UI_TextBox _titlewidget;
