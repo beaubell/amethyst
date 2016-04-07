@@ -34,6 +34,12 @@ BufferObject::~BufferObject()
 }
 
 
+BufferObject::BufferHDL BufferObject::operator ()()
+{
+    return buffer_;  
+}
+
+
 void BufferObject::setName(const std::string& name)
 {
     name_ = name;
@@ -94,6 +100,14 @@ ArrayBuffer::ArrayBuffer()
 
 
 
+//
+//
+ElementArrayBuffer::ElementArrayBuffer()
+ : BufferObject(GL_ELEMENT_ARRAY_BUFFER)
+{
+}
+
+
 
 //
 //
@@ -105,6 +119,11 @@ VertexArray::VertexArray()
 VertexArray::~VertexArray()
 {
     glDeleteVertexArrays(1, &vao_);
+}
+
+VertexArray::ArrayHDL VertexArray::operator ()()
+{
+    return vao_;  
 }
 
 void VertexArray::bind()

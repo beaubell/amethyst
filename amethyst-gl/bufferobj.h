@@ -27,6 +27,8 @@ class BufferObject
 
     BufferObject(const BufferType& type);
     virtual ~BufferObject();
+    
+    BufferHDL operator ()();
 
     void setName(const std::string& name);
     const std::string& getName();
@@ -58,7 +60,15 @@ class ArrayBuffer : public BufferObject
 
 };
 
+class ElementArrayBuffer : public BufferObject
+{
+  public:
+    typedef std::shared_ptr<ElementArrayBuffer> sptr;
+    typedef std::weak_ptr<ElementArrayBuffer>   wptr;
 
+    ElementArrayBuffer();
+
+};
 
 class VertexArray
 {
@@ -70,6 +80,8 @@ class VertexArray
 
     VertexArray();
     virtual ~VertexArray();
+    
+    ArrayHDL operator ()();
 
     void bind();
 
