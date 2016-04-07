@@ -5,6 +5,7 @@ SET(amethystgl_SRCS
   science/uiw_simstats.cpp
   science/uiw_view.cpp
   science/gravpotential.cpp
+  bufferobj.cpp
   config_xml.cpp
   debug.cpp
   global.cpp
