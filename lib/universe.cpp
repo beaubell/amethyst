@@ -127,7 +127,10 @@ void Universe::iterate(const double &dtime,
   new_events.clear();
 
   if (!_using_cl)
+  {
     iterate_cpu(dtime);
+    _current.time += dtime;
+  }
   else
   {
     for (uint i = 0; i < stride; i++)
