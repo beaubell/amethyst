@@ -10,7 +10,8 @@ SET(amethystgl_SRCS
   debug.cpp
   global.cpp
   hud.cpp
-  hud_widget.cpp
+  hud_radial.cpp
+  hud_orbit.cpp
   input.cpp
   joystick.cpp
   log.cpp

@@ -16,7 +16,8 @@
 #include "opengl.h"
 #include "lib/physics.h"
 #include "lib/utility.h"
-#include "hud_widget.h"
+#include "hud_radial.h"
+#include "hud_orbit.h"
 
 #include "FTGL.h"
 #include "FTGLTextureFont.h"
@@ -55,8 +56,6 @@ static void hud_widget_camera(int x, int y);
 static void hud_widget_fps(int x, int y);
 static void hud_widget_select(const int x, const int y);
 static void hud_widget_vectorbox(int x, int y, float xaxis, float yaxis, float zaxis);
-static void hud_radials();
-static void hud_orbits();
 
 static ftgl::FTFont* fonts[6];
 static ShaderProgramHUD::sptr ui_shader;
@@ -66,6 +65,7 @@ static unsigned int frames = 0, benchmark = 0;
 static float fps = 0.0f;
 
 HUDRadial* hudradial;
+HUDOrbit* hudorbit;
 
 void hud_setup(void)
 {
@@ -84,6 +84,7 @@ void hud_setup(void)
     uifont_shader = std::make_shared<ShaderProgramFont>();
     
     hudradial = new HUDRadial(ui_shader);
+    hudorbit = new HUDOrbit(ui_shader);
 }
 
 void hud_shutdown(void)
@@ -97,10 +98,13 @@ void hud_render(void)
 
     glDisable( GL_DEPTH_TEST);
 
-    //hud_radials();
+    // Radials from Sun Indicating Day/Month/Year
     if (hudradial)
       hudradial->render();
-    //TEMP hud_orbits();
+
+    // Orbit Indication for Earth around Sun and Moon around Earth
+    if (hudorbit)
+      hudorbit->render();
 
     //TEMP hud_widget_object_text();
 
@@ -348,73 +352,6 @@ static void hud_widget_vectorbox(int /*x unused*/, int /*y unused*/, float xvect
 
     glPopMatrix();
     glPopAttrib();
-}
-
-
-static void hud_orbits()
-{
-  const unsigned int orbitpoints = 1001;
-  const double radial_angle = 2.0*M_PI/static_cast<double>(orbitpoints-1);
-
-  double earthorbit[orbitpoints][3];
-  double moonorbit[orbitpoints][3];
-
-  for(unsigned int i = 0; i < orbitpoints; i++)
-  {
-    double massratio = 3.0035191795284299e-06;
-    double semi = 149.598e9;
-    double Re = semi * (1 - massratio);
-    earthorbit[i][0] = cos(static_cast<double>(i)*radial_angle)*Re;
-    earthorbit[i][1] = sin(static_cast<double>(i)*radial_angle)*Re;
-    earthorbit[i][2] = 0;
-
-    moonorbit[i][0] = cos(static_cast<double>(i)*radial_angle)*384.400e6;
-    moonorbit[i][1] = sin(static_cast<double>(i)*radial_angle)*384.400e6;
-    moonorbit[i][2] = 0;
-
-  }
-
-  glEnable(GL_FOG);
-
-  float FogCol[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-  glFogfv(GL_FOG_COLOR, FogCol);
-  glFogi(GL_FOG_MODE, GL_LINEAR); // Note the 'i' after glFog - the GL_LINEAR constant is an integer.
-  glFogf(GL_FOG_START, 10.0);
-  glFogf(GL_FOG_END, Global.cam_zoom*10.0);
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
-  glColor3ub(255,255,255);
-
-  // draw radials
-  Cartesian_Vector &reference = Global.obj_view->location;
-
-  // Place "Sol" at the origin of radials
-  lib::Object::sptr sol = Global.universe.object_find("Sol");
-  if (sol != NULL)
-  {
-    glPushMatrix();
-    Cartesian_Vector temp = sol->location - reference;
-    glTranslated(temp.x, temp.y, temp.z);
-    glVertexPointer(3, GL_DOUBLE, 0, earthorbit);
-    glDrawArrays(GL_LINE_STRIP, 0, orbitpoints);
-    glPopMatrix();
-  }
-
-  lib::Object::sptr earth = Global.universe.object_find("Earth");
-  if (earth != NULL)
-  {
-    glPushMatrix();
-    Cartesian_Vector temp = earth->location - reference;
-    glTranslated(temp.x, temp.y, temp.z);
-    glVertexPointer(3, GL_DOUBLE, 0, moonorbit);
-    glDrawArrays(GL_LINE_STRIP, 0, orbitpoints);
-    glPopMatrix();
-  }
-  
-  // deactivate vertex arrays after drawing
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisable(GL_FOG);
 }
 
 
