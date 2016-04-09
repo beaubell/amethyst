@@ -17,7 +17,7 @@ class UI_TextBox : public UI_Widget
     typedef std::shared_ptr<UI_TextBox> sptr;
     UI_TextBox(ftgl::FTFont &font, ShaderProgramFont::sptr shader);
     virtual ~UI_TextBox();
-   
+
     virtual void render(const TransMatrix& proj, const TransMatrix& mat);
     virtual void update();
 

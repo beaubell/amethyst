@@ -18,6 +18,7 @@
 #include "lib/utility.h"
 #include "hud_radial.h"
 #include "hud_orbit.h"
+#include "hud_objectnames.h"
 
 #include "FTGL.h"
 #include "FTGLTextureFont.h"
@@ -48,7 +49,6 @@ using boost::lexical_cast;
 
 
 // Forward Declarations
-static void hud_widget_object_text(void);
 static void hud_widget_memory(int x, int y);
 static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
 static void hud_widget_attitude(int x, int y, const Quaternion &reference);
@@ -66,6 +66,7 @@ static float fps = 0.0f;
 
 HUDRadial* hudradial;
 HUDOrbit* hudorbit;
+HUDObjectNames* hudobjlabels;
 
 void hud_setup(void)
 {
@@ -82,9 +83,10 @@ void hud_setup(void)
 
     ui_shader = std::make_shared<ShaderProgramHUD>();
     uifont_shader = std::make_shared<ShaderProgramFont>();
-    
+
     hudradial = new HUDRadial(ui_shader);
     hudorbit = new HUDOrbit(ui_shader);
+    hudobjlabels = new HUDObjectNames(*fonts[0], uifont_shader);
 }
 
 void hud_shutdown(void)
@@ -105,6 +107,13 @@ void hud_render(void)
     // Orbit Indication for Earth around Sun and Moon around Earth
     if (hudorbit)
       hudorbit->render();
+
+    if(hudobjlabels)
+    {
+        hudobjlabels->update();
+        hudobjlabels->render();
+    }
+    
 
     //TEMP hud_widget_object_text();
 
@@ -131,47 +140,6 @@ void hud_render(void)
     //TEMP hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
 
     glEnable( GL_DEPTH_TEST);
-}
-
-
-static void hud_widget_object_text(void)
-{
-    Cartesian_Vector &reference = Global.obj_view->location;
-
-    // Print names on the objects
-    if(!object_list.empty())
-    {
-        auto obj1 = Global.universe.list().begin();
-
-        do
-        {
-
-            // Move to object location
-            Cartesian_Vector temp = (*obj1)->location - reference;
-            glRasterPos3d(temp.x, temp.y, temp.z);
-
-            fonts[0]->Render((*obj1)->name.c_str());
-
-            obj1++;
-        }  while (obj1 != Global.universe.list().end());
-
-    }
-
-#if 0
-    // Print names on network Objects
-    for (int i = 0; i < Global.net_ships; i++)
-    {
-        glPushMatrix();
-
-        Cartesian_Vector net_p = Global.net_ship[i].location - reference;
-        glRasterPos3d(net_p.x, net_p.y, net_p.z);
-
-        fonts[0]->Render(Global.net_ship[i].name.c_str());
-
-        glPopMatrix();
-    }
-#endif
-
 }
 
 

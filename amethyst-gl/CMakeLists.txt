@@ -12,6 +12,7 @@ SET(amethystgl_SRCS
   hud.cpp
   hud_radial.cpp
   hud_orbit.cpp
+  hud_objectnames.cpp
   input.cpp
   joystick.cpp
   log.cpp
