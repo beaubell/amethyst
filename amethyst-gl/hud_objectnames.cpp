@@ -63,17 +63,15 @@ void HUDObjectNames::render()
 
             // Convert from Homogeneous Coords to Screen Coords
             v_screen /= v_screen.w;
-            v_screen.x *= x*0.5f;
+            v_screen.x *= -x*0.5f;
             v_screen.y *= y*0.5f;
 
             // Render label
             auto m_ident = glm::mat4(1.0f);
             auto m_sview = glm::translate(m_ident, -glm::vec3(v_screen));
 
-            glDisable(GL_CULL_FACE);  // FIXME
-            glm::mat4 m_sproj = glm::ortho(x*0.5f, -x*0.5f, y*0.5f, -y*0.5f);
+            glm::mat4 m_sproj = glm::ortho(-x*0.5f, +x*0.5f, y*0.5f, -y*0.5f);
             labeltext->render(m_sproj, m_sview);
-            glEnable(GL_CULL_FACE);  //FIXME
 
             std::cout << "renderlabel: " << labeltext->_text << " screenloc (" << v_screen.x << "," << v_screen.y << "," << v_screen.z <<  "," << v_screen.w << ")" << std::endl;
         }
