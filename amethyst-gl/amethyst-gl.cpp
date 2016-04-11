@@ -57,7 +57,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     stride(100),
     simulation_interval(200),
     show_ui(true),
-    show_hud(true)
+    show_hud(true),
+    fullscreen(false)
 {
 
   /// DONT QUITE START THE NETWORK THREAD JUST YET
@@ -102,7 +103,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   // GUI Control
   input->sig_kb[SDL_SCANCODE_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
   input->sig_kb[SDL_SCANCODE_F2].connect(bind(&Amethyst_GL::ui_toggle,this));
-
+  input->sig_kb_ctl[SDL_SCANCODE_F].connect(bind(&Amethyst_GL::fullscn_toggle,this));
   // History Buffer
   input->sig_kb[SDL_SCANCODE_C].connect(bind(&Amethyst_GL::state_save, this));
   input->sig_kb[SDL_SCANCODE_V].connect(bind(&Amethyst_GL::state_recall, this));
@@ -216,19 +217,30 @@ void Amethyst_GL::render()
   // Clear the window with current clearing color
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  scene_render();
-
-  sig_render_scene(Global.obj_view->location);
-
-  // Display HUD XXX being replaced.
-
-  if(show_hud)
-    hud_render();
-
-  ui.update();
-
+  // Update Components Once
   if(show_ui)
-    ui.render();
+    ui.update();
+  
+  //Render each perspective
+  for (uint eyeframe = 0; eyeframe < 1; eyeframe++)
+  {
+      // Bind frame
+      
+    
+      // Render Scene
+      scene_render();
+
+      sig_render_scene(Global.obj_view->location);
+
+      // Show HUD and UI
+      if(show_hud)
+        hud_render();  
+
+      if(show_ui)
+        ui.render();
+  }
+  
+  //Display SBS
 
   // Do the buffer Swap
   SDL_GL_SwapWindow(Global.mainwindow);
@@ -259,6 +271,26 @@ void Amethyst_GL::ui_toggle()
 void Amethyst_GL::hud_toggle()
 {
   show_hud = !show_hud;
+}
+
+
+void Amethyst_GL::fullscn_toggle()
+{
+  if (fullscreen)
+  {
+    SDL_SetWindowFullscreen(Global.mainwindow, 0);
+    SDL_RestoreWindow(Global.mainwindow);
+  }
+  else
+  { 
+    //SDL_SetWindowFullscreen(Global.mainwindow, SDL_WINDOW_FULLSCREEN);
+    SDL_MaximizeWindow(Global.mainwindow);
+    SDL_SetWindowFullscreen(Global.mainwindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+  }
+
+  fullscreen = !fullscreen;
+  
+  std::cout << "Toggle Fullscreen: " << fullscreen << std::endl;
 }
 
 

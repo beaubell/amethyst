@@ -53,6 +53,7 @@ class Amethyst_GL
     void pause_toggle();
     void ui_toggle();
     void hud_toggle();
+    void fullscn_toggle();
     void simint_inc();
     void simint_dec();
     void stride_inc();
@@ -77,7 +78,7 @@ class Amethyst_GL
 
     bool show_ui;
     bool show_hud;
-
+    bool fullscreen;
 };
 
 } // namespace client
