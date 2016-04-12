@@ -24,6 +24,7 @@ namespace client {
 #include "ui.h"
 #include "input.h"
 #include "log.h"
+#include "framebuffer.h"
 
 #include <boost/thread.hpp>
 #include <boost/signals2.hpp>
@@ -79,6 +80,10 @@ class Amethyst_GL
     bool show_ui;
     bool show_hud;
     bool fullscreen;
+    
+    //Framebuffers
+    FrameBuffer left_;
+    FrameBuffer right_;
 };
 
 } // namespace client

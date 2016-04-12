@@ -58,7 +58,9 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     simulation_interval(200),
     show_ui(true),
     show_hud(true),
-    fullscreen(false)
+    fullscreen(false),
+    left_("left"),
+    right_("right")
 {
 
   /// DONT QUITE START THE NETWORK THREAD JUST YET

@@ -8,6 +8,7 @@ SET(amethystgl_SRCS
   bufferobj.cpp
   config_xml.cpp
   debug.cpp
+  framebuffer.cpp
   global.cpp
   hud.cpp
   hud_radial.cpp
