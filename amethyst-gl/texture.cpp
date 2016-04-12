@@ -27,7 +27,8 @@ namespace amethyst {
 namespace client {
 
 extern __global Global;
-GLuint TexIDSkyBox[10];
+
+Texture2D::sptr TexSkyBox[6];
 
 #define BACK_ID 0
 #define FRONT_ID 1
@@ -39,29 +40,104 @@ GLuint TexIDSkyBox[10];
 
 std::list<Texture::wptr>  texture_list;
 
-Texture::Texture()
- : name("null"),
-   gl_id(0)
+Texture::Texture(const TextureType& type)
+ : type_(type),
+   texture_(0),
+   name_("null")
 {
+    glGenTextures(1, &texture_);
 }
+
 
 Texture::~Texture()
 {
-    glDeleteTextures(1, &gl_id);
+    glDeleteTextures(1, &texture_);
 }
+
+
+const std::string& Texture::getName()
+{
+    return name_;
+}
+
+
+void Texture::setName(const std::__cxx11::string& newname)
+{
+    name_ = newname;
+}
+
 
 void Texture::bind()
 {
-    glBindTexture(GL_TEXTURE_2D, gl_id);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    //DEPRECATED glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glBindTexture(type_, texture_);
+    glTexParameteri(type_, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(type_, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 }
+
+
+void Texture::image2D(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid* data)
+{
+    this->bind();
+    
+}
+
+
+//
+//
+Texture2D::Texture2D()
+ : Texture(GL_TEXTURE_2D)
+{
+}
+
+
+
+//
+//
+void Texture::load(const std::string& filename)
+{
+    textureImage *texti;
+    uint num_mipmaps = 2;
+
+    if (access(filename.c_str(), R_OK) < 0) {
+       if (errno == ENOENT)
+          printf ("Texture file doesn't exist: %s\n", filename.c_str()); //FIXME
+       if (errno == EACCES)
+          printf ("Access denied accessing texture file: %s\n", filename.c_str()); //FIXME
+       return;
+    }
+
+    texti = new textureImage;
+    getBitmapImageData(filename.c_str(), texti);
+
+    // set unpacking method
+    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
+
+    // Tell opengl we want to start playing with texture
+    this->bind();
+
+    // Create texture storage space
+    glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, GL_RGB8, texti->width, texti->height);
+
+    // Load
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texti->width, texti->height, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
+
+    // Generate mipmap levels
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    delete [] texti->data;
+    delete texti;
+}
+
 
 Texture::sptr texture_load(const std::string &texture_name)
 {
 
-    Texture::sptr texture;;
+    Texture::sptr texture;
 
     texture = texture_find(texture_name);
 
@@ -69,16 +145,16 @@ Texture::sptr texture_load(const std::string &texture_name)
     {
         try
         {
-            texture = std::make_shared<Texture>();
+            texture = std::make_shared<Texture2D>();
             std::string texture_path = Global.dir_textures + texture_name;
-            texture->gl_id = image_load(texture_path.c_str());
+            texture->load(texture_path);
         }
         catch(std::runtime_error &e)
         {
             texture = NULL;
             throw e;
         }
-        texture->name = texture_name;
+        texture->setName(texture_name);
         texture_add(texture);
     }
 
@@ -104,7 +180,7 @@ Texture::sptr texture_find(const std::string &name)
         {
 	    if(auto texsptr = texwptr_it->lock())
 	    {
-                if(name == texsptr->name)
+                if(name == texsptr->getName())
                    return texsptr;
 
 		texwptr_it++;
@@ -119,63 +195,15 @@ Texture::sptr texture_find(const std::string &name)
     return NULL;
 }
 
+
 void textures_free(void)
 {
     texture_list.clear();
 }
 
 
-// FIXME figure out how to pass errors downstream
-GLuint image_load(const char *file) {
-
-    GLuint texture;
-    textureImage *texti;
-    uint num_mipmaps = 2;
-
-    if (access(file, R_OK) < 0) {
-       if (errno == ENOENT)
-          printf ("Texture file doesn't exist: %s\n", file);
-       if (errno == EACCES)
-          printf ("Access denied accessing texture file: %s\n", file);
-       return 0;
-    }
-
-    texti = new textureImage;
-    getBitmapImageData(file, texti);
-
-    // allocate a texture segment and assign value to 'texture'
-    glGenTextures(1, &texture);
-
-    // set unpacking method
-    glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
-
-    // Tell opengl we want to start playing with texture number assigned to 'texture'
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    // Create texture storage space
-    glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, GL_RGB8, texti->width, texti->height);
-
-    // Load
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texti->width, texti->height, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
-
-    // Generate mipmap levels
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-    delete [] texti->data;
-    delete texti;
-    return texture;
-
-    }
-
-
 void load_skybox (void)
 {
-    int i=1;
 
     std::string tex_sb_bk     = Global.dir_textures + "/" + Global.file_tex_sb_bk;
     std::string tex_sb_ft     = Global.dir_textures + "/" + Global.file_tex_sb_ft;
@@ -184,18 +212,19 @@ void load_skybox (void)
     std::string tex_sb_rt     = Global.dir_textures + "/" + Global.file_tex_sb_rt;
     std::string tex_sb_lt     = Global.dir_textures + "/" + Global.file_tex_sb_lt;
 
-    TexIDSkyBox[0] = image_load(tex_sb_bk.c_str());
-    TexIDSkyBox[1] = image_load(tex_sb_ft.c_str());
-    TexIDSkyBox[2] = image_load(tex_sb_dn.c_str());
-    TexIDSkyBox[3] = image_load(tex_sb_up.c_str());
-    TexIDSkyBox[4] = image_load(tex_sb_rt.c_str());
-    TexIDSkyBox[5] = image_load(tex_sb_lt.c_str());
+    for (uint i = 0; i < 6; i++)
+        TexSkyBox[i] = std::make_shared<Texture2D>();
 
+    TexSkyBox[BACK_ID]->load(tex_sb_bk);
+    TexSkyBox[FRONT_ID]->load(tex_sb_ft);
+    TexSkyBox[BOTTOM_ID]->load(tex_sb_dn);
+    TexSkyBox[TOP_ID]->load(tex_sb_up);
+    TexSkyBox[RIGHT_ID]->load(tex_sb_rt);
+    TexSkyBox[LEFT_ID]->load(tex_sb_lt);
 
-
-    for(i=0;i<=5;++i)
+    for(uint i = 0; i < 6; ++i)
     {
-        glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[i]);
+        TexSkyBox[i]->bind();
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 
@@ -226,7 +255,7 @@ void skybox (void)
   glDisable(GL_DEPTH_TEST);
   glDepthMask(GL_FALSE);
 
-  glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[BACK_ID]);
+  TexSkyBox[BACK_ID]->bind();
   glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(0.0f, 0.0f); glVertex3f(x,y,z);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y,z);
@@ -234,7 +263,7 @@ void skybox (void)
         glTexCoord2f(1.0f, 1.0f); glVertex3f(x + width, y + height, z);
   glEnd();
 
-  glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[FRONT_ID]);
+  TexSkyBox[FRONT_ID]->bind();
   glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x,y,z + length);
         glTexCoord2f(1.0f, 1.0f); glVertex3f(x,y + height, z + length);
@@ -242,7 +271,7 @@ void skybox (void)
         glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z + length);
   glEnd();
 
-  glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[BOTTOM_ID]);
+  TexSkyBox[BOTTOM_ID]->bind();
   glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x,y,z);
         glTexCoord2f(1.0f, 1.0f); glVertex3f(x,y,       z + length);
@@ -250,7 +279,7 @@ void skybox (void)
         glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y,z + length);
   glEnd();
 
-  glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[TOP_ID]);
+  TexSkyBox[TOP_ID]->bind();
   glBegin(GL_TRIANGLE_STRIP);
     glTexCoord2f(1.0f, 1.0f); glVertex3f(x,y + height,z);
         glTexCoord2f(0.0f, 1.0f); glVertex3f(x + width, y + height, z);
@@ -259,7 +288,7 @@ void skybox (void)
   glEnd();
 
 
-  glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[RIGHT_ID]);
+  TexSkyBox[RIGHT_ID]->bind();
   glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x, y, z);
         glTexCoord2f(1.0f, 1.0f); glVertex3f(x, y + height, z);
@@ -267,7 +296,7 @@ void skybox (void)
         glTexCoord2f(0.0f, 1.0f); glVertex3f(x, y + height, z + length);
   glEnd();
 
-  glBindTexture(GL_TEXTURE_2D, TexIDSkyBox[LEFT_ID]);
+  TexSkyBox[LEFT_ID]->bind();
   glBegin(GL_TRIANGLE_STRIP);
     glTexCoord2f(0.0f, 0.0f); glVertex3f(x + width, y, z);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(x + width, y, z + length);
@@ -291,7 +320,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
     unsigned short nNumPlanes;
     unsigned short nNumBPP;
     Uint32 i;
-	Uint32 t = 0;
+    Uint32 t = 0;
     Uint16 t2 = 0;
 
 	if( (pFile = SDL_RWFromFile(pFileName, "rb") ) == NULL)

@@ -34,17 +34,43 @@ class Texture
     typedef std::shared_ptr<Texture> sptr;
     typedef std::weak_ptr<Texture>   wptr;
 
-    Texture();
+    typedef unsigned int TextureHDL;
+    typedef unsigned int TextureType;
+
+    Texture(const TextureType& type);
     virtual ~Texture();
+
+    const std::string& getName();
+    void setName(const std::string& newname);
 
     virtual void bind();
 
-    std::string    name;
-    unsigned int   width;
-    unsigned int   height;
-    GLuint         gl_id;  // OpenGL Texture index
+    void image2D(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid * data);
 
+    void load(const std::string& filename);
+
+  protected:
+    // Texture handle
+    TextureHDL texture_;
+
+    // GLenum type
+    TextureType type_;
+
+  private:
+    std::string    name_;
 };
+
+
+
+class Texture2D : public Texture
+{
+   public:
+    typedef std::shared_ptr<Texture2D> sptr;
+    typedef std::weak_ptr<Texture2D>   wptr;
+
+    Texture2D();
+};
+
 
 extern std::list<Texture::wptr>  texture_list;
 
@@ -53,10 +79,9 @@ void texture_add(Texture::sptr newtexture);
 Texture::sptr texture_find(const std::string &name);
 void textures_free(void);
 
-GLuint image_load  (const char *file);
 void   load_skybox (void);
 void   skybox (void);
-//int    image_bmp_load(const char *filename, textureImage *texture);
+
 bool   getBitmapImageData(const char *pFileName, textureImage *pImage );
 
 } // namespace client

@@ -59,8 +59,10 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     show_ui(true),
     show_hud(true),
     fullscreen(false),
-    left_("left"),
-    right_("right")
+    fbleft_("left"),
+    fbright_("right"),
+    texleft_(),
+    texright_()
 {
 
   /// DONT QUITE START THE NETWORK THREAD JUST YET
@@ -106,9 +108,13 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   input->sig_kb[SDL_SCANCODE_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
   input->sig_kb[SDL_SCANCODE_F2].connect(bind(&Amethyst_GL::ui_toggle,this));
   input->sig_kb_ctl[SDL_SCANCODE_F].connect(bind(&Amethyst_GL::fullscn_toggle,this));
+
   // History Buffer
   input->sig_kb[SDL_SCANCODE_C].connect(bind(&Amethyst_GL::state_save, this));
   input->sig_kb[SDL_SCANCODE_V].connect(bind(&Amethyst_GL::state_recall, this));
+
+
+  // Setup Framebuffers
 }
 
 
