@@ -43,6 +43,8 @@ class Texture
     const std::string& getName();
     void setName(const std::string& newname);
 
+    TextureHDL operator ()();
+    
     virtual void bind();
 
     void image2D(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid * data);

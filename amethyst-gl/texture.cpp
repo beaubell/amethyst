@@ -67,6 +67,11 @@ void Texture::setName(const std::__cxx11::string& newname)
 }
 
 
+Texture::TextureHDL Texture::operator ()()
+{
+    return texture_;  
+}
+
 void Texture::bind()
 {
     glBindTexture(type_, texture_);

@@ -23,6 +23,7 @@ SET(amethystgl_SRCS
   net.cpp
   opengl.cpp
   primitive.cpp
+  renderbuffer.cpp
   scene.cpp
   scene_object.cpp
   scene_xml.cpp
