@@ -60,6 +60,7 @@ class Amethyst_GL
     void ui_toggle();
     void hud_toggle();
     void fullscn_toggle();
+    void stereo_toggle();
     void simint_inc();
     void simint_dec();
     void stride_inc();
@@ -85,6 +86,7 @@ class Amethyst_GL
     bool show_ui;
     bool show_hud;
     bool fullscreen;
+    bool stereo;
 
     //Framebuffers
     FrameBuffer fbleft_;

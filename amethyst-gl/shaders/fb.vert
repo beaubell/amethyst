@@ -8,7 +8,9 @@ out vec2 Texcoord;
 
 void main()
 {
-    Texcoord = (vertexPosition.xy + 1.0 )/2.0;
-    vec3 Position = vec3((vertexPosition.x + eye)/2.0, vertexPosition.yz);
+    float eyediv = 1.0 - 0.5*abs(eye);
+
+    Texcoord = (vertexPosition.xy + 1.0 )*0.5;
+    vec3 Position = vec3((vertexPosition.x + eye)*eyediv, vertexPosition.yz);
     gl_Position = vec4(Position, 1.0);
 }

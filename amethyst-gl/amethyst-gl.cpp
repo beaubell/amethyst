@@ -59,6 +59,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     show_ui(true),
     show_hud(true),
     fullscreen(false),
+    stereo(false),
     fbleft_("left"),
     fbright_("right"),
     texleft_(),
@@ -112,6 +113,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   input->sig_kb[SDL_SCANCODE_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
   input->sig_kb[SDL_SCANCODE_F2].connect(bind(&Amethyst_GL::ui_toggle,this));
   input->sig_kb_ctl[SDL_SCANCODE_F].connect(bind(&Amethyst_GL::fullscn_toggle,this));
+  input->sig_kb_ctl[SDL_SCANCODE_3].connect(bind(&Amethyst_GL::stereo_toggle,this));
 
   // History Buffer
   input->sig_kb[SDL_SCANCODE_C].connect(bind(&Amethyst_GL::state_save, this));
@@ -280,8 +282,9 @@ void Amethyst_GL::render()
   if(show_ui)
     ui.update();
   
+  uint maxeyes = (stereo)?2:1;
   //Render each perspective
-  for (uint eyeframe = 0; eyeframe < 2; eyeframe++)
+  for (uint eyeframe = 0; eyeframe < maxeyes; eyeframe++)
   {
       // Bind frame
       if(eyeframe == 0)
@@ -313,14 +316,18 @@ void Amethyst_GL::render()
   vao_.bind();
   
   // Display Left
-  fbshader_.Uniform1f(shadereye_, -1.0f);
+  fbshader_.Uniform1f(shadereye_, stereo?-1.0f:0.0f);
   texleft_.bind();
   glDrawArrays(GL_TRIANGLES, 0, 6);
   
-  // Display Right
-  fbshader_.Uniform1f(shadereye_, 1.0f);
-  texright_.bind();
-  glDrawArrays(GL_TRIANGLES, 0, 6);
+  if (stereo)
+  {
+    // Display Right
+    fbshader_.Uniform1f(shadereye_, 1.0f);
+    texright_.bind();
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+  }
+ 
   // Do the buffer Swap
   SDL_GL_SwapWindow(Global.mainwindow);
 }
@@ -370,6 +377,12 @@ void Amethyst_GL::fullscn_toggle()
   fullscreen = !fullscreen;
   
   std::cout << "Toggle Fullscreen: " << fullscreen << std::endl;
+}
+
+
+void Amethyst_GL::stereo_toggle()
+{
+    stereo = !stereo;
 }
 
 
