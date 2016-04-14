@@ -25,7 +25,10 @@ namespace client {
 #include "input.h"
 #include "log.h"
 #include "framebuffer.h"
+#include "renderbuffer.h"
 #include "texture.h"
+#include "bufferobj.h"
+#include "shaderprog.h"
 
 #include <boost/thread.hpp>
 #include <boost/signals2.hpp>
@@ -87,7 +90,12 @@ class Amethyst_GL
     FrameBuffer fbright_;
     Texture2D   texleft_;
     Texture2D   texright_;
+    RenderBuffer rbleft_;
+    RenderBuffer rbright_;
+    ShaderProgram fbshader_;
 
+    VertexArray vao_;
+    ArrayBuffer vob_;
 };
 
 } // namespace client

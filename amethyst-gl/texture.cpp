@@ -83,7 +83,7 @@ void Texture::bind()
 void Texture::image2D(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid* data)
 {
     this->bind();
-    
+    glTexImage2D(type_, level, internalFormat, width, height, border,format, type, data);
 }
 
 

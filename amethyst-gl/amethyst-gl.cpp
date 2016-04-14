@@ -62,7 +62,10 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     fbleft_("left"),
     fbright_("right"),
     texleft_(),
-    texright_()
+    texright_(),
+    rbleft_(),
+    rbright_(),
+    fbshader_("fb.vert","fb.frag")
 {
 
   /// DONT QUITE START THE NETWORK THREAD JUST YET
@@ -115,6 +118,48 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
 
 
   // Setup Framebuffers
+  fbleft_.bind();
+  
+  texleft_.bind();
+  texleft_.image2D(0,GL_RGBA, Global.screen_x, Global.screen_y, 0,GL_RGBA, GL_UNSIGNED_BYTE, 0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+  rbleft_.bind();
+  rbleft_.setStorage(GL_DEPTH_COMPONENT, Global.screen_x, Global.screen_y);
+  
+  fbleft_.attachDepth(rbleft_);
+  fbleft_.attachColor0(texleft_, 0);
+
+  fbright_.bind();
+
+  texright_.bind();
+  texright_.image2D(0,GL_RGBA, Global.screen_x, Global.screen_y, 0,GL_RGBA, GL_UNSIGNED_BYTE, 0);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  
+  rbright_.bind();
+  rbright_.setStorage(GL_DEPTH_COMPONENT, Global.screen_x, Global.screen_y);
+
+  fbright_.attachDepth(rbright_);
+  fbright_.attachColor0(texright_, 0);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  static const GLfloat g_quad_vertex_buffer_data[] = {
+    -1.0f, -1.0f, 0.0f,
+     1.0f, -1.0f, 0.0f,
+    -1.0f,  1.0f, 0.0f,
+    -1.0f,  1.0f, 0.0f,
+     1.0f, -1.0f, 0.0f,
+     1.0f,  1.0f, 0.0f,
+  };
+
+  vao_.bind();
+  vob_.bind();
+  vob_.data(sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW); //(BufferSize size, const void* data, BufferUsage usage);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, 0, 0, 0);
 }
 
 
@@ -222,6 +267,8 @@ void Amethyst_GL::main_loop()
 
 void Amethyst_GL::render()
 {
+  fbleft_.bind();
+
   // Clear the window with current clearing color
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -249,6 +296,14 @@ void Amethyst_GL::render()
   }
   
   //Display SBS
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  fbshader_.use();
+  vao_.bind();
+  texleft_.bind();
+  glDrawArrays(GL_TRIANGLES, 0, 6);
+  
 
   // Do the buffer Swap
   SDL_GL_SwapWindow(Global.mainwindow);

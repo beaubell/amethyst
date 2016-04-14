@@ -34,7 +34,7 @@ class RenderBuffer
     const std::string& getName();
 
     void bind();
-    
+
     void setStorage(const BufferFormat intformat, const BufferSize x, const BufferSize y);
 
   protected:
