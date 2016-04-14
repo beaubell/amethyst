@@ -65,7 +65,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     texright_(),
     rbleft_(),
     rbright_(),
-    fbshader_("fb.vert","fb.frag")
+    fbshader_("fb.vert","fb.frag"),
+    shadereye_(fbshader_.GetUniformLocation("eye"))
 {
 
   /// DONT QUITE START THE NETWORK THREAD JUST YET
@@ -157,7 +158,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
 
   vao_.bind();
   vob_.bind();
-  vob_.data(sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW); //(BufferSize size, const void* data, BufferUsage usage);
+  vob_.data(sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, 0, 0, 0);
 }
@@ -267,20 +268,21 @@ void Amethyst_GL::main_loop()
 
 void Amethyst_GL::render()
 {
-  fbleft_.bind();
-
-  // Clear the window with current clearing color
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
   // Update Components Once
   if(show_ui)
     ui.update();
   
   //Render each perspective
-  for (uint eyeframe = 0; eyeframe < 1; eyeframe++)
+  for (uint eyeframe = 0; eyeframe < 2; eyeframe++)
   {
       // Bind frame
-      
+      if(eyeframe == 0)
+        fbleft_.bind();
+      else
+	fbright_.bind();
+
+      // Clear the window with current clearing color
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
       // Render Scene
       scene_render();
@@ -301,10 +303,16 @@ void Amethyst_GL::render()
 
   fbshader_.use();
   vao_.bind();
+  
+  // Display Left
+  fbshader_.Uniform1f(shadereye_, -1.0f);
   texleft_.bind();
   glDrawArrays(GL_TRIANGLES, 0, 6);
   
-
+  // Display Right
+  fbshader_.Uniform1f(shadereye_, 1.0f);
+  texright_.bind();
+  glDrawArrays(GL_TRIANGLES, 0, 6);
   // Do the buffer Swap
   SDL_GL_SwapWindow(Global.mainwindow);
 }

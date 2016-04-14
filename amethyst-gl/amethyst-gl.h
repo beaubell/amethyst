@@ -96,6 +96,8 @@ class Amethyst_GL
 
     VertexArray vao_;
     ArrayBuffer vob_;
+    
+    ShaderProgram::UniformHDL shadereye_;
 };
 
 } // namespace client
