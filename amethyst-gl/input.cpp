@@ -138,6 +138,7 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
           {
             if(sig_kb[scancode].num_slots() != 0)
             {
+	      std::cout << "number of slots: " << sig_kb[scancode].num_slots() << std::endl;
               sig_kb[scancode]();
             }
             else
@@ -307,6 +308,7 @@ int Input::event_window(const SDL_WindowEvent &window)
         //SDL_SetVideoMode(w, h, 32, SDL_OPENGL |  SDL_RESIZABLE);
 
         opengl_change_aspect(w, h);
+	context_.setupFramebuffers();
     }
     return 0;
 }

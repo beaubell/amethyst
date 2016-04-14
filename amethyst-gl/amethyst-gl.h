@@ -46,6 +46,7 @@ class Amethyst_GL
     Amethyst_GL(const std::string &path_root);
    ~Amethyst_GL();
 
+    void setupFramebuffers(void);
     void main_loop(void);
     void render   (void);
 

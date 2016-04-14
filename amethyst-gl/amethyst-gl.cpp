@@ -117,8 +117,20 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   input->sig_kb[SDL_SCANCODE_C].connect(bind(&Amethyst_GL::state_save, this));
   input->sig_kb[SDL_SCANCODE_V].connect(bind(&Amethyst_GL::state_recall, this));
 
+  setupFramebuffers();
+}
 
-  // Setup Framebuffers
+
+Amethyst_GL::~Amethyst_GL()
+{
+  hud_shutdown();
+  delete input;
+}
+
+
+void Amethyst_GL::setupFramebuffers(void)
+{
+  // Setup Left
   fbleft_.bind();
   
   texleft_.bind();
@@ -132,6 +144,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   fbleft_.attachDepth(rbleft_);
   fbleft_.attachColor0(texleft_, 0);
 
+  // Setup Right
   fbright_.bind();
 
   texright_.bind();
@@ -145,8 +158,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   fbright_.attachDepth(rbright_);
   fbright_.attachColor0(texright_, 0);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+  //Setup vertii for final render pass
   static const GLfloat g_quad_vertex_buffer_data[] = {
     -1.0f, -1.0f, 0.0f,
      1.0f, -1.0f, 0.0f,
@@ -161,13 +173,9 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   vob_.data(sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data, GL_STATIC_DRAW);
   glEnableVertexAttribArray(0);
   glVertexAttribPointer(0, 3, GL_FLOAT, 0, 0, 0);
-}
 
-
-Amethyst_GL::~Amethyst_GL()
-{
-  hud_shutdown();
-  delete input;
+  // Set Framebuffer back to screen
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 
