@@ -69,7 +69,7 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const d
 
     }
 
-    Quaternion Qz( cos(x_rad/2.0), 0.0, 0.0, sin(x_rad/2.0));
+    Quaternion Qz( cos((x_rad - eye_rad)/2.0), 0.0, 0.0, sin((x_rad - eye_rad)/2.0));
     Qz.normalize();
     Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0.0, 0.0 );
     Qx.normalize();
@@ -85,11 +85,11 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const d
 
         //Camera location in relation to ship
         Cartesian_Vector shipoffset(0.0, -distance, 0.0);
-	Cartesian_Vector eyeoffset(-tan(eye_rad)*distance/2 ,0.0, 0.0);
+	//Cartesian_Vector eyeoffset(-tan(eye_rad)*distance/4 ,0.0, 0.0);
 
-        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos + eyeoffset)));
-        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view + eyeoffset)));
-        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up + eyeoffset)));
+        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos)));
+        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
+        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up)));
 
         // Apply Camera
         return glm::lookAt(glm::dvec3(real_pos.x, real_pos.y, real_pos.z),
