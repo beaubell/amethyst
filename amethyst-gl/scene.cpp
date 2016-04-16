@@ -85,7 +85,7 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const d
 
         //Camera location in relation to ship
         Cartesian_Vector shipoffset(0.0, -distance, 0.0);
-	Cartesian_Vector eyeoffset(-tan(eye_rad)*distance ,0.0, 0.0);
+	Cartesian_Vector eyeoffset(-tan(eye_rad)*distance/2 ,0.0, 0.0);
 
         Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos + eyeoffset)));
         Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view + eyeoffset)));
@@ -112,12 +112,12 @@ void scene_render(const double eyeangle)
   float x = Global.screen_x;
   float y = Global.screen_y;
 
-  glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
+  glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 1.0f, 10e15f);
 
   //Stars
   {
     // Set camera position without respect to camera zoom-out so that stars appear far away.
-    glm::mat4 m_view = set_camera(attitude, 1.0e10, eyeangle);
+    glm::mat4 m_view = set_camera(attitude, 1.0, eyeangle);
     stars_render(m_proj, m_view);
   }
 

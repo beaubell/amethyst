@@ -50,6 +50,7 @@ public:
   UniformHDL GetUniformLocation(const std::string &uniform);
   void       UniformMatrix4f(UniformHDL hdl, const glm::mat4 &mat4in);
   void       UniformMatrix3f(UniformHDL hdl, const glm::mat3 &mat3in);
+  void       Uniform2f(UniformHDL hdl, const glm::vec2 &vec2in);
   void       Uniform3f(UniformHDL hdl, const glm::vec3 &vec3in);
   void       Uniform4f(UniformHDL hdl, const glm::vec4 &vec4in);
   void       Uniform1i(UniformHDL hdl, const int iin);

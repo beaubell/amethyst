@@ -294,13 +294,13 @@ void Amethyst_GL::render()
 
       // Clear the window with current clearing color
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
       // Set Perspective
       double eyeangle = 0.0f;
-      
+
       if(stereo)
 	eyeangle = (eyeframe)?-0.5:0.5;
-      
+
       // Render Scene
       scene_render(eyeangle);
 
@@ -321,15 +321,21 @@ void Amethyst_GL::render()
   fbshader_.use();
   vao_.bind();
   
+  const glm::vec2 CTR( 0.0f, 0.0f);
+  const glm::vec2 TOP( 0.0f, 1.0f);
+  const glm::vec2 BOT( 0.0f,-1.0f);
+  const glm::vec2 LFT(-1.0f, 0.0f);
+  const glm::vec2 RGT( 1.0f, 0.0f);
+  
   // Display Left
-  fbshader_.Uniform1f(shadereye_, stereo?-1.0f:0.0f);
+  fbshader_.Uniform2f(shadereye_, (stereo)?TOP:CTR);
   texleft_.bind();
   glDrawArrays(GL_TRIANGLES, 0, 6);
   
   if (stereo)
   {
     // Display Right
-    fbshader_.Uniform1f(shadereye_, 1.0f);
+    fbshader_.Uniform2f(shadereye_, BOT);
     texright_.bind();
     glDrawArrays(GL_TRIANGLES, 0, 6);
   }
