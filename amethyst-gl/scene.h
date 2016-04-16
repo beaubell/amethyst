@@ -20,7 +20,7 @@ namespace amethyst {
 namespace client {
 
 
-void scene_render(void);
+void scene_render(const double eyeangle);
 
 void scene_add_object(lib::Object::sptr);
 void scene_select_object_next();
@@ -29,7 +29,7 @@ void scene_control_ship_next();
 
 extern std::list<lib::Object::sptr>  object_list;
 
-glm::dmat4 set_camera(const lib::Quaternion &attitude, const double distance);
+glm::dmat4 set_camera(const lib::Quaternion &attitude, const double distance, const double eyeangle);
 
 } // namespace client
 } // namespace amethyst

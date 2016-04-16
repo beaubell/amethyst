@@ -40,7 +40,7 @@ std::list<lib::Object::sptr>  object_list;
 double sun_rot = 0;
 
 
-glm::dmat4 set_camera(const Quaternion &attitude, const double distance)
+glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const double eyeangle)
 {
 
     // Get Camera Offsets
@@ -50,6 +50,8 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance)
     // Convert to radians
     double x_rad = (double(x) / 180.0) * M_PI;
     double y_rad = (double(y) / 180.0) * M_PI;
+    
+    double eye_rad = (double(eyeangle) / 180.0) * M_PI;
 
     Quaternion del_att;
 
@@ -83,10 +85,11 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance)
 
         //Camera location in relation to ship
         Cartesian_Vector shipoffset(0.0, -distance, 0.0);
+	Cartesian_Vector eyeoffset(-tan(eye_rad)*distance ,0.0, 0.0);
 
-        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos )));
-        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
-        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up  )));
+        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos + eyeoffset)));
+        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view + eyeoffset)));
+        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up + eyeoffset)));
 
         // Apply Camera
         return glm::lookAt(glm::dvec3(real_pos.x, real_pos.y, real_pos.z),
@@ -100,7 +103,7 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance)
 
 // Called to draw scene
 // Fixme - Put Objects into some sort of linked list
-void scene_render(void)
+void scene_render(const double eyeangle)
 {
   // Get Gobal State
   const Cartesian_Vector &reference = Global.obj_view->location;
@@ -114,12 +117,12 @@ void scene_render(void)
   //Stars
   {
     // Set camera position without respect to camera zoom-out so that stars appear far away.
-    glm::mat4 m_view = set_camera(attitude, 1.0);
+    glm::mat4 m_view = set_camera(attitude, 1.0e10, eyeangle);
     stars_render(m_proj, m_view);
   }
 
   // Now consider camera zoom-out.
-  glm::mat4 m_view = set_camera(attitude, Global.cam_zoom);
+  glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
   glm::mat4 m_model = glm::mat4(1);
   //glLoadMatrix(&m_view[0][0]); // FIXME - this is temporary. We'll eventually move this call higher in the chain as the gl fixed function calls are replaced.
 

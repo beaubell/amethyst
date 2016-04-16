@@ -295,14 +295,20 @@ void Amethyst_GL::render()
       // Clear the window with current clearing color
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+      // Set Perspective
+      double eyeangle = 0.0f;
+      
+      if(stereo)
+	eyeangle = (eyeframe)?-0.5:0.5;
+      
       // Render Scene
-      scene_render();
+      scene_render(eyeangle);
 
       sig_render_scene(Global.obj_view->location);
 
       // Show HUD and UI
       if(show_hud)
-        hud_render();  
+        hud_render(eyeangle);  
 
       if(show_ui)
         ui.render();

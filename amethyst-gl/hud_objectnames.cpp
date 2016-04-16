@@ -29,7 +29,7 @@ HUDObjectNames::HUDObjectNames(ftgl::FTFont &font, ShaderProgramFont::sptr texts
 }
 
 
-void HUDObjectNames::render()
+void HUDObjectNames::render(const double eyeangle)
 {
     // Iterate through list of label objects
     for(auto& label : objectlabels_)
@@ -49,7 +49,7 @@ void HUDObjectNames::render()
 
             glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
             const Quaternion &attitude  = Global.obj_view->attitude;
-            glm::mat4 m_view = set_camera(attitude, Global.cam_zoom);
+            glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
 
             glm::mat4 m_temp = glm::translate(m_view, glm::vec3(temp.x, temp.y, temp.z));
 
@@ -73,7 +73,7 @@ void HUDObjectNames::render()
             glm::mat4 m_sproj = glm::ortho(-x*0.5f, +x*0.5f, y*0.5f, -y*0.5f);
             labeltext->render(m_sproj, m_sview);
 
-            std::cout << "renderlabel: " << labeltext->_text << " screenloc (" << v_screen.x << "," << v_screen.y << "," << v_screen.z <<  "," << v_screen.w << ")" << std::endl;
+            //std::cout << "renderlabel: " << labeltext->_text << " screenloc (" << v_screen.x << "," << v_screen.y << "," << v_screen.z <<  "," << v_screen.w << ")" << std::endl;
         }
     }
 }

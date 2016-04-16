@@ -28,7 +28,7 @@ class HUDObjectNames : public HUDWidget
 
     HUDObjectNames(ftgl::FTFont &font, ShaderProgramFont::sptr textshader);
     virtual ~HUDObjectNames(){};
-    virtual void render();
+    virtual void render(const double eyeangle);
     virtual void update();
 
   private:

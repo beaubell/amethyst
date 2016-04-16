@@ -16,7 +16,7 @@ class HUDWidget
   public:
     //HUDWidget();
     virtual ~HUDWidget(){};
-    virtual void render() = 0;
+    virtual void render(const double eyeangle) = 0;
     virtual void update() = 0;
 };
   

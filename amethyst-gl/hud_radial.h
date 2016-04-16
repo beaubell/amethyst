@@ -21,7 +21,7 @@ class HUDRadial : public HUDWidget
   public:
     HUDRadial(ShaderProgramHUD::sptr uishader);
     virtual ~HUDRadial();
-    virtual void render();
+    virtual void render(const double eyeangle);
     virtual void update(){};
     
   private:

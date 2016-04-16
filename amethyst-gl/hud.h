@@ -18,7 +18,7 @@ namespace client {
 
 void hud_setup(void);
 void hud_shutdown(void);
-void hud_render(void);
+void hud_render(const double eyeangle);
 
 } // namespace client
 } // namespace amethyst

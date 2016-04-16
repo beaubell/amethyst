@@ -21,7 +21,7 @@ class HUDOrbit : public HUDWidget
   public:
     HUDOrbit(ShaderProgramHUD::sptr uishader);
     virtual ~HUDOrbit();
-    virtual void render();
+    virtual void render(const double eyeangle);
     virtual void update(){};
     
   private:

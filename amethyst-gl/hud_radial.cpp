@@ -127,7 +127,7 @@ HUDRadial::~HUDRadial()
 {
 }
 
-void HUDRadial::render()
+void HUDRadial::render(const double eyeangle)
 {
   //DEPRECATED glEnable(GL_FOG);
 
@@ -144,7 +144,7 @@ void HUDRadial::render()
 
     glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
     const Quaternion &attitude  = Global.obj_view->attitude;
-    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom);
+    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
   
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = sol->location - reference;

@@ -83,7 +83,7 @@ HUDOrbit::~HUDOrbit()
 {
 }
 
-void HUDOrbit::render()
+void HUDOrbit::render(const double eyeangle)
 {
   
   Color FogCol(0.0f, 0.0f, 0.0f, 0.0f);
@@ -100,7 +100,7 @@ void HUDOrbit::render()
 
     glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
     const Quaternion &attitude  = Global.obj_view->attitude;
-    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom);
+    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
   
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = sol->location - reference;
@@ -123,7 +123,7 @@ void HUDOrbit::render()
 
     glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
     const Quaternion &attitude  = Global.obj_view->attitude;
-    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom);
+    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
   
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = earth->location - reference;

@@ -94,7 +94,7 @@ void hud_shutdown(void)
     delete fonts[0];
 }
 
-void hud_render(void)
+void hud_render(const double eyeangle)
 {
     // unsigned int screen_y = Global.screen_y; /*unused*/
 
@@ -102,16 +102,16 @@ void hud_render(void)
 
     // Radials from Sun Indicating Day/Month/Year
     if (hudradial)
-      hudradial->render();
+      hudradial->render(eyeangle);
 
     // Orbit Indication for Earth around Sun and Moon around Earth
     if (hudorbit)
-      hudorbit->render();
+      hudorbit->render(eyeangle);
 
     if(hudobjlabels)
     {
         hudobjlabels->update();
-        hudobjlabels->render();
+        hudobjlabels->render(eyeangle);
     }
     
 
