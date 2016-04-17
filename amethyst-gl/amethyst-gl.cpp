@@ -288,7 +288,9 @@ void Amethyst_GL::stride_inc()
 
 void Amethyst_GL::stride_dec()
 {
-  stride -= 1;
+  if (stride != 0) 
+    stride -= 1;
+
   std::string log_msg = "Integration Stride Decreased to " + boost::lexical_cast<std::string>(stride) + " iterations/run";
   Global.log.add(log_msg);
 }
