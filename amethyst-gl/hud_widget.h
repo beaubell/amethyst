@@ -8,6 +8,8 @@
  2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
+#include "scene.h" // For Eye::
+
 namespace amethyst {
 namespace client {
 
@@ -16,7 +18,7 @@ class HUDWidget
   public:
     //HUDWidget();
     virtual ~HUDWidget(){};
-    virtual void render(const double eyeangle) = 0;
+    virtual void render(const Eye eye = Eye::MONO) = 0;
     virtual void update() = 0;
 };
   

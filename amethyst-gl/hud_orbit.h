@@ -11,6 +11,7 @@
 #include "hud_widget.h"
 #include "shaderprog_hud.h"
 #include "bufferobj.h"
+#include "scene.h" // For Eye::
 
 namespace amethyst {
 namespace client {
@@ -21,7 +22,7 @@ class HUDOrbit : public HUDWidget
   public:
     HUDOrbit(ShaderProgramHUD::sptr uishader);
     virtual ~HUDOrbit();
-    virtual void render(const double eyeangle);
+    virtual void render(const Eye eye = Eye::MONO);
     virtual void update(){};
     
   private:

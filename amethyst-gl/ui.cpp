@@ -68,7 +68,6 @@ void UI::render(void)
     //glm::mat4 m_proj = glm::ortho(0.0f, static_cast<float>(w_win), 0.0f, static_cast<float>(h_win));
     //glm::mat4 m_proj = glm::ortho(-2e2f, 2e3f, -2e2f, 2e3f);
     glm::mat4 m_proj = glm::ortho(-1.0f, x, y, -1.0f);
-    //glm::mat4 m_proj = glm::perspective((Global.fov), (fAspect), -1.0f, 5e9f);
     glm::mat4 m_identity(1.0);
 
     ui_shader->use();

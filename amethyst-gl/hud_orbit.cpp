@@ -83,7 +83,7 @@ HUDOrbit::~HUDOrbit()
 {
 }
 
-void HUDOrbit::render(const double eyeangle)
+void HUDOrbit::render(const Eye eye)
 {
   
   Color FogCol(0.0f, 0.0f, 0.0f, 0.0f);
@@ -95,12 +95,9 @@ void HUDOrbit::render(const double eyeangle)
   // Place "Sol" at the origin of radials
   if (sol)
   {
-    float x = Global.screen_x;
-    float y = Global.screen_y;
-
-    glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
+    auto m_proj = get_proj(eye);
     const Quaternion &attitude  = Global.obj_view->attitude;
-    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
+    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
   
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = sol->location - reference;
@@ -118,12 +115,9 @@ void HUDOrbit::render(const double eyeangle)
 
   if (earth)
   {
-    float x = Global.screen_x;
-    float y = Global.screen_y;
-
-    glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
+    auto m_proj = get_proj(eye);
     const Quaternion &attitude  = Global.obj_view->attitude;
-    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
+    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
   
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = earth->location - reference;

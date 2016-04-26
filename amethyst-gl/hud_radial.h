@@ -11,6 +11,7 @@
 #include "hud_widget.h"
 #include "shaderprog_hud.h"
 #include "bufferobj.h"
+#include "scene.h" // for Eye::
 
 namespace amethyst {
 namespace client {
@@ -21,7 +22,7 @@ class HUDRadial : public HUDWidget
   public:
     HUDRadial(ShaderProgramHUD::sptr uishader);
     virtual ~HUDRadial();
-    virtual void render(const double eyeangle);
+    virtual void render(const Eye eye = Eye::MONO);
     virtual void update(){};
     
   private:

@@ -29,7 +29,7 @@ HUDObjectNames::HUDObjectNames(ftgl::FTFont &font, ShaderProgramFont::sptr texts
 }
 
 
-void HUDObjectNames::render(const double eyeangle)
+void HUDObjectNames::render(const Eye eye)
 {
     // Iterate through list of label objects
     for(auto& label : objectlabels_)
@@ -47,9 +47,9 @@ void HUDObjectNames::render(const double eyeangle)
             float x = Global.screen_x;
             float y = Global.screen_y;
 
-            glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 0.1f, 10e10f);
+            glm::mat4 m_proj = get_proj(eye);
             const Quaternion &attitude  = Global.obj_view->attitude;
-            glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
+            glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
 
             glm::mat4 m_temp = glm::translate(m_view, glm::vec3(temp.x, temp.y, temp.z));
 

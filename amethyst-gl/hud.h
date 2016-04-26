@@ -13,12 +13,14 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "scene.h" //For Eye::
+
 namespace amethyst {
 namespace client {
 
 void hud_setup(void);
 void hud_shutdown(void);
-void hud_render(const double eyeangle);
+void hud_render(const Eye eye = Eye::MONO);
 
 } // namespace client
 } // namespace amethyst

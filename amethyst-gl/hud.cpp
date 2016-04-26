@@ -61,9 +61,6 @@ static ftgl::FTFont* fonts[6];
 static ShaderProgramHUD::sptr ui_shader;
 static ShaderProgramFont::sptr uifont_shader;
 
-static unsigned int frames = 0, benchmark = 0;
-static float fps = 0.0f;
-
 HUDRadial* hudradial;
 HUDOrbit* hudorbit;
 HUDObjectNames* hudobjlabels;
@@ -94,48 +91,33 @@ void hud_shutdown(void)
     delete fonts[0];
 }
 
-void hud_render(const double eyeangle)
+void hud_render(const Eye eye)
 {
-    // unsigned int screen_y = Global.screen_y; /*unused*/
-
     glDisable( GL_DEPTH_TEST);
 
     // Radials from Sun Indicating Day/Month/Year
     if (hudradial)
-      hudradial->render(eyeangle);
+      hudradial->render(eye);
 
     // Orbit Indication for Earth around Sun and Moon around Earth
     if (hudorbit)
-      hudorbit->render(eyeangle);
+      hudorbit->render(eye);
 
     if(hudobjlabels)
     {
         hudobjlabels->update();
-        hudobjlabels->render(eyeangle);
+        hudobjlabels->render(eye);
     }
-    
-
-    //TEMP hud_widget_object_text();
 
     #ifdef HAVE_MALLOC_H
 //        hud_widget_memory(10, screen_y - 13);
     #endif
 
 /*  Deprecated due to GUI code
-    glWindowPos2i(10, screen_y - 46);
-    fonts[0]->Render("Ship Stats");
-
-    // Display Location Information for Ship
-    hud_widget_location(10, screen_y - 56, Global.ship->location);
-    // Display Attitude Information for Ship
-    hud_widget_attitude(10, screen_y - 66, Global.ship->attitude);
     // Display Camera Look Angles
     hud_widget_camera(10, screen_y - 76);
 */
     //TEMP hud_widget_select(10,40);
-
-    
-
 
     //TEMP hud_widget_vectorbox(0, 0, 0.5f, Global.throttle, -0.2f);
 

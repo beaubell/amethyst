@@ -39,8 +39,48 @@ std::list<lib::Object::sptr>  object_list;
 
 double sun_rot = 0;
 
+const double eyedistance = 1;
 
-glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const double eyeangle)
+glm::dmat4 get_proj(const Eye eye)
+{
+    double x = Global.screen_x;
+    double y = Global.screen_y;
+
+    //glm::mat4 m_proj = glm::perspective(glm::radians(45.0f), float(x/y), 1.0f, 10e15f);
+
+    struct _cam {
+      double near = 1.0;
+      double aperture = 0.5;
+      double eyesep = eyedistance;
+      double fo = 100000.0;
+    } camera;
+
+    double widthdiv2 = camera.near * tan(camera.aperture/2);
+    double aspectratio = x / y;
+
+    double eyeoffset = 0.0;
+
+    if (eye == Eye::LEFT)
+      eyeoffset = -0.5 * camera.eyesep * camera.near / camera.fo;
+
+    if (eye == Eye::RIGHT)
+      eyeoffset = +0.5 * camera.eyesep * camera.near / camera.fo;
+
+    double top = widthdiv2;
+    double bottom = - widthdiv2;
+    double left   = - aspectratio * widthdiv2 + eyeoffset ;
+    double right  =   aspectratio * widthdiv2 + eyeoffset ;
+    double near = 1;
+    double far = 1e15f;
+
+
+    auto m_proj = glm::frustum (left, right, bottom, top, near, far);
+    return m_proj;
+}
+
+
+
+glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const Eye eye)
 {
 
     // Get Camera Offsets
@@ -50,8 +90,15 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const d
     // Convert to radians
     double x_rad = (double(x) / 180.0) * M_PI;
     double y_rad = (double(y) / 180.0) * M_PI;
-    
-    double eye_rad = (double(eyeangle) / 180.0) * M_PI;
+
+
+    double eye_offset = 0.0;
+
+    if (eye == Eye::LEFT)
+      eye_offset = -eyedistance*0.01*distance;
+
+    if (eye == Eye::RIGHT)
+      eye_offset = eyedistance*0.01*distance;
 
     Quaternion del_att;
 
@@ -69,7 +116,7 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const d
 
     }
 
-    Quaternion Qz( cos((x_rad - eye_rad)/2.0), 0.0, 0.0, sin((x_rad - eye_rad)/2.0));
+    Quaternion Qz( cos((x_rad)/2.0), 0.0, 0.0, sin((x_rad)/2.0));
     Qz.normalize();
     Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0.0, 0.0 );
     Qx.normalize();
@@ -85,11 +132,11 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const d
 
         //Camera location in relation to ship
         Cartesian_Vector shipoffset(0.0, -distance, 0.0);
-	//Cartesian_Vector eyeoffset(-tan(eye_rad)*distance/4 ,0.0, 0.0);
+	Cartesian_Vector eyeoffset(eye_offset ,0.0, 0.0);
 
-        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + raw_pos)));
-        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + raw_view)));
-        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + raw_up)));
+        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + eyeoffset + raw_pos)));
+        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + eyeoffset + raw_view)));
+        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + eyeoffset + raw_up)));
 
         // Apply Camera
         return glm::lookAt(glm::dvec3(real_pos.x, real_pos.y, real_pos.z),
@@ -103,28 +150,24 @@ glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const d
 
 // Called to draw scene
 // Fixme - Put Objects into some sort of linked list
-void scene_render(const double eyeangle)
+void scene_render(const Eye eye)
 {
   // Get Gobal State
   const Cartesian_Vector &reference = Global.obj_view->location;
   const Quaternion       &attitude  = Global.obj_view->attitude;
-  
-  float x = Global.screen_x;
-  float y = Global.screen_y;
 
-  glm::mat4 m_proj = glm::perspective(glm::radians(30.0f), x/y, 1.0f, 10e15f);
+  auto m_proj = get_proj(eye);
 
   //Stars
   {
     // Set camera position without respect to camera zoom-out so that stars appear far away.
-    glm::mat4 m_view = set_camera(attitude, 1.0, eyeangle);
+    glm::mat4 m_view = set_camera(attitude, 1.0, eye);
     stars_render(m_proj, m_view);
   }
 
   // Now consider camera zoom-out.
-  glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eyeangle);
+  glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
   glm::mat4 m_model = glm::mat4(1);
-  //glLoadMatrix(&m_view[0][0]); // FIXME - this is temporary. We'll eventually move this call higher in the chain as the gl fixed function calls are replaced.
 
 #if 0
   //Draw Sun
@@ -171,7 +214,6 @@ void scene_render(const double eyeangle)
     sol->render(m_proj, m_view, m_sun);
   }
 
-  //DEPRECATED glEnable(GL_LIGHTING);
   // Draw Objects in List.
   if(!object_list.empty())
   {
@@ -188,8 +230,6 @@ void scene_render(const double eyeangle)
     }  while (obj1 != object_list.end());
 
   }
-
-  //DEPRECATED glDisable(GL_LIGHTING);
 
 #if 0
   // Draw Network Objects
