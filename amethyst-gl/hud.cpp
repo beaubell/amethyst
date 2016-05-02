@@ -11,7 +11,6 @@
  ***********************************************************************/
 
 #include "hud.h"
-#include "scene.h"
 #include "global.h"
 #include "opengl.h"
 #include "lib/physics.h"
@@ -52,7 +51,6 @@ using boost::lexical_cast;
 static void hud_widget_memory(int x, int y);
 static void hud_widget_location(int x, int y, const Cartesian_Vector &ref);
 static void hud_widget_attitude(int x, int y, const Quaternion &reference);
-static void hud_widget_camera(int x, int y);
 static void hud_widget_fps(int x, int y);
 static void hud_widget_select(const int x, const int y);
 static void hud_widget_vectorbox(int x, int y, float xaxis, float yaxis, float zaxis);
@@ -187,16 +185,6 @@ static void hud_widget_attitude(int x, int y, const Quaternion &ref)
 
     snprintf(reinterpret_cast<char*>(&buffer), 20, "Z:%f", ref.z);
     //DEPRECATED glWindowPos2i(x += 100, y);
-    fonts[0]->Render(reinterpret_cast<char*>(&buffer));
-}
-
-
-static void hud_widget_camera(int x, int y) // FIXME
-{
-    char buffer[50];
-
-    snprintf(reinterpret_cast<char*>(&buffer), 50, " Cam: X:%f deg, Y:%f deg, Z:%fx",Global.cam_yaw, Global.cam_pitch, Global.cam_zoom);
-    //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&buffer));
 }
 

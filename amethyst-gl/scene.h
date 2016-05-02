@@ -6,20 +6,17 @@
   - Scene randering function prototypes
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include <list>
+#include "camera.h"
 #include "lib/object.h"
+
+#include <list>
+
 
 namespace amethyst {
 namespace client {
-
-enum class Eye {MONO = 0, LEFT = 1, RIGHT = 2};
 
 void scene_render(const Eye eye = Eye::MONO);
 
@@ -29,9 +26,6 @@ void scene_target_object_next();
 void scene_control_ship_next();
 
 extern std::list<lib::Object::sptr>  object_list;
-
-glm::dmat4 get_proj(const Eye eye = Eye::MONO);
-glm::dmat4 set_camera(const lib::Quaternion &attitude, const double distance, const Eye eye = Eye::MONO);
 
 } // namespace client
 } // namespace amethyst

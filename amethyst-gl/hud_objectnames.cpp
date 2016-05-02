@@ -3,7 +3,7 @@
   - HUD Object Labels Class implementations
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ 2016-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -47,15 +47,13 @@ void HUDObjectNames::render(const Eye eye)
             float x = Global.screen_x;
             float y = Global.screen_y;
 
-            glm::mat4 m_proj = get_proj(eye);
-            const Quaternion &attitude  = Global.obj_view->attitude;
-            glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
+            PVMatrix pvm = Global.camera.getMatrii(eye);
 
-            glm::mat4 m_temp = glm::translate(m_view, glm::vec3(temp.x, temp.y, temp.z));
+            glm::dmat4 m_temp = glm::translate(pvm.view, glm::dvec3(temp.x, temp.y, temp.z));
 
-            glm::mat4 m_screen = m_proj * m_temp;
+            glm::dmat4 m_screen = pvm.proj * m_temp;
 
-            glm::vec4 v_screen = m_screen * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            glm::dvec4 v_screen = m_screen * glm::dvec4(0.0f, 0.0f, 0.0f, 1.0f);
 
             // If negative w, point is defintately outside viewing fustrum
             if(v_screen.w < 0.0f)

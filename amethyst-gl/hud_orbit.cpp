@@ -88,47 +88,41 @@ void HUDOrbit::render(const Eye eye)
   
   Color FogCol(0.0f, 0.0f, 0.0f, 0.0f);
 
-  // draw orbits
+  // Get Sol and Earth positions
   lib::Object::sptr sol = Global.universe.object_find("Sol");
   lib::Object::sptr earth = Global.universe.object_find("Earth");
+
+  PVMatrix pvm = Global.camera.getMatrii(eye);
 
   // Place "Sol" at the origin of radials
   if (sol)
   {
-    auto m_proj = get_proj(eye);
-    const Quaternion &attitude  = Global.obj_view->attitude;
-    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
-  
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = sol->location - reference;
-    glm::mat4 m_temp = glm::translate(m_view, glm::vec3(temp.x, temp.y, temp.z));
+    glm::dmat4 m_temp = glm::translate(pvm.view, glm::dvec3(temp.x, temp.y, temp.z));
   
     hudshader_->use();
-    hudshader_->setProjM(m_proj);
+    hudshader_->setProjM(pvm.proj);
     hudshader_->setViewM(m_temp);
     hudshader_->setFogColor(FogCol);
     hudshader_->setFogStart(10.0f);
-    hudshader_->setFogEnd(Global.cam_zoom*10.0);
+    hudshader_->setFogEnd(Global.camera.getDistance()*10.0);
     vao_[0].bind();
     glDrawArrays(GL_LINE_STRIP, 0, orbitpoints_);
   }
 
   if (earth)
   {
-    auto m_proj = get_proj(eye);
-    const Quaternion &attitude  = Global.obj_view->attitude;
-    glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
-  
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = earth->location - reference;
-    glm::mat4 m_temp = glm::translate(m_view, glm::vec3(temp.x, temp.y, temp.z));
+    glm::dmat4 m_temp = glm::translate(pvm.view, glm::dvec3(temp.x, temp.y, temp.z));
   
     hudshader_->use();
-    hudshader_->setProjM(m_proj);
+    hudshader_->setProjM(pvm.proj);
     hudshader_->setViewM(m_temp);
     hudshader_->setFogColor(FogCol);
     hudshader_->setFogStart(10.0f);
-    hudshader_->setFogEnd(Global.cam_zoom*10.0);
+    hudshader_->setFogEnd(Global.camera.getDistance()*10.0);
     vao_[1].bind();
     glDrawArrays(GL_LINE_STRIP, 0, orbitpoints_);
   }

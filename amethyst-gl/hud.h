@@ -13,7 +13,7 @@
  $LastChangedBy$
  ***********************************************************************/
 
-#include "scene.h" //For Eye::
+#include "camera.h"
 
 namespace amethyst {
 namespace client {

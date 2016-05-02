@@ -15,7 +15,6 @@
 #include "input.h"
 #include "global.h"
 #include "debug.h"
-#include "scene.h"
 #include "scene_xml.h"
 
 #include "lib/utility.h"
@@ -196,12 +195,8 @@ int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
 {
     if (mouse_camera)
     {
-        Global.cam_yaw -= static_cast<float>(motion.xrel) / 3;
-        if (Global.cam_yaw < -180) Global.cam_yaw += 360;
-        if (Global.cam_yaw >  180) Global.cam_yaw -= 360;
-        Global.cam_pitch -= static_cast<float>(motion.yrel) / 3;
-        if (Global.cam_pitch < -90) Global.cam_pitch = -90;
-        if (Global.cam_pitch >  90) Global.cam_pitch = 90;
+        Global.camera.incYaw(-static_cast<double>(motion.xrel) / 3.0);
+        Global.camera.incPitch(-static_cast<double>(motion.yrel) / 3.0);
     }
 
     return 0;
@@ -209,10 +204,12 @@ int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
 
 int Input::event_mouse_wheel(const SDL_MouseWheelEvent &wheel)
 {
-    Global.cam_zoom /= pow(1.1,wheel.y);
+    auto dist = Global.camera.getDistance();
+    auto newdist = dist / pow(1.1,wheel.y);
 
-    if (Global.cam_zoom < 10) Global.cam_zoom = 10;
+    if (newdist < 10) newdist = 10;
 
+    Global.camera.setDistance(newdist);
     return 0;
 }
 

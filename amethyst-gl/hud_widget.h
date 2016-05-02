@@ -8,7 +8,7 @@
  2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include "scene.h" // For Eye::
+#include "camera.h"
 
 namespace amethyst {
 namespace client {

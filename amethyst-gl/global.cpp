@@ -19,11 +19,6 @@ namespace client {
 
 __global::__global()
 {
-    cam_num   = 0;
-    cam_yaw   = 0.0f;
-    cam_pitch = 0.0f;
-    cam_zoom  = 2.0e8f;
-
     // Field of view (in degrees)
     fov      =     40;
 
@@ -63,7 +58,7 @@ __global::__global()
     file_tex_sb_lt     = "lt.bmp";
 
 
-    net_server         = "www.stellarnetservices.net";
+    net_server         = "athena.bvcb.us";
     net_port           = 23232;
     net_handle         = "leetsuace";
 

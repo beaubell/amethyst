@@ -1,13 +1,9 @@
 /***********************************************************************
  Amethyst-GL
-  - Scene randering function implementations
+  - Scene rendering function implementations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 
@@ -39,134 +35,34 @@ std::list<lib::Object::sptr>  object_list;
 
 double sun_rot = 0;
 
-const double eyedistance = 1;
-
-glm::dmat4 get_proj(const Eye eye)
-{
-    double x = Global.screen_x;
-    double y = Global.screen_y;
-
-    //glm::mat4 m_proj = glm::perspective(glm::radians(45.0f), float(x/y), 1.0f, 10e15f);
-
-    struct _cam {
-      double near = 1.0;
-      double aperture = 0.5;
-      double eyesep = eyedistance;
-      double fo = 100000.0;
-    } camera;
-
-    double widthdiv2 = camera.near * tan(camera.aperture/2);
-    double aspectratio = x / y;
-
-    double eyeoffset = 0.0;
-
-    if (eye == Eye::LEFT)
-      eyeoffset = -0.5 * camera.eyesep * camera.near / camera.fo;
-
-    if (eye == Eye::RIGHT)
-      eyeoffset = +0.5 * camera.eyesep * camera.near / camera.fo;
-
-    double top = widthdiv2;
-    double bottom = - widthdiv2;
-    double left   = - aspectratio * widthdiv2 + eyeoffset ;
-    double right  =   aspectratio * widthdiv2 + eyeoffset ;
-    double near = 1;
-    double far = 1e15f;
-
-
-    auto m_proj = glm::frustum (left, right, bottom, top, near, far);
-    return m_proj;
-}
-
-
-
-glm::dmat4 set_camera(const Quaternion &attitude, const double distance, const Eye eye)
-{
-
-    // Get Camera Offsets
-    double x = Global.cam_yaw;
-    double y = Global.cam_pitch;
-
-    // Convert to radians
-    double x_rad = (double(x) / 180.0) * M_PI;
-    double y_rad = (double(y) / 180.0) * M_PI;
-
-
-    double eye_offset = 0.0;
-
-    if (eye == Eye::LEFT)
-      eye_offset = -eyedistance*0.01*distance;
-
-    if (eye == Eye::RIGHT)
-      eye_offset = eyedistance*0.01*distance;
-
-    Quaternion del_att;
-
-    // Ring buffer (delays camera movement by a few frames)
-    {
-        Global.cam_num++;
-        if(Global.cam_num > 8) Global.cam_num = 0;
-        int cam_num = Global.cam_num;
-
-        Global.cam_att[cam_num] = attitude;
-
-        int view_num = cam_num - 7;
-        if(view_num < 0) view_num = view_num + 9;
-        del_att  = Global.cam_att[view_num];
-
-    }
-
-    Quaternion Qz( cos((x_rad)/2.0), 0.0, 0.0, sin((x_rad)/2.0));
-    Qz.normalize();
-    Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0.0, 0.0 );
-    Qx.normalize();
-
-    Quaternion new_att = del_att * Qz * Qx;
-    new_att.normalize();
-
-    // Rotate Camera to ship's orientation
-    {
-        Cartesian_Vector raw_pos (0.0e11, 0.0, 0.0);
-        Cartesian_Vector raw_view(0.0, 1.0e11, 0.0);
-        Cartesian_Vector raw_up  (0.0, 0.0, 1.0e11);
-
-        //Camera location in relation to ship
-        Cartesian_Vector shipoffset(0.0, -distance, 0.0);
-	Cartesian_Vector eyeoffset(eye_offset ,0.0, 0.0);
-
-        Cartesian_Vector real_pos   = (QVRotate(new_att, (shipoffset + eyeoffset + raw_pos)));
-        Cartesian_Vector real_view  = (QVRotate(new_att, (shipoffset + eyeoffset + raw_view)));
-        Cartesian_Vector real_up    = (QVRotate(new_att, (shipoffset + eyeoffset + raw_up)));
-
-        // Apply Camera
-        return glm::lookAt(glm::dvec3(real_pos.x, real_pos.y, real_pos.z),
-                           glm::dvec3(real_view.x, real_view.y, real_view.z),
-                           glm::dvec3(real_up.x,   real_up.y,   real_up.z));
-    }
-
-
-}
-
 
 // Called to draw scene
-// Fixme - Put Objects into some sort of linked list
 void scene_render(const Eye eye)
 {
   // Get Gobal State
   const Cartesian_Vector &reference = Global.obj_view->location;
   const Quaternion       &attitude  = Global.obj_view->attitude;
 
-  auto m_proj = get_proj(eye);
+  Global.camera.setProjection(Screen(Global.screen_x, Global.screen_y));
 
   //Stars
   {
     // Set camera position without respect to camera zoom-out so that stars appear far away.
-    glm::mat4 m_view = set_camera(attitude, 1.0, eye);
-    stars_render(m_proj, m_view);
+    auto tempdist = Global.camera.getDistance();
+    Global.camera.setDistance(1.0);
+    Global.camera.setAttitude(attitude);
+    PVMatrix pvm = Global.camera.getMatrii(eye);
+
+    // Render Stars
+    stars_render(pvm.proj, pvm.view);
+
+    // Resore camera distance
+    Global.camera.setDistance(tempdist);
   }
 
   // Now consider camera zoom-out.
-  glm::mat4 m_view = set_camera(attitude, Global.cam_zoom, eye);
+  Global.camera.setAttitude(attitude);
+  PVMatrix pvm = Global.camera.getMatrii(eye);
   glm::mat4 m_model = glm::mat4(1);
 
 #if 0
@@ -195,23 +91,14 @@ void scene_render(const Eye eye)
   glPopMatrix();
 #endif
 
-  
-  //DEPRECATED glDisable(GL_LIGHTING);
-  { // Set light to white
-    GLfloat fDiffLight[] =  { 1.0f, 0.9f, 0.9f, 1.0f };
-    //DEPRECATEDglLightfv(GL_LIGHT0, GL_DIFFUSE, fDiffLight);
-  }
-
   /// FIXME Special case for Sol 
   Scene_Object::sptr sol = std::dynamic_pointer_cast<Scene_Object>(Global.universe.object_find("Sol"));
   if (sol != NULL)
   {
     Cartesian_Vector temp = sol->location - reference;
-    GLfloat lightPos[] = {(float)temp.x, (float)temp.y, (float)temp.z, 1.0f };
-    //DEPRECATED glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-    //sol->render(reference)
+
     glm::mat4 m_sun = glm::translate(m_model, glm::vec3(temp.x, temp.y, temp.z));
-    sol->render(m_proj, m_view, m_sun);
+    sol->render(pvm.proj, pvm.view, m_sun);
   }
 
   // Draw Objects in List.
@@ -224,7 +111,7 @@ void scene_render(const Eye eye)
         {
             Cartesian_Vector temp = (*obj1)->location - reference;
             glm::mat4 m_mdlref = glm::translate(m_model, glm::vec3(temp.x, temp.y, temp.z));
-            (*obj1)->model->render(m_proj, m_view, m_mdlref);
+            (*obj1)->model->render(pvm.proj, pvm.view, m_mdlref);
         }
         obj1++;
     }  while (obj1 != object_list.end());

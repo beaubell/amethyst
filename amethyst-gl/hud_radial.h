@@ -11,7 +11,6 @@
 #include "hud_widget.h"
 #include "shaderprog_hud.h"
 #include "bufferobj.h"
-#include "scene.h" // for Eye::
 
 namespace amethyst {
 namespace client {

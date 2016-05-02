@@ -16,6 +16,7 @@
 #include "scene_object.h"
 //#include "lib/ship.h"
 #include "lib/universe.h"
+#include "camera.h"
 
 #include <string>
 #include <set>
@@ -82,12 +83,7 @@ class __global {
       // Control Surfaces
       float throttle;
 
-      // Camera Ring Buffer
-      Quaternion cam_att[10];
-      int cam_num;
-      float cam_yaw;
-      float cam_pitch;
-      float cam_zoom;
+      Camera camera;
 
       // Timer
       Uint32 next_time;

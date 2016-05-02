@@ -186,21 +186,21 @@ static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &s
             temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("yaw"));
             if (temp)
             {
-                Global.cam_yaw = strtod(reinterpret_cast<char *>(temp), NULL);
+                Global.camera.setYaw(strtod(reinterpret_cast<char *>(temp), NULL));
                 xmlFree(temp);
             }
 
             temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("pitch"));
             if (temp)
             {
-                Global.cam_pitch = strtod(reinterpret_cast<char *>(temp), NULL);
+                Global.camera.setPitch(strtod(reinterpret_cast<char *>(temp), NULL));
                 xmlFree(temp);
             }
 
             temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("dist"));
             if (temp)
             {
-                Global.cam_zoom = strtod(reinterpret_cast<char *>(temp), NULL);
+                Global.camera.setDistance(strtod(reinterpret_cast<char *>(temp), NULL));
                 xmlFree(temp);
             }
         }
@@ -460,9 +460,9 @@ void scene_xml_write (const std::string &name)
     outfile << "  <name>" << name << "</name>" << std::endl;
     outfile << "  <client>" << std::endl;
     outfile << "    <selected>" << Global.ship->name << "</selected>" << std::endl;
-    outfile << "    <camera yaw=\"" << Global.cam_yaw << "\" pitch=\""
-                                    << Global.cam_pitch << "\" dist=\""
-                                    << Global.cam_zoom << "\" />" << std::endl;
+    outfile << "    <camera yaw=\"" << Global.camera.getYaw() << "\" pitch=\""
+                                    << Global.camera.getPitch() << "\" dist=\""
+                                    << Global.camera.getDistance() << "\" />" << std::endl;
     outfile << "  </client>" << std::endl;
     outfile << "  <shader>" << std::endl;
     //outfile << "    <vertex>" << Global.vshader << "</vertex>" << std::endl;     /// FIXME, no longer loading shaders here

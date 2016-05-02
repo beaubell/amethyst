@@ -6,6 +6,7 @@ SET(amethystgl_SRCS
   science/uiw_view.cpp
   science/gravpotential.cpp
   bufferobj.cpp
+  camera.cpp
   config_xml.cpp
   debug.cpp
   framebuffer.cpp
