@@ -10,6 +10,7 @@
 
 #include "lib/orientation.h"
 #include "glm/mat4x4.hpp"
+#include "glm/vec2.hpp"
 
 #include <memory>
 
@@ -41,11 +42,15 @@ class Camera
     Camera();
     virtual ~Camera();
 
-    //Set Perspective
-    void setProjection(const Screen& scrnsize);
+    //Set Screen;
+    void setScreen(const Screen& scrnsize);
 
-    //Set Camera Look
+    //Set Camera Attitude
     void setAttitude(const lib::Quaternion& attitude);
+
+    //Generate Matrii
+    void genMatProj();
+    void genMatView();
 
     //Get Matrii
     PVMatrix& getMatrii(const Eye eye = Eye::MONO);
@@ -72,6 +77,7 @@ class Camera
     Position cam_pos_;
 
   private:
+    glm::dvec2 screen;
     double eyeseparation_;
     double yaw;
     double pitch;
@@ -79,6 +85,7 @@ class Camera
 
     lib::Quaternion cam_att[10];
     int cam_num;
+    lib::Quaternion cur_att;
 };
 
 

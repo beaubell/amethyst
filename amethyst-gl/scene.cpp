@@ -43,7 +43,7 @@ void scene_render(const Eye eye)
   const Cartesian_Vector &reference = Global.obj_view->location;
   const Quaternion       &attitude  = Global.obj_view->attitude;
 
-  Global.camera.setProjection(Screen(Global.screen_x, Global.screen_y));
+  Global.camera.setScreen(Screen(Global.screen_x, Global.screen_y));
 
   //Stars
   {
@@ -60,8 +60,7 @@ void scene_render(const Eye eye)
     Global.camera.setDistance(tempdist);
   }
 
-  // Now consider camera zoom-out.
-  Global.camera.setAttitude(attitude);
+  // Get PV matrix set
   PVMatrix pvm = Global.camera.getMatrii(eye);
   glm::mat4 m_model = glm::mat4(1);
 

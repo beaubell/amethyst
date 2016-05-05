@@ -14,7 +14,8 @@ namespace amethyst {
 namespace client {
 
 Camera::Camera()
-: eyeseparation_(1.0),
+: screen(1024.0,640.0),
+  eyeseparation_(1.0),
   yaw(0),
   pitch(0),
   distance(2.0e8f),
@@ -28,11 +29,29 @@ Camera::~Camera()
 
 }
 
-void Camera::setProjection(const Screen& scrnsize)
+void Camera::setScreen(const Screen& newscreen)
 {
-    // Convert screen size to double
-    glm::dvec2 dscn = scrnsize;
+    screen = newscreen;
+}
 
+void Camera::setAttitude(const lib::Quaternion& newattitude)
+{
+    // Ring buffer (delays camera movement by a few frames)
+    {
+        cam_num++;
+        if(cam_num > 8) cam_num = 0;
+
+        cam_att[cam_num] = newattitude;
+
+        int view_num = cam_num - 7;
+        if(view_num < 0) view_num = view_num + 9;
+        cur_att  = cam_att[view_num];
+    }
+  
+}
+
+void Camera::genMatProj()
+{
     // FIXME This struct needs to go away
     struct _cam {
       double near = 1.0;
@@ -41,7 +60,7 @@ void Camera::setProjection(const Screen& scrnsize)
     } camera;
 
     double widthdiv2 = camera.near * tan(camera.aperture/2);
-    double aspectratio = dscn.x / dscn.y;
+    double aspectratio = screen.x / screen.y;
 
     double eyeoffset[Eye::MAX] = {0.0, 0.0, 0.0};
 
@@ -62,7 +81,7 @@ void Camera::setProjection(const Screen& scrnsize)
     }
 }
 
-void Camera::setAttitude(const lib::Quaternion& attitude)
+void Camera::genMatView()
 {
     // Convert to radians
     double x_rad = (yaw / 180.0) * M_PI;
@@ -71,26 +90,12 @@ void Camera::setAttitude(const lib::Quaternion& attitude)
 
     double eye_offset = 0.0;
 
-    lib::Quaternion del_att;
-
-    // Ring buffer (delays camera movement by a few frames)
-    {
-        cam_num++;
-        if(cam_num > 8) cam_num = 0;
-
-        cam_att[cam_num] = attitude;
-
-        int view_num = cam_num - 7;
-        if(view_num < 0) view_num = view_num + 9;
-        del_att  = cam_att[view_num];
-    }
-    
     lib::Quaternion Qz( cos((x_rad)/2.0), 0.0, 0.0, sin((x_rad)/2.0));
     Qz.normalize();
     lib::Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0.0, 0.0 );
     Qx.normalize();
 
-    lib::Quaternion new_att = del_att * Qz * Qx;
+    lib::Quaternion new_att = cur_att * Qz * Qx;
     new_att.normalize();
 
     // Rotate Camera to ship's orientation
@@ -110,9 +115,10 @@ void Camera::setAttitude(const lib::Quaternion& attitude)
     glm::dvec3 rw_view = glm::dvec3(real_view.x, real_view.y, real_view.z);
     glm::dvec3 rw_up   = glm::dvec3(real_up.x,   real_up.y,   real_up.z);
 
-    // Apply Camera
+    // Generate Mono View Matrix
     matrii_[Eye::MONO].view = glm::lookAt(rw_pos, rw_view, rw_up);
 
+    // Generate Stereo View Matrii
     auto v1 = rw_view - rw_pos;
     auto v2 = rw_up - rw_pos;
 
@@ -125,6 +131,9 @@ void Camera::setAttitude(const lib::Quaternion& attitude)
 
 PVMatrix& Camera::getMatrii(const Eye eye)
 {
+    //FIXME - Optimize the generation of the PV matrii
+    genMatProj();
+    genMatView();
     return matrii_[eye];
 }
 
