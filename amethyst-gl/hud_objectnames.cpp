@@ -100,12 +100,7 @@ void HUDObjectNames::update()
                     break;
                 }
             }
-            else
-            {
-                // Remove label object
-                // FIXME, fails to compile
-                //objectlabels_.remove(label);
-            }
+
         }
 
         // Add Label
@@ -118,6 +113,9 @@ void HUDObjectNames::update()
             std::cout << "Added object " << obj->name << " to label list." << std::endl;
         }
     }
+
+    // Remove labels for deleted objects
+    objectlabels_.remove_if([](ObjectLabel &objlbl){ return std::get<0>(objlbl).expired(); });
 
     // Check for title changes
     //TODO
