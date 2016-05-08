@@ -52,25 +52,23 @@ void Camera::setAttitude(const lib::Quaternion& newattitude)
 
 void Camera::genMatProj()
 {
-    // FIXME This struct needs to go away
-    struct _cam {
-      double near = 1.0;
-      double aperture = 0.5;
-      double fo = 100000.0;
-    } camera;
+    eyeseparation_ = distance/50.0;
+    double aperture = glm::radians(45.0);
 
-    double widthdiv2 = camera.near * tan(camera.aperture/2);
+    double near = 10;
+    double far = 1e15f;
+    double focal = distance - distance/5;
+
+    double widthdiv2 = near * tan(aperture/2);
     double aspectratio = screen.x / screen.y;
-
-    double eyeoffset[Eye::MAX] = {0.0, 0.0, 0.0};
-
-    eyeoffset[Eye::LEFT]  = -0.5 * eyeseparation_ * camera.near / camera.fo;
-    eyeoffset[Eye::RIGHT] = +0.5 * eyeseparation_ * camera.near / camera.fo;
 
     double top = widthdiv2;
     double bottom = - widthdiv2;
-    double near = 1;
-    double far = 1e15f;
+
+    double eyeoffset[Eye::MAX] = {0.0, 0.0, 0.0};
+
+    eyeoffset[Eye::LEFT]  = -0.5 * eyeseparation_ * near / focal;
+    eyeoffset[Eye::RIGHT] = +0.5 * eyeseparation_ * near / focal;
 
     for (int i = Eye::MONO; i < Eye::MAX; i++)
     {
@@ -87,9 +85,6 @@ void Camera::genMatView()
     double x_rad = (yaw / 180.0) * M_PI;
     double y_rad = (pitch / 180.0) * M_PI;
 
-
-    double eye_offset = 0.0;
-
     lib::Quaternion Qz( cos((x_rad)/2.0), 0.0, 0.0, sin((x_rad)/2.0));
     Qz.normalize();
     lib::Quaternion Qx( cos(y_rad/2.0), sin(y_rad/2.0), 0.0, 0.0 );
@@ -105,11 +100,10 @@ void Camera::genMatView()
 
     //Camera location in relation to ship
     lib::Cartesian_Vector shipoffset(0.0, -distance, 0.0);
-    lib::Cartesian_Vector eyeoffset(eye_offset ,0.0, 0.0);
 
-    lib::Cartesian_Vector real_pos   = (lib::QVRotate(new_att, (shipoffset + eyeoffset + raw_pos)));
-    lib::Cartesian_Vector real_view  = (lib::QVRotate(new_att, (shipoffset + eyeoffset + raw_view)));
-    lib::Cartesian_Vector real_up    = (lib::QVRotate(new_att, (shipoffset + eyeoffset + raw_up)));
+    lib::Cartesian_Vector real_pos   = (lib::QVRotate(new_att, (shipoffset + raw_pos)));
+    lib::Cartesian_Vector real_view  = (lib::QVRotate(new_att, (shipoffset + raw_view)));
+    lib::Cartesian_Vector real_up    = (lib::QVRotate(new_att, (shipoffset + raw_up)));
 
     glm::dvec3 rw_pos  = glm::dvec3(real_pos.x, real_pos.y, real_pos.z);
     glm::dvec3 rw_view = glm::dvec3(real_view.x, real_view.y, real_view.z);
@@ -122,11 +116,11 @@ void Camera::genMatView()
     auto v1 = rw_view - rw_pos;
     auto v2 = rw_up - rw_pos;
 
-    auto rw_left_norm = glm::normalize(glm::cross(v2, v1));
-    auto rw_left = rw_left_norm * eyeseparation_ * 0.5;
+    auto rw_right_norm = glm::normalize(glm::cross(v2, v1));
+    auto rw_right = rw_right_norm * eyeseparation_ * 0.5;
 
-    matrii_[Eye::LEFT].view = glm::lookAt(rw_pos + rw_left, rw_view + rw_left, rw_up + rw_left);
-    matrii_[Eye::RIGHT].view = glm::lookAt(rw_pos - rw_left, rw_view - rw_left, rw_up - rw_left);
+    matrii_[Eye::LEFT].view = glm::lookAt(rw_pos - rw_right, rw_view - rw_right, rw_up - rw_right);
+    matrii_[Eye::RIGHT].view = glm::lookAt(rw_pos + rw_right, rw_view + rw_right, rw_up + rw_right);
 }
 
 PVMatrix& Camera::getMatrii(const Eye eye)
