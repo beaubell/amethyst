@@ -48,7 +48,8 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
   _grid_x(16384),
   _grid_y(16384)
 {
-    std::string log = "Module: science_potplane Activating...";
+    //std::string log = "Module: science_potplane Activating...";
+    std::string log = "Module: science_potplace is broken."; //FIXME
     Global.log.add(log);
    
    auto init = std::initializer_list<double>({ 1.5e12, 1.5e12, 0, 0,
@@ -88,7 +89,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
 
     // Make CL texture fom GL one
     try {
-      //FIXME _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
+      _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
     }
     catch(cl::Error e)
     {
@@ -139,7 +140,7 @@ void GravPotential::update()
     wait_queue.push_back(send_event);
 
     // Aquire GL Buffer
-    mem_objects.push_back(_cl_tex);
+    //FIXME mem_objects.push_back(_cl_tex);
     //FIXME queue.enqueueAcquireGLObjects(&mem_objects);
 
     // Set Kernel Arguments
@@ -148,7 +149,7 @@ void GravPotential::update()
     kern_pot.setArg(2, Global.universe._current.location);
     kern_pot.setArg(3, _cl_buf_plane_corners);
     kern_pot.setArg(4, (unsigned int)_grid_x);
-    kern_pot.setArg(5, _cl_tex);
+    //FIXME kern_pot.setArg(5, _cl_tex);
 
     //Execute Kernel
     queue.enqueueNDRangeKernel(kern_pot, cl::NullRange, cl::NDRange(_grid_x,_grid_y), cl::NullRange, &wait_queue, &kernel_event);

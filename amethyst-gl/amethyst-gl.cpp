@@ -37,6 +37,7 @@
 
 #include <string>
 #include <boost/lexical_cast.hpp>
+#include <iostream>
 
 #define TICK_INTERVAL    10
 

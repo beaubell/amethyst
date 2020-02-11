@@ -61,7 +61,7 @@ const std::string& Texture::getName()
 }
 
 
-void Texture::setName(const std::__cxx11::string& newname)
+void Texture::setName(const std::string& newname)
 {
     name_ = newname;
 }
@@ -206,7 +206,7 @@ void textures_free(void)
     texture_list.clear();
 }
 
-
+#if 0
 void load_skybox (void)
 {
 
@@ -312,7 +312,7 @@ void skybox (void)
   glDepthMask(GL_TRUE);
   glEnable(GL_DEPTH_TEST);
 }
-
+#endif
 
 //-----------------------------------------------------------------------------
 // Name: getBitmapImageData()
@@ -404,6 +404,7 @@ bool getBitmapImageData(const char *pFileName, textureImage *pImage )
 
     return true;
 }
+
 
 } // namespace client
 } // namespace amethyst
