@@ -1,8 +1,8 @@
 # Introduction
 
-![Screenshot with overlay modules installed](docs/sceenshot.png?raw=true "Screenshot")
+![Screenshot with overlay modules installed](/docs/sceenshot.png?raw=true "Screenshot")
 
-![Screenshot showing 3D Stereo](docs/sceenshot-stereo.png?raw=true "Stereoscopic Demo")
+![Screenshot showing 3D Stereo](/docs/sceenshot-stereo.png?raw=true "Stereoscopic Demo")
 
 # Build Requirements
 
