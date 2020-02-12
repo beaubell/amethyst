@@ -2,7 +2,7 @@
 
 This is my pet project to explore iterative integration and visualization techniques. My dream was to turn this into a game or multiplayer simulator with realistic physics, but I've since decided to put this out there as an example of a working gravity simulator with high-precision with other goodies.
 
-This project uses OpenGL 3.3 Core and is (was, untested) multi-platform. While I was a student at the University of Alaska Fairbanks (UAF) studying physics, I made an extensive overhaul to the engine to use Runge-Kutta 4th order integration as well as make use of GPGPU hardware. I used this as a tool for my undergraduate research project to explore the Interplanetary Transport Network (ITN) which is a set of pathways throughout our solar system that allow travel using little to no energy, that is, if time is not an issue.
+This project uses OpenGL 3.3 Core and is (was, currently untested) multi-platform. While I was a student at the University of Alaska Fairbanks (UAF) studying physics, I made an extensive overhaul to the engine to use Runge-Kutta 4th order integration as well as make use of GPGPU hardware. I used this as a tool for my undergraduate research project to explore the Interplanetary Transport Network (ITN) which is a set of pathways throughout our solar system that allow travel using little to no energy, that is, if time is not an issue.
 
 It supports module loading, bmp texture loading, custom shaders, stereoscopic display, loading and saving state via XML and HDF5, offloading O(n^2) gravity calculation to GPU via OpenCL, and multiplayer (currently broken).  There are a few modules that can be loaded to show more science related visuals, such as gravimetric potential (wells) over the whole system.
 
