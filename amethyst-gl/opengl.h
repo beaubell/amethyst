@@ -24,11 +24,6 @@
 #define GL_GLEXT_PROTOTYPES true
 #include "GL/glcorearb.h"
 
-#define CL_TARGET_OPENCL_VERSION 110
-#define __CL_ENABLE_EXCEPTIONS TRUE
-#include <CL/cl.hpp>
-
-
 #include <string>
 
 namespace amethyst {
