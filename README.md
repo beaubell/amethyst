@@ -19,6 +19,7 @@ Demo of Gravimetric Potential Plane visualization module.
 # Build Requirements
 
 - [ ] Boost
+- [ ] Simple DirectMedia Layer (SDL2)
 - [ ] OpenGL
 - [ ] OpenCL
 - [ ] OpenAL
