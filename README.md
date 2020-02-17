@@ -41,4 +41,5 @@ If GUI components (OpenGL, X11, etc) are missing during build, only the library,
 
 # Prepping for first run
 ## Populate resource directory in your home directory. ( Ex. ~/.amethyst/)
+TODO - the resources that are used in the screenshots are not distributable.  I'm working a solution for that.
 ## Move modules into home directory
