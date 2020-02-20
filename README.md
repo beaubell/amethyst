@@ -32,7 +32,7 @@ Demo of Gravimetric Potential Plane visualization module.
 If GUI components (OpenGL, X11, etc) are missing during build, only the library, server, and commandline utilities will be built.
 
 ## on Fedora
-`dnf install libxml2-devel SDL2-devel SDL2-static glew-devel hdf5-devel ocl-icd-devel openal-devel glut-devel`
+`dnf install boost-devel freetype-devel libxml2-devel SDL2-devel SDL2-static glew-devel hdf5-devel ocl-icd-devel openal-devel glut-devel`
 
 # Building
 `mkdir build && cd build`
