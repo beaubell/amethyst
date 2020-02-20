@@ -1,11 +1,10 @@
-/*
-   Utility Functions, Declarations
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+/***********************************************************************
+ Amethyst Physics Library
+  -  Utility Functions, Declarations
 
-//
-//
+ Authors (c):
+ 2003-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ ***********************************************************************/
 
 #ifndef UTILITY_H
 #define UTILITY_H
@@ -20,9 +19,9 @@
 namespace amethyst {
 namespace lib {
 
-  void print_vector(const char *title, const Cartesian_Vector &vector);
-  void print_vector(const char *title, const Spherical_Vector &vector);
-  void print_vector(const char *title, const Quaternion       &vector);
+  void print_vector(const std::string &title, const Cartesian_Vector &vector);
+  void print_vector(const std::string &title, const Spherical_Vector &vector);
+  void print_vector(const std::string &title, const Quaternion       &vector);
   void print_object(const Object &obj);
 
   void readTextFile(const std::string& filename, std::string& in_buffer);

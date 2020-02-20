@@ -1,11 +1,10 @@
-/*
-   Utility Functions, Definitions
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+/***********************************************************************
+ Amethyst Physics Library
+  -  Utility Functions, Implementation
 
-//
-//
+ Authors (c):
+ 2003-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ ***********************************************************************/
 
 #include "utility.h"
 #include "physics.h"
@@ -23,19 +22,19 @@
 namespace amethyst {
 namespace lib{
 
-void print_vector(const char *title, const Cartesian_Vector &vector)
+void print_vector(const std::string &title, const Cartesian_Vector &vector)
 {
-  printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title, vector.x, vector.y, vector.z);
+  printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title.c_str(), vector.x, vector.y, vector.z);
 }
 
-void print_vector(const char *title, const Spherical_Vector &vector)
+void print_vector(const std::string &title, const Spherical_Vector &vector)
 {
-  printf("%s SV: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title, vector.a, vector.p, vector.r);
+  printf("%s SV: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title.c_str(), vector.a, vector.p, vector.r);
 }
 
-void print_vector(const char *title, const Quaternion &vector)
+void print_vector(const std::string &title, const Quaternion &vector)
 {
-  printf("%s QU: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title, vector.x, vector.y, vector.z);
+  printf("%s QU: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title.c_str(), vector.x, vector.y, vector.z);
 }
 
 
@@ -57,6 +56,11 @@ void readTextFile(const std::string& filename, std::string& in_buffer)
   in_buffer.clear();
 
   input.open(filename.c_str(), std::ifstream::in);
+  
+  if (input.fail()) {
+    throw std::runtime_error("Failed to open: " + filename);
+  }
+
   while (input.good())
   {
     char c = input.get();
