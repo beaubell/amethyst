@@ -6,11 +6,7 @@
   - OpenGL shader class declarations
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <memory>

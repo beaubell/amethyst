@@ -1,13 +1,9 @@
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? implementations
+  - OpenGL shader handler implementations
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -39,11 +35,11 @@ Shader::Shader(const std::string& new_shdr, uint shdr_hdl)
     if (!success)
     {
         GLchar infoLog[1000];
-	GLsizei length;
+        GLsizei length;
         glGetShaderInfoLog(shdr_, 1000, &length, infoLog);
         Global.log.add("Error in shader compilation!");
         std::cout << "Info Log (" << length << "): " << infoLog << std::endl;
-	glDeleteShader(shdr_);
+        glDeleteShader(shdr_);
         throw std::runtime_error(infoLog);
     }
 
