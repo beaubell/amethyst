@@ -1,5 +1,6 @@
 #include "cl.h"
 #include "utility.h"
+#include "resource.h"
 
 #include <CL/cl_gl.h>
 
@@ -235,11 +236,10 @@ const char* oclErrorString(cl_int error)
 }
 
 
-cl::Kernel cl_loadkernel(const std::string &file, const std::string &functionstr)
+cl::Kernel cl_loadkernel ( const Resource& res, const std::string& mainfn )
 {
   // Load cl Kernel source from file
-  std::string cl_source;
-  readTextFile(std::string("/home/beau/src/amethyst/lib/") + file, cl_source);
+  const std::string cl_source = res.to_str();
 
   cl::Program::Sources source = cl::Program::Sources(1, std::make_pair (cl_source.c_str(), cl_source.size()-1));
   cl::Program program = cl::Program(lib::amethyst_cl_context, source);
@@ -257,7 +257,7 @@ cl::Kernel cl_loadkernel(const std::string &file, const std::string &functionstr
   /// FIXME XXX Log Warnings.
   std::cout << "Build_log: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(lib::cl_devices[0]);
   
-  return cl::Kernel(program, functionstr.c_str());
+  return cl::Kernel(program, mainfn.c_str());
 }
 
 

@@ -25,6 +25,18 @@ SET(libamethyst_SRCS
   vector.cpp
 )
 
+SET(libamethyst_CL
+  histdist.cl
+  rk4_copy3d.cl
+  rk4_copyrot.cl
+  rk4_finalsum.cl
+  rk4_grav.cl
+  rk4_reductionscale.cl
+  rk4_scale.cl
+  rk4_scalesum.cl
+  rk4_sum.cl
+)
+
 SET(amethystcmd_SRCS
   main.cpp
 )
@@ -42,8 +54,14 @@ link_directories (
   ${Boost_LIBRARY_DIRS}
 )
 
+ADD_RESOURCES(libamethyst_cl ${libamethyst_CL})
 
-ADD_LIBRARY(libamethyst ${libamethyst_SRCS})
+ADD_LIBRARY(libamethyst
+  ${libamethyst_SRCS}
+  ${libamethyst_cl}
+)
+
+
 
 ADD_EXECUTABLE(amethystcmd ${amethystcmd_SRCS})
 

@@ -12,6 +12,9 @@
 #include <cmath>
 
 #include "SDL_keycode.h"
+#include "resource.h"
+
+extern const char _binary_amethyst_gl_science_gravpotential_cl_start, _binary_amethyst_gl_science_gravpotential_cl_end;
 
 namespace amethyst {
 namespace client {
@@ -69,7 +72,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     _cl_buf_plane_corners = cl::Buffer(lib::amethyst_cl_context, CL_MEM_READ_ONLY, sizeof(_potential_plane), NULL, NULL);
 
     // Load kernel
-    kern_pot = lib::cl_loadkernel(std::string("../amethyst-gl/science/gravpotential.cl"), std::string("gravpotential"));
+    kern_pot = lib::cl_loadkernel( LOAD_RESOURCE(amethyst_gl_science_gravpotential_cl, std::string(), "gravpotential.cl") , "gravpotential");
 
     glDisable( GL_TEXTURE_2D );
     glEnable( GL_TEXTURE_RECTANGLE_ARB );
