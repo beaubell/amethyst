@@ -1,22 +1,22 @@
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? implementations
+ - ShaderProgramFont implementation
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "shaderprog_uifont.h"
+
+extern const char _binary_amethyst_gl_shaders_uifont_vert_start, _binary_amethyst_gl_shaders_uifont_vert_end;
+extern const char _binary_amethyst_gl_shaders_uifont_frag_start, _binary_amethyst_gl_shaders_uifont_frag_end;
 
 namespace amethyst {
 namespace client{
 
 ShaderProgramFont::ShaderProgramFont()
- : ShaderProgram("uifont.vert","uifont.frag"),
+:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_uifont_vert, std::string(), "uifont.vert"),
+                 LOAD_RESOURCE(amethyst_gl_shaders_uifont_frag, std::string(), "uifont.frag")),
    vertexLoc_(GetAttribLocation("vertexData")),
    texcoordLoc_(GetAttribLocation("texcoordData")),
    projMatrixLoc_(GetUniformLocation("projMatrix")),

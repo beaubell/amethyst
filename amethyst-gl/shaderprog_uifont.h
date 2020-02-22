@@ -3,14 +3,12 @@
 
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? declarations
+ - ShaderProgramFont declaration
+
+  This class is a specialization of ShaderProgram for the purpose of drawing UI Text elements on the screen.
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "shaderprog.h"

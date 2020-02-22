@@ -9,6 +9,8 @@
  2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
+#include "lib/resource.h"
+
 #include <memory>
 #include <string>
 
@@ -21,7 +23,7 @@ class Shader
     typedef std::shared_ptr<Shader> sptr;
     typedef std::weak_ptr<Shader>   wptr;
 
-    Shader(const std::string& new_shdr, uint shdr_hdl);
+    Shader(const Resource& shader_res, uint shdr_hdl);
     virtual ~Shader();
     const std::string& getName();
 
@@ -39,7 +41,7 @@ class ShaderVertex : public Shader
     typedef std::shared_ptr<ShaderVertex> sptr;
     typedef std::weak_ptr<ShaderVertex>   wptr;
 
-    ShaderVertex(const std::string& new_shdr);
+    ShaderVertex(const Resource& shader_res);
 };
 
 class ShaderFragment : public Shader
@@ -48,7 +50,7 @@ class ShaderFragment : public Shader
     typedef std::shared_ptr<ShaderFragment> sptr;
     typedef std::weak_ptr<ShaderFragment>   wptr;
 
-    ShaderFragment(const std::string& new_shdr);
+    ShaderFragment(const Resource& shader_res);
 };
 
 class ShaderGeometry : public Shader
@@ -57,7 +59,7 @@ class ShaderGeometry : public Shader
     typedef std::shared_ptr<ShaderGeometry> sptr;
     typedef std::weak_ptr<ShaderGeometry>   wptr;
 
-    ShaderGeometry(const std::string& new_shdr);
+    ShaderGeometry(const Resource& shader_res);
 };
 
 class ShaderTessControl : public Shader
@@ -66,7 +68,7 @@ class ShaderTessControl : public Shader
     typedef std::shared_ptr<ShaderTessControl> sptr;
     typedef std::weak_ptr<ShaderTessControl>   wptr;
 
-    ShaderTessControl(const std::string& new_shdr);
+    ShaderTessControl(const Resource& shader_res);
 };
 
 class ShaderTessEval : public Shader
@@ -75,7 +77,7 @@ class ShaderTessEval : public Shader
     typedef std::shared_ptr<ShaderTessEval> sptr;
     typedef std::weak_ptr<ShaderTessEval>   wptr;
 
-    ShaderTessEval(const std::string& new_shdr);
+    ShaderTessEval(const Resource& shader_res);
 };
 
 class ShaderCompute : public Shader
@@ -84,7 +86,7 @@ class ShaderCompute : public Shader
     typedef std::shared_ptr<ShaderCompute> sptr;
     typedef std::weak_ptr<ShaderCompute>   wptr;
 
-    ShaderCompute(const std::string& new_shdr);
+    ShaderCompute(const Resource& shader_res);
 };
 
 

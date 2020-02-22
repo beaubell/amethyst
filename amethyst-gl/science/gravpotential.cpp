@@ -15,6 +15,8 @@
 #include "resource.h"
 
 extern const char _binary_amethyst_gl_science_gravpotential_cl_start, _binary_amethyst_gl_science_gravpotential_cl_end;
+extern const char _binary_amethyst_gl_science_colorizer_frag_start, _binary_amethyst_gl_science_colorizer_frag_end;
+extern const char _binary_amethyst_gl_science_fixed_vert_start, _binary_amethyst_gl_science_fixed_vert_end;
 
 namespace amethyst {
 namespace client {
@@ -104,7 +106,8 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     glEnable( GL_TEXTURE_2D );
 
     //Load Shaders
-    _shaderprog = std::make_shared<ShaderProgram>(std::string("fixed.vert"),std::string("colorizer.frag"));
+    _shaderprog = std::make_shared<ShaderProgram>(LOAD_RESOURCE(amethyst_gl_science_fixed_vert, std::string(), "fixed.vert"),
+                                                  LOAD_RESOURCE(amethyst_gl_science_colorizer_frag, std::string(), "colorizer.frag"));
 
     //Get handles to shader parameters
     _shaderprog->use();

@@ -1,7 +1,7 @@
 
 SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
 
-SUBDIRS(modules science)
+SUBDIRS(modules science shaders)
 
 SET(amethystgl_SRCS
   science/uiw_simstats.cpp
@@ -68,6 +68,23 @@ link_directories (${SDL_LIBRARY_DIR} ${Boost_LIBRARY_DIRS})
 
 ADD_RESOURCES(science_CL
   science/gravpotential.cl
+  science/colorizer.frag
+  science/fixed.vert
+)
+
+ADD_RESOURCES(shader_SRCS
+  shaders/baseline.vert
+  shaders/baseline.frag
+  shaders/fb.vert
+  shaders/fb.frag
+  shaders/hud.vert
+  shaders/hud.frag
+  shaders/model.vert
+  shaders/model.frag
+  shaders/ui.vert
+  shaders/ui.frag
+  shaders/uifont.vert
+  shaders/uifont.frag
 )
 
 ADD_EXECUTABLE(amethyst-gl 

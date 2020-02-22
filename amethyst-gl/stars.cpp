@@ -28,6 +28,9 @@
 #include <iostream>
 #include <cmath>
 
+extern const char _binary_amethyst_gl_shaders_baseline_vert_start, _binary_amethyst_gl_shaders_baseline_vert_end;
+extern const char _binary_amethyst_gl_shaders_baseline_frag_start, _binary_amethyst_gl_shaders_baseline_frag_end;
+
 namespace amethyst {
 namespace client {
 
@@ -168,7 +171,8 @@ void stars_load(std::string &filestr)
     fclose(file);
 
     // Setup Shaders;
-    star_shader = std::make_shared<ShaderProgram>("baseline.vert", "baseline.frag");
+    star_shader = std::make_shared<ShaderProgram>(LOAD_RESOURCE(amethyst_gl_shaders_baseline_vert,std::string(),"baseline.vert"),
+                                                  LOAD_RESOURCE(amethyst_gl_shaders_baseline_frag,std::string(),"baseline.frag"));
 
     vertexLoc = star_shader->GetAttribLocation("positionData");
     colorLoc  = star_shader->GetAttribLocation("colorData"); 

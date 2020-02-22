@@ -16,13 +16,11 @@
 namespace amethyst {
 namespace client {
 
-Shader::Shader(const std::string& new_shdr, uint shdr_hdl)
+Shader::Shader(const Resource& shader_res, uint shdr_hdl)
 : shdr_(shdr_hdl),
-  name_(new_shdr)
+  name_(shader_res.name()),
+  source_(shader_res.to_str())
 {
-    std::string path = Global.dir_shaders + new_shdr;
-
-    lib::readTextFile(path, source_);
 
     const char * source_ptr = source_.c_str();
 
@@ -64,33 +62,33 @@ uint Shader::operator()()
 }
 
 
-ShaderVertex::ShaderVertex(const std::string& new_shdr)
- : Shader(new_shdr, glCreateShader(GL_VERTEX_SHADER))
+ShaderVertex::ShaderVertex(const Resource& shader_res)
+: Shader(shader_res, glCreateShader(GL_VERTEX_SHADER))
 {
 }
 
-ShaderFragment::ShaderFragment(const std::string& new_shdr)
- : Shader(new_shdr, glCreateShader(GL_FRAGMENT_SHADER))
+ShaderFragment::ShaderFragment(const Resource& shader_res)
+: Shader(shader_res, glCreateShader(GL_FRAGMENT_SHADER))
 {
 }
 
-ShaderGeometry::ShaderGeometry(const std::string& new_shdr)
- : Shader(new_shdr, glCreateShader(GL_GEOMETRY_SHADER))
+ShaderGeometry::ShaderGeometry(const Resource& shader_res)
+: Shader(shader_res, glCreateShader(GL_GEOMETRY_SHADER))
 {
 }
 
-ShaderTessControl::ShaderTessControl(const std::string& new_shdr)
- : Shader(new_shdr, glCreateShader(GL_TESS_CONTROL_SHADER))
+ShaderTessControl::ShaderTessControl(const Resource& shader_res)
+: Shader(shader_res, glCreateShader(GL_TESS_CONTROL_SHADER))
 {
 }
 
-ShaderTessEval::ShaderTessEval(const std::string& new_shdr)
- : Shader(new_shdr, glCreateShader(GL_TESS_EVALUATION_SHADER))
+ShaderTessEval::ShaderTessEval(const Resource& shader_res)
+: Shader(shader_res, glCreateShader(GL_TESS_EVALUATION_SHADER))
 {
 }
 
-ShaderCompute::ShaderCompute(const std::string& new_shdr)
- : Shader(new_shdr, glCreateShader(GL_COMPUTE_SHADER))
+ShaderCompute::ShaderCompute(const Resource& shader_res)
+: Shader(shader_res, glCreateShader(GL_COMPUTE_SHADER))
 {
 }
 
