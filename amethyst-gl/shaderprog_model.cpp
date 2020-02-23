@@ -8,6 +8,8 @@
 
 #include "shaderprog_model.h"
 
+#include "global.h"
+
 extern const char _binary_amethyst_gl_shaders_model_vert_start, _binary_amethyst_gl_shaders_model_vert_end;
 extern const char _binary_amethyst_gl_shaders_model_frag_start, _binary_amethyst_gl_shaders_model_frag_end;
 
@@ -15,8 +17,8 @@ namespace amethyst {
 namespace client{
 
 ShaderProgramModel::ShaderProgramModel()
-:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_model_vert, std::string(), "model.vert"),
-                 LOAD_RESOURCE(amethyst_gl_shaders_model_frag, std::string(), "model.frag")),
+:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_model_vert, Global.dir_shaders, "model.vert"),
+                 LOAD_RESOURCE(amethyst_gl_shaders_model_frag, Global.dir_shaders, "model.frag")),
    vertexLoc_(GetAttribLocation("vertexPosition")),
    texcoordLoc_(GetAttribLocation("vertexTexCoord")),
    normalLoc_(GetAttribLocation("vertexNormal")),

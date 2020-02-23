@@ -8,6 +8,8 @@
 
 #include "shaderprog_ui.h"
 
+#include "global.h"
+
 extern const char _binary_amethyst_gl_shaders_ui_vert_start, _binary_amethyst_gl_shaders_ui_vert_end;
 extern const char _binary_amethyst_gl_shaders_ui_frag_start, _binary_amethyst_gl_shaders_ui_frag_end;
 
@@ -15,8 +17,8 @@ namespace amethyst {
 namespace client{
 
 ShaderProgramUI::ShaderProgramUI()
-:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_ui_vert, std::string(), "ui.vert"),
-                 LOAD_RESOURCE(amethyst_gl_shaders_ui_frag, std::string(), "ui.frag")),
+:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_ui_vert, Global.dir_shaders, "ui.vert"),
+                 LOAD_RESOURCE(amethyst_gl_shaders_ui_frag, Global.dir_shaders, "ui.frag")),
    vertexLoc(GetAttribLocation("vertexData")),
    projMatrixLoc(GetUniformLocation("projMatrix")),
    viewMatrixLoc(GetUniformLocation("viewMatrix")),

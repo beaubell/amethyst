@@ -17,8 +17,12 @@
 namespace amethyst {
 namespace client {
 
+// FIXME, not sure I like this.
+using amethyst::lib::Resource;
+    
 class Shader
 {
+    
   public:
     typedef std::shared_ptr<Shader> sptr;
     typedef std::weak_ptr<Shader>   wptr;

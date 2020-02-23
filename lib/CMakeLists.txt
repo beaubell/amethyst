@@ -18,6 +18,7 @@ SET(libamethyst_SRCS
   orientation.cpp
   physics.cpp
   rendermodel.cpp
+  resource.cpp
   ship.cpp
   test.cpp
   universe.cpp
@@ -72,6 +73,7 @@ TARGET_LINK_LIBRARIES(
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_DATE_TIME_LIBRARY}
   ${Boost_FILESYSTEM_LIBRARY}
+  ${Boost_IOSTREAMS_LIBRARY}
   ${OPENCL_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${HDF5_LIBRARIES}

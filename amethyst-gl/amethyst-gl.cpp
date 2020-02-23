@@ -70,8 +70,8 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     texright_(),
     rbleft_(),
     rbright_(),
-    fbshader_(LOAD_RESOURCE(amethyst_gl_shaders_fb_vert,std::string(),"fb.vert"),
-              LOAD_RESOURCE(amethyst_gl_shaders_fb_frag,std::string(),"fb.frag")),
+    fbshader_(LOAD_RESOURCE(amethyst_gl_shaders_fb_vert, Global.dir_shaders, "fb.vert"),
+              LOAD_RESOURCE(amethyst_gl_shaders_fb_frag, Global.dir_shaders, "fb.frag")),
     shadereye_(fbshader_.GetUniformLocation("eye"))
 {
 

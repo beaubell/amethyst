@@ -8,6 +8,8 @@
 
 #include "shaderprog_hud.h"
 
+#include "global.h"
+
 extern const char _binary_amethyst_gl_shaders_hud_vert_start, _binary_amethyst_gl_shaders_hud_vert_end;
 extern const char _binary_amethyst_gl_shaders_hud_frag_start, _binary_amethyst_gl_shaders_hud_frag_end;
 
@@ -15,8 +17,8 @@ namespace amethyst {
 namespace client{
 
 ShaderProgramHUD::ShaderProgramHUD()
-:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_hud_vert, std::string(), "hud.vert"),
-                 LOAD_RESOURCE(amethyst_gl_shaders_hud_frag, std::string(), "hud.frag")),
+:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_hud_vert, Global.dir_shaders, "hud.vert"),
+                 LOAD_RESOURCE(amethyst_gl_shaders_hud_frag, Global.dir_shaders, "hud.frag")),
    vertexLoc(GetAttribLocation("vertexLocation")),
    vertexColLoc(GetAttribLocation("vertexColor")),
    projMatrixLoc(GetUniformLocation("projMatrix")),

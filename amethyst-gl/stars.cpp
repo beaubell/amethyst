@@ -1,17 +1,14 @@
 /***********************************************************************
  Amethyst-GL
-  - Scene randering function implementations
+  - Starfield rendering implementation
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "stars.h"
 #include "opengl.h"
+#include "global.h"
 
 #include "file.h"
 
@@ -171,8 +168,8 @@ void stars_load(std::string &filestr)
     fclose(file);
 
     // Setup Shaders;
-    star_shader = std::make_shared<ShaderProgram>(LOAD_RESOURCE(amethyst_gl_shaders_baseline_vert,std::string(),"baseline.vert"),
-                                                  LOAD_RESOURCE(amethyst_gl_shaders_baseline_frag,std::string(),"baseline.frag"));
+    star_shader = std::make_shared<ShaderProgram>(LOAD_RESOURCE(amethyst_gl_shaders_baseline_vert, Global.dir_shaders, "baseline.vert"),
+                                                  LOAD_RESOURCE(amethyst_gl_shaders_baseline_frag, Global.dir_shaders, "baseline.frag"));
 
     vertexLoc = star_shader->GetAttribLocation("positionData");
     colorLoc  = star_shader->GetAttribLocation("colorData"); 

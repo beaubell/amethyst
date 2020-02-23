@@ -8,6 +8,8 @@
 
 #include "shaderprog_uifont.h"
 
+#include "global.h"
+
 extern const char _binary_amethyst_gl_shaders_uifont_vert_start, _binary_amethyst_gl_shaders_uifont_vert_end;
 extern const char _binary_amethyst_gl_shaders_uifont_frag_start, _binary_amethyst_gl_shaders_uifont_frag_end;
 
@@ -15,8 +17,8 @@ namespace amethyst {
 namespace client{
 
 ShaderProgramFont::ShaderProgramFont()
-:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_uifont_vert, std::string(), "uifont.vert"),
-                 LOAD_RESOURCE(amethyst_gl_shaders_uifont_frag, std::string(), "uifont.frag")),
+:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_uifont_vert, Global.dir_shaders, "uifont.vert"),
+                 LOAD_RESOURCE(amethyst_gl_shaders_uifont_frag, Global.dir_shaders, "uifont.frag")),
    vertexLoc_(GetAttribLocation("vertexData")),
    texcoordLoc_(GetAttribLocation("texcoordData")),
    projMatrixLoc_(GetUniformLocation("projMatrix")),

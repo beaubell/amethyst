@@ -2,32 +2,37 @@
 
 #include <cstddef>
 #include <string>
+#include <filesystem>
+
+#include <boost/iostreams/device/mapped_file.hpp>
+
+namespace amethyst {
+namespace lib {
+
 
 class Resource {
 public:
-    Resource(const char *start, const char *end, const std::string &path, const std::string& filename)
-    : mData(start),
-      mSize(end - start),
-      mName("Builtin: " + filename)
-    {
-        // TODO, Attempt to load file from resource folder else use bultin.
+    Resource(const char *start, const char *end, const std::filesystem::path &path, const std::string& filename);
+    virtual ~Resource();
 
-    }
+    const char * const &data() const;
+    const size_t &size() const;
 
-    const char * const &data() const { return mData; }
-    const size_t &size() const { return mSize; }
-
-    const char *begin() const { return mData; }
-    const char *end() const { return mData + mSize; }
-    const char &operator[](size_t idx) const { return mData[idx]; }
-    std::string to_str() const { return std::string(begin(),end()); }
-    std::string name() const { return mName; }
+    const char *begin() const;
+    const char *end() const;
+    const char &operator[](size_t idx) const;
+    std::string to_str() const;
+    std::string name() const;
 
 private:
     const char *mData;
     size_t mSize;
     std::string mName;
+    boost::iostreams::mapped_file_source mmFile;
 };
 
-#define LOAD_RESOURCE(x,y,z) Resource(&_binary_##x##_start, &_binary_##x##_end, y, z)
+} // namespace lib
+} // namespace amethyst
+
+#define LOAD_RESOURCE(x,y,z) amethyst::lib::Resource(&_binary_##x##_start, &_binary_##x##_end, y, z)
 
