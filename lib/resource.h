@@ -30,6 +30,7 @@ public:
 private:
     Resource(const Resource&) = delete; // non construction-copyable
     Resource& operator=( const Resource& ) = delete; // non copyable
+    bool open_fs(const std::filesystem::path &path, const std::string& filename, bool throws = true);
     const char *mData;
     size_t mSize;
     std::string mName;

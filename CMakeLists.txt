@@ -2,6 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(Amethyst)
 
+enable_testing()
+
 set(CMAKE_CXX_STANDARD 17)
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
@@ -9,7 +11,7 @@ include(AddResource)
 
 FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(SDL2)
-FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread timer iostreams)
+FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(GLEW)
 FIND_PACKAGE(OpenCL)

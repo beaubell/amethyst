@@ -1,7 +1,7 @@
 
 #include "resource.h"
 
-#include <iostream>
+#include <iostream> // FIXME
 #include <boost/iostreams/device/mapped_file.hpp>
 
 namespace amethyst {
@@ -17,13 +17,25 @@ Resource::Resource(const char *start, const char *end, const fs::path &path, con
 {
 
     // Attempt to load overidden resource, don't throw if fails since we fallback on builtin
-    Resource(path, filename, false);    
+    open_fs(path, filename, false);    
     
     std::cout << "Resource: " << name() << " opened." << std::endl;
     
 }
 
 Resource::Resource(const fs::path &path, const std::string& filename, bool throws)
+: mData(nullptr),
+  mSize(0),
+  mName()
+{
+    open_fs(path, filename, true);
+    
+    std::cout << "Resource: " << name() << " opened." << std::endl;
+
+}
+
+bool
+Resource::open_fs(const fs::path &path, const std::string& filename, bool throws)
 {
 
     fs::path filepath = path / filename;
@@ -32,7 +44,7 @@ Resource::Resource(const fs::path &path, const std::string& filename, bool throw
         if (throws)
             throw std::runtime_error("Resource doesn't exist: " + std::string(filepath));
         
-        return;
+        return false;
     }
     
     mmFile.open(filepath);
@@ -41,17 +53,15 @@ Resource::Resource(const fs::path &path, const std::string& filename, bool throw
         if (throws)
             throw std::runtime_error("Unable to open resource: " + std::string(filepath));
 
-        return;
+        return false;
     }
         
     mData = mmFile.begin();
     mSize = mmFile.size();
     
     mName = filepath;
-    
-    std::cout << "Resource: " << name() << " opened." << std::endl;
-    
-    
+
+    return true;    
 }
 
 Resource::~Resource()
