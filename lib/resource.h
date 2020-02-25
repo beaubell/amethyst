@@ -13,6 +13,7 @@ namespace lib {
 class Resource {
 public:
     Resource(const char *start, const char *end, const std::filesystem::path &path, const std::string& filename);
+    Resource(const std::filesystem::path &path, const std::string& filename, bool throws = true);
     virtual ~Resource();
 
     const char * const &data() const;
@@ -23,8 +24,12 @@ public:
     const char &operator[](size_t idx) const;
     std::string to_str() const;
     std::string name() const;
+    uint16_t getUInt16(size_t off) const;
+    uint32_t getUInt32(size_t off) const;
 
 private:
+    Resource(const Resource&) = delete; // non construction-copyable
+    Resource& operator=( const Resource& ) = delete; // non copyable
     const char *mData;
     size_t mSize;
     std::string mName;
