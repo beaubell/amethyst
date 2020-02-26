@@ -109,7 +109,7 @@ void stars_load(const Resource &res)
     {
         sscanf(line.c_str(), "%f,%f,%f,%f\n", &star[i].ra, &star[i].de, &star[i].bt, &star[i].vt);
 
-        printf("%f,%f,%f,%f\n", star[i].ra, star[i].de, star[i].bt, star[i].vt);
+        //printf("%f,%f,%f,%f\n", star[i].ra, star[i].de, star[i].bt, star[i].vt);
 
         // Determine Brightness from Magnitude Data
         V  = star[i].vt - 0.090f * ( star[i].bt - star[i].vt );
