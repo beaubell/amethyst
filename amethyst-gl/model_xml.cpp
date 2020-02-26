@@ -3,11 +3,7 @@
   - Model XML interface function implementations
 
  Authors (c):
- 2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <libxml/tree.h>
@@ -162,9 +158,7 @@ void model_xml_parse_extfile(xmlDocPtr /*doc unused*/, xmlNodePtr cur, Model &mo
         extfile = reinterpret_cast<char *>(temp);
     } else throw(std::runtime_error("path= property not found in extfile"));
 
-    std::string filepath = Global.dir_models + extfile;
-
-    model_load_file(filepath.c_str(), model, tex, shdr);
+    model_load_file(Resource(Global.dir_models, extfile), model, tex, shdr);
 
     return;
 }
