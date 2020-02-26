@@ -148,7 +148,7 @@ int main(int argc, char* argv[])
     Global.dir_modules = Global.dir_amethyst + "/modules/";
 
     string config_file  = Global.dir_amethyst + "/config.xml";
-    string stars_file   = Global.dir_amethyst + "/stars.csv";
+    string stars_file   = "stars.csv";
 
     // Check for existance of config.xml else fail siliently
     if(access(config_file.c_str(), F_OK) == 0) {
@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
     //if  (module_manager.load("uiw_fps"))
     //    module_manager.start("uiw_fps", client);
 
-    stars_load(stars_file);
+    stars_load(Resource(Global.dir_amethyst, stars_file));
     
     try // Experimenting with exceptions
     {

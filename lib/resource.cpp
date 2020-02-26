@@ -18,9 +18,8 @@ Resource::Resource(const char *start, const char *end, const fs::path &path, con
 
     // Attempt to load overidden resource, don't throw if fails since we fallback on builtin
     open_fs(path, filename, false);    
-    
+    mmStream.open(begin(), size());
     std::cout << "Resource: " << name() << " opened." << std::endl;
-    
 }
 
 Resource::Resource(const fs::path &path, const std::string& filename, bool throws)
@@ -29,7 +28,7 @@ Resource::Resource(const fs::path &path, const std::string& filename, bool throw
   mName()
 {
     open_fs(path, filename, true);
-    
+    mmStream.open(begin(), size());
     std::cout << "Resource: " << name() << " opened." << std::endl;
 
 }
@@ -135,6 +134,11 @@ Resource::getUInt32(size_t off) const {
     }
     
     return *(uint32_t*)(mData + off);
+}
+
+Resource::ArrayStream&
+Resource::get_stream() const {
+    return const_cast<ArrayStream&>(mmStream);
 }
 
 } // namespace lib

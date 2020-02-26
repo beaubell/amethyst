@@ -5,6 +5,8 @@
 #include <filesystem>
 
 #include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 
 namespace amethyst {
 namespace lib {
@@ -12,6 +14,8 @@ namespace lib {
 
 class Resource {
 public:
+    typedef boost::iostreams::stream<boost::iostreams::array_source> ArrayStream;
+    
     Resource(const char *start, const char *end, const std::filesystem::path &path, const std::string& filename);
     Resource(const std::filesystem::path &path, const std::string& filename, bool throws = true);
     virtual ~Resource();
@@ -26,6 +30,7 @@ public:
     std::string name() const;
     uint16_t getUInt16(size_t off) const;
     uint32_t getUInt32(size_t off) const;
+    ArrayStream& get_stream() const;
 
 private:
     Resource(const Resource&) = delete; // non construction-copyable
@@ -35,6 +40,7 @@ private:
     size_t mSize;
     std::string mName;
     boost::iostreams::mapped_file_source mmFile;
+    ArrayStream mmStream;
 };
 
 } // namespace lib
