@@ -1,5 +1,4 @@
-#ifndef AMETHYST_CLIENT_TEXTURE_H
-#define AMETHYST_CLIENT_TEXTURE_H
+#pragma once
 
 /***********************************************************************
  Amethyst-GL
@@ -7,14 +6,12 @@
 
  Authors (c):
  2006      Jason A. Guild    (aguild@gmail.com)
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
+#include "resource.h"
+
 #include <string>
 #include <list>
 #include <memory>
@@ -49,7 +46,7 @@ class Texture
 
     void image2D(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid * data);
 
-    void load(const std::string& filename);
+    void load(const lib::Resource& res);
 
   protected:
     // Texture handle
@@ -84,9 +81,7 @@ void textures_free(void);
 void   load_skybox (void);
 void   skybox (void);
 
-bool   getBitmapImageData(const char *pFileName, textureImage *pImage );
+bool   getBitmapImageData(const lib::Resource& res, textureImage *pImage );
 
 } // namespace client
 } // namespace amethyst
-
-#endif /* AMETHYST_CLIENT_TEXTURE_H */

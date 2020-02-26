@@ -1,16 +1,11 @@
-#ifndef AMETHYST_CLIENT_MODEL_H
-#define AMETHYST_CLIENT_MODEL_H
+#pragma once
 
 /***********************************************************************
  Amethyst-GL
   - Model loading and processing function prototypes
 
  Authors (c):
- 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2004-2020 Beau V.C. Bellamy (beau@stellarnetservices.net)
  ***********************************************************************/
 
 #include "texture.h"
@@ -18,6 +13,7 @@
 
 #include "lib/types.h"
 #include "lib/rendermodel.h"
+#include "lib/resource.h"
 #include "shaderprog_model.h"
 
 #include <string>
@@ -57,11 +53,9 @@ void models_free(void);
 Model::sptr model_load(std::string &model_name);
 
 
-void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr);
+void model_load_file(const Resource& res, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr);
 
 TriangleStrip::sptr model_sphere_create(double cx, double cy, double cz, double r, int p );
 
 } // namespace client
 } // namsspace amethyst
-
-#endif /* AMETHYST_CLIENT_MODEL_H */

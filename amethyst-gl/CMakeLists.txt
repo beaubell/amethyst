@@ -1,6 +1,8 @@
 
 SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
 
+SUBDIRS(modules science shaders)
+
 SET(amethystgl_SRCS
   science/uiw_simstats.cpp
   science/uiw_view.cpp
@@ -48,6 +50,8 @@ SET(amethystgl_SRCS
   ${amthyst-uiwindows}
 )
 
+
+
 INCLUDE_DIRECTORIES(
   ${OPENCL_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIR}
@@ -58,12 +62,37 @@ INCLUDE_DIRECTORIES(
   ${Amethyst_SOURCE_DIR}/support
   ${Amethyst_SOURCE_DIR}
   ${Amethyst_BINARY_DIR}
-
 )
 
-
 link_directories (${SDL_LIBRARY_DIR} ${Boost_LIBRARY_DIRS})  
-ADD_EXECUTABLE(amethyst-gl ${amethystgl_SRCS})
+
+ADD_RESOURCES(science_CL
+  science/gravpotential.cl
+  science/colorizer.frag
+  science/fixed.vert
+)
+
+ADD_RESOURCES(shader_SRCS
+  shaders/baseline.vert
+  shaders/baseline.frag
+  shaders/fb.vert
+  shaders/fb.frag
+  shaders/hud.vert
+  shaders/hud.frag
+  shaders/model.vert
+  shaders/model.frag
+  shaders/ui.vert
+  shaders/ui.frag
+  shaders/uifont.vert
+  shaders/uifont.frag
+)
+
+ADD_EXECUTABLE(amethyst-gl 
+  ${amethystgl_SRCS}
+  ${science_CL}
+  ${shader_SRCS}
+  )
+  
 TARGET_LINK_LIBRARIES(amethyst-gl
   ${SDL_LIBRARY}
   ${LIBXML2_LIBRARIES}
@@ -77,4 +106,3 @@ TARGET_LINK_LIBRARIES(amethyst-gl
   ${Boost_THREAD_LIBRARY})
 INSTALL(TARGETS amethyst-gl DESTINATION bin)
 
-SUBDIRS(modules science)

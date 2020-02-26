@@ -2,11 +2,16 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(Amethyst)
 
+enable_testing()
+
+set(CMAKE_CXX_STANDARD 17)
+
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
+include(AddResource)
 
 FIND_PACKAGE(LibXml2)
 FIND_PACKAGE(SDL2)
-FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread timer)
+FIND_PACKAGE(Boost 1.35.0 COMPONENTS date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(GLEW)
 FIND_PACKAGE(OpenCL)
@@ -16,11 +21,6 @@ FIND_PACKAGE(HDF5 COMPONENTS C CXX)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(Threads)
 
-#FIND_PACKAGE(Subversion)
-#IF(Subversion_FOUND)
-#    Subversion_WC_INFO(${PROJECT_SOURCE_DIR} AMETHYST)
-#    MESSAGE("Current revision is ${AMETHYST_WC_REVISION}")
-#ENDIF(Subversion_FOUND)
 INCLUDE(CheckIncludeFile)
 CHECK_INCLUDE_FILE(execinfo.h HAVE_EXECINFO_H)
 
@@ -36,13 +36,6 @@ CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-#SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra -Wconversion -Wold-style-cast")
-SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -ggdb -Wall -Wextra -Wuninitialized -std=gnu++11")
-#SET( DEBUG_CXX_FLAGS "-D HAVE_CONFIG_H -O3")
-SET( SUPPORT_CXX_FLAGS "-O3")
-
-#Hardset the compiler for debugging
-#SET( CMAKE_CXX_COMPILER "/usr/bin/gcc-4.4.3")
 
 # Build only the server if no gui components exist
 IF( NOT SDLMAIN_LIBRARY )

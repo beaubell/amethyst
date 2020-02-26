@@ -8,6 +8,7 @@
 #include "physics.h"
 #include "utility.h"
 #include "io_hdf5.h"
+#include "resource.h"
 
 #include <list>
 #include <iostream>
@@ -554,16 +555,19 @@ void Universe::cl_setup()
   _final.set_size(objects_sig, objects_insig);
 
   /// Load CL kernels
-  kern_rk4_sum      = cl_loadkernel(std::string("rk4_sum.cl"),      std::string("rk4_sum"));
-  kern_rk4_grav     = cl_loadkernel(std::string("rk4_grav.cl"),     std::string("rk4_grav"));
-  kern_rk4_scale    = cl_loadkernel(std::string("rk4_scale.cl"),    std::string("rk4_scale"));
-  kern_rk4_copy3d   = cl_loadkernel(std::string("rk4_copy3d.cl"),   std::string("rk4_copy3d"));
-  kern_rk4_copyrot  = cl_loadkernel(std::string("rk4_copyrot.cl"),   std::string("rk4_copyrot"));
-  kern_rk4_scalesum = cl_loadkernel(std::string("rk4_scalesum.cl"), std::string("rk4_scalesum"));
-  kern_rk4_finalsum = cl_loadkernel(std::string("rk4_finalsum.cl"), std::string("rk4_finalsum"));
-  kern_rk4_reductionscale = cl_loadkernel(std::string("rk4_reductionscale.cl"), std::string("rk4_reductionscale"));
+  std::string searchpath; // TODO
+  std::string rk4_sum_fn("rk4_sum.cl");
+     
+  kern_rk4_sum      = cl_loadkernel( LOAD_RESOURCE(lib_rk4_sum_cl, searchpath, rk4_sum_fn), "rk4_sum");
+  kern_rk4_grav     = cl_loadkernel( LOAD_RESOURCE(lib_rk4_grav_cl, searchpath, "rk4_grav.cl"), "rk4_grav");
+  kern_rk4_scale    = cl_loadkernel( LOAD_RESOURCE(lib_rk4_scale_cl, searchpath, "rk4_scale.cl"), "rk4_scale");
+  kern_rk4_copy3d   = cl_loadkernel( LOAD_RESOURCE(lib_rk4_copy3d_cl, searchpath, "rk4_copy3d.cl"), "rk4_copy3d");
+  kern_rk4_copyrot  = cl_loadkernel( LOAD_RESOURCE(lib_rk4_copyrot_cl, searchpath, "rk4_copyrot.cl"), "rk4_copyrot");
+  kern_rk4_scalesum = cl_loadkernel( LOAD_RESOURCE(lib_rk4_scalesum_cl, searchpath, "rk4_scalesum.cl"), "rk4_scalesum");
+  kern_rk4_finalsum = cl_loadkernel( LOAD_RESOURCE(lib_rk4_finalsum_cl, searchpath, "rk4_finalsum.cl"), "rk4_finalsum");
+  kern_rk4_reductionscale = cl_loadkernel( LOAD_RESOURCE(lib_rk4_reductionscale_cl, searchpath, "rk4_reductionscale.cl"), "rk4_reductionscale");
 
-  kern_dist = cl_loadkernel(std::string("histdist.cl"), std::string("histdist"));
+  kern_dist = cl_loadkernel( LOAD_RESOURCE(lib_histdist_cl, searchpath, "histdist.cl"), "histdist");
   
 
   /// Setup Command Queue

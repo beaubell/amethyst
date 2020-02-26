@@ -5,7 +5,7 @@
 #include <boost/multi_array.hpp>
 #include <glm/glm.hpp>
 
-typedef cl_double float_type;
+typedef double float_type;
 
 typedef boost::multi_array<unsigned int , 2> Am2DArrayUI;
 typedef boost::multi_array<unsigned int , 3> Am3DArrayUI;

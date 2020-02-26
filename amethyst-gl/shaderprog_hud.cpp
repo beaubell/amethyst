@@ -1,22 +1,24 @@
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? implementations
+  - ShaderProgramHUD implementation
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "shaderprog_hud.h"
+
+#include "global.h"
+
+extern const char _binary_amethyst_gl_shaders_hud_vert_start, _binary_amethyst_gl_shaders_hud_vert_end;
+extern const char _binary_amethyst_gl_shaders_hud_frag_start, _binary_amethyst_gl_shaders_hud_frag_end;
 
 namespace amethyst {
 namespace client{
 
 ShaderProgramHUD::ShaderProgramHUD()
- : ShaderProgram("hud.vert","hud.frag"),
+:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_hud_vert, Global.dir_shaders, "hud.vert"),
+                 LOAD_RESOURCE(amethyst_gl_shaders_hud_frag, Global.dir_shaders, "hud.frag")),
    vertexLoc(GetAttribLocation("vertexLocation")),
    vertexColLoc(GetAttribLocation("vertexColor")),
    projMatrixLoc(GetUniformLocation("projMatrix")),

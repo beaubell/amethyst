@@ -3,14 +3,12 @@
 
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? declarations
+ - ShaderProgramModel declaration
+
+ This class is a specialization of ShaderProgram for the purpose of drawing simulation models on the screen.
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "shaderprog.h"

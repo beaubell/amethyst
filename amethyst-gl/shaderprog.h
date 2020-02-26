@@ -14,6 +14,7 @@
  ***********************************************************************/
 
 #include "shader.h"
+#include "lib/resource.h"
 
 #include "glm/glm.hpp"
 
@@ -44,7 +45,7 @@ public:
   };
   
   ShaderProgram();
-  ShaderProgram(const std::string &vname, const std::string &fname);
+  ShaderProgram(const Resource &vs, const Resource &fs);
   ~ShaderProgram();
   AttribHDL  GetAttribLocation(const std::string &attrib);
   UniformHDL GetUniformLocation(const std::string &uniform);

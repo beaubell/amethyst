@@ -3,17 +3,11 @@
   - Model loading and processing function implementations
 
  Authors (c):
- 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2004-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "model.h"
 #include "model_xml.h"
-
-#include "file.h"
 
 #include "global.h"
 #include "texture.h"
@@ -188,22 +182,11 @@ TriangleStrip::sptr model_sphere_create(const double cx, const double cy, const 
 }
 
 
-void model_load_file(const std::string &filename, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr)
+void model_load_file(const Resource &res, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr)
 {
-    std::cout << "Loading Model File: " << filename << std::endl;
-    if (access(filename.c_str(), R_OK) < 0) {
-        if (errno == ENOENT)
-            printf ("Model file doesn't exist: %s\n", filename.c_str());
-        if (errno == EACCES)
-            printf ("Access denied accessing model file: %s\n", filename.c_str());
-	throw std::runtime_error("Cannot Access Model File");
-    }
-
+    std::cout << "Loading Model File: " << res.name() << std::endl;
+ 
     unsigned int vertices = 0, vertices_t = 0, i = 0;
-    FILE *file = fopen(filename.c_str(), "r");
-
-    if(!file)
-        throw(std::runtime_error("Failed to open model file"));
 
     //Create New Primative
     Triangles::sptr prim = std::make_shared<Triangles>();
@@ -214,15 +197,21 @@ void model_load_file(const std::string &filename, Model &model, Texture::sptr te
 
     prim->setName("Main");
 
-    fscanf(file, "%d\n", &vertices);
+    auto& s = res.get_stream();
 
+    std::string line;
+    std::getline(s, line);
+
+    sscanf(line.c_str(), "%d\n", &vertices);
+    
     vertices_t = vertices * 8;
 
-    for (i = 0; !feof(file) && i < vertices_t; i += 8)
+    for (i = 0; std::getline(s, line) && i < vertices_t; i += 8)
     {
-        fscanf(file, "%f, %f,",      &(texcoord.s), &(texcoord.t));
-        fscanf(file, "%f, %f, %f,",  &(normal.x), &(normal.y), &(normal.z));
-        fscanf(file, "%f, %f, %f\n", &(point.x), &(point.y), &(point.z));
+        sscanf(line.c_str(), "%f, %f, %f, %f, %f, %f, %f, %f\n", 
+               &(texcoord.s), &(texcoord.t),
+               &(normal.x), &(normal.y), &(normal.z),
+               &(point.x), &(point.y), &(point.z));
 
         prim->addVertex(point, texcoord, normal);
     }
@@ -235,8 +224,6 @@ void model_load_file(const std::string &filename, Model &model, Texture::sptr te
     prim->setTexture(tex);
     prim->bind(shdr);
     model.addPrimitive(prim);
-
-    fclose(file);
 }
 
 } // namespace client

@@ -1,22 +1,24 @@
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? implementations
+ - ShaderProgramModel implementation
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "shaderprog_model.h"
+
+#include "global.h"
+
+extern const char _binary_amethyst_gl_shaders_model_vert_start, _binary_amethyst_gl_shaders_model_vert_end;
+extern const char _binary_amethyst_gl_shaders_model_frag_start, _binary_amethyst_gl_shaders_model_frag_end;
 
 namespace amethyst {
 namespace client{
 
 ShaderProgramModel::ShaderProgramModel()
- : ShaderProgram("model.vert","model.frag"),
+:  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_model_vert, Global.dir_shaders, "model.vert"),
+                 LOAD_RESOURCE(amethyst_gl_shaders_model_frag, Global.dir_shaders, "model.frag")),
    vertexLoc_(GetAttribLocation("vertexPosition")),
    texcoordLoc_(GetAttribLocation("vertexTexCoord")),
    normalLoc_(GetAttribLocation("vertexNormal")),
