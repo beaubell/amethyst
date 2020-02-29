@@ -10,8 +10,8 @@
 
 #include "global.h"
 
-extern const char _binary_amethyst_gl_shaders_ui_vert_start, _binary_amethyst_gl_shaders_ui_vert_end;
-extern const char _binary_amethyst_gl_shaders_ui_frag_start, _binary_amethyst_gl_shaders_ui_frag_end;
+DECLARE_RESOURCE(amethyst_gl_shaders_ui_vert);
+DECLARE_RESOURCE(amethyst_gl_shaders_ui_frag);
 
 namespace amethyst {
 namespace client{

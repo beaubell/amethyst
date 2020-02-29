@@ -24,8 +24,8 @@
 #include <string>
 #include <cmath>
 
-extern const char _binary_amethyst_gl_shaders_baseline_vert_start, _binary_amethyst_gl_shaders_baseline_vert_end;
-extern const char _binary_amethyst_gl_shaders_baseline_frag_start, _binary_amethyst_gl_shaders_baseline_frag_end;
+DECLARE_RESOURCE(amethyst_gl_shaders_baseline_vert);
+DECLARE_RESOURCE(amethyst_gl_shaders_baseline_frag);
 
 namespace amethyst {
 namespace client {

@@ -14,9 +14,9 @@
 
 #include "SDL_keycode.h"
 
-extern const char _binary_amethyst_gl_science_gravpotential_cl_start, _binary_amethyst_gl_science_gravpotential_cl_end;
-extern const char _binary_amethyst_gl_science_colorizer_frag_start, _binary_amethyst_gl_science_colorizer_frag_end;
-extern const char _binary_amethyst_gl_science_fixed_vert_start, _binary_amethyst_gl_science_fixed_vert_end;
+DECLARE_RESOURCE(amethyst_gl_science_gravpotential_cl);
+DECLARE_RESOURCE(amethyst_gl_science_colorizer_frag);
+DECLARE_RESOURCE(amethyst_gl_science_fixed_vert);
 
 namespace amethyst {
 namespace client {

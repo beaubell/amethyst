@@ -18,15 +18,15 @@
 #include "resource.h"
 
 // OpenCL Resources outside of namespace
-extern const char _binary_lib_histdist_cl_start,           _binary_lib_histdist_cl_end;
-extern const char _binary_lib_rk4_copy3d_cl_start,         _binary_lib_rk4_copy3d_cl_end;
-extern const char _binary_lib_rk4_copyrot_cl_start,        _binary_lib_rk4_copyrot_cl_end;
-extern const char _binary_lib_rk4_finalsum_cl_start,       _binary_lib_rk4_finalsum_cl_end;
-extern const char _binary_lib_rk4_grav_cl_start,           _binary_lib_rk4_grav_cl_end;
-extern const char _binary_lib_rk4_reductionscale_cl_start, _binary_lib_rk4_reductionscale_cl_end;
-extern const char _binary_lib_rk4_scale_cl_start,          _binary_lib_rk4_scale_cl_end;
-extern const char _binary_lib_rk4_scalesum_cl_start,       _binary_lib_rk4_scalesum_cl_end;
-extern const char _binary_lib_rk4_sum_cl_start,            _binary_lib_rk4_sum_cl_end;
+DECLARE_RESOURCE(lib_histdist_cl);
+DECLARE_RESOURCE(lib_rk4_copy3d_cl);
+DECLARE_RESOURCE(lib_rk4_copyrot_cl);
+DECLARE_RESOURCE(lib_rk4_finalsum_cl);
+DECLARE_RESOURCE(lib_rk4_grav_cl);
+DECLARE_RESOURCE(lib_rk4_reductionscale_cl);
+DECLARE_RESOURCE(lib_rk4_scale_cl);
+DECLARE_RESOURCE(lib_rk4_scalesum_cl);
+DECLARE_RESOURCE(lib_rk4_sum_cl);
 
 namespace amethyst {
 namespace lib {

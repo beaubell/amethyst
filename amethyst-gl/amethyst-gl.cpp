@@ -40,8 +40,8 @@
 
 #define TICK_INTERVAL    10
 
-extern const char _binary_amethyst_gl_shaders_fb_vert_start, _binary_amethyst_gl_shaders_fb_vert_end;
-extern const char _binary_amethyst_gl_shaders_fb_frag_start, _binary_amethyst_gl_shaders_fb_frag_end;
+DECLARE_RESOURCE(amethyst_gl_shaders_fb_vert);
+DECLARE_RESOURCE(amethyst_gl_shaders_fb_frag);
 
 
 namespace amethyst
