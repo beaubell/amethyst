@@ -36,12 +36,15 @@ CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+ADD_SUBDIRECTORY(support/boost/crypto)
+ADD_SUBDIRECTORY(support/yaml-cpp)
+ADD_SUBDIRECTORY(lib)
+ADD_SUBDIRECTORY(server)
 
 # Build only the server if no gui components exist
-IF( NOT SDLMAIN_LIBRARY )
-	       SUBDIRS(support/boost/crypto lib server)
-	ELSE()
-	       SUBDIRS(support/FTGL support/boost/crypto lib amethyst-gl server)
+IF( SDLMAIN_LIBRARY )
+	ADD_SUBDIRECTORY(support/FTGL)
+	ADD_SUBDIRECTORY(amethyst-gl)
 ENDIF()
 
 INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_freetype2} lib)

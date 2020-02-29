@@ -46,6 +46,7 @@ INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIR}
   ${HDF5_INCLUDE_DIR}
   ${Amethyst_SOURCE_DIR}/support
+  ${YAML_CPP_SOURCE_DIR}/include
   ${Amethyst_SOURCE_DIR}
   ${Amethyst_BINARY_DIR}
 )
@@ -68,6 +69,7 @@ ADD_EXECUTABLE(amethystcmd ${amethystcmd_SRCS})
 TARGET_LINK_LIBRARIES(
   libamethyst
   libsha2
+  yaml-cpp
   ${Boost_TIMER_LIBRARY}
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_DATE_TIME_LIBRARY}

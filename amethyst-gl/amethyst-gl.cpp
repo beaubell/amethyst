@@ -30,7 +30,7 @@
 #include "scene_xml.h"
 #include "timer.h"
 #include "hud.h"
-#include "physics.h"
+#include "lib/physics.h"
 
 #include "input.h"
 

@@ -10,7 +10,7 @@
  ***********************************************************************/
 
 #include "opengl.h"
-#include "resource.h"
+#include "lib/resource.h"
 
 #include <string>
 #include <list>

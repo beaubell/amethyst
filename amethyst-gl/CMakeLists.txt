@@ -60,6 +60,7 @@ INCLUDE_DIRECTORIES(
   ${SDL_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
   ${Amethyst_SOURCE_DIR}/support
+  ${YAML_CPP_SOURCE_DIR}/include
   ${Amethyst_SOURCE_DIR}
   ${Amethyst_BINARY_DIR}
 )

@@ -13,12 +13,13 @@
  $LastChangedBy$
  ***********************************************************************/
 
+#include "lib/manifest.h"
+
 #include <boost/asio.hpp>
 #include <string>
 #include <boost/noncopyable.hpp>
 #include "connection.h"
 #include "connection_manager.h"
-#include "manifest.h"
 
 namespace amethyst {
 namespace server {

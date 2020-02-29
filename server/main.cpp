@@ -3,8 +3,8 @@
  *   beau@borealisbroadband.net                                            *
  ***************************************************************************/
 
-#include "object.h"
-#include "net.h"
+#include "lib/object.h"
+#include "lib/net.h"
 
 #include <stdio.h>
 #include <unistd.h>

@@ -16,7 +16,7 @@
 #include <string>
 #include <boost/filesystem.hpp>
 
-#include "vector.h"
+#include "lib/vector.h"
 #if 0
 namespace amethyst {
 namespace client {

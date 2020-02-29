@@ -2,6 +2,7 @@
 #include "gravpotential.h"
 #include "lib/utility.h"
 #include "lib/cl.h"
+#include "lib/resource.h"
 #include "../opengl.h"
 #include "../shaderprog.h"
 #include "../global.h"
@@ -12,7 +13,6 @@
 #include <cmath>
 
 #include "SDL_keycode.h"
-#include "resource.h"
 
 extern const char _binary_amethyst_gl_science_gravpotential_cl_start, _binary_amethyst_gl_science_gravpotential_cl_end;
 extern const char _binary_amethyst_gl_science_colorizer_frag_start, _binary_amethyst_gl_science_colorizer_frag_end;
