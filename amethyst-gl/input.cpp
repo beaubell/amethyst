@@ -3,11 +3,7 @@
   - Input function definitions
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <iostream>
@@ -195,8 +191,9 @@ int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
 {
     if (mouse_camera)
     {
-        Global.camera.incYaw(-static_cast<double>(motion.xrel) / 3.0);
-        Global.camera.incPitch(-static_cast<double>(motion.yrel) / 3.0);
+        Camera &camera = context_.get_scene().get_camera();
+        camera.incYaw(-static_cast<double>(motion.xrel) / 3.0);
+        camera.incPitch(-static_cast<double>(motion.yrel) / 3.0);
     }
 
     return 0;
@@ -204,12 +201,13 @@ int Input::event_mouse_motion(const SDL_MouseMotionEvent &motion)
 
 int Input::event_mouse_wheel(const SDL_MouseWheelEvent &wheel)
 {
-    auto dist = Global.camera.getDistance();
+    Camera &camera = context_.get_scene().get_camera();
+    auto dist = camera.getDistance();
     auto newdist = dist / pow(1.1,wheel.y);
 
     if (newdist < 10) newdist = 10;
 
-    Global.camera.setDistance(newdist);
+    camera.setDistance(newdist);
     return 0;
 }
 

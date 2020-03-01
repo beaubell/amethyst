@@ -1,13 +1,9 @@
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? implementations
+  - Main client initialization
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2020 Beau V.C. Bellamy (beau@stellarnetservices.net)
  ***********************************************************************/
 
 #include "amethyst-gl.h"
@@ -179,8 +175,8 @@ int main(int argc, char* argv[])
     
     try // Experimenting with exceptions
     {
-        scene_load(Global.scene);
-	opengl_check_errors("bootstrap-asceneload");
+        scene_load(client.get_scene(), Global.scene);
+        opengl_check_errors("bootstrap-asceneload");
     }
     catch(std::runtime_error &e)
     {

@@ -1,16 +1,10 @@
-#ifndef AMETHYST_CLIENT_GLOBAL_H
-#define AMETHYST_CLIENT_GLOBAL_H
-
+#pragma once
 /***********************************************************************
  Amethyst-GL
   - Global parameters class definition and default values
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "scene_object.h"
@@ -83,8 +77,6 @@ class __global {
       // Control Surfaces
       float throttle;
 
-      Camera camera;
-
       // Timer
       Uint32 next_time;
       Uint32 time_ticks;
@@ -136,5 +128,3 @@ extern __global Global;
 
 } // namespace client
 } // namespace amethyst
-
-#endif /* AMETHYST_CLIENT_GLOBAL_H */

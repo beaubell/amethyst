@@ -127,7 +127,7 @@ HUDRadial::~HUDRadial()
 {
 }
 
-void HUDRadial::render(const Eye eye)
+void HUDRadial::render(const Camera& camera, const Eye eye)
 {
   //DEPRECATED glEnable(GL_FOG);
 
@@ -139,7 +139,7 @@ void HUDRadial::render(const Eye eye)
   // Place "Sol" at the origin of radials
   //if (sol)
   {
-    PVMatrix pvm = Global.camera.getMatrii(eye);
+    PVMatrix pvm = camera.getMatrii(eye);
   
     lib::Cartesian_Vector &reference = Global.obj_view->location;
     lib::Cartesian_Vector temp = sol->location - reference;
@@ -150,7 +150,7 @@ void HUDRadial::render(const Eye eye)
     hudshader_->setViewM(m_temp);
     hudshader_->setFogColor(FogCol);
     hudshader_->setFogStart(10.0f);
-    hudshader_->setFogEnd(Global.camera.getDistance()*10.0);
+    hudshader_->setFogEnd(camera.getDistance()*10.0);
     vao_.bind();
     glDrawArrays(GL_LINES, 0, 365*2+4);
   }

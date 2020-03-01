@@ -5,7 +5,7 @@
   - Camera class declarations
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2016-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "lib/orientation.h"
@@ -49,16 +49,16 @@ class Camera
     void setAttitude(const lib::Quaternion& attitude);
 
     //Generate Matrii
-    void genMatProj();
-    void genMatView();
+    void genMatProj() const;
+    void genMatView() const;
 
     //Get Matrii
-    PVMatrix& getMatrii(const Eye eye = Eye::MONO);
+    const PVMatrix& getMatrii(const Eye eye = Eye::MONO) const;
 
     //Camera Position
-    double getDistance();
-    double getPitch();
-    double getYaw();
+    double getDistance() const;
+    double getPitch() const;
+    double getYaw() const;
     void setDistance(double newdistance);
     void setPitch(double newpitch);
     void setYaw(double newyaw);
@@ -73,12 +73,12 @@ class Camera
     //Get NDC Coords
 
   protected:
-    PVMatrix matrii_[3];
+    mutable PVMatrix matrii_[3];
     Position cam_pos_;
 
   private:
     glm::dvec2 screen;
-    double eyeseparation_;
+    mutable double eyeseparation_;
     double yaw;
     double pitch;
     double distance;

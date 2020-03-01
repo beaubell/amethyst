@@ -83,7 +83,7 @@ HUDOrbit::~HUDOrbit()
 {
 }
 
-void HUDOrbit::render(const Eye eye)
+void HUDOrbit::render(const Camera& camera, const Eye eye)
 {
   
   Color FogCol(0.0f, 0.0f, 0.0f, 0.0f);
@@ -92,7 +92,7 @@ void HUDOrbit::render(const Eye eye)
   lib::Object::sptr sol = Global.universe.object_find("Sol");
   lib::Object::sptr earth = Global.universe.object_find("Earth");
 
-  PVMatrix pvm = Global.camera.getMatrii(eye);
+  PVMatrix pvm = camera.getMatrii(eye);
 
   // Place "Sol" at the origin of radials
   if (sol)
@@ -106,7 +106,7 @@ void HUDOrbit::render(const Eye eye)
     hudshader_->setViewM(m_temp);
     hudshader_->setFogColor(FogCol);
     hudshader_->setFogStart(10.0f);
-    hudshader_->setFogEnd(Global.camera.getDistance()*10.0);
+    hudshader_->setFogEnd(camera.getDistance()*10.0);
     vao_[0].bind();
     glDrawArrays(GL_LINE_STRIP, 0, orbitpoints_);
   }
@@ -122,7 +122,7 @@ void HUDOrbit::render(const Eye eye)
     hudshader_->setViewM(m_temp);
     hudshader_->setFogColor(FogCol);
     hudshader_->setFogStart(10.0f);
-    hudshader_->setFogEnd(Global.camera.getDistance()*10.0);
+    hudshader_->setFogEnd(camera.getDistance()*10.0);
     vao_[1].bind();
     glDrawArrays(GL_LINE_STRIP, 0, orbitpoints_);
   }

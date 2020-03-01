@@ -21,7 +21,7 @@ class HUDOrbit : public HUDWidget
   public:
     HUDOrbit(ShaderProgramHUD::sptr uishader);
     virtual ~HUDOrbit();
-    virtual void render(const Eye eye = Eye::MONO);
+    virtual void render(const Camera& camera, const Eye eye = Eye::MONO);
     virtual void update(){};
     
   private:

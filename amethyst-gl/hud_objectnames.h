@@ -1,11 +1,10 @@
 #pragma once
-
 /***********************************************************************
  Amethyst-GL
   - HUD Object Labels Class declarations
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ 2016-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "hud_widget.h"
@@ -28,7 +27,7 @@ class HUDObjectNames : public HUDWidget
 
     HUDObjectNames(ftgl::FTFont &font, ShaderProgramFont::sptr textshader);
     virtual ~HUDObjectNames(){};
-    virtual void render(const Eye eye = Eye::MONO);
+    virtual void render(const Camera& camera, const Eye eye = Eye::MONO);
     virtual void update();
 
   private:

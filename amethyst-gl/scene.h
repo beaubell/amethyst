@@ -1,12 +1,10 @@
-#ifndef AMETHYST_CLIENT_SCENE_H
-#define AMETHYST_CLIENT_SCENE_H
-
+#pragma once
 /***********************************************************************
  Amethyst-GL
   - Scene randering function prototypes
 
  Authors (c):
- 2006-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "camera.h"
@@ -18,16 +16,28 @@
 namespace amethyst {
 namespace client {
 
-void scene_render(const Eye eye = Eye::MONO);
+class Scene {
 
-void scene_add_object(lib::Object::sptr);
-void scene_select_object_next();
-void scene_target_object_next();
-void scene_control_ship_next();
+  public:
+    Scene();
+    virtual ~Scene();
+    void render(const Eye eye = Eye::MONO);
 
-extern std::list<lib::Object::sptr>  object_list;
+    void add_object(lib::Object::sptr);
+    void select_object_next();
+    void target_object_next();
+    void control_ship_next();
+    
+    Camera& get_camera();
+    const Camera& get_camera() const;
+    std::list<lib::Object::sptr>& get_obj_list();
+    const std::list<lib::Object::sptr>& get_obj_list() const;
+
+  private:
+    Camera camera_;
+    std::list<lib::Object::sptr>  object_list_;
+
+}; // class Scene
 
 } // namespace client
 } // namespace amethyst
-
-#endif // AMETHYST_CLIENT_SCENE_H

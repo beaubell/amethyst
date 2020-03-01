@@ -3,7 +3,7 @@
   - HUD Object Labels Class implementations
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2016-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -29,7 +29,7 @@ HUDObjectNames::HUDObjectNames(ftgl::FTFont &font, ShaderProgramFont::sptr texts
 }
 
 
-void HUDObjectNames::render(const Eye eye)
+void HUDObjectNames::render(const Camera& camera, const Eye eye)
 {
     // Iterate through list of label objects
     for(auto& label : objectlabels_)
@@ -47,7 +47,7 @@ void HUDObjectNames::render(const Eye eye)
             float x = Global.screen_x;
             float y = Global.screen_y;
 
-            PVMatrix pvm = Global.camera.getMatrii(eye);
+            PVMatrix pvm = camera.getMatrii(eye);
 
             glm::dmat4 m_temp = glm::translate(pvm.view, glm::dvec3(temp.x, temp.y, temp.z));
 

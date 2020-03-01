@@ -3,7 +3,7 @@
   - Camera class implementations
 
  Authors (c):
- 2016-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2016-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "camera.h"
@@ -50,7 +50,8 @@ void Camera::setAttitude(const lib::Quaternion& newattitude)
   
 }
 
-void Camera::genMatProj()
+void
+Camera::genMatProj() const
 {
     eyeseparation_ = distance/50.0;
     double aperture = glm::radians(45.0);
@@ -79,7 +80,8 @@ void Camera::genMatProj()
     }
 }
 
-void Camera::genMatView()
+void
+Camera::genMatView() const
 {
     // Convert to radians
     double x_rad = (yaw / 180.0) * M_PI;
@@ -123,7 +125,8 @@ void Camera::genMatView()
     matrii_[Eye::RIGHT].view = glm::lookAt(rw_pos + rw_right, rw_view + rw_right, rw_up + rw_right);
 }
 
-PVMatrix& Camera::getMatrii(const Eye eye)
+const PVMatrix&
+Camera::getMatrii(const Eye eye) const
 {
     //FIXME - Optimize the generation of the PV matrii
     genMatProj();
@@ -131,17 +134,20 @@ PVMatrix& Camera::getMatrii(const Eye eye)
     return matrii_[eye];
 }
 
-double Camera::getDistance()
+double
+Camera::getDistance() const
 {
     return distance;
 }
 
-double Camera::getPitch()
+double
+Camera::getPitch() const
 {
     return pitch;
 }
 
-double Camera::getYaw()
+double
+Camera::getYaw() const
 {
     return yaw;
 }

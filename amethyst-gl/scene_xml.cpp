@@ -3,11 +3,7 @@
   - Scene XML interface function implementations
 
  Authors (c):
- 2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <libxml/tree.h>
@@ -34,7 +30,7 @@ using lib::Cartesian_Vector;
 using lib::Object;
 using lib::Ship;
 
-static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected);
+static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected, Camera& camera);
 static void scene_xml_parse_object(xmlDocPtr doc, xmlNodePtr cur, Object& obj);
 static void scene_xml_parse_ship(xmlDocPtr doc, xmlNodePtr cur, Ship::sptr ship);
 static void scene_xml_parse_shader(xmlDocPtr doc, xmlNodePtr cur);
@@ -59,7 +55,7 @@ class parse_error : public std::runtime_error
 };
 
 
-void scene_load(const std::string &name)
+void scene_load(Scene& scene, const std::string &name)
 {
 
     std::string path = Global.dir_scene + "scn_" + name + ".xml";
@@ -98,7 +94,7 @@ void scene_load(const std::string &name)
     {
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("client") ))
         {
-            scene_xml_parse_client (doc, cur, selected_object);
+            scene_xml_parse_client (doc, cur, selected_object, scene.get_camera());
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("shader") ))
         {
@@ -119,7 +115,7 @@ void scene_load(const std::string &name)
                 throw e;
             }
 
-            scene_add_object(temp);
+            scene.add_object(temp);
             Global.universe.object_add(temp);
         }
         if (!xmlStrcmp(cur->name, reinterpret_cast<const xmlChar *>("ship") ))
@@ -137,7 +133,7 @@ void scene_load(const std::string &name)
                 throw e;
             }
 
-            scene_add_object(temp);
+            scene.add_object(temp);
             Global.ships.insert(temp);
             Global.universe.object_add(temp);
         }
@@ -167,7 +163,7 @@ void scene_load(const std::string &name)
 }
 
 
-static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected)
+static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &selected, Camera& camera)
 {
     xmlChar *temp;
 
@@ -186,21 +182,21 @@ static void scene_xml_parse_client(xmlDocPtr doc, xmlNodePtr cur, std::string &s
             temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("yaw"));
             if (temp)
             {
-                Global.camera.setYaw(strtod(reinterpret_cast<char *>(temp), NULL));
+                camera.setYaw(strtod(reinterpret_cast<char *>(temp), NULL));
                 xmlFree(temp);
             }
 
             temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("pitch"));
             if (temp)
             {
-                Global.camera.setPitch(strtod(reinterpret_cast<char *>(temp), NULL));
+                camera.setPitch(strtod(reinterpret_cast<char *>(temp), NULL));
                 xmlFree(temp);
             }
 
             temp = xmlGetProp(cur, reinterpret_cast<const xmlChar *>("dist"));
             if (temp)
             {
-                Global.camera.setDistance(strtod(reinterpret_cast<char *>(temp), NULL));
+                camera.setDistance(strtod(reinterpret_cast<char *>(temp), NULL));
                 xmlFree(temp);
             }
         }
@@ -444,9 +440,10 @@ static void scene_xml_parse_quat(xmlDocPtr, xmlNodePtr cur, Quaternion &quat)
 }
 
 
-void scene_xml_write (const std::string &name)
+void scene_xml_write (const Scene& scene, const std::string &name)
 {
-
+    const Camera& camera = scene.get_camera();
+    
     std::ofstream outfile;
     std::string   filename = Global.dir_scene + "scn_" + name + ".xml";
 
@@ -460,16 +457,17 @@ void scene_xml_write (const std::string &name)
     outfile << "  <name>" << name << "</name>" << std::endl;
     outfile << "  <client>" << std::endl;
     outfile << "    <selected>" << Global.ship->name << "</selected>" << std::endl;
-    outfile << "    <camera yaw=\"" << Global.camera.getYaw() << "\" pitch=\""
-                                    << Global.camera.getPitch() << "\" dist=\""
-                                    << Global.camera.getDistance() << "\" />" << std::endl;
+    outfile << "    <camera yaw=\"" << camera.getYaw() << "\" pitch=\""
+                                    << camera.getPitch() << "\" dist=\""
+                                    << camera.getDistance() << "\" />" << std::endl;
     outfile << "  </client>" << std::endl;
     outfile << "  <shader>" << std::endl;
     //outfile << "    <vertex>" << Global.vshader << "</vertex>" << std::endl;     /// FIXME, no longer loading shaders here
     //outfile << "    <fragment>" << Global.fshader << "</fragment>" << std::endl; /// FIXME, no longer loading shaders here
     outfile << "  </shader>" << std::endl;
 
-    if(!object_list.empty())
+    auto& obj_list = scene.get_obj_list();
+    if(!obj_list.empty())
     {
         auto obj1 = Global.universe.list().begin();
         do

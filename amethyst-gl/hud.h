@@ -1,16 +1,10 @@
-#ifndef AMETHYST_CLIENT_HUD_H
-#define AMETHYST_CLIENT_HUD_H
-
+#pragma once
 /***********************************************************************
  Amethyst-GL
   - Heads up display function declarations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "camera.h"
@@ -20,9 +14,7 @@ namespace client {
 
 void hud_setup(void);
 void hud_shutdown(void);
-void hud_render(const Eye eye = Eye::MONO);
+void hud_render(const Camera& camera, const Eye eye = Eye::MONO);
 
 } // namespace client
 } // namespace amethyst
-
-#endif  /* AMETHYST_CLIENT_HUD_H */

@@ -24,6 +24,7 @@ namespace client {
 #include "texture.h"
 #include "bufferobj.h"
 #include "shaderprog.h"
+#include "scene.h"
 
 #include "yaml-cpp/node/node.h"
 
@@ -65,6 +66,9 @@ class Amethyst_GL
     void state_save();
     void state_recall();
     void configure(YAML::Node& config);
+    
+    Scene& get_scene();
+    const Scene& get_scene() const;
 
     double time_scalar;
 
@@ -86,6 +90,8 @@ class Amethyst_GL
     bool fullscreen;
     bool stereo;
 
+    Scene scene_;
+    
     //Framebuffers
     FrameBuffer fbleft_;
     FrameBuffer fbright_;

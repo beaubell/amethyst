@@ -3,7 +3,7 @@
   - Scene rendering function implementations
 
  Authors (c):
- 2006-2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 
@@ -31,37 +31,43 @@ namespace client {
 //using lib::Object;
 using lib::Cartesian_Vector;
 
-std::list<lib::Object::sptr>  object_list;
-
 double sun_rot = 0;
 
+Scene::Scene() {
+    //TODO
+}
+
+Scene::~Scene() {
+    //TODO
+}
 
 // Called to draw scene
-void scene_render(const Eye eye)
+void
+Scene::render(const Eye eye)
 {
   // Get Gobal State
   const Cartesian_Vector &reference = Global.obj_view->location;
   const Quaternion       &attitude  = Global.obj_view->attitude;
 
-  Global.camera.setScreen(Screen(Global.screen_x, Global.screen_y));
+  camera_.setScreen(Screen(Global.screen_x, Global.screen_y));
 
   //Stars
   {
     // Set camera position without respect to camera zoom-out so that stars appear far away.
-    auto tempdist = Global.camera.getDistance();
-    Global.camera.setDistance(1.0);
-    Global.camera.setAttitude(attitude);
-    PVMatrix pvm = Global.camera.getMatrii(eye);
+    auto tempdist = camera_.getDistance();
+    camera_.setDistance(1.0);
+    camera_.setAttitude(attitude);
+    PVMatrix pvm = camera_.getMatrii(eye);
 
     // Render Stars
     stars_render(pvm.proj, pvm.view);
 
     // Resore camera distance
-    Global.camera.setDistance(tempdist);
+    camera_.setDistance(tempdist);
   }
 
   // Get PV matrix set
-  PVMatrix pvm = Global.camera.getMatrii(eye);
+  PVMatrix pvm = camera_.getMatrii(eye);
   glm::mat4 m_model = glm::mat4(1);
 
 #if 0
@@ -101,9 +107,9 @@ void scene_render(const Eye eye)
   }
 
   // Draw Objects in List.
-  if(!object_list.empty())
+  if(!object_list_.empty())
   {
-    auto obj1 = object_list.begin();
+    auto obj1 = object_list_.begin();
     do
     {
         if(sol != *obj1 && (*obj1)->model)
@@ -113,7 +119,7 @@ void scene_render(const Eye eye)
             (*obj1)->model->render(pvm.proj, pvm.view, m_mdlref);
         }
         obj1++;
-    }  while (obj1 != object_list.end());
+    }  while (obj1 != object_list_.end());
 
   }
 
@@ -145,20 +151,22 @@ void scene_render(const Eye eye)
 }
 
 
-void scene_add_object(lib::Object::sptr newobject)
+void
+Scene::add_object(lib::Object::sptr newobject)
 {
     if (newobject)
-      object_list.push_back(newobject);
+      object_list_.push_back(newobject);
 
 }
 
 
-void scene_select_object_next()
+void
+Scene::select_object_next()
 {
     lib::Object::sptr &selected = Global.obj_view;            // Reference to ship pointer
     Scene_Object::sptr &reference = Global.reference_object; // Pointer to reference_object
 
-    if(!object_list.empty())
+    if(!object_list_.empty())
     {
         auto obj1 = Global.universe.list().begin();
 
@@ -195,12 +203,13 @@ void scene_select_object_next()
 }
 
 
-void scene_target_object_next()
+void
+Scene::target_object_next()
 {
     lib::Object::sptr& target   = Global.obj_target;            // Reference to target pointer
     Scene_Object::sptr& reference = Global.reference_object; // Pointer to reference_object
 
-    if(!object_list.empty())
+    if(!object_list_.empty())
     {
         auto obj1 = Global.universe.list().begin();
 
@@ -236,12 +245,13 @@ void scene_target_object_next()
 
 }
 
-void scene_control_ship_next()
+void
+Scene::control_ship_next()
 {
     lib::Ship::sptr& control  = Global.ship;            // Reference to control ship
     Scene_Ship::sptr& reference = Global.reference_ship; // Pointer to reference_ship
 
-    if(!object_list.empty())
+    if(!object_list_.empty())
     {
         auto obj1 = Global.ships.begin();
 
@@ -276,6 +286,31 @@ void scene_control_ship_next()
         control = reference;
     }
 
+}
+
+
+Camera&
+Scene::get_camera() {
+
+    return camera_;
+}
+
+
+const Camera&
+Scene::get_camera() const {
+    return camera_;
+}
+
+
+std::list<lib::Object::sptr>&
+Scene::get_obj_list() {
+ 
+    return object_list_;
+}
+
+const std::list<lib::Object::sptr>&
+Scene::get_obj_list() const {
+    return object_list_;
 }
 
 } // namespace amethyst

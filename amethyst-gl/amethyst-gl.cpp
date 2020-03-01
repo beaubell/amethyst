@@ -60,6 +60,7 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
     show_hud(true),
     fullscreen(false),
     stereo(false),
+    scene_(),
     fbleft_("left"),
     fbright_("right"),
     texleft_(),
@@ -105,10 +106,10 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   input->sig_kb[SDL_SCANCODE_LEFTBRACKET].connect(bind(&Amethyst_GL::stride_dec,this));
 
   // Targeting Control
-  input->sig_kb[SDL_SCANCODE_N].connect(scene_control_ship_next);
-  input->sig_kb[SDL_SCANCODE_B].connect(scene_select_object_next);
-  input->sig_kb[SDL_SCANCODE_T].connect(scene_target_object_next);
-  input->sig_kb[SDL_SCANCODE_P].connect(bind(scene_xml_write,std::string("dump")));
+  input->sig_kb[SDL_SCANCODE_N].connect(bind(&Scene::control_ship_next,scene_));
+  input->sig_kb[SDL_SCANCODE_B].connect(bind(&Scene::select_object_next,scene_));
+  input->sig_kb[SDL_SCANCODE_T].connect(bind(&Scene::target_object_next,scene_));
+  input->sig_kb[SDL_SCANCODE_P].connect(bind(scene_xml_write,scene_,std::string("dump")));
 
   // GUI Control
   input->sig_kb[SDL_SCANCODE_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
@@ -303,13 +304,13 @@ void Amethyst_GL::render()
 	eye = (eyeframe)?Eye::LEFT:Eye::RIGHT;
 
       // Render Scene
-      scene_render(eye);
+      scene_.render(eye);
 
       sig_render_scene(Global.obj_view->location);
 
       // Show HUD and UI
       if(show_hud)
-        hud_render(eye);  
+        hud_render(scene_.get_camera(), eye);  
 
       if(show_ui)
         ui.render();
@@ -509,6 +510,18 @@ void Amethyst_GL::configure(YAML::Node& mconfig) {
         Global.scene = scene.as<std::string>();
     }
     
+}
+
+Scene&
+Amethyst_GL::get_scene() {
+    
+    return scene_;
+}
+
+const Scene&
+Amethyst_GL::get_scene() const {
+    
+    return scene_;
 }
 
 

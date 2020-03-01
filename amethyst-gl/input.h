@@ -1,16 +1,10 @@
-#ifndef AMETHYST_CLIENT_INPUT_H
-#define AMETHYST_CLIENT_INPUT_H
-
+#pragma once
 /***********************************************************************
  Amethyst-GL
   - Input function declarations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 // Forward Delcaration
@@ -107,5 +101,3 @@ class Input
 
 } // namespace client
 } // namespace amethyst
-
-#endif /* AMETHYST_CLIENT_INPUT_H */

@@ -3,11 +3,7 @@
   - Heads up display function definitions
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "hud.h"
@@ -89,22 +85,22 @@ void hud_shutdown(void)
     delete fonts[0];
 }
 
-void hud_render(const Eye eye)
+void hud_render(const Camera& camera, const Eye eye)
 {
     glDisable( GL_DEPTH_TEST);
 
     // Radials from Sun Indicating Day/Month/Year
     if (hudradial)
-      hudradial->render(eye);
+      hudradial->render(camera, eye);
 
     // Orbit Indication for Earth around Sun and Moon around Earth
     if (hudorbit)
-      hudorbit->render(eye);
+      hudorbit->render(camera, eye);
 
     if(hudobjlabels)
     {
         hudobjlabels->update();
-        hudobjlabels->render(eye);
+        hudobjlabels->render(camera, eye);
     }
 
     #ifdef HAVE_MALLOC_H
