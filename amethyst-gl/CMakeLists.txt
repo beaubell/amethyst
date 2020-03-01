@@ -1,7 +1,7 @@
 
 SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
 
-SUBDIRS(modules science shaders)
+SUBDIRS(modules science shaders resources)
 
 SET(amethystgl_SRCS
   science/uiw_simstats.cpp
@@ -9,7 +9,6 @@ SET(amethystgl_SRCS
   science/gravpotential.cpp
   bufferobj.cpp
   camera.cpp
-  config_xml.cpp
   debug.cpp
   framebuffer.cpp
   global.cpp
@@ -65,7 +64,11 @@ INCLUDE_DIRECTORIES(
   ${Amethyst_BINARY_DIR}
 )
 
-link_directories (${SDL_LIBRARY_DIR} ${Boost_LIBRARY_DIRS})  
+link_directories (
+  ${SDL_LIBRARY_DIR}
+  ${Boost_LIBRARY_DIRS}
+  ${YAML_CPP_BINARY_DIR}
+)  
 
 ADD_RESOURCES(science_CL
   science/gravpotential.cl
@@ -88,11 +91,16 @@ ADD_RESOURCES(shader_SRCS
   shaders/uifont.frag
 )
 
+ADD_RESOURCES(resource_SRCS
+  resources/config.yml
+)
+
 ADD_EXECUTABLE(amethyst-gl 
   ${amethystgl_SRCS}
   ${science_CL}
   ${shader_SRCS}
-  )
+  ${resource_SRCS}
+)
   
 TARGET_LINK_LIBRARIES(amethyst-gl
   ${SDL_LIBRARY}
@@ -104,6 +112,9 @@ TARGET_LINK_LIBRARIES(amethyst-gl
   libamethyst
   libftgl
   ${Boost_TIMER_LIBRARY}
-  ${Boost_THREAD_LIBRARY})
+  ${Boost_THREAD_LIBRARY}
+  ${YAML_CPP_LIBRARIES}
+)
+
 INSTALL(TARGETS amethyst-gl DESTINATION bin)
 

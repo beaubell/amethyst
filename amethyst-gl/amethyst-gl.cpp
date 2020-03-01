@@ -3,11 +3,7 @@
   - Starup / Main Loop Functions
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 
@@ -34,6 +30,8 @@
 
 #include "input.h"
 
+#include "yaml-cpp/yaml.h"
+
 #include <string>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
@@ -42,7 +40,6 @@
 
 DECLARE_RESOURCE(amethyst_gl_shaders_fb_vert);
 DECLARE_RESOURCE(amethyst_gl_shaders_fb_frag);
-
 
 namespace amethyst
 {
@@ -456,8 +453,68 @@ void Amethyst_GL::state_recall()
 }
 
 
+
+void Amethyst_GL::configure(YAML::Node& mconfig) {
+ 
+    using namespace YAML;
+    
+    Node agl_yml = mconfig["amethyst-gl"];
+    
+    Node network = agl_yml["network"];
+    if (network.IsMap()) {
+        if (network["server"].IsScalar() && network["port"].IsScalar() && network["handle"].IsScalar()) {
+            //TODO Remove global reference
+            Global.net_server = network["server"].as<std::string>();
+            Global.net_port = network["port"].as<int>();
+            Global.net_handle = network["handle"].as<std::string>();
+            std::cout << "Network Configured: " << Global.net_handle << "@" << Global.net_server << ":" << Global.net_port << std::endl;
+        }
+    }
+    
+    Node input = agl_yml["input"];
+    if (input.IsMap()) {
+        
+        Node imapping = input["mapping"];
+        if (imapping.IsMap()) {
+            Node pitch = imapping["pitch"];
+            if (pitch.IsSequence() && pitch.size() == 2) {
+                std::cout << "Input pitch: " << pitch[0] << ":" << pitch[1] << std::endl;
+                Global.axis_pitch.joystick = pitch[0].as<int>();
+                Global.axis_pitch.axis     = pitch[1].as<int>();
+            }
+            Node roll = imapping["roll"];
+            if (roll.IsSequence() && roll.size() == 2) {
+                std::cout << "Input roll: " << roll[0] << ":" << roll[1] << std::endl;
+                Global.axis_roll.joystick = roll[0].as<int>();
+                Global.axis_roll.axis     = roll[1].as<int>();
+            }
+            Node yaw = imapping["yaw"];
+            if (yaw.IsSequence() && yaw.size() == 2) {
+                std::cout << "Input yaw: " << yaw[0] << ":" << yaw[1] << std::endl;
+                Global.axis_yaw.joystick = yaw[0].as<int>();
+                Global.axis_yaw.axis     = yaw[1].as<int>();
+            }
+            Node throttle = imapping["throttle"];
+            if (throttle.IsSequence() && throttle.size() == 2) {
+                std::cout << "Input throttle: " << throttle[0] << ":" << throttle[1] << std::endl;
+                Global.axis_throttle.joystick = throttle[0].as<int>();
+                Global.axis_throttle.axis     = throttle[1].as<int>();
+            }
+        }
+    }
+    
+    Node scene = agl_yml["scene"];
+    if (scene.IsScalar()) {
+        //TODO Remove global reference
+        Global.scene = scene.as<std::string>();
+    }
+    
+}
+
+
 } // namespace client
 } // namespace amethyst
+
 
 
 

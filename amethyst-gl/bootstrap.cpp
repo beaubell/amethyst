@@ -19,14 +19,15 @@
 #include "shaderprog.h"
 #include "scene.h"
 #include "scene_xml.h"
-#include "config_xml.h"
 #include "lib/cl.h"
 #include "lib/utility.h"
 #include "lib/physics.h"
+#include "lib/resource.h"
 #include "science/gravpotential.h"
 #include "science/uiw_simstats.h"
 #include "science/uiw_view.h"
 
+#include "yaml-cpp/yaml.h"
 #include <iostream>
 
 #ifdef WIN32
@@ -52,6 +53,7 @@
 
 #define AMETHSYT_SHORT_NAME Amethyst-GL
 
+DECLARE_RESOURCE(amethyst_gl_resources_config_yml);
 
 // bring some standard stuff into our namespace
 using std::cout;
@@ -147,23 +149,8 @@ int main(int argc, char* argv[])
     Global.dir_fonts    = Global.dir_amethyst + "/fonts";
     Global.dir_modules = Global.dir_amethyst + "/modules/";
 
-    string config_file  = Global.dir_amethyst + "/config.xml";
+    string config_file  = "config.yml";
     string stars_file   = "stars.csv";
-
-    // Check for existance of config.xml else fail siliently
-    if(access(config_file.c_str(), F_OK) == 0) {
-
-        // Check for read permission else fail kicking and screaming
-        if(access(config_file.c_str(), R_OK) == 0) {
-            parse_xml_config (config_file.c_str());
-            std::cout << " * Reading config file at "
-                      << config_file << "..." << std::endl;
-        } else {
-            std::cout << " ! Unable to read config file at "
-                      << config_file << ", permission?" << std::endl;
-        }
-    }
-
 
     sdl_setup();
 
@@ -173,6 +160,13 @@ int main(int argc, char* argv[])
 
     // Create Instance of Amethyst Physics Engine
     Amethyst_GL client(Global.dir_amethyst);
+    
+    Resource mainconfig_res = LOAD_RESOURCE(amethyst_gl_resources_config_yml, Global.dir_amethyst, config_file);
+    
+    auto config_is_ptr = mainconfig_res.get_istream();
+    YAML::Node mainconfig = YAML::Load(*config_is_ptr);
+    
+    client.configure(mainconfig);
 
     // FIXME XXX network_setup();
 

@@ -1,0 +1,12 @@
+amethyst-gl:
+    network:
+        server: amethyst.bvcb.us
+        port: 23232
+        handle: noname
+    input:
+        mapping:
+            pitch: [ 0, 1 ]
+            roll: [0, 0]
+            yaw: [0, 2]
+            throttle: [0, 3]
+    scene: Startup

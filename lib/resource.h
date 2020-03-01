@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <string>
 #include <filesystem>
+#include <istream>
+#include <vector>
 
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/device/array.hpp>
@@ -11,6 +13,13 @@
 namespace amethyst {
 namespace lib {
 
+struct MemBuf : std::streambuf
+{
+    MemBuf(char* begin, char* end) {
+        this->setg(begin, begin, end);
+    }
+};
+    
 
 class Resource {
 public:
@@ -31,6 +40,7 @@ public:
     uint16_t getUInt16(size_t off) const;
     uint32_t getUInt32(size_t off) const;
     ArrayStream& get_stream() const;
+    std::shared_ptr<std::istream> get_istream() const;
 
 private:
     Resource(const Resource&) = delete; // non construction-copyable
@@ -41,6 +51,8 @@ private:
     std::string mName;
     boost::iostreams::mapped_file_source mmFile;
     ArrayStream mmStream;
+    mutable MemBuf mSBuf;
+    mutable std::vector<std::weak_ptr<std::istream>> vistream_;
 };
 
 } // namespace lib

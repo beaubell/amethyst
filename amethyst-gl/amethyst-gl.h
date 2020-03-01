@@ -1,15 +1,10 @@
-#ifndef AMETHYST_CLIENT_AMETHYSTGL_H
-#define AMETHYST_CLIENT_AMETHYSTGL_H
+#pragma once
 /***********************************************************************
  Amethyst-GL
   - Main class declarations declarations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 namespace amethyst {
@@ -30,6 +25,8 @@ namespace client {
 #include "bufferobj.h"
 #include "shaderprog.h"
 
+#include "yaml-cpp/node/node.h"
+
 #include <boost/thread.hpp>
 #include <boost/signals2.hpp>
 
@@ -44,7 +41,7 @@ class Amethyst_GL
 {
    public:
     Amethyst_GL(const std::string &path_root);
-   ~Amethyst_GL();
+    virtual ~Amethyst_GL();
 
     void setupFramebuffers(void);
     void main_loop(void);
@@ -67,6 +64,7 @@ class Amethyst_GL
     void stride_dec();
     void state_save();
     void state_recall();
+    void configure(YAML::Node& config);
 
     double time_scalar;
 
@@ -105,5 +103,3 @@ class Amethyst_GL
 
 } // namespace client
 } // namespace amethyst
-
-#endif // AMETHYST_CLIENT_AMETHYSTGL_H

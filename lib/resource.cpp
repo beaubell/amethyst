@@ -10,27 +10,36 @@ namespace lib {
 namespace fs = std::filesystem;
 namespace bio = boost::iostreams; 
 
+
 Resource::Resource(const char *start, const char *end, const fs::path &path, const std::string& filename)
     : mData(start),
       mSize(end - start),
-      mName("Builtin: " + filename)
+      mName("Builtin: " + filename),
+      mSBuf(nullptr, nullptr)
 {
 
     // Attempt to load overidden resource, don't throw if fails since we fallback on builtin
     open_fs(path, filename, false);    
     mmStream.open(begin(), size());
+
+    mSBuf = MemBuf(const_cast<char *>(begin()), const_cast<char *>(begin()+mSize));
+    //std::istream in(&sbuf);
+
     std::cout << "Resource: " << name() << " opened." << std::endl;
 }
 
 Resource::Resource(const fs::path &path, const std::string& filename, bool throws)
 : mData(nullptr),
   mSize(0),
-  mName()
+  mName(),
+  mSBuf(nullptr, nullptr)
 {
     open_fs(path, filename, true);
     mmStream.open(begin(), size());
-    std::cout << "Resource: " << name() << " opened." << std::endl;
+    
+    mSBuf = MemBuf(const_cast<char *>(begin()), const_cast<char *>(begin()+mSize));
 
+    std::cout << "Resource: " << name() << " opened." << std::endl;
 }
 
 bool
@@ -65,12 +74,15 @@ Resource::open_fs(const fs::path &path, const std::string& filename, bool throws
 
 Resource::~Resource()
 {
+    // Check stream references for open instances
+    for (auto& s_ptr: vistream_) {
+        if (!s_ptr.expired())
+            std::cout << "ERROR! Stream open while resource teardown! " << name() << std::endl;
+    }
+    
     mmFile.close();
     std::cout << "Resource: " << name() << " closed." << std::endl;
     
-    if (name() == "") {
-        //throw std::runtime_error("WHere");
-    }
 }
 
 
@@ -140,6 +152,16 @@ Resource::ArrayStream&
 Resource::get_stream() const {
     return const_cast<ArrayStream&>(mmStream);
 }
+
+std::shared_ptr<std::istream>
+Resource::get_istream() const {
+    
+    std::shared_ptr<std::istream> is_ptr = std::make_shared<std::istream>(&mSBuf);
+    std::weak_ptr<std::istream> wptr = is_ptr;
+    vistream_.push_back(wptr);
+    return is_ptr;
+}
+
 
 } // namespace lib
 } // namespace amethyst
