@@ -22,8 +22,12 @@
 
 #include "scene.h"
 
+#include "yaml-cpp/yaml.h"
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+
+#include <iostream>
 
 namespace amethyst {
 namespace client {
@@ -286,6 +290,33 @@ Scene::control_ship_next()
         control = reference;
     }
 
+}
+
+void
+Scene::toYAMLFile(const std::string& fn) {
+    
+    using namespace YAML;
+    
+    Node scene;
+    scene["name"] = fn;
+    Node client;
+    client["selected"] = Global.ship->name;
+    client["camera"] = camera_.toYAML();
+    
+    scene["client"] = client;
+    
+    for (auto& obj: Global.universe.list()) {
+        scene["objects"].push_back(obj->toYAML());
+    }
+    
+    Node root;
+    root["scene"] = scene;
+    
+    //YAML::Emitter out;
+    std::cout << root;
+    
+    //std::cout << out.c_str() << std::endl;
+    
 }
 
 

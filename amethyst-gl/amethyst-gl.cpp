@@ -106,10 +106,10 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   input->sig_kb[SDL_SCANCODE_LEFTBRACKET].connect(bind(&Amethyst_GL::stride_dec,this));
 
   // Targeting Control
-  input->sig_kb[SDL_SCANCODE_N].connect(bind(&Scene::control_ship_next,scene_));
-  input->sig_kb[SDL_SCANCODE_B].connect(bind(&Scene::select_object_next,scene_));
-  input->sig_kb[SDL_SCANCODE_T].connect(bind(&Scene::target_object_next,scene_));
-  input->sig_kb[SDL_SCANCODE_P].connect(bind(scene_xml_write,scene_,std::string("dump")));
+  input->sig_kb[SDL_SCANCODE_N].connect(bind(&Scene::control_ship_next,&scene_));
+  input->sig_kb[SDL_SCANCODE_B].connect(bind(&Scene::select_object_next,&scene_));
+  input->sig_kb[SDL_SCANCODE_T].connect(bind(&Scene::target_object_next,&scene_));
+  input->sig_kb[SDL_SCANCODE_P].connect(bind(&Scene::toYAMLFile,&scene_,std::string("dump")));
 
   // GUI Control
   input->sig_kb[SDL_SCANCODE_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
@@ -507,7 +507,7 @@ void Amethyst_GL::configure(YAML::Node& mconfig) {
     Node scene = agl_yml["scene"];
     if (scene.IsScalar()) {
         //TODO Remove global reference
-        Global.scene = scene.as<std::string>();
+        Global.scene_name = scene.as<std::string>();
     }
     
 }

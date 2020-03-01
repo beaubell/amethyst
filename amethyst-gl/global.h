@@ -46,7 +46,7 @@ class __global {
       // Physics Engine
       Universe universe;
 
-      std::string scene;
+      std::string scene_name;
 
       // Your Ship
       lib::Ship::sptr ship;

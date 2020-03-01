@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
     
     try // Experimenting with exceptions
     {
-        scene_load(client.get_scene(), Global.scene);
+        scene_load(client.get_scene(), Global.scene_name);
         opengl_check_errors("bootstrap-asceneload");
     }
     catch(std::runtime_error &e)

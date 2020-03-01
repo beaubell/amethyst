@@ -3,15 +3,12 @@
   - Vector Class Objects Implementations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <math.h>
 #include "vector.h"
+#include "yaml-cpp/yaml.h"
 
 namespace amethyst {
 namespace lib {
@@ -42,6 +39,21 @@ namespace lib {
        y = -y;
        z = -z;
        }
+       
+YAML::Node
+Cartesian_Vector::toYAML() const
+{
+    using namespace YAML;
+    
+    Node vector;
+    vector.SetStyle(EmitterStyle::Flow);
+    vector["x"] = x;
+    vector["y"] = y;
+    vector["z"] = z;
+    
+    return vector;
+}
+
 
     Cartesian_Vector& Cartesian_Vector::operator = (const Cartesian_Vector& vector)
     {
@@ -161,6 +173,21 @@ namespace lib {
        p = 0;
        r = 0;
        }
+       
+YAML::Node
+Spherical_Vector::toYAML() const
+{
+    using namespace YAML;
+    
+    Node vector;
+    vector.SetStyle(EmitterStyle::Flow);
+    vector["a"] = a;
+    vector["p"] = p;
+    vector["r"] = r;
+    
+    return vector;
+}
+
 
 } // namespace lib
 } // namespace amethyst

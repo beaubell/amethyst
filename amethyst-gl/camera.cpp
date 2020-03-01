@@ -10,6 +10,8 @@
 #include <cmath>
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "yaml-cpp/yaml.h"
+
 namespace amethyst {
 namespace client {
 
@@ -180,6 +182,26 @@ void Camera::setPitch(double newpitch)
 void Camera::setYaw(double newyaw)
 {
     yaw = newyaw;
+}
+
+YAML::Node
+Camera::toYAML() const {
+ 
+    using namespace YAML;
+    Node cam;
+    
+    cam["yaw"] = yaw;
+    cam["pitch"] = pitch;
+    cam["dist"] = distance;
+    
+    return cam;
+}
+
+void
+Camera::fromYAML(YAML::Node) {
+
+    // TODO
+    
 }
 
 } // namespace client

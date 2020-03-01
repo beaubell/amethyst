@@ -28,12 +28,16 @@ class Scene {
     void target_object_next();
     void control_ship_next();
     
+    void toYAMLFile(const std::string &name);
+    
     Camera& get_camera();
     const Camera& get_camera() const;
     std::list<lib::Object::sptr>& get_obj_list();
     const std::list<lib::Object::sptr>& get_obj_list() const;
 
   private:
+    Scene(const Scene&) = delete;
+    Scene& operator=(const Scene&) = delete;
     Camera camera_;
     std::list<lib::Object::sptr>  object_list_;
 

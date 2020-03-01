@@ -3,11 +3,7 @@
   - Physics Object Class Implementation
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <stdlib.h>
@@ -15,6 +11,8 @@
 
 #include "physics.h"
 #include "object.h"
+
+#include "yaml-cpp/yaml.h"
 
 
 namespace amethyst {
@@ -123,6 +121,35 @@ namespace lib {
         accel_apply(time);
         velocity_apply(time);
     }
+    
+YAML::Node
+Object::toYAML(){
+
+    using namespace YAML;
+    
+    Node object;
+    
+    object["name"] = name;
+
+    if (model) {
+        object["model"] = model->getName();
+    }
+    
+    object["mass"] = mass;
+    object["location"] = location.toYAML();
+    object["velocity"] = velocity.toYAML();
+    object["attitude"] = attitude.toYAML();
+    
+    return object;
+    
+}
+
+void
+Object::fromYAML(const YAML::Node object){
+
+    using namespace YAML;
+
+}
 
 } // namespace lib
 } // namespace amethyst

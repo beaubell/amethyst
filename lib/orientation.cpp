@@ -3,19 +3,31 @@
   - Orientation Class Objects Implementation
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
- #include <math.h>
- #include "object.h"
- #include "orientation.h"
+#include <math.h>
+#include "object.h"
+#include "orientation.h"
+#include "yaml-cpp/yaml.h"
 
 namespace amethyst {
 namespace lib {
+        
+YAML::Node
+Euler::toYAML() const
+{
+    using namespace YAML;
+    
+    Node vector;
+    vector.SetStyle(EmitterStyle::Flow);
+    vector["x"] = x;
+    vector["y"] = y;
+    vector["z"] = z;
+    
+    return vector;
+}
+
 
   Quaternion::Quaternion(const Quaternion &old) {
 
@@ -62,6 +74,21 @@ namespace lib {
        w /= L;
        }
 
+YAML::Node
+Quaternion::toYAML() const
+{
+    using namespace YAML;
+
+    Node vector;
+    vector.SetStyle(EmitterStyle::Flow);
+    vector["w"] = w;
+    vector["x"] = x;
+    vector["y"] = y;
+    vector["z"] = z;
+
+    return vector;
+}
+       
    Cartesian_Vector  Quaternion::GetVector(void) {
 
        return Cartesian_Vector(x,y,z);
