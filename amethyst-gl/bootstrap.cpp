@@ -48,8 +48,8 @@
 
 #define AMETHSYT_SHORT_NAME Amethyst-GL
 
-DECLARE_RESOURCE(amethyst_gl_resources_config_yml);
-//DECLARE_RESOURCE(amethyst_gl_resources_config_yml);
+DECLARE_RESOURCE(amethyst_gl_resources_config_yaml);
+DECLARE_RESOURCE(amethyst_gl_resources_scn_Startup_yaml);
 
 // bring some standard stuff into our namespace
 using std::cout;
@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
     // Create Instance of Amethyst Physics Engine
     Amethyst_GL client(Global.dir_amethyst);
     
-    Resource mainconfig_res = LOAD_RESOURCE(amethyst_gl_resources_config_yml, Global.dir_amethyst, config_file);
+    Resource mainconfig_res = LOAD_RESOURCE(amethyst_gl_resources_config_yaml, Global.dir_amethyst, config_file);
     
     auto config_is_ptr = mainconfig_res.get_istream();
     YAML::Node mainconfig = YAML::Load(*config_is_ptr);
@@ -175,7 +175,10 @@ int main(int argc, char* argv[])
     
     try
     {
-        Resource res(Global.dir_scene, "scn_Startup.yaml");
+        std::string scenefn = std::string("scn_") + Global.scene_name + std::string(".yaml");
+        Resource res = (Global.scene_name == "Startup")?LOAD_RESOURCE(amethyst_gl_resources_scn_Startup_yaml, Global.dir_scene, "scn_Startup.yaml")
+                                                       :Resource(Global.dir_scene, scenefn);
+
 
         auto scene_is_ptr = res.get_istream();
         YAML::Node root = YAML::Load(*scene_is_ptr);

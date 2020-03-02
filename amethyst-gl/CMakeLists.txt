@@ -91,7 +91,8 @@ ADD_RESOURCES(shader_SRCS
 )
 
 ADD_RESOURCES(resource_SRCS
-  resources/config.yml
+  resources/config.yaml
+  resources/scn_Startup.yaml
 )
 
 ADD_EXECUTABLE(amethyst-gl 
