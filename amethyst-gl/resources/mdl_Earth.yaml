@@ -5,5 +5,3 @@ model:
         radius: 6.371000e6
         precision: 100
         texture: earth2048.bmp
-
-

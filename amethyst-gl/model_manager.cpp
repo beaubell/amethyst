@@ -181,18 +181,23 @@ void model_yaml_load(std::string &name, Model &model) {
             int precision     = ysphere["precision"].as<int>();
             std::string texture_name = ysphere["texture"].as<std::string>();
 
-            // Get Material Info
-            // TODO
-
             // Make Model and Load Resources
             Texture::sptr tex = texture_load(texture_name);
             ShaderProgramModel::sptr shdr = std::make_shared<ShaderProgramModel>();
-
 
             TriangleStrip::sptr sphere = model_sphere_create(0.0, 0.0, 0.0, radius, precision);
             sphere->setTexture(tex);
             sphere->bind(shdr);
 
+            // Get Material Info
+            Node ymatinfo = ysphere["material"];
+            if (ymatinfo.IsMap()) {
+
+                MaterialInfo matinfo(ymatinfo);
+                sphere->setMaterial(matinfo);
+            }
+
+            // Finish Primitive
             model.addPrimitive(sphere);
 
         }
@@ -219,7 +224,7 @@ model_load_file(const Resource &res, Model &model, Texture::sptr tex, ShaderProg
 
     unsigned int vertices = 0, vertices_t = 0, i = 0;
 
-    //Create New Primative
+    //Create New Primitive
     Triangles::sptr prim = std::make_shared<Triangles>();
 
     Triangles::vertex_type point;

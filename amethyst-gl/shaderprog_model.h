@@ -14,6 +14,8 @@
 #include "shaderprog.h"
 #include "lib/types.h"
 
+#include "yaml-cpp/node/node.h"
+
 namespace amethyst {
 namespace client {
 
@@ -30,6 +32,9 @@ public:
     glm::vec3 Kd;
     glm::vec3 Ks;
     float Shininess;
+
+    MaterialInfo() {};
+    MaterialInfo(YAML::Node ymatinfo);
 };
   
 class ShaderProgramModel : public ShaderProgram

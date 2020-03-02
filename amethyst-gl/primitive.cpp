@@ -17,7 +17,14 @@ namespace client {
 //
 Primitive::Primitive(const std::string& name)
  : name_(name)
-{}
+{
+    // Set default MaterialInfo
+    matinfo_.Ka = glm::vec3(0.0f, 0.0f, 0.0f);
+    matinfo_.Kd = glm::vec3(1.0f, 1.0f, 1.0f);
+    matinfo_.Ks = glm::vec3(1.0f, 1.0f, 1.0f);
+    matinfo_.Shininess = 100.0f;
+
+}
 
 
 Primitive::~Primitive()
@@ -38,6 +45,12 @@ void Primitive::addVertex(const vertex_type &vertex, const texcoord_type &texcoo
     _vertii.push_back(vertex);
     _texcoords.push_back(texcoord);
     _normals.push_back(normal);
+}
+
+void
+Primitive::setMaterial(MaterialInfo& matinfo)
+{
+    matinfo_ = matinfo;
 }
 
 //
@@ -63,16 +76,10 @@ void Triangles::render(const TransMatrix& m_proj, const TransMatrix& m_view, con
     
     const lib::Cartesian_Vector &reference = Global.obj_view->location;
 
+    // TODO Dont hard code light to 0,0,0;
     LightInfo light;
     light.Position = m_view*m_model*glm::vec4(-reference.x, -reference.y, -reference.z, 1.0f);
     light.Intensity = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    MaterialInfo matinfo;
-    matinfo.Ka = glm::vec3(0.0f, 0.0f, 0.0f);
-    matinfo.Kd = glm::vec3(1.0f, 1.0f, 1.0f);
-    matinfo.Ks = glm::vec3(1.0f, 1.0f, 1.1f);
-    matinfo.Shininess = 200.0f;
-
 
     _shader->use();
     _shader->setProjM(m_proj);
@@ -80,7 +87,7 @@ void Triangles::render(const TransMatrix& m_proj, const TransMatrix& m_view, con
     _shader->setNormalM(glm::mat3(m_view*m_model));
     _shader->setMVP(m_proj*m_view*m_model);
     _shader->setLight(light);
-    _shader->setMaterial(matinfo);
+    _shader->setMaterial(matinfo_);
 
     if(_texture) //FIXME
       _texture->bind();
@@ -150,15 +157,10 @@ void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view,
     
     const lib::Cartesian_Vector &reference = Global.obj_view->location;
 
+    // TODO Dont hard code light to 0,0,0;
     LightInfo light;
     light.Position = m_view*m_model*glm::vec4(-reference.x, -reference.y, -reference.z, 1.0f);
     light.Intensity = glm::vec3(1.0f, 1.0f, 1.0f);
-
-    MaterialInfo matinfo;
-    matinfo.Ka = glm::vec3(0.0f, 0.0f, 0.0f);
-    matinfo.Kd = glm::vec3(1.0f, 1.0f, 1.0f);
-    matinfo.Ks = glm::vec3(1.0f, 1.0f, 1.1f);
-    matinfo.Shininess = 200.0f;
 
 
     _shader->use();
@@ -167,7 +169,7 @@ void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view,
     _shader->setNormalM(glm::mat3(m_view*m_model));
     _shader->setMVP(m_proj*m_view*m_model);
     _shader->setLight(light);
-    _shader->setMaterial(matinfo);
+    _shader->setMaterial(matinfo_);
     _texture->bind();
 
     // Render vao objects

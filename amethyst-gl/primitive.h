@@ -40,6 +40,7 @@ class Primitive
     const std::string& getName();
 
     void addVertex(const vertex_type &vertex, const texcoord_type &texcoord, const normal_type normal);
+    void setMaterial(MaterialInfo& matinfo);
 
   protected:
     ShaderProgramModel::sptr _shader;
@@ -48,6 +49,7 @@ class Primitive
     std::vector<texcoord_type> _texcoords;
     std::vector<normal_type> _normals;
 
+    MaterialInfo matinfo_;
     // VAO Buffer Objects
     VertexArray vao_; // Vertex Array Objects Identifier
     ArrayBuffer buffer_[3]; // 0=quads, 1=textures, 2=normals

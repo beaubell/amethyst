@@ -7,14 +7,46 @@
  ***********************************************************************/
 
 #include "shaderprog_model.h"
-
 #include "global.h"
+
+#include "yaml-cpp/yaml.h"
+
+#include <iostream>
 
 DECLARE_RESOURCE(amethyst_gl_shaders_model_vert);
 DECLARE_RESOURCE(amethyst_gl_shaders_model_frag);
 
 namespace amethyst {
 namespace client{
+
+MaterialInfo::MaterialInfo(YAML::Node ymatinfo) {
+    using namespace YAML;
+
+    Node yka = ymatinfo["ambient"];
+    Node ykd = ymatinfo["diffuse"];
+    Node yks = ymatinfo["specular"];
+    Node yshininess = ymatinfo["shininess"];
+
+    if (yka.IsSequence() && yka.size() == 3) {
+        for (int i = 0; i < yka.size(); i++)
+            Ka[i] = yka[i].as<float_type>();
+        std::cout << Ka[0] << Ka[1] << Ka[2] << std::endl;
+    }
+
+    if (ykd.IsSequence() && ykd.size() == 3) {
+        for (int i = 0; i < ykd.size(); i++)
+            Kd[i] = ykd[i].as<float_type>();
+    }
+
+    if (yks.IsSequence() && yks.size() == 3) {
+        for (int i = 0; i < yks.size(); i++)
+            Ks[i] = yks[i].as<float_type>();
+    }
+
+    if (yshininess.IsScalar())
+        Shininess = yshininess.as<float_type>();
+}
+
 
 ShaderProgramModel::ShaderProgramModel()
 :  ShaderProgram(LOAD_RESOURCE(amethyst_gl_shaders_model_vert, Global.dir_shaders, "model.vert"),
