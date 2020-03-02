@@ -20,7 +20,7 @@ SET(amethystgl_SRCS
   joystick.cpp
   log.cpp
   model.cpp
-  model_xml.cpp
+  model_manager.cpp
   module.cpp
   net.cpp
   opengl.cpp

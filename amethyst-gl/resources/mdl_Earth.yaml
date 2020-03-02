@@ -1,6 +1,9 @@
 model:
   name: Earth
-  type: Sphere
-  texture: earth2048.bmp
-  sphere: { radius:"6.371000e6", precision:"100" }
+  components:
+    - sphere:
+        radius: 6.371000e6
+        precision: 100
+        texture: earth2048.bmp
+
 

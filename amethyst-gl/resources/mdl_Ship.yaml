@@ -1,5 +1,5 @@
 model:
   name: Ship
-  type: File
-  extfile: { path:"ship.mdl" }
+  components:
+    - extfile: ship.mdl
 

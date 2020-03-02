@@ -1,5 +1,7 @@
 model:
   name: Venus
-  type: Sphere
-  texture: venus2048.bmp
-  sphere: { radius:"6.0518e6", precision:"100" }
+  components:
+    - sphere:
+        radius: 6.0518e6
+        precision: 100
+        texture: venus2048.bmp

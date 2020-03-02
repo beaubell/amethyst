@@ -1,5 +1,12 @@
 model:
   name: Sun
-  type: Sphere
-  texture: sun2048.bmp
-  sphere: { radius:"6.955e8", precision:"100" }
+  components:
+    - sphere:
+        radius: 696.34e6
+        precision: 100
+        texture: sun2048.bmp
+        material:
+          ambient: [ 1.0, 1.0, 1.0]
+          diffuse: [ 0.0, 0.0, 0.0]
+          specular: [ 0.0, 0.0, 0.0]
+          shininess: 0.0

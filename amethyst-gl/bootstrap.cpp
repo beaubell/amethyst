@@ -14,6 +14,7 @@
 #include "opengl.h"
 #include "shaderprog.h"
 #include "scene.h"
+#include "model_manager.h"
 #include "lib/cl.h"
 #include "lib/utility.h"
 #include "lib/physics.h"
@@ -172,28 +173,22 @@ int main(int argc, char* argv[])
     //    module_manager.start("uiw_fps", client);
 
     stars_load(Resource(Global.dir_amethyst, stars_file));
-    
-    try
-    {
-        std::string scenefn = std::string("scn_") + Global.scene_name + std::string(".yaml");
-        Resource res = (Global.scene_name == "Startup")?LOAD_RESOURCE(amethyst_gl_resources_scn_Startup_yaml, Global.dir_scene, "scn_Startup.yaml")
-                                                       :Resource(Global.dir_scene, scenefn);
 
+    // Load Scene
+    std::string scenefn = std::string("scn_") + Global.scene_name + std::string(".yaml");
+    Resource res = (Global.scene_name == "Startup")?LOAD_RESOURCE(amethyst_gl_resources_scn_Startup_yaml, Global.dir_scene, "scn_Startup.yaml")
+                                                    :Resource(Global.dir_scene, scenefn);
 
-        auto scene_is_ptr = res.get_istream();
-        YAML::Node root = YAML::Load(*scene_is_ptr);
+    auto scene_is_ptr = res.get_istream();
+    YAML::Node root = YAML::Load(*scene_is_ptr);
 
-        YAML::Node scene = root["scene"];
+    YAML::Node scene = root["scene"];
 
-        // Load Scene YAML
-        client.get_scene().fromYAML(scene);
-        opengl_check_errors("bootstrap-asceneload");
-    }
-    catch(std::runtime_error &e)
-    {
-        std::cout << "Non-Fatal Exception: " << e.what() << std::endl;
-        throw e;
-    }
+    client.get_scene().fromYAML(scene);
+
+    // Check for errors
+    opengl_check_errors("bootstrap-asceneload");
+
 
 #if 0
     // This was for the Interplanetary Transport Network experiment.
@@ -239,7 +234,7 @@ int main(int argc, char* argv[])
     
     client.main_loop();
 
-    models_free();
+    modelmanager.clear();
     textures_free();
     stars_free();
 

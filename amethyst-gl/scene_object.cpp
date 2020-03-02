@@ -9,6 +9,7 @@
 #include "scene_object.h"
 #include "global.h"
 #include "model.h"
+#include "model_manager.h"
 #include "yaml-cpp/yaml.h"
 
 #include <cmath>
@@ -66,7 +67,7 @@ Scene_Object::fromYAML(YAML::Node ynode) {
     Node ymodel = ynode["model"];
     if (ymodel.IsScalar()) {
         std::string modelstr = ymodel.as<std::string>();
-        model = model_load(modelstr);
+        model = modelmanager.get(modelstr);
     }
 }
 
@@ -80,7 +81,7 @@ Scene_Ship::fromYAML(YAML::Node ynode) {
     Node ymodel = ynode["model"];
     if (ymodel.IsScalar()) {
         std::string modelstr = ymodel.as<std::string>();
-        model = model_load(modelstr);
+        model = modelmanager.get(modelstr);
     }
 }
 
