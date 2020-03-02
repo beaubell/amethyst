@@ -14,7 +14,6 @@
 #include "opengl.h"
 #include "shaderprog.h"
 #include "scene.h"
-#include "scene_xml.h"
 #include "lib/cl.h"
 #include "lib/utility.h"
 #include "lib/physics.h"
@@ -50,6 +49,7 @@
 #define AMETHSYT_SHORT_NAME Amethyst-GL
 
 DECLARE_RESOURCE(amethyst_gl_resources_config_yml);
+//DECLARE_RESOURCE(amethyst_gl_resources_config_yml);
 
 // bring some standard stuff into our namespace
 using std::cout;
@@ -173,9 +173,17 @@ int main(int argc, char* argv[])
 
     stars_load(Resource(Global.dir_amethyst, stars_file));
     
-    try // Experimenting with exceptions
+    try
     {
-        scene_load(client.get_scene(), Global.scene_name);
+        Resource res(Global.dir_scene, "scn_Startup.yaml");
+
+        auto scene_is_ptr = res.get_istream();
+        YAML::Node root = YAML::Load(*scene_is_ptr);
+
+        YAML::Node scene = root["scene"];
+
+        // Load Scene YAML
+        client.get_scene().fromYAML(scene);
         opengl_check_errors("bootstrap-asceneload");
     }
     catch(std::runtime_error &e)

@@ -23,7 +23,6 @@
 #include "stars.h"
 #include "thread.h"
 #include "scene.h"
-#include "scene_xml.h"
 #include "timer.h"
 #include "hud.h"
 #include "lib/physics.h"

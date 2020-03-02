@@ -27,6 +27,7 @@ namespace lib {
        Euler(const Euler &right) : x(right.x), y(right.y), z(right.z) {};
        
        YAML::Node toYAML() const;
+       void fromYAML(YAML::Node vec);
 
        //void Set_Identity(void);
 
@@ -56,6 +57,7 @@ namespace lib {
        void  normalize(void);
        
        YAML::Node toYAML() const;
+       void fromYAML(YAML::Node vec);
 
        Cartesian_Vector  GetVector(void);
        Quaternion        Bar(void) { return Quaternion(w, -x, -y, -z); };

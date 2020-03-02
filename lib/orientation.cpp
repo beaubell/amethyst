@@ -28,6 +28,16 @@ Euler::toYAML() const
     return vector;
 }
 
+void
+Euler::fromYAML(const YAML::Node vec){
+
+    using namespace YAML;
+
+    x = vec["x"].as<float_type>();
+    y = vec["y"].as<float_type>();
+    z = vec["z"].as<float_type>();
+}
+
 
   Quaternion::Quaternion(const Quaternion &old) {
 
@@ -87,6 +97,17 @@ Quaternion::toYAML() const
     vector["z"] = z;
 
     return vector;
+}
+
+void
+Quaternion::fromYAML(const YAML::Node vec){
+
+    using namespace YAML;
+
+    w = vec["w"].as<float_type>();
+    x = vec["x"].as<float_type>();
+    y = vec["y"].as<float_type>();
+    z = vec["z"].as<float_type>();
 }
        
    Cartesian_Vector  Quaternion::GetVector(void) {

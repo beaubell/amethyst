@@ -8,6 +8,7 @@
 
 #include <math.h>
 #include "vector.h"
+#include "types.h"
 #include "yaml-cpp/yaml.h"
 
 namespace amethyst {
@@ -54,6 +55,15 @@ Cartesian_Vector::toYAML() const
     return vector;
 }
 
+void
+Cartesian_Vector::fromYAML(const YAML::Node vec){
+
+    using namespace YAML;
+
+    x = vec["x"].as<float_type>();
+    y = vec["y"].as<float_type>();
+    z = vec["z"].as<float_type>();
+}
 
     Cartesian_Vector& Cartesian_Vector::operator = (const Cartesian_Vector& vector)
     {
@@ -188,6 +198,15 @@ Spherical_Vector::toYAML() const
     return vector;
 }
 
+void
+Spherical_Vector::fromYAML(const YAML::Node vec){
+
+    using namespace YAML;
+
+    a = vec["a"].as<float_type>();
+    p = vec["p"].as<float_type>();
+    r = vec["r"].as<float_type>();
+}
 
 } // namespace lib
 } // namespace amethyst

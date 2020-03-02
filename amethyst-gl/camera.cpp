@@ -7,6 +7,7 @@
  ***********************************************************************/
 
 #include "camera.h"
+#include "lib/types.h"
 #include <cmath>
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -198,9 +199,13 @@ Camera::toYAML() const {
 }
 
 void
-Camera::fromYAML(YAML::Node) {
+Camera::fromYAML(YAML::Node cam) {
 
-    // TODO
+    using namespace YAML;
+
+    yaw      = cam["yaw"].as<float_type>();
+    pitch    = cam["pitch"].as<float_type>();
+    distance = cam["dist"].as<float_type>();
     
 }
 

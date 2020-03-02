@@ -71,8 +71,8 @@ namespace lib {
        // Apply acceleration and velocity calculations;
        virtual void iterate(const double &time);
 
-       YAML::Node toYAML();
-       void       fromYAML(YAML::Node);
+       virtual YAML::Node toYAML();
+       virtual void       fromYAML(YAML::Node);
        
        /* Absolute Mass */
        double mass;

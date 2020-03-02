@@ -32,6 +32,7 @@ namespace lib {
        void    reverse(void);
        
        YAML::Node toYAML() const;
+       void fromYAML(YAML::Node vec);
 
 
        //const Cartesian_Vector& operator = (Cartesian_Vector&);
@@ -78,6 +79,7 @@ namespace lib {
        void  clear(void);
        
        YAML::Node toYAML() const;
+       void fromYAML(YAML::Node node);
 
        Spherical_Vector& operator = (const Spherical_Vector &right);
 

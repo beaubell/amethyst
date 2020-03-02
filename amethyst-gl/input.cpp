@@ -11,7 +11,6 @@
 #include "input.h"
 #include "global.h"
 #include "debug.h"
-#include "scene_xml.h"
 
 #include "lib/utility.h"
 

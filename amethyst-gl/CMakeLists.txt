@@ -28,7 +28,6 @@ SET(amethystgl_SRCS
   renderbuffer.cpp
   scene.cpp
   scene_object.cpp
-  scene_xml.cpp
   shader.cpp
   shaderprog.cpp
   shaderprog_hud.cpp

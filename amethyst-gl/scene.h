@@ -9,8 +9,10 @@
 
 #include "camera.h"
 #include "lib/object.h"
+#include "yaml-cpp/node/node.h"
 
 #include <list>
+#include <unordered_map>
 
 
 namespace amethyst {
@@ -29,6 +31,7 @@ class Scene {
     void control_ship_next();
     
     void toYAMLFile(const std::string &name);
+    void fromYAML(const YAML::Node& node);
     
     Camera& get_camera();
     const Camera& get_camera() const;
@@ -40,6 +43,7 @@ class Scene {
     Scene& operator=(const Scene&) = delete;
     Camera camera_;
     std::list<lib::Object::sptr>  object_list_;
+    std::unordered_map<std::string,lib::Object::sptr>  points_;
 
 }; // class Scene
 

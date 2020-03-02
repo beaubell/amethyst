@@ -1,5 +1,4 @@
 #pragma once
-
 /***********************************************************************
  Amethyst-GL
   - Camera class declarations

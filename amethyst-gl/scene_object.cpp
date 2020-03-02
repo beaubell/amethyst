@@ -1,17 +1,15 @@
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? implementations
+  - Scene Object implementations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "scene_object.h"
 #include "global.h"
+#include "model.h"
+
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -38,6 +36,7 @@ void Scene_Object_Base::render(const TransMatrix& m_proj, const TransMatrix& m_v
 
 }
 
+
 void Scene_Object::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) //, const lib::Cartesian_Vector& reference)
 {
 
@@ -56,6 +55,33 @@ void Scene_Object::render(const TransMatrix& m_proj, const TransMatrix& m_view, 
 
 }
 
+
+void
+Scene_Object::fromYAML(YAML::Node ynode) {
+
+    using namespace YAML;
+    Object::fromYAML(ynode);
+
+    Node ymodel = ynode["model"];
+    if (ymodel.IsScalar()) {
+        std::string modelstr = ymodel.as<std::string>();
+        model = model_load(modelstr);
+    }
+}
+
+
+void
+Scene_Ship::fromYAML(YAML::Node ynode) {
+
+    using namespace YAML;
+    Object::fromYAML(ynode);
+
+    Node ymodel = ynode["model"];
+    if (ymodel.IsScalar()) {
+        std::string modelstr = ymodel.as<std::string>();
+        model = model_load(modelstr);
+    }
+}
 
 } // namespace client
 } // namespace amethyst
