@@ -76,58 +76,18 @@ Scene::render(const Eye eye)
   PVMatrix pvm = camera_.getMatrii(eye);
   glm::mat4 m_model = glm::mat4(1);
 
-#if 0
-  //Draw Sun
-  glPushMatrix();
-    glDisable(GL_LIGHTING);
-    glEnable(GL_TEXTURE_2D);
-    //Move to ref position
-    {
-      Cartesian_Vector sun = Cartesian_Vector(100.0, 100.0, -100000.0);
-      Cartesian_Vector temp = sun - reference;
-      glTranslated(temp.x, temp.y, temp.z);
 
-     //Lights
-      GLfloat lightPos[] = {(float)temp.x, (float)temp.y, (float)temp.z, 1.0f };
-      glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-    }
+    // Draw Objects in List.
+    for (auto &[name, obj]: objects_) {
 
-    //Rotate planet on axis
-    //glRotated(sun_rot, 0.0, -1.0, 0.0);
-    //sun_rot = sun_rot + 0.01;
-    // glDisable(GL_COLOR_MATERIAL);
-    //glCallList(Global.sun_mdl);
-    //glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_LIGHTING);
-  glPopMatrix();
-#endif
-
-  /// FIXME Special case for Sol 
-  Scene_Object::sptr sol = std::dynamic_pointer_cast<Scene_Object>(Global.universe.object_find("Sol"));
-  if (sol != NULL)
-  {
-    Cartesian_Vector temp = sol->location - reference;
-
-    glm::mat4 m_sun = glm::translate(m_model, glm::vec3(temp.x, temp.y, temp.z));
-    sol->render(pvm.proj, pvm.view, m_sun);
-  }
-
-  // Draw Objects in List.
-  if(!object_list_.empty())
-  {
-    auto obj1 = object_list_.begin();
-    do
-    {
-        if(sol != *obj1 && (*obj1)->model)
+        if(obj && obj->model)
         {
-            Cartesian_Vector temp = (*obj1)->location - reference;
+            Cartesian_Vector temp = obj->location - reference;
             glm::mat4 m_mdlref = glm::translate(m_model, glm::vec3(temp.x, temp.y, temp.z));
-            (*obj1)->model->render(pvm.proj, pvm.view, m_mdlref);
+            obj->model->render(pvm.proj, pvm.view, m_mdlref);
         }
-        obj1++;
-    }  while (obj1 != object_list_.end());
 
-  }
+    }
 
 #if 0
   // Draw Network Objects
@@ -161,7 +121,7 @@ void
 Scene::add_object(lib::Object::sptr newobject)
 {
     if (newobject)
-      object_list_.push_back(newobject);
+      objects_[newobject->name] = newobject;
 
 }
 
@@ -172,7 +132,7 @@ Scene::select_object_next()
     lib::Object::sptr &selected = Global.obj_view;            // Reference to ship pointer
     Scene_Object::sptr &reference = Global.reference_object; // Pointer to reference_object
 
-    if(!object_list_.empty())
+    if(!objects_.empty())
     {
         auto obj1 = Global.universe.list().begin();
 
@@ -215,7 +175,7 @@ Scene::target_object_next()
     lib::Object::sptr& target   = Global.obj_target;            // Reference to target pointer
     Scene_Object::sptr& reference = Global.reference_object; // Pointer to reference_object
 
-    if(!object_list_.empty())
+    if(!objects_.empty())
     {
         auto obj1 = Global.universe.list().begin();
 
@@ -257,7 +217,7 @@ Scene::control_ship_next()
     lib::Ship::sptr& control  = Global.ship;            // Reference to control ship
     Scene_Ship::sptr& reference = Global.reference_ship; // Pointer to reference_ship
 
-    if(!object_list_.empty())
+    if(!objects_.empty())
     {
         auto obj1 = Global.ships.begin();
 
@@ -429,15 +389,15 @@ Scene::get_camera() const {
 }
 
 
-std::list<lib::Object::sptr>&
+Scene::ObjectMap&
 Scene::get_obj_list() {
  
-    return object_list_;
+    return objects_;
 }
 
-const std::list<lib::Object::sptr>&
+const Scene::ObjectMap&
 Scene::get_obj_list() const {
-    return object_list_;
+    return objects_;
 }
 
 } // namespace amethyst

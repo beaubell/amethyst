@@ -13,6 +13,7 @@
 
 #include <list>
 #include <unordered_map>
+#include <string>
 
 
 namespace amethyst {
@@ -21,6 +22,8 @@ namespace client {
 class Scene {
 
   public:
+    typedef std::unordered_map<std::string, lib::Object::sptr> ObjectMap;
+
     Scene();
     virtual ~Scene();
     void render(const Eye eye = Eye::MONO);
@@ -35,15 +38,15 @@ class Scene {
     
     Camera& get_camera();
     const Camera& get_camera() const;
-    std::list<lib::Object::sptr>& get_obj_list();
-    const std::list<lib::Object::sptr>& get_obj_list() const;
+    ObjectMap& get_obj_list();
+    const ObjectMap& get_obj_list() const;
 
   private:
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete;
     Camera camera_;
-    std::list<lib::Object::sptr>  object_list_;
-    std::unordered_map<std::string,lib::Object::sptr>  points_;
+    ObjectMap objects_;
+    ObjectMap points_;
 
 }; // class Scene
 
