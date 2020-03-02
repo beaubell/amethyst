@@ -9,6 +9,7 @@
 #include "scene_object.h"
 #include "global.h"
 #include "model.h"
+#include "yaml-cpp/yaml.h"
 
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
