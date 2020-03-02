@@ -221,6 +221,7 @@ void Amethyst_GL::main_loop()
       //paused = true;
     }
 
+#if 0
     // Place L-points at their actual spots.
     Object::sptr sol = universe.object_find("Sol");
     Object::sptr earth = universe.object_find("Earth");
@@ -231,6 +232,7 @@ void Amethyst_GL::main_loop()
       lib::placement_L1(*sol, *earth, *solearthl1);
       lib::placement_L2(*sol, *earth, *solearthl2);
     }
+#endif
 
     // Save to history
     if(0)

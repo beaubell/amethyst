@@ -184,7 +184,9 @@ int main(int argc, char* argv[])
         throw e;
     }
 
-    lib::gen_model_solarsystem(Global.universe);
+#if 0
+    // This was for the Interplanetary Transport Network experiment.
+    //lib::gen_model_solarsystem(Global.universe);
 
     lib::Object::sptr p1 = Global.universe.object_find("S-E L1 Probe");
 
@@ -193,7 +195,7 @@ int main(int argc, char* argv[])
     int r_offset[3] = {0,0,0};
     int v_offset[3] = {3,3,0};
 
-#if 0
+
     lib::gen_object_variation(Global.universe,
                          (*p1),
                          lib::Cartesian_Vector(100.0, 100.0, 100.0),
@@ -221,9 +223,7 @@ int main(int argc, char* argv[])
     UI_Window_ptr window_view = UI_Window_ptr(new UIW_View(client, client.ui));
     client.ui.add(window_view);
     
-    // Load shaders if supported
-    //if (glShaderObjectsSupported)
-    //    load_shader(Global.vshader, Global.fshader);
+
     opengl_check_errors("bootstrap-bmain");
     
     client.main_loop();
