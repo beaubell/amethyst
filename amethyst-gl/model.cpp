@@ -28,7 +28,7 @@ using namespace std::placeholders;
 namespace amethyst {
 namespace client {
 
-std::list<Model::sptr>  model_list;
+std::unordered_map<std::string, Model::sptr>  model_list;
 
 //
 //
@@ -88,7 +88,7 @@ Model::sptr model_load(std::string &model_name)
 void model_add(Model::sptr newmodel)
 {
     if (newmodel)
-      model_list.push_back(newmodel);
+      model_list[newmodel->getName()] = newmodel;
 
     return;
 }
@@ -96,18 +96,10 @@ void model_add(Model::sptr newmodel)
 
 Model::sptr model_find(const std::string &name)
 {
-    if(!model_list.empty())
-    {
-        auto obj1 = model_list.begin();
-        do
-        {
-            if(name == (*obj1)->getName())
-                return *obj1;
+    if (model_list.count(name) == 0)
+        return nullptr;
 
-            obj1++;
-        }  while (obj1 != model_list.end());
-    }
-    return NULL;
+    return model_list[name];
 }
 
 

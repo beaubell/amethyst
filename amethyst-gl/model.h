@@ -17,7 +17,7 @@
 #include "shaderprog_model.h"
 
 #include <string>
-#include <list>
+#include <unordered_map>
 #include <memory>
 
 namespace amethyst {
@@ -44,7 +44,7 @@ class Model : public lib::RenderModel
     std::list<Primitive::sptr> _primitives;
 };
 
-extern std::list<Model::sptr>  model_list;
+extern std::unordered_map<std::string, Model::sptr>  model_list;
 
 void model_add(Model::sptr newmodel);
 Model::sptr model_find(const std::string &name);
