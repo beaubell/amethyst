@@ -1,0 +1,5 @@
+model:
+  name: Sun
+  type: Sphere
+  texture: sun2048.bmp
+  sphere: { radius:"6.955e8", precision:"100" }

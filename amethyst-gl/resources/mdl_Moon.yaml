@@ -1,0 +1,6 @@
+model:
+  name: Moon
+  type: Sphere
+  texture: moon512.bmp
+  sphere: { radius:"1.73710e6", precision:"100" }
+

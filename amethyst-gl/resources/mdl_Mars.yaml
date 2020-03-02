@@ -1,0 +1,6 @@
+model:
+  name: Mars
+  type: Sphere
+  texture: mars2048.bmp
+  sphere: { radius:"6371000.0", precision:"100" }
+
