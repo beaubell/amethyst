@@ -44,13 +44,6 @@ __global::__global()
     axis_throttle.axis     = 3;
     //axis_throttle.null     = 1000;
 
-    file_tex_sb_bk     = "bk.bmp";
-    file_tex_sb_ft     = "ft.bmp";
-    file_tex_sb_up     = "up.bmp";
-    file_tex_sb_dn     = "dn.bmp";
-    file_tex_sb_rt     = "rt.bmp";
-    file_tex_sb_lt     = "lt.bmp";
-
 
     net_server         = "athena.bvcb.us";
     net_port           = 23232;

@@ -92,24 +92,12 @@ class __global {
       std::string dir_shaders;
       std::string dir_modules;
 
-      // Texture File Paths - not used anymore
-      std::string file_tex_sb_bk;
-      std::string file_tex_sb_ft;
-      std::string file_tex_sb_up;
-      std::string file_tex_sb_dn;
-      std::string file_tex_sb_rt;
-      std::string file_tex_sb_lt;
-
       // Network
       std::string net_server;
       short       net_port;
 
       std::string net_handle;
-/*
-      IPaddress   net_server_ip;
-      UDPsocket   net_socket;
-      UDPpacket   *pack_in, *pack_out;
-*/
+
       // Network ships
       //Scene_Object net_ship[5];
       //int          net_ships;
