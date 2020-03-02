@@ -23,7 +23,6 @@
 #include "stars.h"
 #include "thread.h"
 #include "scene.h"
-#include "scene_xml.h"
 #include "timer.h"
 #include "hud.h"
 #include "lib/physics.h"
@@ -106,10 +105,10 @@ Amethyst_GL::Amethyst_GL(const std::string &path_root)
   input->sig_kb[SDL_SCANCODE_LEFTBRACKET].connect(bind(&Amethyst_GL::stride_dec,this));
 
   // Targeting Control
-  input->sig_kb[SDL_SCANCODE_N].connect(bind(&Scene::control_ship_next,scene_));
-  input->sig_kb[SDL_SCANCODE_B].connect(bind(&Scene::select_object_next,scene_));
-  input->sig_kb[SDL_SCANCODE_T].connect(bind(&Scene::target_object_next,scene_));
-  input->sig_kb[SDL_SCANCODE_P].connect(bind(scene_xml_write,scene_,std::string("dump")));
+  input->sig_kb[SDL_SCANCODE_N].connect(bind(&Scene::control_ship_next,&scene_));
+  input->sig_kb[SDL_SCANCODE_B].connect(bind(&Scene::select_object_next,&scene_));
+  input->sig_kb[SDL_SCANCODE_T].connect(bind(&Scene::target_object_next,&scene_));
+  input->sig_kb[SDL_SCANCODE_P].connect(bind(&Scene::toYAMLFile,&scene_,std::string("dump")));
 
   // GUI Control
   input->sig_kb[SDL_SCANCODE_F1].connect(bind(&Amethyst_GL::hud_toggle,this));
@@ -221,6 +220,7 @@ void Amethyst_GL::main_loop()
       //paused = true;
     }
 
+#if 0
     // Place L-points at their actual spots.
     Object::sptr sol = universe.object_find("Sol");
     Object::sptr earth = universe.object_find("Earth");
@@ -231,6 +231,7 @@ void Amethyst_GL::main_loop()
       lib::placement_L1(*sol, *earth, *solearthl1);
       lib::placement_L2(*sol, *earth, *solearthl2);
     }
+#endif
 
     // Save to history
     if(0)
@@ -507,7 +508,7 @@ void Amethyst_GL::configure(YAML::Node& mconfig) {
     Node scene = agl_yml["scene"];
     if (scene.IsScalar()) {
         //TODO Remove global reference
-        Global.scene = scene.as<std::string>();
+        Global.scene_name = scene.as<std::string>();
     }
     
 }

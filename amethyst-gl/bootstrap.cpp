@@ -14,7 +14,7 @@
 #include "opengl.h"
 #include "shaderprog.h"
 #include "scene.h"
-#include "scene_xml.h"
+#include "model_manager.h"
 #include "lib/cl.h"
 #include "lib/utility.h"
 #include "lib/physics.h"
@@ -49,7 +49,8 @@
 
 #define AMETHSYT_SHORT_NAME Amethyst-GL
 
-DECLARE_RESOURCE(amethyst_gl_resources_config_yml);
+DECLARE_RESOURCE(amethyst_gl_resources_config_yaml);
+DECLARE_RESOURCE(amethyst_gl_resources_scn_Startup_yaml);
 
 // bring some standard stuff into our namespace
 using std::cout;
@@ -157,7 +158,7 @@ int main(int argc, char* argv[])
     // Create Instance of Amethyst Physics Engine
     Amethyst_GL client(Global.dir_amethyst);
     
-    Resource mainconfig_res = LOAD_RESOURCE(amethyst_gl_resources_config_yml, Global.dir_amethyst, config_file);
+    Resource mainconfig_res = LOAD_RESOURCE(amethyst_gl_resources_config_yaml, Global.dir_amethyst, config_file);
     
     auto config_is_ptr = mainconfig_res.get_istream();
     YAML::Node mainconfig = YAML::Load(*config_is_ptr);
@@ -172,19 +173,26 @@ int main(int argc, char* argv[])
     //    module_manager.start("uiw_fps", client);
 
     stars_load(Resource(Global.dir_amethyst, stars_file));
-    
-    try // Experimenting with exceptions
-    {
-        scene_load(client.get_scene(), Global.scene);
-        opengl_check_errors("bootstrap-asceneload");
-    }
-    catch(std::runtime_error &e)
-    {
-        std::cout << "Non-Fatal Exception: " << e.what() << std::endl;
-        throw e;
-    }
 
-    lib::gen_model_solarsystem(Global.universe);
+    // Load Scene
+    std::string scenefn = std::string("scn_") + Global.scene_name + std::string(".yaml");
+    Resource res = (Global.scene_name == "Startup")?LOAD_RESOURCE(amethyst_gl_resources_scn_Startup_yaml, Global.dir_scene, "scn_Startup.yaml")
+                                                    :Resource(Global.dir_scene, scenefn);
+
+    auto scene_is_ptr = res.get_istream();
+    YAML::Node root = YAML::Load(*scene_is_ptr);
+
+    YAML::Node scene = root["scene"];
+
+    client.get_scene().fromYAML(scene);
+
+    // Check for errors
+    opengl_check_errors("bootstrap-asceneload");
+
+
+#if 0
+    // This was for the Interplanetary Transport Network experiment.
+    //lib::gen_model_solarsystem(Global.universe);
 
     lib::Object::sptr p1 = Global.universe.object_find("S-E L1 Probe");
 
@@ -193,7 +201,7 @@ int main(int argc, char* argv[])
     int r_offset[3] = {0,0,0};
     int v_offset[3] = {3,3,0};
 
-#if 0
+
     lib::gen_object_variation(Global.universe,
                          (*p1),
                          lib::Cartesian_Vector(100.0, 100.0, 100.0),
@@ -221,14 +229,12 @@ int main(int argc, char* argv[])
     UI_Window_ptr window_view = UI_Window_ptr(new UIW_View(client, client.ui));
     client.ui.add(window_view);
     
-    // Load shaders if supported
-    //if (glShaderObjectsSupported)
-    //    load_shader(Global.vshader, Global.fshader);
+
     opengl_check_errors("bootstrap-bmain");
     
     client.main_loop();
 
-    models_free();
+    modelmanager.clear();
     textures_free();
     stars_free();
 

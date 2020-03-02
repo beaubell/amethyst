@@ -1,17 +1,13 @@
-#ifndef AMETHYST_LIB_VECTOR_H
-#define AMETHYST_LIB_VECTOR_H
-
+#pragma once
 /***********************************************************************
  Amethyst-lib
   - Vector Class Objects Declarations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
+
+#include "yaml-cpp/node/node.h"
 
 namespace amethyst {
 namespace lib {
@@ -34,6 +30,9 @@ namespace lib {
        double  magnitude(void) const;
        void    normalize(void);
        void    reverse(void);
+       
+       YAML::Node toYAML() const;
+       void fromYAML(YAML::Node vec);
 
 
        //const Cartesian_Vector& operator = (Cartesian_Vector&);
@@ -78,6 +77,9 @@ namespace lib {
        virtual ~Spherical_Vector(void) {};
 
        void  clear(void);
+       
+       YAML::Node toYAML() const;
+       void fromYAML(YAML::Node node);
 
        Spherical_Vector& operator = (const Spherical_Vector &right);
 
@@ -99,5 +101,3 @@ namespace lib {
 
 } // namespace lib
 } // namespace amethyst
-
-#endif /* AMETHYST_LIB_VECTOR_H */

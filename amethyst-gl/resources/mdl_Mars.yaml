@@ -1,0 +1,7 @@
+model:
+  name: Mars
+  components:
+    - sphere:
+        radius: 3.3895e6
+        precision: 100
+        texture: mars2048.bmp

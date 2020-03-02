@@ -3,11 +3,7 @@
   - Physics Object Class Implementation
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <stdlib.h>
@@ -15,6 +11,8 @@
 
 #include "physics.h"
 #include "object.h"
+
+#include "yaml-cpp/yaml.h"
 
 
 namespace amethyst {
@@ -123,6 +121,65 @@ namespace lib {
         accel_apply(time);
         velocity_apply(time);
     }
+    
+YAML::Node
+Object::toYAML(){
+
+    using namespace YAML;
+    
+    Node object;
+    
+    object["name"] = name;
+
+    if (model) {
+        object["model"] = model->getName();
+    }
+    
+    object["mass"] = mass;
+    object["location"] = location.toYAML();
+    object["velocity"] = velocity.toYAML();
+    object["acceleration"] = acceleration.toYAML();
+
+    object["attitude"] = attitude.toYAML();
+    object["angular_velocity"] = angular_velocity.toYAML();
+    object["angular_acceleration"] = angular_acceleration.toYAML();
+
+    return object;
+    
+}
+
+void
+Object::fromYAML(const YAML::Node object){
+
+    using namespace YAML;
+
+    name = object["name"].as<std::string>();
+
+    mass = object["mass"].as<float_type>();
+    Node yl = object["location"];
+    if (yl.IsDefined())
+        location.fromYAML(yl);
+
+    Node yv = object["velocity"];
+    if (yv.IsDefined())
+        velocity.fromYAML(yv);
+
+    Node ya = object["acceleration"];
+    if (ya.IsDefined())
+        acceleration.fromYAML(ya);
+
+    Node yatt = object["attitude"];
+    if (yatt.IsDefined())
+        attitude.fromYAML(yatt);
+
+    Node yav  = object["angular_velocity"];
+    if (yav.IsDefined())
+        angular_velocity.fromYAML(yav);
+
+    Node yaa  = object["angular_acceleration"];
+    if (yaa.IsDefined())
+        angular_acceleration.fromYAML(yaa);
+}
 
 } // namespace lib
 } // namespace amethyst

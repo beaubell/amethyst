@@ -187,47 +187,47 @@ void gen_model_solarsystem(Universe &uni)
   
 
   merc = uni.object_find("Mercury");
-  //merc->mass = 3.3038e23;    // PDR 2002
-  merc->mass = 1;
+  merc->mass = 3.3038e23;    // PDR 2002
+  //merc->mass = 1;
   merc->location.clear();
   merc->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *merc, 57.909e9);
 
   v = uni.object_find("Venus");
-  //v->mass = 4.8691e24;    // PDR 2002
-  v->mass = 1;
+  v->mass = 4.8691e24;    // PDR 2002
+  //v->mass = 1;
   v->location.clear();
   v->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *v, 108.209e9);
 
   mars = uni.object_find("Mars");
-  //mars->mass = 6.4164e23;    // PDR 2002
-  mars->mass = 1;
+  mars->mass = 6.4164e23;    // PDR 2002
+  //mars->mass = 1;
   mars->location.clear();
   mars->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *mars, 227.939e9);
 
   jup = uni.object_find("Jupiter");
-  //jup->mass = 1.8992e27;    // PDR 2002
-  jup->mass = 1;
+  jup->mass = 1.8992e27;    // PDR 2002
+  //jup->mass = 1;
   jup->location.clear();
   jup->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *jup, 778.298e9);
 
   sat = uni.object_find("Saturn");
-  sat->mass = 1;
+  sat->mass = 5.683e26;
   sat->location.clear();
   sat->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *sat, 1429.394e9);
 
   ura = uni.object_find("Uranus");
-  ura->mass = 1;
+  ura->mass = 8.681e25;
   ura->location.clear();
   ura->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *ura, 2875.039e9);
 
   nep = uni.object_find("Neptune");
-  nep->mass = 1;
+  nep->mass = 1.024e26;
   nep->location.clear();
   nep->velocity.clear();
   lib::placement_SimpleOrbit(*sol, *nep, 4504.450e9);
@@ -238,7 +238,7 @@ void gen_model_solarsystem(Universe &uni)
   Object::sptr solmarsl1 = uni.object_find("S-Mars L1 Probe");
   //lib::placement_L1(*sol, *mars, *solmarsl1);
 
-
+#if 0
   uni.object_del(merc);
   uni.object_del(v);
   uni.object_del(mars);
@@ -250,7 +250,8 @@ void gen_model_solarsystem(Universe &uni)
   uni.object_del(ura);
   uni.object_del(solmercl1);
   uni.object_del(solmarsl1);
-  
+#endif
+
 }
 
 

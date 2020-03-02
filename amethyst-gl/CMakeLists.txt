@@ -20,7 +20,7 @@ SET(amethystgl_SRCS
   joystick.cpp
   log.cpp
   model.cpp
-  model_xml.cpp
+  model_manager.cpp
   module.cpp
   net.cpp
   opengl.cpp
@@ -28,7 +28,6 @@ SET(amethystgl_SRCS
   renderbuffer.cpp
   scene.cpp
   scene_object.cpp
-  scene_xml.cpp
   shader.cpp
   shaderprog.cpp
   shaderprog_hud.cpp
@@ -55,7 +54,6 @@ INCLUDE_DIRECTORIES(
   ${OPENCL_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIR}
   ${libFTGL_INCLUDE_DIR}
-  ${LIBXML2_INCLUDE_DIR}
   ${SDL_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
   ${Amethyst_SOURCE_DIR}/support
@@ -92,7 +90,8 @@ ADD_RESOURCES(shader_SRCS
 )
 
 ADD_RESOURCES(resource_SRCS
-  resources/config.yml
+  resources/config.yaml
+  resources/scn_Startup.yaml
 )
 
 ADD_EXECUTABLE(amethyst-gl 
@@ -104,7 +103,6 @@ ADD_EXECUTABLE(amethyst-gl
   
 TARGET_LINK_LIBRARIES(amethyst-gl
   ${SDL_LIBRARY}
-  ${LIBXML2_LIBRARIES}
   ${FREETYPE_LIBRARY}
   ${OPENGL_gl_LIBRARY}
   -lGLEW

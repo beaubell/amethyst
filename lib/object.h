@@ -1,22 +1,18 @@
-#ifndef AMETHYST_LIB_OBJECT_H
-#define AMETHYST_LIB_OBJECT_H
-
+#pragma once
 /***********************************************************************
  Amethyst-lib
   - Physics Object Class Declarations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "vector.h"
 #include "orientation.h"
 #include "matrix.h"
 #include "rendermodel.h"
+
+#include "yaml-cpp/node/node.h"
 
 #include <string>
 #include <memory>
@@ -75,6 +71,9 @@ namespace lib {
        // Apply acceleration and velocity calculations;
        virtual void iterate(const double &time);
 
+       virtual YAML::Node toYAML();
+       virtual void       fromYAML(YAML::Node);
+       
        /* Absolute Mass */
        double mass;
 
@@ -121,6 +120,3 @@ namespace lib {
 
 } // namespace lib
 } // namespace amethyst
-
-#endif /* OBJECT_H */
-

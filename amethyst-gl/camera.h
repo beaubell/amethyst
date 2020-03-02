@@ -1,5 +1,4 @@
 #pragma once
-
 /***********************************************************************
  Amethyst-GL
   - Camera class declarations
@@ -11,6 +10,8 @@
 #include "lib/orientation.h"
 #include "glm/mat4x4.hpp"
 #include "glm/vec2.hpp"
+
+#include "yaml-cpp/node/node.h"
 
 #include <memory>
 
@@ -65,6 +66,10 @@ class Camera
 
     void incPitch(double addpitch);
     void incYaw(double addyaw);
+    
+    YAML::Node toYAML() const;
+    void fromYAML(YAML::Node);
+    
 
     //Get Camera Space Coords
 
@@ -77,6 +82,8 @@ class Camera
     Position cam_pos_;
 
   private:
+    Camera(const Camera& rhs) = delete;
+    Camera& operator=(const Camera&) = delete;
     glm::dvec2 screen;
     mutable double eyeseparation_;
     double yaw;

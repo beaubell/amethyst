@@ -1,0 +1,5 @@
+model:
+  name: Ship
+  components:
+    - extfile: ship.mdl
+

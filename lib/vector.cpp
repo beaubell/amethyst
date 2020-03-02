@@ -3,15 +3,13 @@
   - Vector Class Objects Implementations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <math.h>
 #include "vector.h"
+#include "types.h"
+#include "yaml-cpp/yaml.h"
 
 namespace amethyst {
 namespace lib {
@@ -42,6 +40,30 @@ namespace lib {
        y = -y;
        z = -z;
        }
+       
+YAML::Node
+Cartesian_Vector::toYAML() const
+{
+    using namespace YAML;
+    
+    Node vector;
+    vector.SetStyle(EmitterStyle::Flow);
+    vector["x"] = x;
+    vector["y"] = y;
+    vector["z"] = z;
+    
+    return vector;
+}
+
+void
+Cartesian_Vector::fromYAML(const YAML::Node vec){
+
+    using namespace YAML;
+
+    x = vec["x"].as<float_type>();
+    y = vec["y"].as<float_type>();
+    z = vec["z"].as<float_type>();
+}
 
     Cartesian_Vector& Cartesian_Vector::operator = (const Cartesian_Vector& vector)
     {
@@ -161,6 +183,30 @@ namespace lib {
        p = 0;
        r = 0;
        }
+       
+YAML::Node
+Spherical_Vector::toYAML() const
+{
+    using namespace YAML;
+    
+    Node vector;
+    vector.SetStyle(EmitterStyle::Flow);
+    vector["a"] = a;
+    vector["p"] = p;
+    vector["r"] = r;
+    
+    return vector;
+}
+
+void
+Spherical_Vector::fromYAML(const YAML::Node vec){
+
+    using namespace YAML;
+
+    a = vec["a"].as<float_type>();
+    p = vec["p"].as<float_type>();
+    r = vec["r"].as<float_type>();
+}
 
 } // namespace lib
 } // namespace amethyst

@@ -1,0 +1,144 @@
+scene:
+  name: Startup
+  client:
+    selected: Your Ship
+    camera:
+      yaw: -40.66666666666665
+      pitch: -24.333333333333318
+      dist: 102631623.64614119
+  objects:
+    - name: Sol
+      model: Sun
+      mass: 1.9890999999999999e+30
+      location: {x: -449320.46221909404, y: 0, z: 0}
+      velocity: {x: 0, y: -0.089471885365463674, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Mercury
+      model: Mars
+      mass: 3.3038000000000002e+23
+      location: {x: 57908550679.537781, y: 0, z: 0}
+      velocity: {x: 0, y: 47878.729772412524, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Venus
+      model: Venus
+      mass: 4.8690999999999995e+24
+      location: {x: 108208550679.53778, y: 0, z: 0}
+      velocity: {x: 0, y: 35025.445110545683, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Earth
+      model: Earth
+      mass: 5.9742999999999997e+24
+      location: {x: 149598000000, y: 0, z: 0}
+      velocity: {x: 0, y: 29789.017488315585, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Moon
+      model: Moon
+      mass: 7.3500000000000001e+22
+      location: {x: 149982400000, y: 0, z: 0}
+      velocity: {x: 0, y: 30807.468114564173, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Mars
+      model: Mars
+      mass: 6.4163999999999999e+23
+      location: {x: 227938550679.53778, y: 0, z: 0}
+      velocity: {x: 0, y: 24132.678924605752, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Jupiter
+      model: Mars
+      mass: 1.8991999999999999e+27
+      location: {x: 778297550679.53784, y: 0, z: 0}
+      velocity: {x: 0, y: 13059.92045549405, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Saturn
+      model: Mars
+      mass: 5.6830000000000001e+26
+      location: {x: 1429393550679.5378, y: 0, z: 0}
+      velocity: {x: 0, y: 9636.8800813977614, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Uranus
+      model: Mars
+      mass: 8.6810000000000007e+25
+      location: {x: 2875038550679.5376, y: 0, z: 0}
+      velocity: {x: 0, y: 6794.9908409511563, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Neptune
+      model: Mars
+      mass: 1.0239999999999999e+26
+      location: {x: 4504449550679.5381, y: 0, z: 0}
+      velocity: {x: 0, y: 5428.6072356261257, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+  points:
+    - name: S-E L1
+      mass: 0
+      location: {x: 148106048101.74985, y: 0, z: 0}
+      velocity: {x: 0, y: 29491.929417694988, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: S-E L2
+      mass: 0
+      location: {x: 151099133838.20618, y: 0, z: 0}
+      velocity: {x: 0, y: 30087.933932109128, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+  ships:
+    - name: E-M L1 Probe
+      model: Ship
+      mass: 1
+      location: {x: 149924025115.23923, y: 0, z: 0}
+      velocity: {x: 0, y: 30652.806465391954, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 0.00013300000000000001, x: 0.0047930000000000004, y: 0.99997000000000003, z: 0.006136}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: S-E L1 Probe
+      model: Ship
+      mass: 1
+      location: {x: 148106048101.74985, y: 0, z: 0}
+      velocity: {x: 0, y: 29491.929417694988, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 1, x: 0, y: 0, z: 0}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}
+    - name: Your Ship
+      model: Ship
+      mass: 1
+      location: {x: 149924025115, y: 30, z: 0}
+      velocity: {x: 0, y: 30652.806465391954, z: 0}
+      acceleration: {x: 0, y: 0, z: 0}
+      attitude: {w: 0.00013300000000000001, x: 0.0047930000000000004, y: 0.99997000000000003, z: 0.006136}
+      angular_velocity: {w: 1, x: 0, y: 0, z: 0}
+      angular_acceleration: {w: 1, x: 0, y: 0, z: 0}

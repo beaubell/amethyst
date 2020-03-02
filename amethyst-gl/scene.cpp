@@ -13,6 +13,7 @@
 #include "lib/vector.h"
 #include "lib/orientation.h"
 #include "lib/object.h"
+#include "lib/ship.h"
 
 #include "global.h"
 #include "opengl.h"
@@ -22,8 +23,13 @@
 
 #include "scene.h"
 
+#include "yaml-cpp/yaml.h"
+
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+
+#include <fstream>
+#include <iostream>
 
 namespace amethyst {
 namespace client {
@@ -284,6 +290,127 @@ Scene::control_ship_next()
     } else
     {
         control = reference;
+    }
+
+}
+
+void
+Scene::toYAMLFile(const std::string& fn) {
+    
+    using namespace YAML;
+    
+    Node scene;
+    scene["name"] = fn;
+    Node client;
+    client["selected"] = Global.obj_view->name;
+    client["camera"] = camera_.toYAML();
+    
+    scene["client"] = client;
+    
+    for (auto& obj: Global.universe.list()) {
+
+        // FIXME, Dont use model name to filter ships.
+        if (obj->model->getName() != "Ship") {
+            scene["objects"].push_back(obj->toYAML());
+        }
+    }
+
+    for (auto& [name, obj]: points_) {
+        scene["points"].push_back(obj->toYAML());
+    }
+
+    for (auto& obj: Global.ships) {
+        scene["ships"].push_back(obj->toYAML());
+    }
+    
+    Node root;
+    root["scene"] = scene;
+    
+    std::string filename(Global.dir_scene + "scn_" + fn + ".yaml");
+    std::ofstream fout(filename);
+    if (fout.is_open()) {
+        std::cout << "Saving " << filename << "." << std::endl;
+        fout << root;
+    } else {
+        std::cout << "FAILURE: Unable to open " << filename << " for output." << std::endl;
+    }
+
+    
+}
+
+
+void
+Scene::fromYAML(const YAML::Node& scene) {
+
+    using namespace YAML;
+
+    if (scene["name"].IsScalar()) {
+        //TODO: set name
+    }
+
+    std::string selected_object;
+    Node client = scene["client"];
+    if (client.IsMap()) {
+
+        if (client["selected"].IsScalar())
+            selected_object = client["selected"].as<std::string>();
+
+        if (client["camera"].IsMap())
+            camera_.fromYAML(client["camera"]);
+
+    }
+
+    // Loop through objects
+    Node objects = scene["objects"];
+    if (objects.IsSequence()) {
+        for (auto yobj: objects) {
+            Scene_Object::sptr temp = std::make_shared<Scene_Object>();
+            temp->fromYAML(yobj);
+            Global.universe.object_add(temp);
+            std::cout << "Object: " << temp->name << " added." << std::endl;
+            add_object(temp);
+        }
+    }
+
+    // Loop through points
+    Node points = scene["points"];
+    if (points.IsSequence()) {
+        for (auto yobj: points) {
+            Scene_Ship::sptr temp = std::make_shared<Scene_Ship>();
+            temp->fromYAML(yobj);
+            points_[temp->name] = temp;
+        }
+    }
+
+
+    // Loop through ships
+    Node ships = scene["ships"];
+    if (ships.IsSequence()) {
+        for (auto yobj: ships) {
+            Scene_Ship::sptr temp = std::make_shared<Scene_Ship>();
+            temp->fromYAML(yobj);
+            Global.universe.object_add(temp);
+            Global.ships.insert(temp);
+            add_object(temp);
+        }
+    }
+
+    // Search for Selected Object
+    //Find Player and set
+    Global.obj_view = Global.universe.object_find(selected_object);
+    if (!Global.obj_view)
+    {
+        Global.obj_view = Global.reference_object;
+        throw std::runtime_error("Selected object \"" + selected_object + "\" is not specified in scene file");
+    }
+
+    if(Global.obj_view != Global.reference_object)
+        Global.ship = std::dynamic_pointer_cast<lib::Ship>(Global.obj_view);
+
+    if(Global.ship == NULL)
+    {
+        Global.log.add("Object: " + Global.obj_view->name + ", is not pilotable.");
+        Global.ship = Global.reference_ship;
     }
 
 }

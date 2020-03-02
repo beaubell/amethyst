@@ -1,19 +1,14 @@
-#ifndef AMETHYST_LIB_ORIENTATION_H
-#define AMETHYST_LIB_ORIENTATION_H
-
+#pragma once
 /***********************************************************************
  Amethyst-lib
   - Orientation Class Objects Declarations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "vector.h"
+#include "yaml-cpp/node/node.h"
 
 namespace amethyst {
 namespace lib {
@@ -30,6 +25,9 @@ namespace lib {
        inline Euler() : x(0), y(0), z(0) {};
        inline Euler(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz){};
        Euler(const Euler &right) : x(right.x), y(right.y), z(right.z) {};
+       
+       YAML::Node toYAML() const;
+       void fromYAML(YAML::Node vec);
 
        //void Set_Identity(void);
 
@@ -57,6 +55,9 @@ namespace lib {
        Quaternion(const Euler&);
 
        void  normalize(void);
+       
+       YAML::Node toYAML() const;
+       void fromYAML(YAML::Node vec);
 
        Cartesian_Vector  GetVector(void);
        Quaternion        Bar(void) { return Quaternion(w, -x, -y, -z); };
@@ -90,5 +91,3 @@ Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v);
 
 } // namespace lib
 } // namespace amethyst
-
-#endif  /* AMETHYST_LIB_ORIENTATION_H */

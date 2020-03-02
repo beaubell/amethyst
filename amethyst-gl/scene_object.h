@@ -1,21 +1,17 @@
-#ifndef AMETHYST_CLIENT_SCENE_OBJECT_H
-#define AMETHYST_CLIENT_SCENE_OBJECT_H
-
+#pragma once
 /***********************************************************************
  Amethyst-GL
-  - ??? FIXME ??? declarations
+  - Scene Object declarations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "lib/object.h"
 #include "lib/ship.h"
 #include "model.h"
+
+#include "yaml-cpp/node/node.h"
 
 #include <memory>
 
@@ -32,9 +28,6 @@ class Scene_Object_Base
         Scene_Object_Base(void);
         virtual ~Scene_Object_Base(void);
 
-        //Model::sptr model;
-
-        //virtual void render(const lib::Cartesian_Vector& reference);
         virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
 };
 
@@ -45,8 +38,9 @@ class Scene_Object : public Scene_Object_Base, public lib::Object
         typedef std::shared_ptr<Scene_Object> sptr;
         typedef std::weak_ptr<Scene_Object>   wptr;
         
-        //virtual void render(const lib::Cartesian_Vector& reference);
         virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
+
+        virtual void fromYAML(YAML::Node node);
 };
 
 
@@ -56,6 +50,7 @@ class Scene_Ship : public Scene_Object_Base, public lib::Ship
         typedef std::shared_ptr<Scene_Ship> sptr;
         typedef std::weak_ptr<Scene_Ship>   wptr;
 
+        virtual void fromYAML(YAML::Node node);
         //virtual void render(const lib::Cartesian_Vector& reference);
         //virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
 };
@@ -79,5 +74,3 @@ class Scene_Planet : public Scene_Object_Base //, public lib::Planet  FIXME No P
 
 } // namespace client
 } // namespace amethyst
-
-#endif

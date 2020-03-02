@@ -1,0 +1,7 @@
+model:
+  name: Moon
+  components:
+    - sphere:
+        radius: 1.73710e6
+        precision: 100
+        texture: moon512.bmp
