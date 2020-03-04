@@ -1,25 +1,24 @@
-/*
-   Library Console IO, Declarations
-   Amethyst Physics Library (c) 2003
-   Author: Beau V.C. Bellamy
-*/
+#ifndef LIB_CONSOLE_IO_H_
+#define LIB_CONSOLE_IO_H_
+/***********************************************************************
+ Amethyst Physics Library
+  - Library Console IO Utility Function Declarations
 
-// 
-// 
-
-#ifndef CONSOLE_IO_H
-#define CONSOLE_IO_H
+ Authors (c):
+ 2003-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ ***********************************************************************/
 
 namespace amethyst {
 
-  int  getch(char &c);
-  //int  getch(char &c, const bool wait);
-  void clear_screen(void);
-  
-  void cursor_left (void);
-  void cursor_right(void);
-  void cursor_up   (void);
-  void cursor_down (void);
+int  getch(char& c);
+//int  getch(char &c, const bool wait);
+void clear_screen(const std::string&);
+
+void cursor_left(int count);
+void cursor_right(int count);
+void cursor_up(int count);
+void cursor_down(int count);
+
 }
 
-#endif /* CONSOLE_IO_H */
+#endif  // LIB_CONSOLE_IO_H_

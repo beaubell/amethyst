@@ -4,10 +4,8 @@ SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
 SET(libamethyst_SRCS
   cl.cpp
   console.cpp
-  console_history.cpp
   console_io.cpp
   console_menu.cpp
-  console_menu_main.cpp
   io_hdf5.cpp
   manifest.cpp
   matrix.cpp
