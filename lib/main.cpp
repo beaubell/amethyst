@@ -23,17 +23,22 @@ void show_help(Console_Menu& menu);
 
 int main(int argc, char** argv)
 {
-    std::string prompt("Amethyst> ");
+    using std::placeholders::_1;
+
+    std::string  prompt("Amethyst> ");
     Console_Menu mainmenu;
+
+    std::vector<std::string> history;
+
+    ConsoleCLI cli(prompt, mainmenu, history);
+
+    mainmenu.add("quit", std::bind(&ConsoleCLI::stop, cli, _1));
     mainmenu.add("clear", clear_screen);
     mainmenu.add("test", [](std::string)-> void { lib::full_test(); });
     mainmenu.add("testrk4", [](std::string)-> void { lib::test_rk4(); });
 
     mainmenu.add("help", [&mainmenu](const std::string&) { show_help(mainmenu); });
 
-    std::vector<std::string> history;
-
-    ConsoleCLI cli(prompt, mainmenu, history);
     cli.start();
     return 0;
 }

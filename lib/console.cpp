@@ -57,11 +57,7 @@ ConsoleCLI::start() {
     //Set signal handler to catch CTRL-C
     //signal(SIGINT, [this](int signum) -> void { catch_signal(signum); });
 
-    //Add exit and quit functions to main menu becuase these functions are defined in this file
-    mainmenu_.add("exit", [&](const std::string& s) {
-        this->stop(s);
-    });
-    mainmenu_.add("quit", std::bind(&ConsoleCLI::stop, this, _1));
+
 
     //Display version information
     cout << endl << AMETHYST_VER << endl;

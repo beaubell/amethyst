@@ -22,9 +22,9 @@ class ConsoleCLI {
     ConsoleCLI(std::string& newprompt, Console_Menu& mainmenu, std::vector<std::string>& newhistory);
     virtual ~ConsoleCLI();
     void start();
+    void stop(const std::string&);
 
  private:
-    void stop(const std::string&);
     void catch_signal(int);
 
     int         command_parse(const std::string&);
