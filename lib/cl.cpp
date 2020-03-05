@@ -241,8 +241,9 @@ cl::Kernel cl_loadkernel ( const Resource& res, const std::string& mainfn )
   // Load cl Kernel source from file
   const std::string cl_source = res.to_str();
 
-  cl::Program::Sources source = cl::Program::Sources(1, std::make_pair (cl_source.c_str(), cl_source.size()-1));
-  cl::Program program = cl::Program(lib::amethyst_cl_context, source);
+  std::cout << cl_source << std::endl;
+  //cl::Program::Sources source = cl::Program::Sources(1, std::make_pair (cl_source.c_str(), cl_source.size()-1));
+  cl::Program program = cl::Program(lib::amethyst_cl_context, cl_source);
 
   // Compile CL Kernel
   try {
