@@ -10,7 +10,7 @@
 
 #include <functional>
 #include <string>
-#include <vector>
+#include <map>
 
 namespace amethyst {
 
@@ -22,10 +22,9 @@ enum Option_Type { OP_MENU, OP_COMMAND };
 
 class Command_Vector {
  public:
-    Command_Vector(Option_Type type, const std::string& cmd, CommandFunction , MenuFunction, ListFunction);
+    Command_Vector(Option_Type type, CommandFunction , MenuFunction, ListFunction);
  
     Option_Type type;
-    std::string command;
     CommandFunction cmdfn;
     MenuFunction menurunfn;
     ListFunction menulistfn;
@@ -33,7 +32,7 @@ class Command_Vector {
 
 class Console_Menu {
  public:
-    typedef std::vector<Command_Vector> CommandV;
+    typedef std::map<std::string, Command_Vector> CommandV;
 
     Console_Menu() {}
     virtual ~Console_Menu();
@@ -44,7 +43,7 @@ class Console_Menu {
     CommandV& get_commands(void);
 
  private:
-    std::vector<Command_Vector> menu_;
+    CommandV menu_;
 };
 
 } // namespace amethyst

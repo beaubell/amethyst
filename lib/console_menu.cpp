@@ -13,9 +13,8 @@
 
 namespace amethyst {
 
-Command_Vector::Command_Vector(Option_Type ntype, const std::string& ncmd, CommandFunction ncmdfn , MenuFunction nmenufn, ListFunction nlistfn)
+Command_Vector::Command_Vector(Option_Type ntype, CommandFunction ncmdfn , MenuFunction nmenufn, ListFunction nlistfn)
  : type(ntype),
-   command(ncmd),
    cmdfn(ncmdfn),
    menurunfn(nmenufn),
    menulistfn(nlistfn) {
@@ -28,13 +27,13 @@ Console_Menu::~Console_Menu() {
 void
 Console_Menu::add(const std::string &new_command, CommandFunction new_function) {
 
-    menu_.emplace_back(OP_COMMAND, new_command, new_function, nullptr, nullptr);
+    menu_.emplace(std::pair(new_command, Command_Vector(OP_COMMAND, new_function, nullptr, nullptr)));
 }
 
 void
 Console_Menu::add(const std::string &new_command, MenuFunction run, ListFunction list) {
 
-    menu_.emplace_back(OP_MENU, new_command, nullptr, run, list);
+    menu_.emplace(std::pair(new_command, Command_Vector(OP_MENU, nullptr, run, list)));
 }
 
 int Console_Menu::run(const std::string &command) {
@@ -72,19 +71,19 @@ int Console_Menu::run(const std::string &command) {
     // std::cout << "\nCMD=\"" << cmd << "\"  EXT=\"" << ext << "\"";
 
     // Find matching command for first command element and run associated function
-    for (const auto& e: menu_) {
-        if (cmd == e.command) {
+    for (const auto& [vcmd, vobj]: menu_) {
+        if (cmd == vcmd) {
             // std::cout << "\nCOMMAND FOUND [" << i << "]\n";
 
-            switch (e.type) {
+            switch (vobj.type) {
               case OP_COMMAND: {
-                e.cmdfn(ext);
+                vobj.cmdfn(ext);
                 return 0;
                 break;
               }
 
               case OP_MENU: {
-                return e.menurunfn(ext);
+                return vobj.menurunfn(ext);
                 break;
               }
             }
@@ -134,11 +133,11 @@ Console_Menu::list(const std::string &command, std::string &possibilities) {
     // std::cout << "\nCMD=\"" << cmd << "\"  EXT=\"" << ext << "\"";
 
     // Find matching command for first command element and run associated function
-    for (const auto& e: menu_) {
-        if (cmd == e.command) {
+    for (const auto& [vcmd, vobj]: menu_) {
+        if (cmd == vcmd) {
             // std::cout << "\nCOMMAND FOUND [" << i << "]\n";
 
-            switch (e.type) {
+            switch (vobj.type) {
                 case OP_COMMAND: {
                     // Nothing to do
                     return 0;
@@ -146,7 +145,7 @@ Console_Menu::list(const std::string &command, std::string &possibilities) {
                 }
 
                 case OP_MENU: {
-                    return e.menulistfn(ext, possibilities);
+                    return vobj.menulistfn(ext, possibilities);
                     break;
                 }
             }
@@ -186,10 +185,10 @@ Console_Menu::list(const std::string &command, std::string &possibilities) {
         unsigned int count = 0;
 
         // find matching strings
-        for (const auto& e: menu_) {
-            if (!strncmp(cmd.c_str(), e.command.c_str(), cmd.length())) {
+        for (const auto& [vcmd, vobj]: menu_) {
+            if (!strncmp(cmd.c_str(), vcmd.c_str(), cmd.length())) {
                 count++;
-                found_commands.push_back(e.command);
+                found_commands.push_back(vcmd);
                 // if(count == 1) first = _menu[i]->command;
                 // if(count == 2) std::cout << "\n" << first << "\t" <<
                 // _menu[i]->command; if(count > 2)  std::cout << "\t" <<
