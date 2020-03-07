@@ -9,7 +9,7 @@
 
 #include <cstring> // memcpy, memset
 #include <stdexcept>
-#include <boost/detail/endian.hpp>
+#include <boost/predef/other/endian.h>
 
 namespace boost {
 namespace crypto {
@@ -18,9 +18,9 @@ namespace detail {
 template<typename T>
 void native_to_big_endian(void* vdst, const void* vsrc, int n)
 {
-  #if defined(BOOST_BIG_ENDIAN)
+  #if defined(BOOST_ENDIAN_BIG_BYTE)
     std::memcpy(vdst, vsrc, n);
-  #elif defined(BOOST_LITTLE_ENDIAN)
+  #elif defined(BOOST_ENDIAN_LITTLE_BYTE)
     T* dst = static_cast<T*>(vdst);
     const unsigned char* src = static_cast<const unsigned char*>(vsrc);
     const int size = sizeof(T);
@@ -39,9 +39,9 @@ void native_to_big_endian(void* vdst, const void* vsrc, int n)
 template<typename T>
 void native_to_little_endian(void* vdst, const void* vsrc, int n)
 {
-  #if defined(BOOST_LITTLE_ENDIAN)
+  #if defined(BOOST_ENDIAN_BIG_BYTE)
     std::memcpy(vdst, vsrc, n);
-  #elif defined(BOOST_BIG_ENDIAN)
+  #elif defined(BOOST_ENDIAN_LITTLE_BYTE)
     T* dst = static_cast<T*>(vdst);
     const unsigned char* src = static_cast<const unsigned char*>(vsrc);
     const int size = sizeof(T);
