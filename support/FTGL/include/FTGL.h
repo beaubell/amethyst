@@ -29,7 +29,7 @@ typedef float    FTGL_FLOAT;
     #include <windows.h>
 
     #ifndef __gl_h_
-        #include <GL/gl.h>
+        #include "GL/glcorearb.h"
         #include <GL/glu.h>
     #endif
 
@@ -38,10 +38,10 @@ typedef float    FTGL_FLOAT;
     // Non windows platforms - don't require nonsense as seen above :-)    
     #ifndef __gl_h_
         #ifdef __APPLE_CC__
-            #include <OpenGL/gl.h>
+            #include <OpenGL/glcorearb.h>
             #include <OpenGL/glu.h>
         #else
-            #include <GL/gl.h>
+            #include "GL/glcorearb.h"
             #include <GL/glu.h>
         #endif                
 
