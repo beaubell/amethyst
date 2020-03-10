@@ -12,6 +12,7 @@ SET(amethystserver_SRCS
 INCLUDE_DIRECTORIES(
   ../
   ${Boost_INCLUDE_DIR}
+  ${Amethyst_SOURCE_DIR}/include
   ../support/
 )
 

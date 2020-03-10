@@ -5,18 +5,16 @@
 
 #include "lib/object.h"
 #include "lib/net.h"
+#include "lib/types.h"
 
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 #include <time.h>
-#include <sys/time.h>
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #include <iostream>
 #include <list>
@@ -28,22 +26,22 @@ using namespace amethyst::server;
 using namespace amethyst;
 
 
-struct packet_header
+PACK(struct packet_header
 {
   // Sequence Counters
-  u_int16_t  out_seq;
-  u_int16_t  in_seq;
+  uint16_t  out_seq;
+  uint16_t  in_seq;
 
   // Time
   //u_int32_t  timestamp;
 
   // Packet Type
-  u_int16_t  type;    // 1 == object transfer,  2 == chat?  maybe?
-  u_int16_t  misc;    // if type==1,  misc = number of objects
-} __attribute__((__packed__));
+  uint16_t  type;    // 1 == object transfer,  2 == chat?  maybe?
+  uint16_t  misc;    // if type==1,  misc = number of objects
+});
 
 
-struct object_transfer
+PACK(struct object_transfer
 {
   char        name[12];
   vectord_3d  location;
@@ -53,7 +51,7 @@ struct object_transfer
   vectord_4d  attitude;
 
   char        pad[12];
-} __attribute__((__packed__));
+});
 
 
 class Net_Object: public Object
