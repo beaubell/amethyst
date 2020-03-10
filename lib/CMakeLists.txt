@@ -44,6 +44,7 @@ INCLUDE_DIRECTORIES(
   ${Boost_INCLUDE_DIR}
   ${HDF5_INCLUDE_DIR}
   ${Amethyst_SOURCE_DIR}/support
+  ${Amethyst_SOURCE_DIR}/include
   ${YAML_CPP_SOURCE_DIR}/include
   ${Amethyst_SOURCE_DIR}
   ${Amethyst_BINARY_DIR}

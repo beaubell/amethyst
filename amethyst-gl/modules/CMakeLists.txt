@@ -21,6 +21,7 @@ SET(mod_uiw_shipstats_SRCS
 INCLUDE_DIRECTORIES(
   ${amethystgl_SOURCE_DIR}
   ${Amethyst_SOURCE_DIR}
+  ${Amethyst_SOURCE_DIR}/include
   ${Boost_INCLUDE_DIR}
 )
 
