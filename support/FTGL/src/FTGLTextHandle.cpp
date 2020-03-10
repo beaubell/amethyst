@@ -97,7 +97,7 @@ void TextHandle::clear()
   */
 }
 
-void TextHandle::addTriangle(uint newtexture, 
+void TextHandle::addTriangle(unsigned int newtexture, 
 			     const glm::vec4 &vert1, const glm::vec2 &texcoord1,
 			     const glm::vec4 &vert2, const glm::vec2 &texcoord2,
 			     const glm::vec4 &vert3, const glm::vec2 &texcoord3)

@@ -259,18 +259,18 @@ void gen_object_variation(Universe &uni,
                           const Object &source,
                           const Cartesian_Vector &r_stepsize,
                           const Cartesian_Vector &v_stepsize,
-                          const uint r_steps[3],
-                          const uint v_steps[3],
+                          const unsigned int r_steps[3],
+                          const unsigned int v_steps[3],
                           const int  r_stepoff[3],
                           const int  v_stepoff[3])
 {
-  const uint x_steps = r_steps[0];
-  const uint y_steps = r_steps[1];
-  const uint z_steps = r_steps[2];
+  const auto x_steps = r_steps[0];
+  const auto y_steps = r_steps[1];
+  const auto z_steps = r_steps[2];
 
-  const uint vx_steps = v_steps[0];
-  const uint vy_steps = v_steps[1];
-  const uint vz_steps = v_steps[2];
+  const auto vx_steps = v_steps[0];
+  const auto vy_steps = v_steps[1];
+  const auto vz_steps = v_steps[2];
   
   for(unsigned int xi = 0; xi < x_steps; xi++)
   {

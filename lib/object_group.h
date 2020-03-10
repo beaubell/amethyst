@@ -25,10 +25,10 @@ class Object_Group
   public:
     Object_Group();
 
-    void set_size(uint sig_size, uint insig_size);
+    void set_size(size_t sig_size, size_t insig_size);
     void clear();
-    uint get_size();
-    uint get_sigsize();
+    auto get_size() -> size_t const;
+    auto get_sigsize() -> size_t const;
 
     cl::Buffer mass;
     cl::Buffer location;
@@ -37,8 +37,8 @@ class Object_Group
     double time;
 
   private:
-    uint _object_count;
-    uint _object_count_sig;
+    std::size_t _object_count;
+    std::size_t _object_count_sig;
 };
 
 } // namespace lib

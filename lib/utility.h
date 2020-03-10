@@ -31,8 +31,8 @@ namespace lib {
                             const Object &source,
                             const Cartesian_Vector &r_stepsize,
                             const Cartesian_Vector &v_stepsize,
-                            const uint r_steps[3],
-                            const uint v_steps[3],
+                            const unsigned int r_steps[3],
+                            const unsigned int v_steps[3],
                             const int  r_stepoff[3],
                             const int  v_stepoff[3]);
 

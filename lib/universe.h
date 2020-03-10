@@ -39,9 +39,9 @@ class Universe
     void toggle_gravity();
     void toggle_4thorder();
 
-    void iterate(const double &time, uint stride);
+    void iterate(const double &time, unsigned int stride);
     void iterate(const double &dtime,
-                 const uint stride,
+                 const unsigned int stride,
                  std::vector<cl::Event> wait_queue,
                  std::vector<cl::Event> &new_events);
     
@@ -50,7 +50,7 @@ class Universe
                      std::vector<cl::Event> &new_events);  // Events_out
     
     void iterate_gpu_rk4_gravk(const double &dtime,
-                               uint num_objects,
+                               unsigned int num_objects,
                                cl::Buffer &masses,
                                Object_Group &old,
                                Object_Group &new_d,
@@ -58,14 +58,14 @@ class Universe
                                std::vector<cl::Event> &events);  // Events_out
 
     void iterate_gpu_rk4_scalesum(const double &scale,
-                                  const uint num_objects,
+                                  const unsigned int num_objects,
                                   Object_Group &orig,
                                   Object_Group &k,
                                   Object_Group &new_objs,
                                   std::vector<cl::Event> wait_queue,
                                   std::vector<cl::Event> &events);
 
-    void iterate_gpu_rk4_finalsum(const uint num_objects,
+    void iterate_gpu_rk4_finalsum(const unsigned int num_objects,
                                   Object_Group &orig,
                                   Object_Group &k1,
                                   Object_Group &k2,
@@ -75,15 +75,15 @@ class Universe
                                   std::vector<cl::Event> wait_queue,
                                   std::vector<cl::Event> &events);
 
-    void iterate_gpu_tohistory(const uint num_objects,
+    void iterate_gpu_tohistory(const unsigned int num_objects,
                                Object_Group &current,
-                               const uint index,
+                               const unsigned int index,
                                std::vector<cl::Event> wait_queue,
                                std::vector<cl::Event> &events);
 
-    void iterate_gpu_frhistory(const uint num_objects,
+    void iterate_gpu_frhistory(const unsigned int num_objects,
                                Object_Group &current,
-                               const uint index,
+                               const unsigned int index,
                                std::vector<cl::Event> wait_queue,
                                std::vector<cl::Event> &events);
     
@@ -97,7 +97,7 @@ class Universe
     void cl_save_history(const std::string &file);
     void cl_fill_distance_buff();
     
-    uint count_sig_objects();
+    auto count_sig_objects() const -> std::size_t;
     void sort_objects();
 
     std::list<Object::sptr>& list(void);

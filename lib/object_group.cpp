@@ -25,7 +25,7 @@ Object_Group::Object_Group()
 {
 }
 
-void Object_Group::set_size(uint sig_size, uint insig_size)
+void Object_Group::set_size(size_t sig_size, size_t insig_size)
 {
   _object_count     = sig_size + insig_size;
   _object_count_sig = sig_size;
@@ -40,13 +40,14 @@ void Object_Group::set_size(uint sig_size, uint insig_size)
 }
 
 
-unsigned int Object_Group::get_size()
+auto
+Object_Group::get_size() -> std::size_t const
 {
   return _object_count;
 }
 
-
-unsigned int Object_Group::get_sigsize()
+auto
+Object_Group::get_sigsize() -> std::size_t const
 {
   return _object_count_sig;
 }

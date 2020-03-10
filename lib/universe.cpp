@@ -103,7 +103,7 @@ void Universe::toggle_4thorder()
 
 
 void Universe::iterate(const double &dtime,
-                       uint stride)
+                       unsigned int stride)
 {
   std::vector<cl::Event> wait_queue, new_events;
 
@@ -120,7 +120,7 @@ void Universe::iterate(const double &dtime,
 
 
 void Universe::iterate(const double &dtime,
-                       uint stride,
+                       unsigned int stride,
                        std::vector<cl::Event> wait_queue,
                        std::vector<cl::Event> &new_events
                        )
@@ -134,7 +134,7 @@ void Universe::iterate(const double &dtime,
   }
   else
   {
-    for (uint i = 0; i < stride; i++)
+    for (unsigned int i = 0; i < stride; i++)
     {
       iterate_gpu(dtime, wait_queue, new_events);
       wait_queue = new_events;
@@ -197,7 +197,7 @@ void Universe::iterate_gpu(const double &dtime,
 
 // Performs an N-body gravitational acceleration pass as well as a time step.
 void Universe::iterate_gpu_rk4_gravk(const double &dtime,
-                                     uint num_objects,
+                                     unsigned int num_objects,
                                      cl::Buffer &masses,
                                      Object_Group &old,
                                      Object_Group &new_d,
@@ -270,7 +270,7 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
 
 // Performs a multiply-sum of the k_d group and sums it wht orig
 void Universe::iterate_gpu_rk4_scalesum(const double &scale,
-                                        const uint num_objects,
+                                        const unsigned int num_objects,
                                         Object_Group &orig,
                                         Object_Group &k_d,
                                         Object_Group &new_g,
@@ -325,7 +325,7 @@ void Universe::iterate_gpu_rk4_scalesum(const double &scale,
 
 
 // Performs the final weighted average of the RK4 algorithm
-void Universe::iterate_gpu_rk4_finalsum(const uint num_objects,
+void Universe::iterate_gpu_rk4_finalsum(const unsigned int num_objects,
                                         Object_Group &orig,
                                         Object_Group &k1,
                                         Object_Group &k2,
@@ -361,9 +361,9 @@ void Universe::iterate_gpu_rk4_finalsum(const uint num_objects,
 
 
 // Copies current data to history buffer by index number
-void Universe::iterate_gpu_tohistory(const uint num_objects,
+void Universe::iterate_gpu_tohistory(const unsigned int num_objects,
                                      Object_Group &current,
-                                     const uint index,
+                                     const unsigned int index,
                                      std::vector<cl::Event> wait_queue,
                                      std::vector<cl::Event> &new_events)
 {
@@ -399,9 +399,9 @@ void Universe::iterate_gpu_tohistory(const uint num_objects,
 
 
 // Copies history data by index to the current data set
-void Universe::iterate_gpu_frhistory(const uint num_objects,
+void Universe::iterate_gpu_frhistory(const unsigned int num_objects,
                                      Object_Group &current,
-                                     const uint index,
+                                     const unsigned int index,
                                      std::vector<cl::Event> wait_queue,
                                      std::vector<cl::Event> &new_events)
 {
@@ -573,7 +573,7 @@ void Universe::cl_setup()
   /// Setup Command Queue
   unsigned int gpu_id = 0;  // FIXME - Make GPU_ID dynamic?
   //queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, NULL);
-  uint queue_options = CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
+  auto queue_options = CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
   queue_rk4 = cl::CommandQueue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], queue_options, NULL);
   
   _using_cl = true;
@@ -584,9 +584,9 @@ void Universe::cl_copytogpu()
 {
   sort_objects();
   
-  uint sig_objs = _current.get_sigsize();
-  uint idx_sig = 0;
-  uint idx_insig = 0;
+  auto        sig_objs = _current.get_sigsize();
+  std::size_t idx_sig = 0;
+  std::size_t idx_insig = 0;
 
   std::cout << "Sigsize: " << sig_objs << "  Mass Cutoff: " << mass_cutoff << std::endl;
   
@@ -599,7 +599,7 @@ void Universe::cl_copytogpu()
 
   for (std::size_t i = 0; i < objects; i++)
   {
-    uint idx = 0;
+    std::size_t idx = 0;
 
     if(obj == _object_list.end())
       throw std::runtime_error("Object lists are inconsistent!");
@@ -685,7 +685,7 @@ void Universe::cl_integrate()
   std::vector<cl::Event> wait_queue, new_events;
 
   const double dtime = 60.0; //seconds (1 min)
-  const uint   stride = 180;
+  const std::size_t stride = 180;
 
   // Start timer.  Reports elapsed time when destroyed.
   boost::timer::auto_cpu_timer t;
@@ -797,7 +797,7 @@ void Universe::cl_fill_distance_buff()
  
   size_t num_objects = _object_list.size();
 
-  uint ref = 3; // Harded L1 point;
+  unsigned int ref = 3; // Harded L1 point;
 
   kern_dist.setArg(0, _cl_buf_hist_location);
   kern_dist.setArg(1, (unsigned int)ref);
@@ -807,9 +807,10 @@ void Universe::cl_fill_distance_buff()
 }
 
 
-uint Universe::count_sig_objects()
+auto
+Universe::count_sig_objects() const -> std::size_t
 {
-  uint count = 0;
+  std::size_t count = 0;
   
   for (auto obj = _object_list.begin(); obj != _object_list.end(); obj++)
   {
