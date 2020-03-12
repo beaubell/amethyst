@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
     
     Resource mainconfig_res = LOAD_RESOURCE(amethyst_gl_resources_config_yaml, Global.dir_amethyst, config_file);
     
-    auto config_is_ptr = mainconfig_res.get_istream();
+    auto config_is_ptr = mainconfig_res.getIStreamPtr();
     YAML::Node mainconfig = YAML::Load(*config_is_ptr);
     
     client.configure(mainconfig);
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
     Resource res = (Global.scene_name == "Startup")?LOAD_RESOURCE(amethyst_gl_resources_scn_Startup_yaml, Global.dir_scene, "scn_Startup.yaml")
                                                     :Resource(Global.dir_scene, scenefn);
 
-    auto scene_is_ptr = res.get_istream();
+    auto scene_is_ptr = res.getIStreamPtr();
     YAML::Node root = YAML::Load(*scene_is_ptr);
 
     YAML::Node scene = root["scene"];

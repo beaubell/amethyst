@@ -24,10 +24,8 @@ Resource::Resource(const char *start, const char *end, const fs::path &path, con
 
     // Attempt to load overidden resource, don't throw if fails since we fallback on builtin
     open_fs(path, filename, false);    
-    mmStream.open(begin(), size());
 
     mSBuf = MemBuf(const_cast<char *>(begin()), const_cast<char *>(begin()+mSize));
-    //std::istream in(&sbuf);
 
     std::cout << "Resource: " << name() << " opened." << std::endl;
 }
@@ -39,7 +37,6 @@ Resource::Resource(const fs::path &path, const std::string& filename, bool throw
   mSBuf(nullptr, nullptr)
 {
     open_fs(path, filename, true);
-    mmStream.open(begin(), size());
 
     mSBuf = MemBuf(const_cast<char *>(begin()), const_cast<char *>(begin()+mSize));
 
@@ -152,14 +149,11 @@ Resource::getUInt32(size_t off) const {
     return *(uint32_t*)(mData + off);
 }
 
-Resource::ArrayStream&
-Resource::get_stream() const {
-    return const_cast<ArrayStream&>(mmStream);
-}
-
 
 std::shared_ptr<std::istream>
-Resource::get_istream() const {
+Resource::getIStreamPtr() const {
+
+    std::lock_guard<std::mutex> g(mMutex);
 
     std::shared_ptr<std::istream> is_ptr = std::make_shared<std::istream>(&mSBuf);
     std::weak_ptr<std::istream> wptr = is_ptr;

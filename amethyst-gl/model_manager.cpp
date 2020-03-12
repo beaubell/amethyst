@@ -233,16 +233,16 @@ model_load_file(const Resource &res, Model &model, Texture::sptr tex, ShaderProg
 
     prim->setName("Main");
 
-    auto &s = res.get_stream();
+    auto sptr = res.getIStreamPtr();
 
     std::string line;
-    std::getline(s, line);
+    std::getline(*sptr, line);
 
     sscanf(line.c_str(), "%d\n", &vertices);
 
     vertices_t = vertices * 8;
 
-    for (i = 0; std::getline(s, line) && i < vertices_t; i += 8) {
+    for (i = 0; std::getline(*sptr, line) && i < vertices_t; i += 8) {
         sscanf(line.c_str(), "%f, %f, %f, %f, %f, %f, %f, %f\n",
                &(texcoord.s), &(texcoord.t),
                &(normal.x), &(normal.y), &(normal.z),

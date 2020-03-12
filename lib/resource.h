@@ -8,8 +8,6 @@
 #include <mutex>
 
 #include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/iostreams/device/array.hpp>
-#include <boost/iostreams/stream.hpp>
 
 namespace amethyst {
 namespace lib {
@@ -23,8 +21,7 @@ struct MemBuf : std::streambuf
 
 
 class Resource {
-public:
-    typedef boost::iostreams::stream<boost::iostreams::array_source> ArrayStream;
+  public:
 
     Resource(const char *start, const char *end, const std::filesystem::path &path, const std::string& filename);
     Resource(const std::filesystem::path &path, const std::string& filename, bool throws = true);
@@ -44,9 +41,8 @@ public:
     std::string name() const;
     uint16_t getUInt16(size_t off) const;
     uint32_t getUInt32(size_t off) const;
-    ArrayStream& get_stream() const;
-    std::shared_ptr<std::istream> get_istream() const;
 
+    auto getIStreamPtr() const -> std::shared_ptr<std::istream>;
     auto getSHA256() const -> const std::string&;
 
 private:
@@ -56,7 +52,6 @@ private:
     std::string mName;
     mutable std::string mSha256sum;
     boost::iostreams::mapped_file_source mmFile;
-    ArrayStream mmStream;
     mutable std::mutex mMutex;
     mutable MemBuf mSBuf;
     mutable std::vector<std::weak_ptr<std::istream>> vistream_;

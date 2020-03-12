@@ -94,10 +94,10 @@ void stars_load(const Resource &res)
 {
     float V, BV;
 
-    auto& s = res.get_stream();
+    auto sptr = res.getIStreamPtr();
 
     std::string line;
-    std::getline(s, line);
+    std::getline(*sptr, line);
 
     sscanf(line.c_str(), "%d\n", &entries);
 
@@ -105,7 +105,7 @@ void stars_load(const Resource &res)
 
     unsigned int i;
 
-    for (i = 0; std::getline(s, line) && i<entries; i++)
+    for (i = 0; std::getline(*sptr, line) && i<entries; i++)
     {
         sscanf(line.c_str(), "%f,%f,%f,%f\n", &star[i].ra, &star[i].de, &star[i].bt, &star[i].vt);
 
