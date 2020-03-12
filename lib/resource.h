@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <istream>
 #include <vector>
+#include <mutex>
 
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/iostreams/device/array.hpp>
@@ -19,14 +20,18 @@ struct MemBuf : std::streambuf
         this->setg(begin, begin, end);
     }
 };
-    
+
 
 class Resource {
 public:
     typedef boost::iostreams::stream<boost::iostreams::array_source> ArrayStream;
-    
+
     Resource(const char *start, const char *end, const std::filesystem::path &path, const std::string& filename);
     Resource(const std::filesystem::path &path, const std::string& filename, bool throws = true);
+    Resource(const Resource&) = delete;
+    Resource(Resource&&) = delete;
+    Resource& operator=(const Resource&) = delete;
+    Resource& operator=(Resource&&) = delete;
     virtual ~Resource();
 
     const char * const &data() const;
@@ -42,15 +47,17 @@ public:
     ArrayStream& get_stream() const;
     std::shared_ptr<std::istream> get_istream() const;
 
+    auto getSHA256() const -> const std::string&;
+
 private:
-    Resource(const Resource&) = delete; // non construction-copyable
-    Resource& operator=( const Resource& ) = delete; // non copyable
     bool open_fs(const std::filesystem::path &path, const std::string& filename, bool throws = true);
     const char *mData;
     size_t mSize;
     std::string mName;
+    mutable std::string mSha256sum;
     boost::iostreams::mapped_file_source mmFile;
     ArrayStream mmStream;
+    mutable std::mutex mMutex;
     mutable MemBuf mSBuf;
     mutable std::vector<std::weak_ptr<std::istream>> vistream_;
 };
