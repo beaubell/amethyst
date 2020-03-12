@@ -18,9 +18,9 @@ namespace detail {
 template<typename T>
 void native_to_big_endian(void* vdst, const void* vsrc, int n)
 {
-  #if defined(BOOST_ENDIAN_BIG_BYTE)
+  #if (BOOST_ENDIAN_BIG_BYTE > 0)
     std::memcpy(vdst, vsrc, n);
-  #elif defined(BOOST_ENDIAN_LITTLE_BYTE)
+  #elif (BOOST_ENDIAN_LITTLE_BYTE > 0)
     T* dst = static_cast<T*>(vdst);
     const unsigned char* src = static_cast<const unsigned char*>(vsrc);
     const int size = sizeof(T);
@@ -39,9 +39,9 @@ void native_to_big_endian(void* vdst, const void* vsrc, int n)
 template<typename T>
 void native_to_little_endian(void* vdst, const void* vsrc, int n)
 {
-  #if defined(BOOST_ENDIAN_BIG_BYTE)
+  #if (BOOST_ENDIAN_LITTLE_BYTE > 0)
     std::memcpy(vdst, vsrc, n);
-  #elif defined(BOOST_ENDIAN_LITTLE_BYTE)
+  #elif (BOOST_ENDIAN_BIG_BYTE > 0)
     T* dst = static_cast<T*>(vdst);
     const unsigned char* src = static_cast<const unsigned char*>(vsrc);
     const int size = sizeof(T);
