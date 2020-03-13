@@ -10,10 +10,7 @@ UI_Object::UI_Object()
 
 }
 
-UI_Object::~UI_Object()
-{
-
-}
+UI_Object::~UI_Object() = default;
 
 void UI_Object::setPosition(const glm::vec2& newpos)
 {

@@ -69,13 +69,13 @@ link_directories (
   ${YAML_CPP_BINARY_DIR}
 )  
 
-ADD_RESOURCES(science_CL
+cmrc_add_resource_library(science_CL ALIAS amrc::science_cl
   science/gravpotential.cl
   science/colorizer.frag
   science/fixed.vert
 )
 
-ADD_RESOURCES(shader_SRCS
+cmrc_add_resource_library(shader_SRCS ALIAS amrc::shader_srcs
   shaders/baseline.vert
   shaders/baseline.frag
   shaders/fb.vert
@@ -90,19 +90,19 @@ ADD_RESOURCES(shader_SRCS
   shaders/uifont.frag
 )
 
-ADD_RESOURCES(resource_SRCS
+cmrc_add_resource_library(resource_SRCS ALIAS amrc::res_srcs
   resources/config.yaml
   resources/scn_Startup.yaml
 )
 
 ADD_EXECUTABLE(amethyst-gl 
   ${amethystgl_SRCS}
-  ${science_CL}
-  ${shader_SRCS}
-  ${resource_SRCS}
 )
-  
+
 TARGET_LINK_LIBRARIES(amethyst-gl
+  amrc::science_cl
+  amrc::shader_srcs
+  amrc::res_srcs
   ${SDL_LIBRARY}
   ${FREETYPE_LIBRARY}
   ${OPENGL_gl_LIBRARY}

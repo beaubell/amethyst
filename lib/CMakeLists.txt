@@ -54,11 +54,10 @@ link_directories (
   ${Boost_LIBRARY_DIRS}
 )
 
-ADD_RESOURCES(libamethyst_cl ${libamethyst_CL})
+cmrc_add_resource_library(libamethyst_cl ALIAS amrc::cl NAMESPACE cl ${libamethyst_CL})
 
 ADD_LIBRARY(libamethyst
   ${libamethyst_SRCS}
-  ${libamethyst_cl}
 )
 
 
@@ -67,6 +66,7 @@ ADD_EXECUTABLE(amethystcmd ${amethystcmd_SRCS})
 
 TARGET_LINK_LIBRARIES(
   libamethyst
+  amrc::cl
   libsha2
   yaml-cpp
   ${Boost_TIMER_LIBRARY}

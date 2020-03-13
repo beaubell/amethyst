@@ -60,7 +60,7 @@ private:
 } // namespace lib
 } // namespace amethyst
 
-#define LOAD_RESOURCE(x,y,z) amethyst::lib::Resource(&_binary_##x##_start, &_binary_##x##_end, y, z)
-#define DECLARE_RESOURCE(x) extern const char _binary_##x##_start, _binary_##x##_end
+#define LOAD_RESOURCE(x,y,z) amethyst::lib::Resource(_binary_##x##_begin, _binary_##x##_end, y, z)
+#define DECLARE_RESOURCE(x) extern const char *_binary_##x##_begin, *_binary_##x##_end
 
 
