@@ -14,7 +14,7 @@
 namespace amethyst {
 
 class ConsoleCTX; // Platform Specific Data
-    
+
 class ConsoleIO {
  public:
   ConsoleIO(std::istream& cin, std::ostream& cout, std::ostream& cerr)
@@ -25,18 +25,18 @@ class ConsoleIO {
   std::ostream& out;
   std::ostream& err;
 
+  int  getch(char& c);
+
+  void clear_screen();
+
+  void cursor_left(int count);
+  void cursor_right(int count);
+  void cursor_up(int count);
+  void cursor_down(int count);
+
  private:
   ConsoleCTX *data;
 };
-
-int  getch(std::istream& is, char& c);
-
-void clear_screen(ConsoleIO& io, const std::string&);
-
-void cursor_left(std::ostream& os, int count);
-void cursor_right(std::ostream& os, int count);
-void cursor_up(std::ostream& os, int count);
-void cursor_down(std::ostream& os, int count);
 
 }
 

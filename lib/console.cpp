@@ -112,7 +112,7 @@ ConsoleCLI::command_get(void) {
     tcsetattr(0, 0, &modes_);
 
     do {
-        ret = getch(io_.in,one);
+        ret = io_.getch(one);
 
         if (ret == 0) {
             if (one != '\n') {
@@ -123,10 +123,10 @@ ConsoleCLI::command_get(void) {
                     io_.out << buffer_[curpos+gb];
                 }
 
-                cursor_right(io_.out,1);
+                io_.cursor_right(1);
 
                 do {
-                    cursor_left(io_.out,1);
+                    io_.cursor_left(1);
                     gb--;
                 } while (gb != 0);
 
@@ -137,7 +137,7 @@ ConsoleCLI::command_get(void) {
             switch (ret) {
                 case KEY_LEFT     : {
                     if (curpos != 0) {
-                        cursor_left(io_.out,1);
+                        io_.cursor_left(1);
                         curpos--;
                     }
 
@@ -146,7 +146,7 @@ ConsoleCLI::command_get(void) {
 
                 case KEY_RIGHT    : {
                     if (curpos < buffer_.length()) {
-                        cursor_right(io_.out,1);
+                        io_.cursor_right(1);
                         curpos++;
                     }
 
@@ -168,9 +168,9 @@ ConsoleCLI::command_get(void) {
                         curpos = buffer_.size();
 
                         if (curpos > oldcurpos)
-                            cursor_right(io_.out, curpos - oldcurpos);
+                            io_.cursor_right(curpos - oldcurpos);
                         else
-                            cursor_left(io_.out, oldcurpos - curpos);
+                            io_.cursor_left(oldcurpos - curpos);
 
                         // clear forward
                         while (curpos < oldbuffsize) {
@@ -178,7 +178,7 @@ ConsoleCLI::command_get(void) {
                             io_.out <<  " ";
                         }
 
-                        cursor_left(io_.out,curpos);
+                        io_.cursor_left(curpos);
                         io_.out << buffer_;
                         curpos = buffer_.size();
                         io_.out.flush();
@@ -204,9 +204,9 @@ ConsoleCLI::command_get(void) {
                         curpos = buffer_.size();
 
                         if (curpos > oldcurpos)
-                            cursor_right(io_.out, curpos - oldcurpos);
+                            io_.cursor_right(curpos - oldcurpos);
                         else
-                            cursor_left(io_.out, oldcurpos - curpos);
+                            io_.cursor_left(oldcurpos - curpos);
 
                         // clear forward
                         while (curpos < oldbuffsize) {
@@ -214,7 +214,7 @@ ConsoleCLI::command_get(void) {
                             io_.out <<  " ";
                         }
 
-                        cursor_left(io_.out, curpos);
+                        io_.cursor_left(curpos);
 
                         io_.out << buffer_;
                         curpos = buffer_.size();
@@ -228,9 +228,9 @@ ConsoleCLI::command_get(void) {
                 case KEY_BACKSPACE: {
                     if (curpos != 0) {
                         int gb = 0;
-                        cursor_left(io_.out, 1);
+                        io_.cursor_left(1);
                         io_.out << " ";
-                        cursor_left(io_.out, 1);
+                        io_.cursor_left(1);
                         buffer_.erase(curpos -1, 1);
                         curpos--;
 
@@ -243,7 +243,7 @@ ConsoleCLI::command_get(void) {
                         gb++;
 
                         do {
-                            cursor_left(io_.out, 1);
+                            io_.cursor_left(1);
                             gb--;
                         } while (gb != 0);
                     }

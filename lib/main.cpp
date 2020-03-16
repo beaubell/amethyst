@@ -6,7 +6,7 @@
  2003-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-// No great genius has ever existed without some touch of madness. 
+// No great genius has ever existed without some touch of madness.
 //                                                         - Aristotle
 
 #include <string>
@@ -33,8 +33,8 @@ int main(int argc, char** argv)
     ConsoleIO io(std::cin, std::cout, std::cerr);
     ConsoleCLI cli(io, prompt, mainmenu, history);
 
-    mainmenu.add("quit", [&cli](ConsoleIO& io, const std::string& cmd)-> void { cli.stop(cmd);});
-    mainmenu.add("clear", clear_screen);
+    mainmenu.add("quit", [&cli](ConsoleIO& io, const std::string& cmd)-> void { cli.stop(cmd); });
+    mainmenu.add("clear", [](ConsoleIO& io, const std::string&)-> void { io.clear_screen(); });
     mainmenu.add("test", [](ConsoleIO& io, const std::string&)-> void { lib::full_test(io, false, false); });
     mainmenu.add("testrk4", [](ConsoleIO& io, const std::string&)-> void { lib::test_rk4(io); });
 

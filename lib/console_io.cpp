@@ -13,17 +13,19 @@ using namespace std;
 
 namespace amethyst {
 
-void clear_screen(ConsoleIO& io, const std::string&) {
-    io.out << static_cast<char>(27) << "[H" << static_cast<char>(27) << "[2J";
+void
+ConsoleIO::clear_screen() {
+    out << static_cast<char>(27) << "[H" << static_cast<char>(27) << "[2J";
 }
 
 
-int getch(istream& is, char& c) {
+int
+ConsoleIO::getch(char& c) {
     //if ( cin.eof() ) return 0;
     char temp;
 
     c = 0;
-    temp = is.get();
+    temp = in.get();
 
     switch (temp) {
         case 127:
@@ -31,12 +33,12 @@ int getch(istream& is, char& c) {
             break;
 
         case 27: {
-            temp = is.get();
+            temp = in.get();
 
             switch (temp) {
 
                 case 91 : {
-                    temp = is.get();
+                    temp = in.get();
 
                     switch (temp) {
                         case 72:
@@ -64,7 +66,7 @@ int getch(istream& is, char& c) {
                             break;
 
                         case 54: {
-                            temp = is.get();
+                            temp = in.get();
 
                             switch (temp) {
                                 case 126:
@@ -75,7 +77,7 @@ int getch(istream& is, char& c) {
                         }
 
                         case 53: {
-                            temp = is.get();
+                            temp = in.get();
 
                             switch (temp) {
                                 case 126:
@@ -86,7 +88,7 @@ int getch(istream& is, char& c) {
                         }
 
                         case 51: {
-                            temp = is.get();
+                            temp = in.get();
 
                             switch (temp) {
                                 case 126:
@@ -97,7 +99,7 @@ int getch(istream& is, char& c) {
                         }
 
                         case 50: {
-                            temp = is.get();
+                            temp = in.get();
 
                             switch (temp) {
                                 case 126:
@@ -123,27 +125,31 @@ int getch(istream& is, char& c) {
     return 0;
 }
 
-void cursor_left(ostream& os, int count) {
+void
+ConsoleIO::cursor_left(int count) {
     for (int i = 0; i < count; i++) {
-        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(68);
+        out << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(68);
     }
 }
 
-void cursor_right(ostream& os, int count) {
+void
+ConsoleIO::cursor_right(int count) {
     for (int i = 0; i < count; i++) {
-        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(67);
+        out << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(67);
     }
 }
 
-void cursor_up(ostream& os, int count) {
+void
+ConsoleIO::cursor_up(int count) {
     for (int i = 0; i < count; i++) {
-        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(65);
+        out << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(65);
     }
 }
 
-void cursor_down(ostream& os, int count) {
+void
+ConsoleIO::cursor_down(int count) {
     for (int i = 0; i < count; i++) {
-        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(66);
+        out << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(66);
     }
 }
 
