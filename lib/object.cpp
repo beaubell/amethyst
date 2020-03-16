@@ -148,6 +148,7 @@ Object::toYAML(){
     
 }
 
+
 void
 Object::fromYAML(const YAML::Node object){
 
@@ -180,6 +181,20 @@ Object::fromYAML(const YAML::Node object){
     if (yaa.IsDefined())
         angular_acceleration.fromYAML(yaa);
 }
+
+
+std::ostream&
+operator<<(std::ostream& os, const Object& obj) {
+
+    os << "Object Summary: " << obj.name << '\n';
+    os << " Mass         : " << obj.mass << '\n';
+    os << " Location     : " << obj.location << '\n';
+    os << " Acceleration : " << obj.acceleration << '\n';
+    os << " Force        : " << obj.force << '\n';
+
+    return os;
+}
+
 
 } // namespace lib
 } // namespace amethyst

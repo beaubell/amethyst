@@ -11,6 +11,7 @@
 
 #include <string>
 #include <iostream>
+#include <iomanip>
 
 #include "console.h"
 #include "console_io.h"
@@ -23,13 +24,12 @@ void show_help(ConsoleIO& io, Console_Menu& menu);
 
 int main(int argc, char** argv)
 {
-    using std::placeholders::_1;
-
     std::string  prompt("Amethyst> ");
     Console_Menu mainmenu;
 
     std::vector<std::string> history;
 
+    std::cout << std::setprecision(1) << std::fixed;
     ConsoleIO io(std::cin, std::cout, std::cerr);
     ConsoleCLI cli(io, prompt, mainmenu, history);
 

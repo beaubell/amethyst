@@ -7,6 +7,8 @@
  2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
+#include <ostream>
+
 #include "vector.h"
 #include "yaml-cpp/node/node.h"
 
@@ -76,6 +78,7 @@ namespace lib {
        const Quaternion& operator *= (Quaternion&);
        const Quaternion& operator *= (double);
        //const Quaternion& operator ~  (void) { return Quaternion( w , -x, -y, -z); };
+       friend std::ostream& operator<<(std::ostream& os, const Quaternion& q);
        };
 
   const Quaternion operator* (const Quaternion &left, const Quaternion &right);

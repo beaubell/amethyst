@@ -6,8 +6,6 @@
  2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include <stdio.h>
-
 #include "test.h"
 #include "utility.h"
 #include "universe.h"
@@ -26,10 +24,10 @@ bool full_test(ConsoleIO& io, bool quiet, bool debug) {
     info_variable_size(io);
 
     test_units(io, quiet, debug);
-    
+
     test_cartsphere_conv(io, quiet, debug);
     success = test_engine(io, quiet, debug);
-    
+
     return success;
 }
 
@@ -40,25 +38,25 @@ bool test_cartsphere_conv(ConsoleIO& io, bool quiet, bool debug)
     Spherical_Vector sphr;
     Cartesian_Vector b;
 
-    if (!quiet) printf("\nCartesian->Sphercial->Cartesian Test...");
+    if (!quiet)
+        io.out << "\nCartesian->Sphercial->Cartesian Test...";
 
     sphr = phys_alias_transform (a);
     b    = phys_alias_transform (sphr);
 
     bool success = (b == a);
 
-    if (!quiet && success)
-        printf("PASS\n");
-        else
-        {
-        printf("FAIL !!! \n");
+    if (!quiet && success) {
+        io.out << "PASS\n";
+    } else {
+        io.out << "FAIL !!! \n";
         debug = true;
-        }
+    }
 
     if (!quiet && debug) {
-        print_vector(" DBG: Test Vector", a);
-        print_vector(" DBG: Test Vector", sphr);
-        print_vector(" DBG: Test Vector", b);
+        io.out << " DBG: Test Vector " << a << '\n';
+        io.out << " DBG: Test Vector " << sphr << '\n';
+        io.out << " DBG: Test Vector " << b << '\n';
     }
 
     return success;
@@ -105,14 +103,13 @@ bool test_engine(ConsoleIO& io, bool quiet, bool /* debug unused*/)
 
     if (!quiet)
     {
-        printf("\n");
-        printf("Original Objects\n");
-        print_vector(" OBJ-1", a->location);
-        print_vector(" OBJ-2", b->location);
-        print_vector(" OBJ-3", c->location);
-        print_vector(" OBJ-4", d->location);
+        io.out << "\nOriginal Objects\n"
+               << " OBJ-1 " << a->location << '\n'
+               << " OBJ-2 " << b->location << '\n'
+               << " OBJ-3 " << c->location << '\n'
+               << " OBJ-4 " << d->location << '\n';
 
-        printf("\nEngine Running...\n");
+        io.out << "Engine Running...\n";
     } // if (!quiet)
 
     for (;;)
@@ -120,22 +117,27 @@ bool test_engine(ConsoleIO& io, bool quiet, bool /* debug unused*/)
         count++;
         count1++;
         universe.iterate(.0001, 1);
-        if (!quiet && count1 > 100000) { printf("."); fflush (stdout); count1 = 0;};
+        if (!quiet && count1 > 100000) {
+            io.out << ".";
+            io.out.flush();
+            count1 = 0;
+        };
         //if (count > 2500000) break;
         if (count >= 1000000) break;
     }
 
     if (!quiet)
     {
-        printf(" %d: Iterations have passed\n\n", count);
+        io.out << count << ": Iterations have passed\n\n";
 
-        printf("Processed Objects\n");
-        print_vector(" OBJ-1", a->location);
-        print_vector(" OBJ-2", b->location);
-        print_vector(" OBJ-3", c->location);
-        print_vector(" OBJ-4", d->location);
+        io.out << "Processed Objects\n"
+               << " OBJ-1 " << a->location << '\n'
+               << " OBJ-2 " << b->location << '\n'
+               << " OBJ-3 " << c->location << '\n'
+               << " OBJ-4 " << d->location << '\n';
 
-        printf("\nDISTANCE: %le, GRAVITY: %le\n", phys_distance(a->location, b->location), phys_gravity(*a, *b));
+        io.out << "DISTANCE: " << phys_distance(a->location, b->location) << '\n'
+               << "GRAVITY: " << phys_gravity(*a, *b) << '\n';
     } // if (!quirt)
 
     return false; //XXX return meaningful success status
@@ -165,10 +167,10 @@ bool test_units(ConsoleIO& io, bool quiet, bool /* debug unused*/)
 
     Location location = 9.0*si::meters;
     Time     time = 8.0*si::seconds;
-    
+
     Velocity     velocity = location/time;
     Acceleration acceleration = velocity/time;
-    
+
     if (!quiet)
     {
         io.out << " Location                 : " << location << '\n';
@@ -213,7 +215,7 @@ void test_rk4(ConsoleIO& io)
   placement_L1(*a, *b, *d);
 
   io.out << "Size of Universe: " << universe.object_count() << '\n';
-  
+
   universe.cl_setup();
   universe.cl_copytogpu();
   universe.cl_integrate();

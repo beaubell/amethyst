@@ -16,6 +16,7 @@
 
 #include <string>
 #include <memory>
+#include <ostream>
 
 namespace amethyst {
 namespace lib {
@@ -116,6 +117,7 @@ namespace lib {
        std::string name;
 
        Object& operator= (const Object &right);
+       friend std::ostream& operator<<(std::ostream& os, const Object& ob);
        };
 
 } // namespace lib

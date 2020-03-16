@@ -40,18 +40,18 @@ namespace lib {
        y = -y;
        z = -z;
        }
-       
+
 YAML::Node
 Cartesian_Vector::toYAML() const
 {
     using namespace YAML;
-    
+
     Node vector;
     vector.SetStyle(EmitterStyle::Flow);
     vector["x"] = x;
     vector["y"] = y;
     vector["z"] = z;
-    
+
     return vector;
 }
 
@@ -166,7 +166,17 @@ Cartesian_Vector::fromYAML(const YAML::Node vec){
       return ((left.x == right.x) && (left.y == right.y) && (left.z == right.z));
       }
 
+std::ostream&
+operator<<(std::ostream& os, const Cartesian_Vector& cv) {
 
+    os << "CV[ x:"
+       << cv.x << ", y:"
+       << cv.y << ", z:"
+       << cv.z
+       << " ]";
+
+    return os;
+}
 
       Spherical_Vector& Spherical_Vector::operator=(const Spherical_Vector &right)
       {
@@ -183,18 +193,18 @@ Cartesian_Vector::fromYAML(const YAML::Node vec){
        p = 0;
        r = 0;
        }
-       
+
 YAML::Node
 Spherical_Vector::toYAML() const
 {
     using namespace YAML;
-    
+
     Node vector;
     vector.SetStyle(EmitterStyle::Flow);
     vector["a"] = a;
     vector["p"] = p;
     vector["r"] = r;
-    
+
     return vector;
 }
 
@@ -206,6 +216,18 @@ Spherical_Vector::fromYAML(const YAML::Node vec){
     a = vec["a"].as<float_type>();
     p = vec["p"].as<float_type>();
     r = vec["r"].as<float_type>();
+}
+
+std::ostream&
+operator<<(std::ostream& os, const Spherical_Vector& sv) {
+
+    os << "SV[ a:"
+    << sv.a << ", p:"
+    << sv.p << ", r:"
+    << sv.r
+    << " ]";
+
+    return os;
 }
 
 } // namespace lib

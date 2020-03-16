@@ -19,11 +19,6 @@
 namespace amethyst {
 namespace lib {
 
-  void print_vector(const std::string &title, const Cartesian_Vector &vector);
-  void print_vector(const std::string &title, const Spherical_Vector &vector);
-  void print_vector(const std::string &title, const Quaternion       &vector);
-  void print_object(const Object &obj);
-
   void gen_model_solarsystem(Universe &uni);
   void gen_object_variation(Universe &uni,
                             const Object &source,

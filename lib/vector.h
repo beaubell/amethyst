@@ -7,6 +7,7 @@
  2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
+#include <ostream>
 #include "yaml-cpp/node/node.h"
 
 namespace amethyst {
@@ -30,7 +31,7 @@ namespace lib {
        double  magnitude(void) const;
        void    normalize(void);
        void    reverse(void);
-       
+
        YAML::Node toYAML() const;
        void fromYAML(YAML::Node vec);
 
@@ -44,6 +45,7 @@ namespace lib {
 
        Cartesian_Vector operator -(void);
        Cartesian_Vector& operator =(const Cartesian_Vector &right);
+       friend std::ostream& operator<<(std::ostream& os, const Cartesian_Vector& dt);
   };
 
   typedef Cartesian_Vector Cartesian_Coord;
@@ -54,6 +56,7 @@ namespace lib {
   const Cartesian_Vector operator/ (const Cartesian_Vector &left, const double &scalar);
 
   bool  operator == (const Cartesian_Vector &left, const Cartesian_Vector &right);
+  std::ostream& operator<<(std::ostream& os, const Cartesian_Vector& cv);
 
 
   // Spherical_Vector Data Type and Support Functions
@@ -77,7 +80,7 @@ namespace lib {
        virtual ~Spherical_Vector(void) {};
 
        void  clear(void);
-       
+
        YAML::Node toYAML() const;
        void fromYAML(YAML::Node node);
 
@@ -87,6 +90,7 @@ namespace lib {
        const Spherical_Vector& operator -= (Spherical_Vector&);
        const Spherical_Vector& operator *= (double&);
        const Spherical_Vector& operator /= (double&);
+       friend std::ostream& operator<<(std::ostream& os, const Spherical_Vector& dt);
   };
 
   typedef Spherical_Vector Spherical_Coord;

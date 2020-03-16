@@ -11,8 +11,6 @@
 
 #include <H5Cpp.h>
 
-#include <fstream>
-#include <iostream>
 #include <sstream>
 #include <vector>
 #include <cmath>
@@ -21,33 +19,6 @@
 
 namespace amethyst {
 namespace lib{
-
-void print_vector(const std::string &title, const Cartesian_Vector &vector)
-{
-  printf("%s CV: x:%#1.16lE y:%#1.16lE z:%#1.16lE\n", title.c_str(), vector.x, vector.y, vector.z);
-}
-
-void print_vector(const std::string &title, const Spherical_Vector &vector)
-{
-  printf("%s SV: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title.c_str(), vector.a, vector.p, vector.r);
-}
-
-void print_vector(const std::string &title, const Quaternion &vector)
-{
-  printf("%s QU: a:%#1.16lE p:%#1.16lE r:%#1.16lE\n", title.c_str(), vector.x, vector.y, vector.z);
-}
-
-
-void print_object(const Object &obj)
-{
-  printf("Object Summary: %s\n", obj.name.c_str());
-  printf(" Mass         : %#1.16lE\n", obj.mass);
-  print_vector(" Location     :", obj.location);
-  print_vector(" Velocity     :", obj.velocity);
-  print_vector(" Acceleration :", obj.acceleration);
-  print_vector(" Force        :", obj.force);
-
-}
 
 
 void gen_model_solarsystem(Universe &uni)
@@ -73,11 +44,11 @@ void gen_model_solarsystem(Universe &uni)
   double Re = semi * (1 - massratio);
   printf("Sun Earth mass ratio: %f",massratio);
 
-  
+
   sol->location.x = -Re*(massratio)/(1-massratio);
   earth->location.x = semi;
 
-  
+
   double omega = sqrt(G*(sol->mass) * (1 + massratio)/pow(Re,3));
   sol->velocity.y   += -omega * Re * (massratio)/ (1 - massratio);
   earth->velocity.y +=  omega * Re / (1 - massratio);
@@ -86,7 +57,7 @@ void gen_model_solarsystem(Universe &uni)
   {
     lib::placement_SimpleOrbit(*sol, *earth, 149.598e9);
   }
-  
+
 
   moon = uni.object_find("Moon");
   moon->mass = 7.35e22;    // PDR 2002
@@ -150,7 +121,7 @@ void gen_model_solarsystem(Universe &uni)
     uni.object_add(L1_line);
   }
 #endif
-    
+
     Object::sptr SEl2 = uni.object_find("S-E L2 Probe");
     SEl2->mass = 1;
     lib::placement_L2(*sol, *earth, *SEl2);
@@ -159,11 +130,7 @@ void gen_model_solarsystem(Universe &uni)
     p2->mass = 1;
     lib::placement_L1(*earth, *moon, *p2);
 
-    print_object(*p1);
-    print_object(*SEl2);
-    
 
-  
 
   merc = uni.object_find("Mercury");
   merc->mass = 3.3038e23;    // PDR 2002
@@ -250,7 +217,7 @@ void gen_object_variation(Universe &uni,
   const auto vx_steps = v_steps[0];
   const auto vy_steps = v_steps[1];
   const auto vz_steps = v_steps[2];
-  
+
   for(unsigned int xi = 0; xi < x_steps; xi++)
   {
     double x = source.location.x + double(xi+r_stepoff[0])*r_stepsize.x;
@@ -291,7 +258,7 @@ void gen_object_variation(Universe &uni,
               obj->name = str;
 
               uni.object_add(obj);
-              
+
             }
           }
         }

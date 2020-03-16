@@ -193,6 +193,16 @@ Quaternion::fromYAML(const YAML::Node vec){
         return *this;
     }
 
+std::ostream&
+operator<<(std::ostream& os, const Quaternion& q) {
+    os << "QU[ w:"  << q.w
+       << ", x:" << q.x
+       << ", y:" << q.y
+       << ", z"  << q.z
+       << " ]";
+    return os;
+}
+
    const Quaternion operator*(const Quaternion &left, const Quaternion &right) {
 
        Quaternion quat;
