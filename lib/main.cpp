@@ -35,8 +35,8 @@ int main(int argc, char** argv)
 
     mainmenu.add("quit", [&cli](ConsoleIO& io, const std::string& cmd)-> void { cli.stop(cmd);});
     mainmenu.add("clear", clear_screen);
-    mainmenu.add("test", [](ConsoleIO& io, const std::string&)-> void { lib::full_test(); });
-    mainmenu.add("testrk4", [](ConsoleIO& io, const std::string&)-> void { lib::test_rk4(); });
+    mainmenu.add("test", [](ConsoleIO& io, const std::string&)-> void { lib::full_test(io, false, false); });
+    mainmenu.add("testrk4", [](ConsoleIO& io, const std::string&)-> void { lib::test_rk4(io); });
 
     mainmenu.add("help", [&mainmenu](ConsoleIO& io, const std::string&) { show_help(io, mainmenu); });
 

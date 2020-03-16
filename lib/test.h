@@ -6,28 +6,24 @@
   - Library Test Functions, Declarations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
+#include "console_io.h"
 
 namespace amethyst {
 namespace lib {
 
   // All tests return 1 for success 0 for failure
-  void full_test(void);
-  bool full_test(bool quiet, bool debug);
+  bool full_test(ConsoleIO& io, bool quiet, bool debug);
 
-  bool test_cartsphere_conv(bool quiet, bool debug);
-  bool test_engine(bool quiet, bool debug);
+  bool test_cartsphere_conv(ConsoleIO& io, bool quiet, bool debug);
+  bool test_engine(ConsoleIO& io, bool quiet, bool debug);
   
-  void info_variable_size(void);
+  void info_variable_size(ConsoleIO& io);
   
-  bool test_units(bool quiet, bool debug);
-  void test_rk4();
+  bool test_units(ConsoleIO& io, bool quiet, bool debug);
+  void test_rk4(ConsoleIO& io);
 
 } // namespace lib
 } // namespace amethyst
