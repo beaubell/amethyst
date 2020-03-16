@@ -24,8 +24,6 @@ namespace lib {
   void print_vector(const std::string &title, const Quaternion       &vector);
   void print_object(const Object &obj);
 
-  void readTextFile(const std::string& filename, std::string& in_buffer);
-
   void gen_model_solarsystem(Universe &uni);
   void gen_object_variation(Universe &uni,
                             const Object &source,

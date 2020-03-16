@@ -49,27 +49,6 @@ void print_object(const Object &obj)
 
 }
 
-void readTextFile(const std::string& filename, std::string& in_buffer)
-{
-  std::ifstream input;
-
-  in_buffer.clear();
-
-  input.open(filename.c_str(), std::ifstream::in);
-  
-  if (input.fail()) {
-    throw std::runtime_error("Failed to open: " + filename);
-  }
-
-  while (input.good())
-  {
-    char c = input.get();
-    in_buffer.append(1, c);
-  }
-  input.close();
-}
-
-
 
 void gen_model_solarsystem(Universe &uni)
 {
