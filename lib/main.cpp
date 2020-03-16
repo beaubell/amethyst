@@ -19,7 +19,7 @@
 
 using namespace amethyst;
 
-void show_help(Console_Menu& menu);
+void show_help(ConsoleIO& io, Console_Menu& menu);
 
 int main(int argc, char** argv)
 {
@@ -30,22 +30,23 @@ int main(int argc, char** argv)
 
     std::vector<std::string> history;
 
-    ConsoleCLI cli(prompt, mainmenu, history);
+    ConsoleIO io(std::cin, std::cout, std::cerr);
+    ConsoleCLI cli(io, prompt, mainmenu, history);
 
-    mainmenu.add("quit", std::bind(&ConsoleCLI::stop, cli, _1));
+    mainmenu.add("quit", [&cli](ConsoleIO& io, const std::string& cmd)-> void { cli.stop(cmd);});
     mainmenu.add("clear", clear_screen);
-    mainmenu.add("test", [](std::string)-> void { lib::full_test(); });
-    mainmenu.add("testrk4", [](std::string)-> void { lib::test_rk4(); });
+    mainmenu.add("test", [](ConsoleIO& io, const std::string&)-> void { lib::full_test(); });
+    mainmenu.add("testrk4", [](ConsoleIO& io, const std::string&)-> void { lib::test_rk4(); });
 
-    mainmenu.add("help", [&mainmenu](const std::string&) { show_help(mainmenu); });
+    mainmenu.add("help", [&mainmenu](ConsoleIO& io, const std::string&) { show_help(io, mainmenu); });
 
     cli.start();
     return 0;
 }
 
-void show_help(Console_Menu& menu){
-    std::cout << std::endl;
+void show_help(ConsoleIO& io, Console_Menu& menu){
+    io.out << std::endl;
     for (auto& [cmd, cmdv]: menu.get_commands()) {
-        std::cout << cmd << std::endl;
+        io.out << cmd << std::endl;
     }
 }

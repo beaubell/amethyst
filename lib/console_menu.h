@@ -12,10 +12,12 @@
 #include <string>
 #include <map>
 
+#include "console_io.h"
+
 namespace amethyst {
 
 typedef std::function<int(const std::string &command)> MenuFunction;
-typedef std::function<void(const std::string &arguments)> CommandFunction;
+typedef std::function<void(ConsoleIO& io, const std::string &arguments)> CommandFunction;
 typedef std::function<int(const std::string &command, std::string &possibilies)> ListFunction;
 
 enum Option_Type { OP_MENU, OP_COMMAND };
@@ -38,7 +40,7 @@ class Console_Menu {
     virtual ~Console_Menu();
     void add(const std::string &command, CommandFunction);
     void add(const std::string &command, MenuFunction run, ListFunction list);
-    int run(const std::string &command);
+    int run(ConsoleIO& io, const std::string &command);
     int list(const std::string &command, std::string &possibilites);
     CommandV& get_commands(void);
 

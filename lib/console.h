@@ -9,7 +9,10 @@
  ***********************************************************************/
 
 #include "console_menu.h"
+#include "console_io.h"
 
+#include <istream>
+#include <ostream>
 #include <string>
 #include <vector>
 #include <termios.h>
@@ -19,8 +22,13 @@ namespace amethyst {
 class ConsoleCLI {
 
  public:
-    ConsoleCLI(std::string& newprompt, Console_Menu& mainmenu, std::vector<std::string>& newhistory);
+    ConsoleCLI(ConsoleIO& io, std::string& newprompt, Console_Menu& mainmenu, std::vector<std::string>& newhistory);
+    ConsoleCLI(const ConsoleCLI& cli) = delete;
+    ConsoleCLI& operator=(const ConsoleCLI& cli) = delete;
+    ConsoleCLI(ConsoleCLI&& cli) = delete;
+    ConsoleCLI& operator=(ConsoleCLI&& cli) = delete;
     virtual ~ConsoleCLI();
+    
     void start();
     void stop(const std::string&);
 
@@ -40,7 +48,7 @@ class ConsoleCLI {
 
     std::vector<std::string>& history_;
     unsigned int history_pos_;
-
+    ConsoleIO& io_;
     struct termios orig_modes_;
     struct termios modes_;
 };

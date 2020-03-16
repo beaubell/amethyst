@@ -36,7 +36,7 @@ Console_Menu::add(const std::string &new_command, MenuFunction run, ListFunction
     menu_.emplace(std::pair(new_command, Command_Vector(OP_MENU, nullptr, run, list)));
 }
 
-int Console_Menu::run(const std::string &command) {
+int Console_Menu::run(ConsoleIO& io, const std::string &command) {
     unsigned int a, b, c;
     std::string cmd, ext;
 
@@ -77,7 +77,7 @@ int Console_Menu::run(const std::string &command) {
 
             switch (vobj.type) {
               case OP_COMMAND: {
-                vobj.cmdfn(ext);
+                vobj.cmdfn(io, ext);
                 return 0;
                 break;
               }

@@ -6,10 +6,6 @@
  2003-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-
-#include <iostream>
-//#include <termios.h>
-
 #include "console_io.h"
 #include "console_defs.h"
 
@@ -17,17 +13,17 @@ using namespace std;
 
 namespace amethyst {
 
-void clear_screen(const std::string&) {
-    cout << static_cast<char>(27) << "[H" << static_cast<char>(27) << "[2J";
+void clear_screen(ConsoleIO& io, const std::string&) {
+    io.out << static_cast<char>(27) << "[H" << static_cast<char>(27) << "[2J";
 }
 
 
-int getch(char& c) {
+int getch(istream& is, char& c) {
     //if ( cin.eof() ) return 0;
     char temp;
 
     c = 0;
-    temp = cin.get();
+    temp = is.get();
 
     switch (temp) {
         case 127:
@@ -35,12 +31,12 @@ int getch(char& c) {
             break;
 
         case 27: {
-            temp = cin.get();
+            temp = is.get();
 
             switch (temp) {
 
                 case 91 : {
-                    temp = cin.get();
+                    temp = is.get();
 
                     switch (temp) {
                         case 72:
@@ -68,7 +64,7 @@ int getch(char& c) {
                             break;
 
                         case 54: {
-                            temp = cin.get();
+                            temp = is.get();
 
                             switch (temp) {
                                 case 126:
@@ -79,7 +75,7 @@ int getch(char& c) {
                         }
 
                         case 53: {
-                            temp = cin.get();
+                            temp = is.get();
 
                             switch (temp) {
                                 case 126:
@@ -90,7 +86,7 @@ int getch(char& c) {
                         }
 
                         case 51: {
-                            temp = cin.get();
+                            temp = is.get();
 
                             switch (temp) {
                                 case 126:
@@ -101,7 +97,7 @@ int getch(char& c) {
                         }
 
                         case 50: {
-                            temp = cin.get();
+                            temp = is.get();
 
                             switch (temp) {
                                 case 126:
@@ -127,27 +123,27 @@ int getch(char& c) {
     return 0;
 }
 
-void cursor_left(int count) {
+void cursor_left(ostream& os, int count) {
     for (int i = 0; i < count; i++) {
-        cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(68);
+        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(68);
     }
 }
 
-void cursor_right(int count) {
+void cursor_right(ostream& os, int count) {
     for (int i = 0; i < count; i++) {
-        cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(67);
+        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(67);
     }
 }
 
-void cursor_up(int count) {
+void cursor_up(ostream& os, int count) {
     for (int i = 0; i < count; i++) {
-        cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(65);
+        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(65);
     }
 }
 
-void cursor_down(int count) {
+void cursor_down(ostream& os, int count) {
     for (int i = 0; i < count; i++) {
-        cout << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(66);
+        os << static_cast<char>(27) << static_cast<char>(91) << static_cast<char>(66);
     }
 }
 

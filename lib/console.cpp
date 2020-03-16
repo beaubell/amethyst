@@ -8,7 +8,6 @@
 
 #include "lib/console.h"
 
-#include <iostream>
 #include <string>
 #include <vector>
 #include <functional>
@@ -25,19 +24,20 @@
 
 #include "version.h"
 
-using namespace std;
-
 namespace amethyst {
 
-ConsoleCLI::ConsoleCLI(std::string& newprompt, Console_Menu& mainmenu, std::vector<std::string>& newhistory)
-    : prompt_(newprompt),
-      mainmenu_(mainmenu),
-      history_(newhistory) {
+ConsoleCLI::ConsoleCLI(ConsoleIO& io,
+                       std::string& newprompt,
+                       Console_Menu& mainmenu,
+                       std::vector<std::string>& newhistory)
+: prompt_(newprompt),
+  mainmenu_(mainmenu),
+  history_(newhistory),
+  io_(io) {
 }
 
-ConsoleCLI::~ConsoleCLI() {
-}
 
+ConsoleCLI::~ConsoleCLI() = default;
 
 
 void
@@ -60,23 +60,22 @@ ConsoleCLI::start() {
 
 
     //Display version information
-    cout << endl << AMETHYST_VER << endl;
+    io_.out << '\n' << AMETHYST_VER << '\n';
 
     //Instantiate command buffer
-    string command;
+    std::string command;
 
     //Endless command loop
     for (;;) {
         buffer_.clear();
         show_prompt();
-        cout.flush();
+        io_.out.flush();
 
         command = command_get();
-        std::cout << std::endl;
 
         switch (command_parse(command)) {
             case 1:
-                cout << command << " :Command Not Recognized..." << endl;
+                io_.out << command << " :Command Not Recognized..." << '\n';
                 break;
 
             case 2:
@@ -91,7 +90,7 @@ ConsoleCLI::start() {
 
 void
 ConsoleCLI::stop(const std::string&) {
-    cout << "\n";
+    io_.out << "\n";
     tcsetattr(0, 0, &orig_modes_);
     exit(0);
 }
@@ -113,7 +112,7 @@ ConsoleCLI::command_get(void) {
     tcsetattr(0, 0, &modes_);
 
     do {
-        ret = getch(one);
+        ret = getch(io_.in,one);
 
         if (ret == 0) {
             if (one != '\n') {
@@ -121,24 +120,24 @@ ConsoleCLI::command_get(void) {
                 buffer_.insert(curpos, 1, one);
 
                 for (; gb < (buffer_.length() - curpos); gb++) {
-                    cout << buffer_[curpos+gb];
+                    io_.out << buffer_[curpos+gb];
                 }
 
-                cursor_right(1);
+                cursor_right(io_.out,1);
 
                 do {
-                    cursor_left(1);
+                    cursor_left(io_.out,1);
                     gb--;
                 } while (gb != 0);
 
-                cout.flush();
+                io_.out.flush();
                 curpos++;
             }
         } else {
             switch (ret) {
                 case KEY_LEFT     : {
                     if (curpos != 0) {
-                        cursor_left(1);
+                        cursor_left(io_.out,1);
                         curpos--;
                     }
 
@@ -147,7 +146,7 @@ ConsoleCLI::command_get(void) {
 
                 case KEY_RIGHT    : {
                     if (curpos < buffer_.length()) {
-                        cursor_right(1);
+                        cursor_right(io_.out,1);
                         curpos++;
                     }
 
@@ -169,20 +168,20 @@ ConsoleCLI::command_get(void) {
                         curpos = buffer_.size();
 
                         if (curpos > oldcurpos)
-                            cursor_right(curpos - oldcurpos);
+                            cursor_right(io_.out, curpos - oldcurpos);
                         else
-                            cursor_left(oldcurpos - curpos);
+                            cursor_left(io_.out, oldcurpos - curpos);
 
                         // clear forward
                         while (curpos < oldbuffsize) {
                             curpos++;
-                            std::cout <<  " ";
+                            io_.out <<  " ";
                         }
 
-                        cursor_left(curpos);
-                        std::cout << buffer_;
+                        cursor_left(io_.out,curpos);
+                        io_.out << buffer_;
                         curpos = buffer_.size();
-                        std::cout.flush();
+                        io_.out.flush();
 
                     }
                     break;
@@ -205,21 +204,21 @@ ConsoleCLI::command_get(void) {
                         curpos = buffer_.size();
 
                         if (curpos > oldcurpos)
-                            cursor_right(curpos - oldcurpos);
+                            cursor_right(io_.out, curpos - oldcurpos);
                         else
-                            cursor_left(oldcurpos - curpos);
+                            cursor_left(io_.out, oldcurpos - curpos);
 
                         // clear forward
                         while (curpos < oldbuffsize) {
                             curpos++;
-                            std::cout <<  " ";
+                            io_.out <<  " ";
                         }
 
-                        cursor_left(curpos);
+                        cursor_left(io_.out, curpos);
 
-                        std::cout << buffer_;
+                        io_.out << buffer_;
                         curpos = buffer_.size();
-                        std::cout.flush();
+                        io_.out.flush();
 
                     }
 
@@ -229,22 +228,22 @@ ConsoleCLI::command_get(void) {
                 case KEY_BACKSPACE: {
                     if (curpos != 0) {
                         int gb = 0;
-                        cursor_left(1);
-                        cout << " ";
-                        cursor_left(1);
+                        cursor_left(io_.out, 1);
+                        io_.out << " ";
+                        cursor_left(io_.out, 1);
                         buffer_.erase(curpos -1, 1);
                         curpos--;
 
                         for (unsigned int i = 0; i < (buffer_.length()-curpos); i++) {
-                            cout << buffer_[i+curpos];
+                            io_.out << buffer_[i+curpos];
                             gb++;
                         }
 
-                        cout << " ";
+                        io_.out << " ";
                         gb++;
 
                         do {
-                            cursor_left(1);
+                            cursor_left(io_.out, 1);
                             gb--;
                         } while (gb != 0);
                     }
@@ -254,14 +253,14 @@ ConsoleCLI::command_get(void) {
 
                 case KEY_TAB: {
                     //Run tab completion logic
-                    string extra;
+                    std::string extra;
                     int retval = mainmenu_.list(buffer_.substr(0, curpos), extra);
 
                     if (retval == 1) {
                         buffer_ += extra;
                         curpos += extra.size();
-                        cout << extra;
-                        cout.flush();
+                        io_.out << extra;
+                        io_.out.flush();
                     } else if (retval > 1) {
                         show_prompt();
                     }
@@ -287,7 +286,7 @@ ConsoleCLI::command_get(void) {
 
 
 int
-ConsoleCLI::command_parse(const string& command) {
+ConsoleCLI::command_parse(const std::string& command) {
     //Check for null command
     if (command == "") return 0;
 
@@ -296,13 +295,13 @@ ConsoleCLI::command_parse(const string& command) {
     history_pos_ = history_.size();
 
     //Run command
-    return mainmenu_.run(command);
+    return mainmenu_.run(io_, command);
 }
 
 
 void
 ConsoleCLI::show_prompt(void) {
-    cout << std::endl << prompt_ << buffer_;
+    io_.out << '\n' << prompt_ << buffer_;
 }
 
 }  // namespace amethyst
