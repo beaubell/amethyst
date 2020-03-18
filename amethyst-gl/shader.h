@@ -27,14 +27,14 @@ class Shader
     typedef std::shared_ptr<Shader> sptr;
     typedef std::weak_ptr<Shader>   wptr;
 
-    Shader(const Resource& shader_res, uint shdr_hdl);
+    Shader(const Resource& shader_res, unsigned int  shdr_hdl);
     virtual ~Shader();
     const std::string& getName();
 
-    uint operator()();
+    unsigned int  operator()();
 
   private:
-    uint shdr_;
+    unsigned int  shdr_;
     std::string name_;
     std::string source_;
 };

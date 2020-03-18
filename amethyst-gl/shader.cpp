@@ -16,7 +16,7 @@
 namespace amethyst {
 namespace client {
 
-Shader::Shader(const Resource& shader_res, uint shdr_hdl)
+Shader::Shader(const Resource& shader_res, unsigned int  shdr_hdl)
 : shdr_(shdr_hdl),
   name_(shader_res.name()),
   source_(shader_res.to_str())
@@ -56,7 +56,7 @@ const std::string& Shader::getName()
 }
 
 
-uint Shader::operator()()
+unsigned int  Shader::operator()()
 {
     return shdr_;
 }

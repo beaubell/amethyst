@@ -29,10 +29,10 @@ class ShaderProgramFont : public ShaderProgram
     void setViewM(const TransMatrix& m_proj);
 
     void setColorV4(const Color& color);
-    void setTexUnit(uint unit);
+    void setTexUnit(unsigned int  unit);
 
-    uint getVertexLoc();
-    uint getTexCoordLoc();
+    unsigned int  getVertexLoc();
+    unsigned int  getTexCoordLoc();
 
   private:
     // Vertex Attribute Locations

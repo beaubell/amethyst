@@ -44,13 +44,13 @@ class UIW_Log : public UI_Window
     UIW_Log(UI &ui);
     void update();
     bool check_focus(unsigned short x, unsigned short y);
-    void setLines(uint lines);
+    void setLines(unsigned int  lines);
 
   private:
     unsigned int scroll_offset;
     std::vector<UI_TextBox::sptr> _logline;
-    uint num_lines_;
-    uint num_lines_log;
+    unsigned int  num_lines_;
+    unsigned int  num_lines_log;
     ShaderProgramFont::sptr fontshdr;
 };
 
@@ -68,12 +68,12 @@ UIW_Log::UIW_Log(UI &ui)
 
 void UIW_Log::update()
 {
-    uint length   = Global.log.log().size();
+    unsigned int  length   = Global.log.log().size();
 
     if(agl && (num_lines_log != length))
     {
-        uint start    = 0;
-        uint end      = 0;
+        unsigned int  start    = 0;
+        unsigned int  end      = 0;
 
         if (length > num_lines_)
             start = length - num_lines_ - scroll_offset;
@@ -83,7 +83,7 @@ void UIW_Log::update()
         else
             end = num_lines_;
 
-        for(uint i = 0; i < end; i++)
+        for(unsigned int  i = 0; i < end; i++)
         {
             _logline[i]->setText(Global.log.log()[i+start]);
         }
@@ -99,14 +99,14 @@ bool UIW_Log::check_focus(unsigned short /*x*/, unsigned short /*y*/)
   return false;
 }
 
-void UIW_Log::setLines(uint new_lines)
+void UIW_Log::setLines(unsigned int  new_lines)
 {
     float line_height = 12.0f;
 
     if (new_lines > _logline.size())
     {
 
-        for (uint i = _logline.size(); i < num_lines_; i++)
+        for (unsigned int  i = _logline.size(); i < num_lines_; i++)
         {
             UI_TextBox::sptr line = std::make_shared<UI_TextBox>(font, fontshdr);
             _logline.push_back(line);
@@ -118,7 +118,7 @@ void UIW_Log::setLines(uint new_lines)
     else if (new_lines < _logline.size())
     {
 
-        for (uint i = _logline.size(); i > new_lines; i--)
+        for (unsigned int  i = _logline.size(); i > new_lines; i--)
         {
             delWidget(_logline[i-1]);
             _logline.pop_back();

@@ -30,7 +30,7 @@ class ShaderProgramUI : public ShaderProgram
 
     void setColorV4(const Color& color);
 
-    uint getVertexLoc();
+    unsigned int  getVertexLoc();
 
   private:
     // Vertex Attribute Locations

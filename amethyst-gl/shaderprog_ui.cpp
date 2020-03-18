@@ -41,7 +41,7 @@ void ShaderProgramUI::setColorV4(const Color& color)
     Uniform4f(colorLoc, color);
 }
 
-uint ShaderProgramUI::getVertexLoc()
+unsigned int  ShaderProgramUI::getVertexLoc()
 {
     return vertexLoc.value;
 }

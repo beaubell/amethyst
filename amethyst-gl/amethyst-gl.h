@@ -82,7 +82,7 @@ class Amethyst_GL
 
     //Universe universe;
     bool paused;
-    uint stride;
+    unsigned int  stride;
     double simulation_interval;
 
     bool show_ui;

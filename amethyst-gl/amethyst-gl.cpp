@@ -185,7 +185,7 @@ void Amethyst_GL::setupFramebuffers(void)
 void Amethyst_GL::main_loop()
 {
   Universe &universe = Global.universe;
-  uint hist_index = 0;
+  unsigned int  hist_index = 0;
 
   if(0) //For history tracking.  Not used any more
   {
@@ -285,9 +285,9 @@ void Amethyst_GL::render()
   if(show_ui)
     ui.update();
   
-  uint maxeyes = (stereo)?2:1;
+  unsigned int  maxeyes = (stereo)?2:1;
   //Render each perspective
-  for (uint eyeframe = 0; eyeframe < maxeyes; eyeframe++)
+  for (unsigned int  eyeframe = 0; eyeframe < maxeyes; eyeframe++)
   {
       // Bind frame
       if(eyeframe == 0)

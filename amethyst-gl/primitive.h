@@ -76,7 +76,7 @@ class Triangles : public Primitive
 
   private:
     Texture::sptr  _texture;
-    //uint _vertcount;
+    //unsigned int  _vertcount;
 };
 
 
@@ -97,7 +97,7 @@ class TriangleStrip : public Primitive
 
   private:
     Texture::sptr  _texture;
-    //uint _vertcount;
+    //unsigned int  _vertcount;
 };
 
 

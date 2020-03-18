@@ -32,8 +32,8 @@ class ShaderProgramHUD : public ShaderProgram
     void setFogStart(const float fogstart);
     void setFogEnd(const float fogend);
 
-    uint getVertexLoc();
-    uint getVertexColorLoc();
+    unsigned int  getVertexLoc();
+    unsigned int  getVertexColorLoc();
 
   private:
     // Vertex Attribute Locations

@@ -196,8 +196,8 @@ int main(int argc, char* argv[])
 
     lib::Object::sptr p1 = Global.universe.object_find("S-E L1 Probe");
 
-    uint r_step[3] = {1,1,1};
-    uint v_step[3] = {7,7,1};
+    unsigned int  r_step[3] = {1,1,1};
+    unsigned int  v_step[3] = {7,7,1};
     int r_offset[3] = {0,0,0};
     int v_offset[3] = {3,3,0};
 

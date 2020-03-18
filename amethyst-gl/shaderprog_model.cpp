@@ -103,22 +103,22 @@ void ShaderProgramModel::setMaterial(const MaterialInfo& s_material)
 }
 
 
-void ShaderProgramModel::setTexUnit(uint unit)
+void ShaderProgramModel::setTexUnit(unsigned int  unit)
 {
     Uniform1i(texUnitLoc_, unit);
 }
 
-uint ShaderProgramModel::getVertexLoc()
+unsigned int  ShaderProgramModel::getVertexLoc()
 {
     return vertexLoc_.value;
 }
 
-uint ShaderProgramModel::getTexCoordLoc()
+unsigned int  ShaderProgramModel::getTexCoordLoc()
 {
     return texcoordLoc_.value;
 }
 
-uint ShaderProgramModel::getNormalLoc()
+unsigned int  ShaderProgramModel::getNormalLoc()
 {
     return normalLoc_.value;
 }

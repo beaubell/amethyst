@@ -53,11 +53,11 @@ class ShaderProgramModel : public ShaderProgram
     void setLight(const LightInfo& s_light);
     void setMaterial(const MaterialInfo& s_material);
 
-    void setTexUnit(uint unit);
+    void setTexUnit(unsigned int  unit);
 
-    uint getVertexLoc();
-    uint getTexCoordLoc();
-    uint getNormalLoc();
+    unsigned int  getVertexLoc();
+    unsigned int  getTexCoordLoc();
+    unsigned int  getNormalLoc();
 
   private:
     // Vertex Attribute Locations

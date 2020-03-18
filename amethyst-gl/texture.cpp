@@ -86,7 +86,7 @@ Texture2D::Texture2D()
 void Texture::load(const Resource& res)
 {
     textureImage *texti;
-    uint num_mipmaps = 2; //TODO, don't hardcode this.
+    unsigned int  num_mipmaps = 2; //TODO, don't hardcode this.
 
     texti = new textureImage;
     getBitmapImageData(res, texti);

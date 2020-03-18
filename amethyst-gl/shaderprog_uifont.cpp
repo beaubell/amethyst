@@ -43,17 +43,17 @@ void ShaderProgramFont::setColorV4(const Color& color)
     Uniform4f(colorLoc_, color);
 }
 
-void ShaderProgramFont::setTexUnit(uint unit)
+void ShaderProgramFont::setTexUnit(unsigned int  unit)
 {
     Uniform1i(texUnitLoc_, unit);
 }
 
-uint ShaderProgramFont::getVertexLoc()
+unsigned int  ShaderProgramFont::getVertexLoc()
 {
     return vertexLoc_.value;
 }
 
-uint ShaderProgramFont::getTexCoordLoc()
+unsigned int  ShaderProgramFont::getTexCoordLoc()
 {
     return texcoordLoc_.value;
 }

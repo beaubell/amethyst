@@ -55,12 +55,12 @@ void ShaderProgramHUD::setFogEnd(const float fogend)
 }
 
 
-uint ShaderProgramHUD::getVertexLoc()
+unsigned int  ShaderProgramHUD::getVertexLoc()
 {
     return vertexLoc.value;
 }
 
-uint ShaderProgramHUD::getVertexColorLoc()
+unsigned int  ShaderProgramHUD::getVertexColorLoc()
 {
     return vertexColLoc.value;
 }
