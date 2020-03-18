@@ -1,13 +1,13 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-PROJECT(Amethyst)
+PROJECT(Amethyst LANGUAGES C CXX VERSION 0.1.0)
 
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
-include(AddResource)
+include(CMakeRC)
 
 FIND_PACKAGE(SDL2)
 FIND_PACKAGE(Boost 1.65.0 COMPONENTS date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)

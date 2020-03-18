@@ -13,9 +13,6 @@
 #include "cl.h"
 #include "object_group.h"
 
-//#define BOOST_DISABLE_ASSERTS TRUE
-//#include "boost/multi_array.hpp"
-
 namespace amethyst {
 namespace lib {
 
