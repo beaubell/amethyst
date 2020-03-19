@@ -10,7 +10,7 @@ namespace amethyst {
 namespace lib {
 
 namespace fs = std::filesystem;
-namespace bio = boost::iostreams; 
+namespace bio = boost::iostreams;
 using Sha256 = boost::crypto::message_digest<boost::crypto::detail::sha256_ctx>;
 
 
@@ -23,7 +23,7 @@ Resource::Resource(const char *start, const char *end, const fs::path &path, con
 {
 
     // Attempt to load overidden resource, don't throw if fails since we fallback on builtin
-    open_fs(path, filename, false);    
+    open_fs(path, filename, false);
 
     mSBuf = MemBuf(const_cast<char *>(begin()), const_cast<char *>(begin()+mSize));
 
@@ -49,18 +49,18 @@ Resource::open_fs(const fs::path &path, const std::string& filename, bool throws
 
     fs::path filepath = path / filename;
 
-    if (!fs::exists(filepath)) { 
+    if (!fs::exists(filepath)) {
         if (throws)
-            throw std::runtime_error("Resource doesn't exist: " + std::string(filepath));
+            throw std::runtime_error("Resource doesn't exist: " + filepath.string());
 
         return false;
     }
 
-    mmFile.open(filepath);
+    mmFile.open(filepath.string());
 
     if (!mmFile.is_open()) {
         if (throws)
-            throw std::runtime_error("Unable to open resource: " + std::string(filepath));
+            throw std::runtime_error("Unable to open resource: " + filepath.string());
 
         return false;
     }
@@ -68,9 +68,9 @@ Resource::open_fs(const fs::path &path, const std::string& filename, bool throws
     mData = mmFile.begin();
     mSize = mmFile.size();
 
-    mName = filepath;
+    mName = filepath.string();
 
-    return true;    
+    return true;
 }
 
 Resource::~Resource()
@@ -120,7 +120,7 @@ Resource::operator[](size_t idx) const {
 }
 
 
-std::string 
+std::string
 Resource::to_str() const {
     return std::string(begin(),size());
 }
