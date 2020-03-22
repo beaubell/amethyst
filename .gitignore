@@ -2,3 +2,5 @@
 /.kdev4/amethyst.kdev4
 .vs/
 out/
+
+CMakeSettings.json
