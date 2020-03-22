@@ -1,7 +1,6 @@
 #ifndef AMETHYST_TYPES_H
 #define AMETHYST_TYPES_H
 
-#include "cl.h"
 #include <boost/multi_array.hpp>
 #include <glm/glm.hpp>
 
