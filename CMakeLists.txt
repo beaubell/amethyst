@@ -5,9 +5,12 @@ PROJECT(Amethyst LANGUAGES C CXX VERSION 0.1.0)
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
+option(AMETHYST_GUI "Enable OpenGL Frontend" ON)
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
 include(CMakeRC)
+
+SET(Boost_USE_STATIC_LIBS ON)
 
 FIND_PACKAGE(SDL2)
 FIND_PACKAGE(Boost 1.65.0 COMPONENTS date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
@@ -42,7 +45,7 @@ ADD_SUBDIRECTORY(lib)
 ADD_SUBDIRECTORY(server)
 
 # Build only the server if no gui components exist
-IF( SDLMAIN_LIBRARY )
+IF( SDLMAIN_LIBRARY AND AMETHYST_GUI )
 	ADD_SUBDIRECTORY(support/FTGL)
 	ADD_SUBDIRECTORY(amethyst-gl)
 ENDIF()
