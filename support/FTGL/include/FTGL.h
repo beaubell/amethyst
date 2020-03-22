@@ -25,7 +25,9 @@ typedef float    FTGL_FLOAT;
     // Sure, it can be avoided and "name space pollution" can be
     // avoided, but why? It really doesn't make that much difference
     // these days.
+    #ifndef WIN32_LEAN_AND_MEAN
     #define  WIN32_LEAN_AND_MEAN
+    #endif
     #include <windows.h>
 
     #ifndef __gl_h_
