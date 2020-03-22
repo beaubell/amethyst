@@ -8,8 +8,9 @@
 
 #include "camera.h"
 #include "lib/types.h"
-#include <cmath>
+
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/trigonometric.hpp"
 
 #include "yaml-cpp/yaml.h"
 
@@ -59,11 +60,11 @@ Camera::genMatProj() const
     eyeseparation_ = distance/50.0;
     double aperture = glm::radians(45.0);
 
-    double near = 10;
-    double far = 1e15f;
+    double near_d = 10.0;
+    double far_d = 1e15;
     double focal = distance - distance/5;
 
-    double widthdiv2 = near * tan(aperture/2);
+    double widthdiv2 = near_d * tan(aperture/2);
     double aspectratio = screen.x / screen.y;
 
     double top = widthdiv2;
@@ -71,15 +72,15 @@ Camera::genMatProj() const
 
     double eyeoffset[Eye::MAX] = {0.0, 0.0, 0.0};
 
-    eyeoffset[Eye::LEFT]  = -0.5 * eyeseparation_ * near / focal;
-    eyeoffset[Eye::RIGHT] = +0.5 * eyeseparation_ * near / focal;
+    eyeoffset[Eye::LEFT]  = -0.5 * eyeseparation_ * near_d / focal;
+    eyeoffset[Eye::RIGHT] = +0.5 * eyeseparation_ * near_d / focal;
 
     for (int i = Eye::MONO; i < Eye::MAX; i++)
     {
         double left   = - aspectratio * widthdiv2 + eyeoffset[i] ;
         double right  =   aspectratio * widthdiv2 + eyeoffset[i] ;
 
-        matrii_[i].proj = glm::frustum (left, right, bottom, top, near, far);
+        matrii_[i].proj = glm::frustum (left, right, bottom, top, near_d, far_d);
     }
 }
 
@@ -87,8 +88,8 @@ void
 Camera::genMatView() const
 {
     // Convert to radians
-    double x_rad = (yaw / 180.0) * M_PI;
-    double y_rad = (pitch / 180.0) * M_PI;
+    double x_rad = glm::radians(yaw);
+    double y_rad = glm::radians(pitch);
 
     lib::Quaternion Qz( cos((x_rad)/2.0), 0.0, 0.0, sin((x_rad)/2.0));
     Qz.normalize();
