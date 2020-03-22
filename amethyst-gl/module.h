@@ -27,10 +27,6 @@
 
 #include <memory>
 
-#ifdef WIN32
-#include "file.h"
-#endif
-
 namespace amethyst {
 namespace client {
 

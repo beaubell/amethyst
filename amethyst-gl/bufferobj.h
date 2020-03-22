@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <list>
+#include <string>
 
 namespace amethyst {
 namespace client {

@@ -21,10 +21,7 @@
 
 #include <boost/lexical_cast.hpp>
 #include <GL/glcorearb.h>
-//#include <GL/glew.h>
 
-#include <execinfo.h>
-#include <stdio.h>
 
 namespace amethyst {
 namespace client {

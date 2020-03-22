@@ -17,8 +17,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
-#include <stdlib.h> // malloc
-#include <unistd.h>
 #include <errno.h>  //
 #include <iostream>
 #include <string>

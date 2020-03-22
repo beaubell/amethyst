@@ -14,6 +14,7 @@
 #include "hud_radial.h"
 #include "hud_orbit.h"
 #include "hud_objectnames.h"
+#include "glm/trigonometric.hpp"
 
 #include "FTGL.h"
 #include "FTGLTextureFont.h"
@@ -266,8 +267,7 @@ static void hud_widget_vectorbox(int /*x unused*/, int /*y unused*/, float xvect
 
     Quaternion       *q = &Global.ship->attitude;
 
-    double theta = 2.0 * acos(q->w);
-    TODEG(theta);
+    double theta = glm::degrees(2.0 * acos(q->w));
 
     glRotated(theta, q->x, q->y, q->z);
 

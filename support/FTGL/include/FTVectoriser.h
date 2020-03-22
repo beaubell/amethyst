@@ -122,7 +122,7 @@ class FTGL_EXPORT FTMesh
         /**
          * The number of tesselations in the mesh
          */
-        unsigned int TesselationCount() const { return tesselationList.size();}
+        auto TesselationCount() const { return tesselationList.size();}
 
         /**
          * Get a tesselation by index

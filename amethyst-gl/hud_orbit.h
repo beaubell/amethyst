@@ -30,7 +30,7 @@ class HUDOrbit : public HUDWidget
     VertexArray vao_[2]; // Vertex Array Objects Identifier
     ArrayBuffer buffer_[4]; // 0=lines, 1=colors
     
-    unsigned int orbitpoints_;
+    const unsigned int orbitpoints_;
 
 };
 
