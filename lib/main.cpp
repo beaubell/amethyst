@@ -30,10 +30,10 @@ int main(int argc, char** argv)
     std::vector<std::string> history;
 
     std::cout << std::setprecision(1) << std::fixed;
-    ConsoleIO io(std::cin, std::cout, std::cerr);
+    ConsoleIO io(std::cin, std::cout, std::cerr, true);
     ConsoleCLI cli(io, prompt, mainmenu, history);
 
-    mainmenu.add("quit", [&cli](ConsoleIO& io, const std::string& cmd)-> void { cli.stop(cmd); });
+    mainmenu.add("quit", [&cli](ConsoleIO& io, const std::string& cmd)-> void { cli.stop(); });
     mainmenu.add("clear", [](ConsoleIO& io, const std::string&)-> void { io.clear_screen(); });
     mainmenu.add("test", [](ConsoleIO& io, const std::string&)-> void { lib::full_test(io, false, false); });
     mainmenu.add("testrk4", [](ConsoleIO& io, const std::string&)-> void { lib::test_rk4(io); });

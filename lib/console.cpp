@@ -30,7 +30,8 @@ ConsoleCLI::ConsoleCLI(ConsoleIO& io,
                        std::string& newprompt,
                        Console_Menu& mainmenu,
                        std::vector<std::string>& newhistory)
-: prompt_(newprompt),
+: active_(false),
+  prompt_(newprompt),
   mainmenu_(mainmenu),
   history_(newhistory),
   io_(io) {
@@ -44,20 +45,15 @@ void
 ConsoleCLI::start() {
     using namespace std::placeholders;
 
-    // Set terminal to a usuable state
-    tcgetattr(0, &modes_);     /* get the current terminal modes */
-    orig_modes_ = modes_;       // save the original settings
-    modes_.c_lflag &= ~ICANON; /* turn off canonical mode */
-    modes_.c_lflag &= ~ECHO;   /* turn off echoing */
-    tcsetattr(0, 0, &modes_);  /* set the new modes */
+    active_ = true;
 
     //Speed up IO operations
     //std::ios::sync_with_stdio(false);
 
     //Set signal handler to catch CTRL-C
     //signal(SIGINT, [this](int signum) -> void { catch_signal(signum); });
-
-
+    io_.setEcho(false);
+    io_.setCannonical(false);
 
     //Display version information
     io_.out << '\n' << AMETHYST_VER << '\n';
@@ -66,12 +62,15 @@ ConsoleCLI::start() {
     std::string command;
 
     //Endless command loop
-    for (;;) {
+    while (active_) {
         buffer_.clear();
         show_prompt();
         io_.out.flush();
 
         command = command_get();
+
+        io_.out << '\n';
+        io_.out.flush();
 
         switch (command_parse(command)) {
             case 1:
@@ -79,26 +78,27 @@ ConsoleCLI::start() {
                 break;
 
             case 2:
-                stop("");
+                stop();
                 return;
                 break;
         }
     }
 
+    io_.stateRestore();
+
 }
 
 
 void
-ConsoleCLI::stop(const std::string&) {
-    io_.out << "\n";
-    tcsetattr(0, 0, &orig_modes_);
-    exit(0);
+ConsoleCLI::stop() {
+    io_.out << '\n';
+    active_ = false;
 }
 
 
 void
 ConsoleCLI::catch_signal(int /*unused*/) {
-    stop("");
+    stop();
 }
 
 
@@ -107,9 +107,6 @@ ConsoleCLI::command_get(void) {
     unsigned int curpos = 0; // Cursor Position
     int    ret;
     char   one;        // Input Charater
-
-
-    tcsetattr(0, 0, &modes_);
 
     do {
         ret = io_.getch(one);
@@ -278,8 +275,6 @@ ConsoleCLI::command_get(void) {
             //cout << ret;
         }
     } while (one != '\n');
-
-    tcsetattr(0, 0, &orig_modes_);
 
     return buffer_;
 }

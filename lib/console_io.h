@@ -10,6 +10,7 @@
 
 #include <istream>
 #include <ostream>
+#include <memory>
 
 namespace amethyst {
 
@@ -17,13 +18,13 @@ class ConsoleCTX; // Platform Specific Data
 
 class ConsoleIO {
  public:
-  ConsoleIO(std::istream& cin, std::ostream& cout, std::ostream& cerr)
-  : in(cin),
-    out(cout),
-    err(cerr){};
-  std::istream& in;
-  std::ostream& out;
-  std::ostream& err;
+  ConsoleIO(std::istream& cin, std::ostream& cout, std::ostream& cerr, bool stdio);
+  ~ConsoleIO();
+
+  void stateSave();
+  void stateRestore();
+  void setEcho(bool enable = true);
+  void setCannonical(bool enable = true);
 
   int  getch(char& c);
 
@@ -34,8 +35,13 @@ class ConsoleIO {
   void cursor_up(int count);
   void cursor_down(int count);
 
+  std::istream& in;
+  std::ostream& out;
+  std::ostream& err;
+  bool stdio_;
+
  private:
-  ConsoleCTX *data;
+  std::shared_ptr<ConsoleCTX> data;
 };
 
 }

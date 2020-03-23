@@ -15,7 +15,6 @@
 #include <ostream>
 #include <string>
 #include <vector>
-#include <termios.h>
 
 namespace amethyst {
 
@@ -28,9 +27,9 @@ class ConsoleCLI {
     ConsoleCLI(ConsoleCLI&& cli) = delete;
     ConsoleCLI& operator=(ConsoleCLI&& cli) = delete;
     virtual ~ConsoleCLI();
-    
+
     void start();
-    void stop(const std::string&);
+    void stop();
 
  private:
     void catch_signal(int);
@@ -40,6 +39,7 @@ class ConsoleCLI {
 
     void        show_prompt(void);
 
+    bool active_;
     std::string& prompt_;
     Console_Menu& mainmenu_;
 
@@ -49,8 +49,6 @@ class ConsoleCLI {
     std::vector<std::string>& history_;
     unsigned int history_pos_;
     ConsoleIO& io_;
-    struct termios orig_modes_;
-    struct termios modes_;
 };
 
 }  // namespace amethyst

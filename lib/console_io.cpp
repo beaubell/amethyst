@@ -9,9 +9,118 @@
 #include "console_io.h"
 #include "console_defs.h"
 
-using namespace std;
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <termios.h>
+#include <unistd.h>
+#endif
 
 namespace amethyst {
+
+class ConsoleCTX {
+  public:
+    #ifdef WIN32
+    HANDLE hStdin;
+    DWORD orig_modes;
+    DWORD modes;
+    #else
+    struct termios orig_modes;
+    struct termios modes;
+    #endif
+};
+
+
+ConsoleIO::ConsoleIO(std::istream& cin, std::ostream& cout, std::ostream& cerr, bool stdio)
+: in(cin),
+  out(cout),
+  err(cerr),
+  stdio_(stdio),
+  data(new ConsoleCTX()) {
+
+    stateSave();
+}
+
+ConsoleIO::~ConsoleIO() {
+    stateRestore();
+}
+
+
+void
+ConsoleIO::stateSave() {
+    if (!stdio_)
+        return;
+
+    #ifdef WIN32
+    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    GetConsoleMode(hStdin, &data->modes);
+
+    #else
+    tcgetattr(0, &data->modes);
+    #endif
+
+    data->orig_modes = data->modes;
+}
+
+void
+ConsoleIO::stateRestore() {
+    if (!stdio_)
+        return;
+
+    #ifdef WIN32
+    SetConsoleMode(hStdin, data->orig_modes );
+    #else
+    tcsetattr(0, 0, &data->orig_modes);
+    #endif
+}
+
+
+void
+ConsoleIO::setEcho(bool enable){
+    if (!stdio_)
+        return;
+
+    // Set terminal to a usuable state
+    #ifdef WIN32
+    if( !enable ) {
+        data->mode &= ~ENABLE_ECHO_INPUT;
+    } else {
+        data->mode |= ENABLE_ECHO_INPUT;
+    }
+    SetConsoleMode(hStdin, mode );
+    #else
+    if (enable) {
+        data->modes.c_lflag |= ECHO;
+    } else {
+        data->modes.c_lflag &= ~ECHO;
+    }
+    tcsetattr(0, 0, &data->modes);
+    #endif
+}
+
+void
+ConsoleIO::setCannonical( bool canon){
+    if (!stdio_)
+        return;
+
+    #ifdef WIN32
+    if( !canon ) {
+        data->mode &= ~ENABLE_LINE_INPUT;
+    } else {
+        data->mode |= ENABLE_LINE_INPUT;
+    }
+    SetConsoleMode(hStdin, mode );
+    #else
+    if (canon) {
+        data->modes.c_lflag |= ICANON;
+    } else {
+        data->modes.c_lflag &= ~ICANON;
+    }
+    tcsetattr(0, 0, &data->modes);
+    #endif
+}
+
+
 
 void
 ConsoleIO::clear_screen() {
