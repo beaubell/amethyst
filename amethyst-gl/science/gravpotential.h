@@ -53,7 +53,7 @@ private:
     boost::signals2::scoped_connection _scon_render;
     
     GLuint   _texname;
-    cl::ImageGL _cl_tex;
+    cl::Image2DGL _cl_tex;
 
     ShaderProgram::sptr _shaderprog;
     float _shader_min;

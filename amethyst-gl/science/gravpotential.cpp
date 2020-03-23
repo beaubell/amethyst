@@ -77,24 +77,24 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     kern_pot = lib::cl_loadkernel( LOAD_RESOURCE(amethyst_gl_science_gravpotential_cl, std::string(), "gravpotential.cl") , "gravpotential");
 
     glDisable( GL_TEXTURE_2D );
-    glEnable( GL_TEXTURE_RECTANGLE );
+    glEnable( GL_TEXTURE_RECTANGLE_ARB );
 
     // Allocate space for GL texture
     glGenTextures(1, &_texname );
 
     // select our current texture and initialize
-    glBindTexture(GL_TEXTURE_RECTANGLE, _texname );
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glBindTexture(GL_TEXTURE_RECTANGLE_ARB, _texname );
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_R32F, _grid_x, _grid_y, 0, GL_LUMINANCE, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_R32F, _grid_x, _grid_y, 0, GL_LUMINANCE, GL_FLOAT, NULL);
 
     // Make CL texture fom GL one
     try {
-      _cl_tex = cl::ImageGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE, 0, _texname, NULL);
+      _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
     }
     catch(cl::Error e)
     {
@@ -102,7 +102,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
       throw e;
     }
 
-    glDisable( GL_TEXTURE_RECTANGLE );
+    glDisable( GL_TEXTURE_RECTANGLE_ARB );
     glEnable( GL_TEXTURE_2D );
 
     //Load Shaders
@@ -183,15 +183,16 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
     //glDisable( GL_TEXTURE_2D );
     glDisable( GL_LIGHTING );
     glDisable( GL_BLEND );
-    glEnable( GL_TEXTURE_RECTANGLE );
+    glEnable( GL_TEXTURE_RECTANGLE_ARB );
 
     // Switch Shader and set boounds
     _shaderprog->use();
     //set_min(_shader_min);
     //set_max(_shader_max);
     
-    glBindTexture( GL_TEXTURE_RECTANGLE, _texname);
-    glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, texture_smooth?GL_LINEAR:GL_NEAREST);
+    glBindTexture( GL_TEXTURE_RECTANGLE_ARB, _texname);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, texture_smooth?GL_LINEAR:GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, texture_smooth?GL_LINEAR:GL_NEAREST);
 
     glPushMatrix();
     lib::Cartesian_Vector location;
@@ -215,7 +216,7 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
 
     glUseProgram(0);
 
-    glDisable( GL_TEXTURE_RECTANGLE );
+    glDisable( GL_TEXTURE_RECTANGLE_ARB );
     glEnable( GL_BLEND );
     glEnable( GL_LIGHTING );
     //glEnable( GL_TEXTURE_2D );
