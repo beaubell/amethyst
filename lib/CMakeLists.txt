@@ -69,11 +69,12 @@ TARGET_LINK_LIBRARIES(
   amrc::cl
   libsha2
   yaml-cpp
-  ${Boost_TIMER_LIBRARY}
-  ${Boost_SYSTEM_LIBRARY}
-  ${Boost_DATE_TIME_LIBRARY}
-  ${Boost_FILESYSTEM_LIBRARY}
-  ${Boost_IOSTREAMS_LIBRARY}
+  Boost::chrono
+  Boost::timer
+  Boost::system
+  Boost::date_time
+  Boost::filesystem
+  Boost::iostreams
   ${OPENCL_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${HDF5_LIBRARIES}
@@ -89,9 +90,12 @@ TARGET_LINK_LIBRARIES(
 install(TARGETS libamethyst DESTINATION lib)
 install(TARGETS amethystcmd DESTINATION bin)
 
-### Testing 
+### Testing
 
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
+
+        add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
+
 
 #Run through each source
 foreach(testSrc ${TEST_SRCS})
@@ -102,15 +106,19 @@ foreach(testSrc ${TEST_SRCS})
         add_executable(${testName} ${testSrc})
 
         #link to Boost libraries AND your targets and dependencies
-        target_link_libraries(${testName} ${Boost_LIBRARIES} libamethyst)
+        target_link_libraries(${testName}
+            ${Boost_LIBRARIES}
+            Boost::date_time
+            libamethyst
+        )
 
         #I like to move testing binaries into a testBin directory
-        set_target_properties(${testName} PROPERTIES 
+        set_target_properties(${testName} PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/test)
 
-        #Finally add it to test execution - 
+        #Finally add it to test execution -
         #Notice the WORKING_DIRECTORY and COMMAND
-        add_test(NAME ${testName} 
+        add_test(NAME ${testName}
                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
                  COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/${testName} -- ${CMAKE_CURRENT_SOURCE_DIR}/test )
 endforeach(testSrc)

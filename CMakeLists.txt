@@ -13,7 +13,7 @@ include(CMakeRC)
 SET(Boost_USE_STATIC_LIBS ON)
 
 FIND_PACKAGE(SDL2)
-FIND_PACKAGE(Boost 1.65.0 COMPONENTS date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
+FIND_PACKAGE(Boost 1.65.0 COMPONENTS chrono date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
 FIND_PACKAGE(OpenGL)
 FIND_PACKAGE(GLEW)
 FIND_PACKAGE(OpenCL)
