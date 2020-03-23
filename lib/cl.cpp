@@ -2,13 +2,16 @@
 #include "utility.h"
 #include "resource.h"
 
-#include <CL/cl_gl.h>
+#include "CL/cl_gl.h"
+#include "GL/glcorearb.h"
 
-
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+//
+#else
 #include <X11/X.h>
 #include <X11/Xlib.h>
-#include "GL/glcorearb.h"
 #include <GL/glx.h>
+#endif
 
 #include <iostream>
 
@@ -72,7 +75,8 @@ void cl_init(void)
             };
             amethyst_cl_context = cl::Context(CL_DEVICE_TYPE_GPU, props_noGPU);
         }
-        #elseif WIN32
+        #endif 
+        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
         cl_context_properties props[] =
         {
             CL_GL_CONTEXT_KHR, (cl_context_properties)wglGetCurrentContext(),

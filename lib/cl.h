@@ -13,7 +13,7 @@
 #include <vector>
 
 #define CL_TARGET_OPENCL_VERSION 110
-#include <CL/cl.hpp>
+#include "CL/cl.hpp"
 
 #include "resource.h"
 
