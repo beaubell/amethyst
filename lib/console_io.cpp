@@ -10,6 +10,12 @@
 #include "console_defs.h"
 
 #ifdef WIN32
+#define WINVER 0x0A00
+#define _WIN32_WINNT 0x0A00
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
 #else
 #include <termios.h>
@@ -52,8 +58,8 @@ ConsoleIO::stateSave() {
         return;
 
     #ifdef WIN32
-    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
-    GetConsoleMode(hStdin, &data->modes);
+    data->hStdin = GetStdHandle(STD_INPUT_HANDLE);
+    GetConsoleMode(data->hStdin, &data->modes);
 
     #else
     tcgetattr(0, &data->modes);
@@ -68,7 +74,7 @@ ConsoleIO::stateRestore() {
         return;
 
     #ifdef WIN32
-    SetConsoleMode(hStdin, data->orig_modes );
+    SetConsoleMode(data->hStdin, data->orig_modes );
     #else
     tcsetattr(0, 0, &data->orig_modes);
     #endif
@@ -83,11 +89,11 @@ ConsoleIO::setEcho(bool enable){
     // Set terminal to a usuable state
     #ifdef WIN32
     if( !enable ) {
-        data->mode &= ~ENABLE_ECHO_INPUT;
+        data->modes &= ~ENABLE_ECHO_INPUT;
     } else {
-        data->mode |= ENABLE_ECHO_INPUT;
+        data->modes |= ENABLE_ECHO_INPUT;
     }
-    SetConsoleMode(hStdin, mode );
+    SetConsoleMode(data->hStdin, data->modes );
     #else
     if (enable) {
         data->modes.c_lflag |= ECHO;
@@ -105,11 +111,11 @@ ConsoleIO::setCannonical( bool canon){
 
     #ifdef WIN32
     if( !canon ) {
-        data->mode &= ~ENABLE_LINE_INPUT;
+        data->modes &= ~ENABLE_LINE_INPUT;
     } else {
-        data->mode |= ENABLE_LINE_INPUT;
+        data->modes |= ENABLE_LINE_INPUT;
     }
-    SetConsoleMode(hStdin, mode );
+    SetConsoleMode(data->hStdin, data->modes );
     #else
     if (canon) {
         data->modes.c_lflag |= ICANON;

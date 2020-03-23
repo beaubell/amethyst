@@ -52,8 +52,14 @@ ConsoleCLI::start() {
 
     //Set signal handler to catch CTRL-C
     //signal(SIGINT, [this](int signum) -> void { catch_signal(signum); });
+
+    // Disable terminal state setting in Windows for now.
+    #ifndef WIN32
     io_.setEcho(false);
     io_.setCannonical(false);
+    #endif // !WIN32
+
+    
 
     //Display version information
     io_.out << '\n' << AMETHYST_VER << '\n';
