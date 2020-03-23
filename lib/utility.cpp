@@ -80,8 +80,8 @@ void gen_model_solarsystem(Universe &uni)
   haloorbiter->velocity = p1->velocity + Cartesian_Vector(0.0,0.00,-0.04);
   uni.object_add(haloorbiter);
 
-  uint r_step[3] = {1,1,1};
-  uint v_step[3] = {1,1,15};
+  unsigned int  r_step[3] = {1,1,1};
+  unsigned int  v_step[3] = {1,1,15};
   //int r_offset[3] = {-11530,0,0}; // 1.0 stepsize
   int r_offset[3] = {-115357,0,0};
   int v_offset[3] = {0,0,-544330};
@@ -95,7 +95,7 @@ void gen_model_solarsystem(Universe &uni)
 #endif
 
 #if 0
-  for (uint i = 0; i < 500; i++)
+  for (unsigned int  i = 0; i < 500; i++)
   {
     lib::Object::ptr L1_line = lib::Object::ptr(new lib::Object);
 
