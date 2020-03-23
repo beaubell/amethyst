@@ -31,8 +31,6 @@ namespace client {
 #include <boost/thread.hpp>
 #include <boost/signals2.hpp>
 
-#include <CL/cl_platform.h>
-
 namespace amethyst
 {
 namespace client
@@ -66,7 +64,7 @@ class Amethyst_GL
     void state_save();
     void state_recall();
     void configure(YAML::Node& config);
-    
+
     Scene& get_scene();
     const Scene& get_scene() const;
 
@@ -91,7 +89,7 @@ class Amethyst_GL
     bool stereo;
 
     Scene scene_;
-    
+
     //Framebuffers
     FrameBuffer fbleft_;
     FrameBuffer fbright_;
@@ -103,7 +101,7 @@ class Amethyst_GL
 
     VertexArray vao_;
     ArrayBuffer vob_;
-    
+
     ShaderProgram::UniformHDL shadereye_;
 };
 
