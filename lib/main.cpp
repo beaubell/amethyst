@@ -16,11 +16,13 @@
 #include "console.h"
 #include "console_io.h"
 #include "test.h"             // for library test functions
+#include "vulkan.hpp"
 
 
 using namespace amethyst;
 
-void show_help(ConsoleIO& io, Console_Menu& menu);
+auto show_help(ConsoleIO& io, Console_Menu& menu) -> void;
+auto test_vk(ConsoleIO& io) -> void;
 
 int main(int argc, char** argv)
 {
@@ -37,6 +39,7 @@ int main(int argc, char** argv)
     mainmenu.add("clear", [](ConsoleIO& io, const std::string&)-> void { io.clear_screen(); });
     mainmenu.add("test", [](ConsoleIO& io, const std::string&)-> void { lib::full_test(io, false, false); });
     mainmenu.add("testrk4", [](ConsoleIO& io, const std::string&)-> void { lib::test_rk4(io); });
+    mainmenu.add("testvk", [](ConsoleIO& io, const std::string&)-> void { test_vk(io); });
 
     mainmenu.add("help", [&mainmenu](ConsoleIO& io, const std::string&) { show_help(io, mainmenu); });
 
@@ -49,4 +52,11 @@ void show_help(ConsoleIO& io, Console_Menu& menu){
     for (auto& [cmd, cmdv]: menu.getCommands()) {
         io.out << cmd << std::endl;
     }
+}
+
+void
+test_vk(ConsoleIO& io) {
+
+    lib::VulkanCompute vc(io, true);
+
 }

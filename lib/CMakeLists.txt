@@ -35,6 +35,7 @@ add_library(libamethyst
   universe.cpp
   utility.cpp
   vector.cpp
+  vulkan.cpp
 )
 
 set_property(TARGET libamethyst PROPERTY POSITION_INDEPENDENT_CODE ON)
