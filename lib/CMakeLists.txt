@@ -21,6 +21,7 @@ SET(libamethyst_SRCS
   universe.cpp
   utility.cpp
   vector.cpp
+  vulkan.cpp
 )
 
 SET(libamethyst_CL
@@ -43,6 +44,7 @@ INCLUDE_DIRECTORIES(
   ${OPENCL_INCLUDE_DIR}
   ${Boost_INCLUDE_DIR}
   ${HDF5_INCLUDE_DIR}
+  Vulkan::Vulkan
   ${Amethyst_SOURCE_DIR}/support
   ${Amethyst_SOURCE_DIR}/include
   ${YAML_CPP_SOURCE_DIR}/include
@@ -75,6 +77,7 @@ TARGET_LINK_LIBRARIES(
   Boost::date_time
   Boost::filesystem
   Boost::iostreams
+  Vulkan::Vulkan
   ${OPENCL_LIBRARIES}
   ${OPENGL_LIBRARIES}
   ${HDF5_LIBRARIES}
