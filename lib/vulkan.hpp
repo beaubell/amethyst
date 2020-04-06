@@ -1,8 +1,11 @@
 #ifndef _AMETHYST_LIB_VULKAN_HPP
 #define _AMETHYST_LIB_VULKAN_HPP
 
+#define NOMINMAX
+
 #include <vulkan/vulkan.hpp>
 #include <vector>
+#include <limits>
 
 #include "console_io.h"
 namespace amethyst::lib {
