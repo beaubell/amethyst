@@ -757,7 +757,7 @@ void Universe::cl_save_history(const std::string &file)
   size_t num_objects = _object_list.size();
 
   HDF5 h5file(file, H5F_ACC_TRUNC);
-  h5file.createGroup(std::string("/History"));
+  h5file.createGroup(std::string("/History").c_str());
 
   h5file.write_1D_double(std::string("/History/Time"), _hist_time);
 
