@@ -597,15 +597,12 @@ void Universe::cl_copytogpu()
   size_t objects = _object_list.size();
   auto obj = _object_list.begin();
 
-  for (std::size_t i = 0; i < objects; i++)
+  for (auto &obj: _object_list)
   {
     std::size_t idx = 0;
 
-    if(obj == _object_list.end())
-      throw std::runtime_error("Object lists are inconsistent!");
-
     // Sort Insignificant/Significant Mass Objects
-    if ( ((*obj)->mass) > mass_cutoff)
+    if ( (obj->mass) > mass_cutoff)
     {
       idx = idx_sig;
       idx_sig++;
@@ -616,13 +613,11 @@ void Universe::cl_copytogpu()
       idx_insig++;
     }
 
-    _object_mass[idx]     = (*obj)->mass;
-    _object_position[idx] = (*obj)->location;
-    _object_velocity[idx] = (*obj)->velocity;
+    _object_mass[idx]     = obj->mass;
+    _object_position[idx] = obj->location;
+    _object_velocity[idx] = obj->velocity;
 
-    std::cout << "Index: " << idx << " (" << (*obj)->name << ") Mass: " << (*obj)->mass << std::endl;
-
-    obj++;
+    std::cout << "Index: " << idx << " (" << obj->name << ") Mass: " << obj->mass << std::endl;
   }
 
   // Send buffer to GPU
