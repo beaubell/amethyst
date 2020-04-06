@@ -236,7 +236,10 @@ VulkanCompute::vulkanDebugCallback(
     io_s->out << ss.str();
 
 #ifdef _WIN32
-    MessageBox( NULL, stream.str().c_str(), "Vulkan Error!", 0);
+    if (flags & VK_DEBUG_REPORT_ERROR_BIT_EXT || flags &
+        flags & VK_DEBUG_REPORT_WARNING_BIT_EXT) {
+        MessageBox(NULL, ss.str().c_str(), "Vulkan Error!", 0);
+    }
 #endif
 
     return false;
