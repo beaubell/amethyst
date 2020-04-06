@@ -9,7 +9,7 @@
 
 #include <cstdio>
 #include <cstring>
-#include <ostream>
+#include <iosfwd>
 #include <stdexcept> // overflow_error
 #include <sstream>
 #include <string>

@@ -7,7 +7,7 @@
  2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include <ostream>
+#include <iosfwd>
 
 #include "vector.h"
 #include "yaml-cpp/node/node.h"
