@@ -61,7 +61,7 @@ target_link_libraries(amethyst-glcore
 
 set_property(TARGET amethyst-glcore PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-add_executable(amethyst-gl 
+add_executable(amethyst-gl
   bootstrap.cpp
 )
 
