@@ -6,11 +6,7 @@
   - HDF5 Class declarations
 
  Authors (c):
- 2010-2012 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision: $
- $LastChangedDate: $
- $LastChangedBy: $
+ 2010-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "types.h"
