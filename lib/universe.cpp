@@ -523,10 +523,10 @@ void Universe::cl_setup()
   if(objects == 0)
     throw std::runtime_error("Wtf! Initializing OpenCL with no objects?");
 
-  // Reserve space for transition vector objects since objects are currently stored as linked lists.
-  _object_mass.reserve(objects);
-  _object_position.reserve(objects);
-  _object_velocity.reserve(objects);
+  // Reserve space for transition vector objects.
+  _object_mass.resize(objects);
+  _object_position.resize(objects);
+  _object_velocity.resize(objects);
 
   /// Primary CL space for objects
   std::size_t size_vec_mass = sizeof(float_type)*objects;
