@@ -9,7 +9,7 @@
  ***********************************************************************/
 
 #include <istream>
-#include <ostream>
+#include <iosfwd>
 #include <memory>
 
 namespace amethyst {

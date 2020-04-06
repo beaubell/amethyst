@@ -12,7 +12,7 @@
 #include "console_io.h"
 
 #include <istream>
-#include <ostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 
