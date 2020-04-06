@@ -41,7 +41,7 @@ SET(amethystcmd_SRCS
 )
 
 INCLUDE_DIRECTORIES(
-  ${OPENCL_INCLUDE_DIR}
+  OpenCL::OpenCL
   ${Boost_INCLUDE_DIR}
   ${HDF5_INCLUDE_DIR}
   Vulkan::Vulkan
@@ -54,6 +54,7 @@ INCLUDE_DIRECTORIES(
 
 link_directories (
   ${Boost_LIBRARY_DIRS}
+  ${}
 )
 
 cmrc_add_resource_library(libamethyst_cl ALIAS amrc::cl NAMESPACE cl ${libamethyst_CL})
@@ -78,7 +79,7 @@ TARGET_LINK_LIBRARIES(
   Boost::filesystem
   Boost::iostreams
   Vulkan::Vulkan
-  ${OPENCL_LIBRARIES}
+  OpenCL::OpenCL
   ${OPENGL_LIBRARIES}
   ${HDF5_LIBRARIES}
   ${ZLIB_LIBRARY}
