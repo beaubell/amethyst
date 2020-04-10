@@ -10,7 +10,8 @@
 #include "io_hdf5.h"
 
 #include <boost/lexical_cast.hpp>
-
+#include <array>
+#include <algorithm>
 
 #define QUOTEME_(x) #x
 #define QUOTEME(x) QUOTEME_(x)
@@ -350,15 +351,18 @@ void HDF5::read_2D_uint(const H5std_string &dataset_name, Am2DArrayUI &in) const
 // Write a 2D Unsigned Integer Array to a dataset path.
 void HDF5::write_2D_uint(const H5std_string &dataset_name, const Am2DArrayUI &out)
 {
-    const hsize_t rank = out.num_dimensions();
-    const auto *shape = out.shape();
+    constexpr hsize_t rank = out.dimensionality;
+    const auto* shape = out.shape();
+
+    std::array<hsize_t, rank> hshape;
+    std::copy_n(shape, rank, std::begin(hshape));
 
     // Create dataspace
-    H5::DataSpace dataspace( rank, shape );
+    H5::DataSpace dataspace( rank, hshape.data() );
 
     // Define Datatype
     H5::IntType datatype( H5::PredType::NATIVE_UINT );
-    datatype.setOrder( H5T_ORDER_LE);;
+    datatype.setOrder( H5T_ORDER_LE);
 
     // Create a new dataset within the file...
     H5::DataSet dataset = createDataSet( dataset_name.c_str(), datatype, dataspace);
@@ -553,11 +557,14 @@ void HDF5::read_4D_float(const H5std_string &dataset_name, Am4DArrayF &in) const
 // Write a 2D Float Array to a dataset path.
 void HDF5::write_2D_float(const H5std_string &dataset_name, const Am2DArrayF &out)
 {
-    const hsize_t rank = out.num_dimensions();
+    constexpr auto rank = out.dimensionality;
     const auto *shape = out.shape();
 
+    std::array<hsize_t, rank> hshape;
+    std::copy_n(shape, rank, std::begin(hshape));
+
     // Create dataspace
-    H5::DataSpace dataspace( rank, shape );
+    H5::DataSpace dataspace( rank, hshape.data() );
 
     // Define Datatype
     H5::FloatType datatype( H5::PredType::NATIVE_FLOAT );
@@ -574,11 +581,14 @@ void HDF5::write_2D_float(const H5std_string &dataset_name, const Am2DArrayF &ou
 // Write a 3D Float Array to a dataset path.
 void HDF5::write_3D_float(const H5std_string &dataset_name, const Am3DArrayF &out)
 {
-    const hsize_t rank = out.num_dimensions();
-    const auto *shape = out.shape();
+    constexpr auto rank = out.dimensionality;
+    const auto* shape = out.shape();
+
+    std::array<hsize_t, rank> hshape;
+    std::copy_n(shape, rank, std::begin(hshape));
 
     // Create dataspace
-    H5::DataSpace dataspace( rank, shape );
+    H5::DataSpace dataspace(rank, hshape.data());
 
     // Define Datatype
     H5::FloatType datatype( H5::PredType::NATIVE_FLOAT );
@@ -595,11 +605,14 @@ void HDF5::write_3D_float(const H5std_string &dataset_name, const Am3DArrayF &ou
 // Write a 4D Float Array to a dataset path.
 void HDF5::write_4D_float(const H5std_string &dataset_name, const Am4DArrayF &out)
 {
-    const hsize_t rank = out.num_dimensions();
-    const auto *shape = out.shape();
+    constexpr auto rank = out.dimensionality;
+    const auto* shape = out.shape();
+
+    std::array<hsize_t, rank> hshape;
+    std::copy_n(shape, rank, std::begin(hshape));
 
     // Create dataspace
-    H5::DataSpace dataspace( rank, shape );
+    H5::DataSpace dataspace(rank, hshape.data());
 
     // Define Datatype
     H5::FloatType datatype( H5::PredType::NATIVE_FLOAT );
@@ -736,11 +749,14 @@ void HDF5::read_3D_double(const H5std_string &dataset_name, Am3DArrayD &in) cons
 // Write a 2D Double-Precision Float Array to a dataset path.
 void HDF5::write_2D_double(const H5std_string &dataset_name, const Am2DArrayD &out)
 {
-    const hsize_t rank = out.num_dimensions();
-    const auto *shape = out.shape();
+    constexpr auto rank = out.dimensionality;
+    const auto* shape = out.shape();
+
+    std::array<hsize_t, rank> hshape;
+    std::copy_n(shape, rank, std::begin(hshape));
 
     // Create dataspace
-    H5::DataSpace dataspace( rank, shape );
+    H5::DataSpace dataspace(rank, hshape.data());
 
     // Define Datatype
     H5::FloatType datatype( H5::PredType::NATIVE_DOUBLE );
@@ -757,11 +773,14 @@ void HDF5::write_2D_double(const H5std_string &dataset_name, const Am2DArrayD &o
 
 void HDF5::write_3D_double(const H5std_string &dataset_name, const Am3DArrayD &out)
 {
-    const hsize_t rank = out.num_dimensions();
+    constexpr auto rank = out.dimensionality;
     const auto* shape = out.shape();
 
+    std::array<hsize_t, rank> hshape;
+    std::copy_n(shape, rank, std::begin(hshape));
+
     // Create dataspace
-    H5::DataSpace dataspace( rank, shape );
+    H5::DataSpace dataspace(rank, hshape.data());
 
     // Define Datatype
     H5::FloatType datatype( H5::PredType::NATIVE_DOUBLE );
@@ -778,11 +797,14 @@ void HDF5::write_3D_double(const H5std_string &dataset_name, const Am3DArrayD &o
 
 void HDF5::write_4D_double(const H5std_string &dataset_name, const Am4DArrayD &out)
 {
-    const hsize_t rank = out.num_dimensions();
+    constexpr auto rank = out.dimensionality;
     const auto* shape = out.shape();
 
+    std::array<hsize_t, rank> hshape;
+    std::copy_n(shape, rank, std::begin(hshape));
+
     // Create dataspace
-    H5::DataSpace dataspace( rank, shape );
+    H5::DataSpace dataspace(rank, hshape.data());
 
     // Define Datatype
     H5::FloatType datatype( H5::PredType::NATIVE_DOUBLE );
