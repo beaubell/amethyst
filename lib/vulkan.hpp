@@ -8,7 +8,12 @@
 #include <limits>
 
 #include "console_io.h"
+
 namespace amethyst::lib {
+
+std::string errorString(VkResult errorCode);
+std::string physicalDeviceTypeString(VkPhysicalDeviceType type);
+
 
 class VulkanCompute {
   public:
@@ -16,6 +21,8 @@ class VulkanCompute {
     virtual ~VulkanCompute();
 
     auto testvk() -> void;
+    auto getDevice() -> VkDevice;
+    auto getQueue() -> VkQueue;
 
   private:
     auto initInstance() -> void;
@@ -49,6 +56,7 @@ class VulkanCompute {
     VkDebugReportCallbackEXT debug_report_ = VK_NULL_HANDLE;
 
     VkQueue          computeQueue_;
+    VkCommandPool    commandPool_;
 
 
 };

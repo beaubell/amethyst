@@ -59,4 +59,9 @@ test_vk(ConsoleIO& io) {
 
     lib::VulkanCompute vc(io, true);
 
+    auto dev   = vc.getDevice();
+    auto queue = vc.getQueue();
+
+
+
 }
