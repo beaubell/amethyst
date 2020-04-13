@@ -5,8 +5,83 @@
 #include <inttypes.h>
 #include <functional>
 #include <sstream>
+#include <iostream>
+
+// Macro to check and display Vulkan return results
+#if defined(__ANDROID__)
+#define VK_CHECK_RESULT(f)																				\
+{																										\
+    VkResult res = (f);																					\
+    if (res != VK_SUCCESS)																				\
+    {																									\
+        LOGE("Fatal : VkResult is \" %s \" in %s at line %d", amethyst::lib::errorString(res).c_str(), __FILE__, __LINE__); \
+        assert(res == VK_SUCCESS);																		\
+    }																									\
+}
+#else
+#define VK_CHECK_RESULT(f)																				\
+{																										\
+    VkResult res = (f);																					\
+    if (res != VK_SUCCESS)																				\
+    {																									\
+        std::cout << "Fatal : VkResult is \"" << amethyst::lib::errorString(res) << "\" in " << __FILE__ << " at line " << __LINE__ << std::endl; \
+        assert(res == VK_SUCCESS);																		\
+    }																									\
+}
+#endif
+
 
 namespace amethyst::lib {
+
+std::string errorString(VkResult errorCode)
+{
+    switch (errorCode)
+    {
+        #define STR(r) case VK_ ##r: return #r
+        STR(NOT_READY);
+        STR(TIMEOUT);
+        STR(EVENT_SET);
+        STR(EVENT_RESET);
+        STR(INCOMPLETE);
+        STR(ERROR_OUT_OF_HOST_MEMORY);
+        STR(ERROR_OUT_OF_DEVICE_MEMORY);
+        STR(ERROR_INITIALIZATION_FAILED);
+        STR(ERROR_DEVICE_LOST);
+        STR(ERROR_MEMORY_MAP_FAILED);
+        STR(ERROR_LAYER_NOT_PRESENT);
+        STR(ERROR_EXTENSION_NOT_PRESENT);
+        STR(ERROR_FEATURE_NOT_PRESENT);
+        STR(ERROR_INCOMPATIBLE_DRIVER);
+        STR(ERROR_TOO_MANY_OBJECTS);
+        STR(ERROR_FORMAT_NOT_SUPPORTED);
+        STR(ERROR_SURFACE_LOST_KHR);
+        STR(ERROR_NATIVE_WINDOW_IN_USE_KHR);
+        STR(SUBOPTIMAL_KHR);
+        STR(ERROR_OUT_OF_DATE_KHR);
+        STR(ERROR_INCOMPATIBLE_DISPLAY_KHR);
+        STR(ERROR_VALIDATION_FAILED_EXT);
+        STR(ERROR_INVALID_SHADER_NV);
+        #undef STR
+        default:
+            return "UNKNOWN_ERROR";
+    }
+}
+
+std::string physicalDeviceTypeString(VkPhysicalDeviceType type)
+{
+    switch (type)
+    {
+        #define STR(r) case VK_PHYSICAL_DEVICE_TYPE_ ##r: return #r
+        STR(OTHER);
+        STR(INTEGRATED_GPU);
+        STR(DISCRETE_GPU);
+        STR(VIRTUAL_GPU);
+        #undef STR
+        default: return "UNKNOWN_DEVICE_TYPE";
+    }
+}
+
+
 
 ConsoleIO* VulkanCompute::io_s = nullptr;
 
@@ -158,6 +233,15 @@ VulkanCompute::initDevice() {
     if (vkCreateDevice(gpu_, &createInfo, nullptr, &device_) != VK_SUCCESS) {
         throw std::runtime_error("failed to create logical device!");
     }
+
+    vkGetDeviceQueue(device_, graphics_family_index, 0, &computeQueue_);
+
+    // Compute command pool
+    VkCommandPoolCreateInfo cmdPoolInfo = {};
+    cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    cmdPoolInfo.queueFamilyIndex = graphics_family_index;
+    cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    VK_CHECK_RESULT(vkCreateCommandPool(device_, &cmdPoolInfo, nullptr, &commandPool_));
 }
 
 void
@@ -277,4 +361,15 @@ VulkanCompute::deInitDebug() {
     fvkDestroyDebugReportCallbackEXT = nullptr;
 
 }
+
+VkDevice
+VulkanCompute::getDevice() {
+    return device_;
+}
+
+VkQueue
+VulkanCompute::getQueue() {
+    return computeQueue_;
+}
+
 } // namespace amethyst::lib
