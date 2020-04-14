@@ -6,17 +6,17 @@
 
 typedef double float_type;
 
-typedef boost::multi_array<unsigned int , 2> Am2DArrayUI;
-typedef boost::multi_array<unsigned int , 3> Am3DArrayUI;
-typedef boost::multi_array<unsigned int , 4> Am4DArrayUI;
+using Am2DArrayUI = boost::multi_array<unsigned int , 2>;
+using Am3DArrayUI = boost::multi_array<unsigned int , 3>;
+using Am4DArrayUI = boost::multi_array<unsigned int , 4>;
 
-typedef boost::multi_array<float , 2> Am2DArrayF;
-typedef boost::multi_array<float , 3> Am3DArrayF;
-typedef boost::multi_array<float , 4> Am4DArrayF;
+using Am2DArrayF = boost::multi_array<float , 2>;
+using Am3DArrayF = boost::multi_array<float , 3>;
+using Am4DArrayF = boost::multi_array<float , 4>;
 
-typedef boost::multi_array<double , 2> Am2DArrayD;
-typedef boost::multi_array<double , 3> Am3DArrayD;
-typedef boost::multi_array<double , 4> Am4DArrayD;
+using Am2DArrayD = boost::multi_array<double , 2>;
+using Am3DArrayD = boost::multi_array<double , 3>;
+using Am4DArrayD = boost::multi_array<double , 4>;
 
 typedef glm::mat4 TransMatrix;
 typedef glm::mat3 NormalMatrix;
