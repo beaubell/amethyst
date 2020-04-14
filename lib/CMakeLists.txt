@@ -110,5 +110,5 @@ foreach(testSrc ${TEST_SRCS})
         #Notice the WORKING_DIRECTORY and COMMAND
         add_test(NAME ${testName}
                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/test
-                 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/${testName} -- ${CMAKE_CURRENT_SOURCE_DIR}/test )
+                 COMMAND ${CMAKE_CURRENT_BINARY_DIR}/test/${testName} -- ${CMAKE_CURRENT_SOURCE_DIR}/test ${CMAKE_CURRENT_BINARY_DIR}/test)
 endforeach(testSrc)

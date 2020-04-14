@@ -234,11 +234,11 @@ void Universe::iterate_gpu_rk4_gravk(const double &dtime,
 
     queue_rk4.enqueueReadBuffer(old.location, CL_TRUE, 0, pos_data_size, position_data.data(), NULL, &pos_event);
     pos_event.wait();
-    h5file.write_2D_double(std::string("/Dump/Position"), position_data);
+    h5file.write_MDA_double(std::string("/Dump/Position"), position_data);
 
     queue_rk4.enqueueReadBuffer(_cl_buf_expanded_acceleration, CL_TRUE, 0, acc_data_size, accel_data.data(), NULL, &acc_event);
     acc_event.wait();
-    h5file.write_3D_double(std::string("/Dump/Acceleration"), accel_data);
+    h5file.write_MDA_double(std::string("/Dump/Acceleration"), accel_data);
 
     h5file.close();
     throw std::logic_error("Normal Termination for Debugging...");
@@ -722,8 +722,8 @@ void Universe::cl_load_history(const std::string &file)
   Am3DArrayD position_data(boost::extents[1][1][1]);
   Am3DArrayD velocity_data(boost::extents[1][1][1]);
 
-  h5file.read_3D_double(std::string("/History/Position"), position_data);
-  h5file.read_3D_double(std::string("/History/Velocity"), velocity_data);
+  h5file.read_MDA_double(std::string("/History/Position"), position_data);
+  h5file.read_MDA_double(std::string("/History/Velocity"), velocity_data);
 
   // Verify sizes
   const Am3DArrayD::size_type *pos_shape = position_data.shape();
@@ -771,15 +771,15 @@ void Universe::cl_save_history(const std::string &file)
 
   queue_rk4.enqueueReadBuffer(_cl_buf_hist_location, CL_TRUE, 0, pos_data_size, position_data.data(), NULL, &pos_hist_event);
   pos_hist_event.wait();
-  h5file.write_3D_double(std::string("/History/Position"), position_data);
+  h5file.write_MDA_double(std::string("/History/Position"), position_data);
 
   queue_rk4.enqueueReadBuffer(_cl_buf_hist_velocity, CL_TRUE, 0, vel_data_size, velocity_data.data(), NULL, &vel_hist_event);
   vel_hist_event.wait();
-  h5file.write_3D_double(std::string("/History/Velocity"), velocity_data);
+  h5file.write_MDA_double(std::string("/History/Velocity"), velocity_data);
 
   queue_rk4.enqueueReadBuffer(_cl_buf_hist_distance, CL_TRUE, 0, dis_data_size, distance_data.data(), NULL, &dis_hist_event);
   dis_hist_event.wait();
-  h5file.write_2D_double(std::string("/History/Distance"), distance_data);
+  h5file.write_MDA_double(std::string("/History/Distance"), distance_data);
 
   h5file.close();
 }
