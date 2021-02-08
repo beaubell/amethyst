@@ -1,41 +1,47 @@
-#PROJECT(libamethyst C)
 
-SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
-
-SET(mod_uiw_fps_SRCS
-  mod_uiw_fps.cpp
+add_library(uiw_fps MODULE
+    mod_uiw_fps.cpp
 )
 
-SET(mod_uiw_test_SRCS
-  mod_uiw_test.cpp
+target_include_directories(uiw_fps
+  PRIVATE
+    $<TARGET_PROPERTY:amethyst-glcore,INCLUDE_DIRECTORIES>
 )
 
-SET(mod_uiw_log_SRCS
-  mod_uiw_log.cpp
+
+########
+add_library(uiw_test MODULE
+    mod_uiw_test.cpp
 )
 
-SET(mod_uiw_shipstats_SRCS
-  mod_uiw_shipstats.cpp
-  )
-
-INCLUDE_DIRECTORIES(
-  ${amethystgl_SOURCE_DIR}
-  ${Amethyst_SOURCE_DIR}
-  ${Amethyst_SOURCE_DIR}/include
-  ${Boost_INCLUDE_DIR}
+target_include_directories(uiw_test
+  PRIVATE
+    $<TARGET_PROPERTY:amethyst-glcore,INCLUDE_DIRECTORIES>
 )
 
-ADD_LIBRARY(uiw_fps MODULE ${mod_uiw_fps_SRCS})
-ADD_LIBRARY(uiw_test MODULE ${mod_uiw_test_SRCS})
-ADD_LIBRARY(uiw_log MODULE ${mod_uiw_log_SRCS})
-ADD_LIBRARY(uiw_shipstats MODULE ${mod_uiw_shipstats_SRCS})
 
-INSTALL(TARGETS uiw_fps uiw_test uiw_log uiw_shipstats DESTINATION lib)
-#TARGET_LINK_LIBRARIES(
-#  uiwfps
-#  libamethyst
-#  ${Boost_SYSTEM_LIBRARY}
-#  ${Boost_DATE_TIME_LIBRARY}
-#  ${Boost_FILESYSTEM_LIBRARY}
-#)
+########
+add_library(uiw_log MODULE
+    mod_uiw_log.cpp
+)
 
+target_include_directories(uiw_log
+  PRIVATE
+    $<TARGET_PROPERTY:amethyst-glcore,INCLUDE_DIRECTORIES>
+)
+
+
+########
+add_library(uiw_shipstats MODULE
+    mod_uiw_shipstats.cpp
+)
+
+target_include_directories(uiw_shipstats
+  PRIVATE
+    $<TARGET_PROPERTY:amethyst-glcore,INCLUDE_DIRECTORIES>
+)
+
+
+install(TARGETS uiw_fps uiw_test uiw_log uiw_shipstats
+    DESTINATION lib
+)

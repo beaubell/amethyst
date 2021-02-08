@@ -1,15 +1,6 @@
-SET(libFTGL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include CACHE PATH "Location of FTGL includes")
 
-SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
-#SET(CMAKE_CXX_FLAGS ${SUPPORT_CXX_FLAGS})
 
-INCLUDE_DIRECTORIES(include 
-  ${Amethyst_SOURCE_DIR}/support
-  ${Amethyst_SOURCE_DIR}/include
-  ${FREETYPE_INCLUDE_DIR}
-)
-
-SET(libFTGL_SRCS
+add_library(ftgl STATIC
   ./src/FTBitmapGlyph.cpp
   ./src/FTFace.cpp
   ./src/FTGLOutlineFont.cpp
@@ -34,9 +25,24 @@ SET(libFTGL_SRCS
   ./src/FTSize.cpp
   ./src/FTGLTextHandle.cpp
 )
+add_library(ftgl::ftgl ALIAS ftgl)
+set_property(TARGET ftgl PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-ADD_LIBRARY(libftgl STATIC ${libFTGL_SRCS})
-TARGET_COMPILE_DEFINITIONS(libftgl PRIVATE FTGL_LIBRARY_STATIC=TRUE)
-TARGET_LINK_LIBRARIES(libftgl ${FREETYPE_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
-INSTALL(TARGETS libftgl DESTINATION lib)
+target_include_directories(ftgl
+  PUBLIC
+    include
+)
+
+target_compile_definitions(ftgl
+  PRIVATE
+    FTGL_LIBRARY_STATIC=TRUE
+)
+
+target_link_libraries(ftgl
+  PUBLIC
+    Freetype::Freetype
+    OpenGL::GL
+    OpenGL::GLU
+    glm::glm
+)
 

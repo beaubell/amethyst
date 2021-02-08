@@ -1,7 +1,17 @@
 
-SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
+cmrc_add_resource_library(libamethyst_cl ALIAS amrc::cl NAMESPACE cl
+  histdist.cl
+  rk4_copy3d.cl
+  rk4_copyrot.cl
+  rk4_finalsum.cl
+  rk4_grav.cl
+  rk4_reductionscale.cl
+  rk4_scale.cl
+  rk4_scalesum.cl
+  rk4_sum.cl
+)
 
-SET(libamethyst_SRCS
+add_library(libamethyst
   cl.cpp
   console.cpp
   console_io.cpp
@@ -23,67 +33,45 @@ SET(libamethyst_SRCS
   vector.cpp
 )
 
-SET(libamethyst_CL
-  histdist.cl
-  rk4_copy3d.cl
-  rk4_copyrot.cl
-  rk4_finalsum.cl
-  rk4_grav.cl
-  rk4_reductionscale.cl
-  rk4_scale.cl
-  rk4_scalesum.cl
-  rk4_sum.cl
+set_property(TARGET libamethyst PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+target_link_libraries(libamethyst
+  PUBLIC
+    Vulkan::Vulkan
+    OpenCL::OpenCL
+    glm::glm
+    Threads::Threads
 )
 
-SET(amethystcmd_SRCS
+target_include_directories(libamethyst
+  PUBLIC
+    ..
+    ${HDF5_CXX_INCLUDE_DIRS}
+)
+
+target_link_libraries(libamethyst
+  PUBLIC
+    amrc::cl
+    sha2::sha2
+    yaml-cpp
+    Boost::chrono
+    Boost::timer
+    Boost::system
+    Boost::date_time
+    Boost::filesystem
+    Boost::iostreams
+    Vulkan::Vulkan
+    OpenCL::OpenCL
+    OpenGL::GLX
+    ${HDF5_LIBRARIES}
+    ${ZLIB_LIBRARY}
+)
+
+add_executable(amethystcmd
   main.cpp
 )
 
-INCLUDE_DIRECTORIES(
-  ${OPENCL_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIR}
-  ${HDF5_INCLUDE_DIR}
-  ${Amethyst_SOURCE_DIR}/support
-  ${Amethyst_SOURCE_DIR}/include
-  ${YAML_CPP_SOURCE_DIR}/include
-  ${Amethyst_SOURCE_DIR}
-  ${Amethyst_BINARY_DIR}
-)
-
-link_directories (
-  ${Boost_LIBRARY_DIRS}
-)
-
-cmrc_add_resource_library(libamethyst_cl ALIAS amrc::cl NAMESPACE cl ${libamethyst_CL})
-
-ADD_LIBRARY(libamethyst
-  ${libamethyst_SRCS}
-)
-
-
-
-ADD_EXECUTABLE(amethystcmd ${amethystcmd_SRCS})
-
-TARGET_LINK_LIBRARIES(
-  libamethyst
-  amrc::cl
-  libsha2
-  yaml-cpp
-  Boost::chrono
-  Boost::timer
-  Boost::system
-  Boost::date_time
-  Boost::filesystem
-  Boost::iostreams
-  ${OPENCL_LIBRARIES}
-  ${OPENGL_LIBRARIES}
-  ${HDF5_LIBRARIES}
-  ${ZLIB_LIBRARY}
-  ${CMAKE_DL_LIBS}
-)
-
-TARGET_LINK_LIBRARIES(
-  amethystcmd
+target_link_libraries(amethystcmd
   libamethyst
 )
 
@@ -107,8 +95,7 @@ foreach(testSrc ${TEST_SRCS})
 
         #link to Boost libraries AND your targets and dependencies
         target_link_libraries(${testName}
-            ${Boost_LIBRARIES}
-            Boost::date_time
+            Boost::unit_test_framework
             libamethyst
         )
 

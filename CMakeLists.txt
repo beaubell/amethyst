@@ -1,55 +1,52 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+cmake_minimum_required(VERSION 3.16...3.19)
 
-PROJECT(Amethyst LANGUAGES C CXX VERSION 0.1.0)
+project(Amethyst LANGUAGES C CXX VERSION 0.1.0)
 
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 option(AMETHYST_GUI "Enable OpenGL Frontend" ON)
 
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
 include(CMakeRC)
 
-SET(Boost_USE_STATIC_LIBS ON)
+#set(Boost_USE_STATIC_LIBS ON)
 
-FIND_PACKAGE(SDL2)
-FIND_PACKAGE(Boost 1.65.0 COMPONENTS chrono date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
-FIND_PACKAGE(OpenGL)
-FIND_PACKAGE(GLEW)
-FIND_PACKAGE(OpenCL)
-FIND_PACKAGE(OpenAL)
-FIND_PACKAGE(FreeType)
-FIND_PACKAGE(HDF5 COMPONENTS C CXX)
-FIND_PACKAGE(ZLIB)
-FIND_PACKAGE(Threads)
+find_package(SDL2)
+find_package(Boost 1.71.0 COMPONENTS chrono date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
+find_package(OpenGL)
+find_package(GLEW)
+find_package(OpenCL)
+find_package(OpenAL)
+find_package(Vulkan)
+find_package(Freetype)
+find_package(HDF5 COMPONENTS C CXX REQUIRED)
+find_package(ZLIB)
+find_package(Threads)
 
-INCLUDE(CheckIncludeFile)
-CHECK_INCLUDE_FILE(execinfo.h HAVE_EXECINFO_H)
+include(CheckIncludeFile)
+check_include_file(execinfo.h HAVE_EXECINFO_H)
 
-INCLUDE(TestBigEndian)
+include(TestBigEndian)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
-INCLUDE (CheckTypeSize)
+include(CheckTypeSize)
 CHECK_TYPE_SIZE("short"       SIZEOF_SHORT)
 CHECK_TYPE_SIZE("int"         SIZEOF_INT)
 CHECK_TYPE_SIZE("float"       SIZEOF_FLOAT)
 CHECK_TYPE_SIZE("double"      SIZEOF_DOUBLE)
 CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-ADD_SUBDIRECTORY(support/boost/crypto)
-
-ADD_SUBDIRECTORY(support/yaml-cpp)
-ADD_SUBDIRECTORY(lib)
-ADD_SUBDIRECTORY(server)
+add_subdirectory(support)
+add_subdirectory(lib)
+add_subdirectory(server)
 
 # Build only the server if no gui components exist
-IF( SDLMAIN_LIBRARY AND AMETHYST_GUI )
-	ADD_SUBDIRECTORY(support/FTGL)
-	ADD_SUBDIRECTORY(amethyst-gl)
-ENDIF()
-
-INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIR_freetype2} lib)
+if( SDL2_FOUND AND AMETHYST_GUI )
+    add_subdirectory(support/FTGL)
+    add_subdirectory(amethyst-gl)
+endif()
 
 include(CPack)

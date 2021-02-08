@@ -1,10 +1,14 @@
 
-SET(CMAKE_CXX_FLAGS ${SUPPORT_CXX_FLAGS})
-INCLUDE_DIRECTORIES(include ../../ ${Boost_INCLUDE_DIR})
+add_library(sha2 STATIC
+  lib/sha2_ctx.cpp
+)
+add_library(sha2::sha2 ALIAS sha2)
+set_property(TARGET sha2 PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-SET(libSHA2_SRCS
-  ./lib/sha2_ctx.cpp
+target_include_directories(sha2
+  PUBLIC
+    ../../
 )
 
-ADD_LIBRARY(libsha2 STATIC ${libSHA2_SRCS})
-
+target_link_libraries(sha2
+)

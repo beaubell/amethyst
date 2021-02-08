@@ -1,9 +1,10 @@
 
-SET(CMAKE_CXX_FLAGS ${DEBUG_CXX_FLAGS})
+add_subdirectory(science)
+add_subdirectory(shaders)
+add_subdirectory(resources)
+add_subdirectory(modules)
 
-SUBDIRS(modules science shaders resources)
-
-SET(amethystgl_SRCS
+add_library(amethyst-glcore SHARED
   science/uiw_simstats.cpp
   science/uiw_view.cpp
   science/gravpotential.cpp
@@ -44,76 +45,29 @@ SET(amethystgl_SRCS
   ui_widget.cpp
   ui_textbox.cpp
   amethyst-gl.cpp
-  bootstrap.cpp
   ${amthyst-uiwindows}
 )
 
-
-
-INCLUDE_DIRECTORIES(
-  ${OPENCL_INCLUDE_DIR}
-  ${FREETYPE_INCLUDE_DIR}
-  ${libFTGL_INCLUDE_DIR}
-  ${SDL_INCLUDE_DIR}
-  ${Boost_INCLUDE_DIR}
-  ${Amethyst_SOURCE_DIR}/support
-  ${Amethyst_SOURCE_DIR}/include
-  ${YAML_CPP_SOURCE_DIR}/include
-  ${Amethyst_SOURCE_DIR}
-  ${Amethyst_BINARY_DIR}
-)
-
-link_directories (
-  ${SDL_LIBRARY_DIR}
-  ${Boost_LIBRARY_DIRS}
-  ${YAML_CPP_BINARY_DIR}
-)  
-
-cmrc_add_resource_library(science_CL ALIAS amrc::science_cl
-  science/gravpotential.cl
-  science/colorizer.frag
-  science/fixed.vert
-)
-
-cmrc_add_resource_library(shader_SRCS ALIAS amrc::shader_srcs
-  shaders/baseline.vert
-  shaders/baseline.frag
-  shaders/fb.vert
-  shaders/fb.frag
-  shaders/hud.vert
-  shaders/hud.frag
-  shaders/model.vert
-  shaders/model.frag
-  shaders/ui.vert
-  shaders/ui.frag
-  shaders/uifont.vert
-  shaders/uifont.frag
-)
-
-cmrc_add_resource_library(resource_SRCS ALIAS amrc::res_srcs
-  resources/config.yaml
-  resources/scn_Startup.yaml
-)
-
-ADD_EXECUTABLE(amethyst-gl 
-  ${amethystgl_SRCS}
-)
-
-TARGET_LINK_LIBRARIES(amethyst-gl
+target_link_libraries(amethyst-glcore
   amrc::science_cl
   amrc::shader_srcs
   amrc::res_srcs
-  ${SDL_LIBRARY}
-  ${FREETYPE_LIBRARY}
-  ${OPENGL_gl_LIBRARY}
-  -lGLEW
+  SDL2::SDL2
   ${CMAKE_DL_LIBS}
   libamethyst
-  libftgl
-  ${Boost_TIMER_LIBRARY}
-  ${Boost_THREAD_LIBRARY}
-  ${YAML_CPP_LIBRARIES}
+  ftgl::ftgl
+  yaml-cpp::yaml-cpp
 )
 
-INSTALL(TARGETS amethyst-gl DESTINATION bin)
+set_property(TARGET amethyst-glcore PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+add_executable(amethyst-gl 
+  bootstrap.cpp
+)
+
+target_link_libraries(amethyst-gl
+  amethyst-glcore
+)
+
+install(TARGETS amethyst-gl DESTINATION bin)
 
