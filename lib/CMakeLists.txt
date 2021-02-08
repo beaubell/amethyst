@@ -82,9 +82,6 @@ install(TARGETS amethystcmd DESTINATION bin)
 
 file(GLOB TEST_SRCS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} test/*.cpp)
 
-        add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
-
-
 #Run through each source
 foreach(testSrc ${TEST_SRCS})
         #Extract the filename without an extension (NAME_WE)
@@ -92,6 +89,11 @@ foreach(testSrc ${TEST_SRCS})
 
         #Add compile target
         add_executable(${testName} ${testSrc})
+
+        target_compile_definitions(${testName}
+	    PRIVATE
+	      ${Boost_LIB_DIAGNOSTIC_DEFINITIONS}
+	)
 
         #link to Boost libraries AND your targets and dependencies
         target_link_libraries(${testName}
