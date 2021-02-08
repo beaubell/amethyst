@@ -1,3 +1,6 @@
 [submodule "support/yaml-cpp"]
 	path = support/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "support/glm"]
+	path = support/glm
+	url = https://github.com/g-truc/glm
