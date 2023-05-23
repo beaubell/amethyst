@@ -1,15 +1,11 @@
 #include "cl.h"
-#include "utility.h"
 #include "resource.h"
 
 #include "CL/cl_gl.h"
-#include "GL/glcorearb.h"
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 //
 #else
-#include <X11/X.h>
-#include <X11/Xlib.h>
 #include <GL/glx.h>
 #endif
 
@@ -17,9 +13,8 @@
 
 bool Amethyst_Verbose = true;
 
-namespace amethyst {
-namespace lib {
-  
+namespace amethyst::lib {
+
 /// Constants
 static const std::string SectionName("Amethyst OpenCL");
 static const std::string ProcessVersion("0.1");
@@ -32,7 +27,7 @@ cl::Context amethyst_cl_context;
 
 
 
-void cl_init(void)
+void cl_init()
 {
 
    try
@@ -112,7 +107,7 @@ void cl_init(void)
             amethyst_cl_context = cl::Context(CL_DEVICE_TYPE_GPU, props);
             std::cout << SectionName << ": OpenGL integration successful." << std::endl;
         }
-        catch (cl::Error er) {
+        catch (cl::Error& er) {
             std::cout << SectionName << ": Warning! Failed to attach to GLX context (" << er.what() << ")" << std::endl;
             std::cout << SectionName << ": Creating context without OpenGL integration." << std::endl;
             cl_context_properties props_noGPU[] =
@@ -261,9 +256,7 @@ cl::Kernel cl_loadkernel ( const Resource& res, const std::string& mainfn )
   /// FIXME XXX Log Warnings.
   std::cout << "Build_log: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(lib::cl_devices[0]);
   
-  return cl::Kernel(program, mainfn.c_str());
+  return {program, mainfn.c_str()};
 }
 
-
-} // Namespace lib
-} // Namespace amethyst
+} // Namespace amethyst::lib

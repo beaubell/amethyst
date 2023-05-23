@@ -35,9 +35,9 @@ class ConsoleCLI {
     void catch_signal(int);
 
     int         command_parse(const std::string&);
-    std::string command_get(void);
+    std::string command_get();
 
-    void        show_prompt(void);
+    void        show_prompt();
 
     bool active_;
     std::string& prompt_;

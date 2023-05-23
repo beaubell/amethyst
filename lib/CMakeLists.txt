@@ -41,6 +41,7 @@ target_link_libraries(libamethyst
     OpenCL::OpenCL
     glm::glm
     Threads::Threads
+    Microsoft.GSL::GSL
 )
 
 target_include_directories(libamethyst

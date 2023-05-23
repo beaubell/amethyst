@@ -802,7 +802,7 @@ void Universe::cl_fill_distance_buff()
   kern_dist.setArg(0, _cl_buf_hist_location);
   kern_dist.setArg(1, (unsigned int)ref);
   kern_dist.setArg(2, _cl_buf_hist_distance);
-  queue_rk4.enqueueNDRangeKernel(kern_dist, cl::NullRange, cl::NDRange(num_objects, _timesteps), cl::NullRange, NULL, &dis_event);
+  queue_rk4.enqueueNDRangeKernel(kern_dist, cl::NullRange, cl::NDRange(num_objects, _timesteps), cl::NullRange, nullptr, &dis_event);
   dis_event.wait();
 }
 
@@ -812,9 +812,9 @@ Universe::count_sig_objects() const -> std::size_t
 {
   std::size_t count = 0;
   
-  for (auto obj = _object_list.begin(); obj != _object_list.end(); obj++)
+  for (const auto & obj : _object_list)
   {
-    if((*obj)->mass > mass_cutoff)
+    if(obj->mass > mass_cutoff)
     count++;
   }
 

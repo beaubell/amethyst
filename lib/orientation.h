@@ -12,8 +12,7 @@
 #include "vector.h"
 #include "yaml-cpp/node/node.h"
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
   // Euler Data Type and Support Functions
   class Euler {
@@ -29,7 +28,7 @@ namespace lib {
        Euler(const Euler &right) : x(right.x), y(right.y), z(right.z) {};
        
        YAML::Node toYAML() const;
-       void fromYAML(YAML::Node vec);
+       void fromYAML(const YAML::Node& vec);
 
        //void Set_Identity(void);
 
@@ -54,22 +53,22 @@ namespace lib {
        inline Quaternion() : w(1), x(0), y(0), z(0) {};
        inline Quaternion(const double &ww, const double &xx, const double &yy, const double &zz) : w(ww), x(xx), y(yy), z(zz){};
        Quaternion(const Quaternion&);
-       Quaternion(const Euler&);
+       explicit Quaternion(const Euler&);
 
-       void  normalize(void);
+       void  normalize();
        
-       YAML::Node toYAML() const;
-       void fromYAML(YAML::Node vec);
+       [[nodiscard]] YAML::Node toYAML() const;
+       void fromYAML(const YAML::Node& vec);
 
-       Cartesian_Vector  GetVector(void);
-       Quaternion        Bar(void) { return Quaternion(w, -x, -y, -z); };
-       Quaternion        scale(const double &s);
-       double            length(void);
-       double            dot   (const Quaternion &right) const;
-       void              slerp (const Quaternion &left, Quaternion &right, const double t);
+       [[nodiscard]] Cartesian_Vector  GetVector() const;
+       [[nodiscard]] Quaternion        Bar() const { return {w, -x, -y, -z}; };
+       [[nodiscard]] Quaternion        scale(const double &s) const;
+       [[nodiscard]] double            length() const;
+       [[nodiscard]] double            dot   (const Quaternion &right) const;
+       void               slerp (const Quaternion &left, Quaternion &right, double t);
        //Cartesian_Vector GetAxis(void);
-       void              setIdentity(void) {w=1; x=y=z=0; };
-       bool              isIdentity() {return ( w==1 && x==0 && y==0 && z==0); };
+       void               setIdentity(void) {w=1; x=y=z=0; };
+       [[nodiscard]] bool isIdentity() const {return ( w==1 && x==0 && y==0 && z==0); };
 
        //const Quaternion& operator = (Quaternion&);
        Quaternion operator*(double scale) const;
@@ -92,5 +91,4 @@ namespace lib {
 /// Rotate vector around a unit quaternion
 Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v);
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

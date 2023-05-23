@@ -36,13 +36,13 @@ class Console_Menu {
  public:
     typedef std::map<std::string, Command_Vector> CommandV;
 
-    Console_Menu() {}
+    Console_Menu() = default;
     virtual ~Console_Menu();
     void add(const std::string &command, CommandFunction);
     void add(const std::string &command, MenuFunction run, ListFunction list);
     int run(ConsoleIO& io, const std::string &command);
     int list(const std::string &command, std::string &possibilites);
-    CommandV& get_commands(void);
+    CommandV& getCommands(void);
 
  private:
     CommandV menu_;

@@ -21,8 +21,7 @@
  #define SIZEOF_LONG_DOUBLE 12
 #endif
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
   union shortchar {
      unsigned short value;
@@ -130,5 +129,4 @@ namespace lib {
      #endif
   }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
 void show_help(ConsoleIO& io, Console_Menu& menu){
     io.out << std::endl;
-    for (auto& [cmd, cmdv]: menu.get_commands()) {
+    for (auto& [cmd, cmdv]: menu.getCommands()) {
         io.out << cmd << std::endl;
     }
 }

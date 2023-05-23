@@ -1,5 +1,5 @@
-#ifndef AMETHYST_CL_H
-#define AMETHYST_CL_H
+#ifndef AMETHYST_LIB_CL_H
+#define AMETHYST_LIB_CL_H
 
 #if defined (__APPLE__) || defined(MACOSX)
    #define GL_SHARING_EXTENSION "cl_APPLE_gl_sharing"
@@ -28,19 +28,17 @@ DECLARE_RESOURCE(lib_rk4_scale_cl);
 DECLARE_RESOURCE(lib_rk4_scalesum_cl);
 DECLARE_RESOURCE(lib_rk4_sum_cl);
 
-namespace amethyst {
-namespace lib {
-  
+namespace amethyst::lib {
+
 extern bool cl_initialized;
 
 extern cl::Context amethyst_cl_context;
 extern std::vector<cl::Device> cl_devices;
 
-void cl_init(void);
+void cl_init();
 const char* oclErrorString(cl_int error);
 cl::Kernel cl_loadkernel(const Resource& res, const std::string &mainfn);
 
 
 }
-}
-#endif //AMETHYST_CL_H
+#endif //AMETHYST_LIB_CL_H

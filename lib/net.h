@@ -21,8 +21,7 @@
 #define GCC_PACK __attribute__((__packed__))
 #endif
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 //  unsigned short ntohs(const unsigned short &in);
 // #define         htons(x) ntohs(x)
@@ -143,7 +142,6 @@ namespace lib {
      left.z = ntohd(right.z);
   }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #endif /* AMETHYST_LIB_NET_H */
