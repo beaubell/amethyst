@@ -4,7 +4,7 @@ project(Amethyst LANGUAGES C CXX VERSION 0.1.0)
 
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 option(AMETHYST_GUI "Enable OpenGL Frontend" ON)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
@@ -38,6 +38,14 @@ CHECK_TYPE_SIZE("double"      SIZEOF_DOUBLE)
 CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
+# Workaround for de-deprecated volitile handling in glm.  Remove when C++23 is properly supported.
+if ( CMAKE_COMPILER_IS_GNUCC )
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-volatile")
+endif()
+if ( MSVC )
+#set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
+endif()
 
 add_subdirectory(support)
 add_subdirectory(lib)
