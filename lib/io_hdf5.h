@@ -6,11 +6,7 @@
   - HDF5 Class declarations
 
  Authors (c):
- 2010-2012 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision: $
- $LastChangedDate: $
- $LastChangedBy: $
+ 2010-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "types.h"
@@ -54,21 +50,17 @@ class HDF5 : public H5::H5File
     void write_3D_uint(const H5std_string &dataset_name, const Am3DArrayUI &out);
     void write_4D_uint(const H5std_string &dataset_name, const Am4DArrayUI &out);
 
-    void read_2D_float(const H5std_string &dataset_name, Am2DArrayF &in) const;
-    void read_3D_float(const H5std_string &dataset_name, Am3DArrayF &in) const;
-    void read_4D_float(const H5std_string &dataset_name, Am4DArrayF &in) const;
+    template <typename MDA_T>
+    void read_MDA_float(const std::string &dataset_name, MDA_T &in) const;
 
-    void write_2D_float(const H5std_string &dataset_name, const Am2DArrayF &out);
-    void write_3D_float(const H5std_string &dataset_name, const Am3DArrayF &out);
-    void write_4D_float(const H5std_string &dataset_name, const Am4DArrayF &out);
+    template <typename MDA_T>
+    void write_MDA_float(const std::string &dataset_name, const MDA_T &out);
 
-    void read_2D_double(const H5std_string &dataset_name, Am2DArrayD &in) const;
-    void read_3D_double(const H5std_string &dataset_name, Am3DArrayD &in) const;
-    void read_4D_double(const H5std_string &dataset_name, Am4DArrayD &in) const;
+    template <typename MDA_T>
+    void read_MDA_double(const std::string &dataset_name, MDA_T &in) const;
 
-    void write_2D_double(const H5std_string &dataset_name, const Am2DArrayD &out);
-    void write_3D_double(const H5std_string &dataset_name, const Am3DArrayD &out);
-    void write_4D_double(const H5std_string &dataset_name, const Am4DArrayD &out);
+    template <typename MDA_T>
+    void write_MDA_double(const std::string &dataset_name, const MDA_T &out);
 
   private:
     // No copying

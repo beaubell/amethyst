@@ -40,10 +40,10 @@ void cl_init()
         {
             if (Amethyst_Verbose)
             {
-                std::cout << SectionName << ": Platform[" << i << "] Vendor     : " << cl_platforms[0].getInfo<CL_PLATFORM_VENDOR>() << std::endl;
-                std::cout << SectionName << ": Platform[" << i << "] Name       : " << cl_platforms[0].getInfo<CL_PLATFORM_NAME>() << std::endl;
-                std::cout << SectionName << ": Platform[" << i << "] Version    : " << cl_platforms[0].getInfo<CL_PLATFORM_VERSION>() << std::endl;
-                std::cout << SectionName << ": Platform[" << i << "] Extensions : " << cl_platforms[0].getInfo<CL_PLATFORM_EXTENSIONS>() << std::endl;
+                std::cout << SectionName << ": Platform[" << i << "] Vendor     : " << cl_platforms[i].getInfo<CL_PLATFORM_VENDOR>() << std::endl;
+                std::cout << SectionName << ": Platform[" << i << "] Name       : " << cl_platforms[i].getInfo<CL_PLATFORM_NAME>() << std::endl;
+                std::cout << SectionName << ": Platform[" << i << "] Version    : " << cl_platforms[i].getInfo<CL_PLATFORM_VERSION>() << std::endl;
+                std::cout << SectionName << ": Platform[" << i << "] Extensions : " << cl_platforms[i].getInfo<CL_PLATFORM_EXTENSIONS>() << std::endl;
             }
         }
 
@@ -127,12 +127,12 @@ void cl_init()
         {
             if (Amethyst_Verbose)
             {
-                std::cout << SectionName << ": Device[" << i << "] Vendor        : " << cl_devices[0].getInfo<CL_DEVICE_VENDOR>() << std::endl;
-                std::cout << SectionName << ": Device[" << i << "] Name          : " << cl_devices[0].getInfo<CL_DEVICE_NAME>() << std::endl;
-                std::cout << SectionName << ": Device[" << i << "] Version       : " << cl_devices[0].getInfo<CL_DEVICE_VERSION>() << std::endl;
-                std::cout << SectionName << ": Device[" << i << "] Extensions    : " << cl_devices[0].getInfo<CL_DEVICE_EXTENSIONS>() << std::endl;
-                std::cout << SectionName << ": Device[" << i << "] Clock Freq    : " << cl_devices[0].getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() << std::endl;
-                std::cout << SectionName << ": Device[" << i << "] Compute Units : " << cl_devices[0].getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>() << std::endl;
+                std::cout << SectionName << ": Device[" << i << "] Vendor        : " << cl_devices[i].getInfo<CL_DEVICE_VENDOR>() << std::endl;
+                std::cout << SectionName << ": Device[" << i << "] Name          : " << cl_devices[i].getInfo<CL_DEVICE_NAME>() << std::endl;
+                std::cout << SectionName << ": Device[" << i << "] Version       : " << cl_devices[i].getInfo<CL_DEVICE_VERSION>() << std::endl;
+                std::cout << SectionName << ": Device[" << i << "] Extensions    : " << cl_devices[i].getInfo<CL_DEVICE_EXTENSIONS>() << std::endl;
+                std::cout << SectionName << ": Device[" << i << "] Clock Freq    : " << cl_devices[i].getInfo<CL_DEVICE_MAX_CLOCK_FREQUENCY>() << std::endl;
+                std::cout << SectionName << ": Device[" << i << "] Compute Units : " << cl_devices[i].getInfo<CL_DEVICE_MAX_COMPUTE_UNITS>() << std::endl;
             }
         }
 

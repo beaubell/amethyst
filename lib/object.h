@@ -16,7 +16,7 @@
 
 #include <string>
 #include <memory>
-#include <ostream>
+#include <iosfwd>
 
 namespace amethyst::lib {
 
