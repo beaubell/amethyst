@@ -18,8 +18,7 @@
 #include <memory>
 #include <ostream>
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 
 
@@ -50,7 +49,7 @@ namespace lib {
      public:
        Object();
        Object(const Object&);
-       virtual ~Object() {};
+       virtual ~Object() = default;
 
        typedef std::shared_ptr<Object> sptr;
        typedef std::weak_ptr<Object>   wptr;
@@ -61,7 +60,7 @@ namespace lib {
        void force_clear();
 
        // Calulate total force to determine current acceleration
-       void force_apply(void);           //
+       void force_apply();           //
 
        // Calculate velocity from acceleration;
        void accel_apply(const double &time);    //time == 1 for 1 second
@@ -73,7 +72,7 @@ namespace lib {
        virtual void iterate(const double &time);
 
        virtual YAML::Node toYAML();
-       virtual void       fromYAML(YAML::Node);
+       virtual void       fromYAML(const YAML::Node& yaml);
        
        /* Absolute Mass */
        double mass;
@@ -113,12 +112,11 @@ namespace lib {
        RenderModel::sptr model;
 
        // let other threads know that this object is presently being modified.
-       bool        lock;
+       bool        lock{};
        std::string name;
 
        Object& operator= (const Object &right);
        friend std::ostream& operator<<(std::ostream& os, const Object& ob);
        };
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

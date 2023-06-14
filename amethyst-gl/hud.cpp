@@ -123,7 +123,7 @@ void hud_render(const Camera& camera, const Eye eye)
 #ifdef HAVE_MALLOC_H
 static void hud_widget_memory(int x, int y)
 {
-    struct mallinfo mstats = mallinfo();
+    struct mallinfo2 mstats = mallinfo2();
     char status[100];
     snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
     //glRasterPos3f(-45.0f, 30.0f,-100.0f);

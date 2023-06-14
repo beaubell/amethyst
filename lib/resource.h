@@ -9,8 +9,7 @@
 
 #include <boost/iostreams/device/mapped_file.hpp>
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 struct MemBuf : std::streambuf
 {

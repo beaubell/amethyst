@@ -6,25 +6,27 @@
  2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include <stdlib.h>
+#include "object.h"
+
+#include <cstdlib>
 #include <string>
 
 #include "physics.h"
-#include "object.h"
 
 #include "yaml-cpp/yaml.h"
 
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
     Object::Object()
-    : mass(1)
+    : mass(1),
+      lock(false)
     {
         //printf("NEW OBJECT!");
     }
 
     Object::Object(const Object &right)
+    : lock(false)
     {
         mass = right.mass;
 
@@ -58,9 +60,9 @@ namespace lib {
 
     void Object::force_add(const Spherical_Vector &sphr_force)
     {
-        Cartesian_Vector new_force = phys_alias_transform (sphr_force);
+        Cartesian_Vector newForce = phys_alias_transform (sphr_force);
 
-        force += new_force;
+        force += newForce;
     }
 
 
@@ -71,7 +73,7 @@ namespace lib {
     }
 
 
-    void Object::force_apply(void)
+    void Object::force_apply()
     {
         //velocity = phys_alibi_transform (velocity, acceleration, time);
         acceleration = force / mass;
@@ -150,7 +152,7 @@ Object::toYAML(){
 
 
 void
-Object::fromYAML(const YAML::Node object){
+Object::fromYAML(const YAML::Node& object){
 
     using namespace YAML;
 
@@ -195,6 +197,4 @@ operator<<(std::ostream& os, const Object& obj) {
     return os;
 }
 
-
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

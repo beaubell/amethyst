@@ -12,19 +12,17 @@
 
 #include "connection_manager.h"
 #include <algorithm>
-#include <boost/bind.hpp>
 
-namespace amethyst {
-namespace server {
+namespace amethyst::server {
 
 
-void Connection_Manager::start(TCP_Connection::sptr c)
+void Connection_Manager::start(const TCP_Connection::sptr& c)
 {
     connections_.insert(c);
     c->start();
 }
 
-void Connection_Manager::stop(TCP_Connection::sptr c)
+void Connection_Manager::stop(const TCP_Connection::sptr& c)
 {
     connections_.erase(c);
     c->stop();
@@ -33,24 +31,23 @@ void Connection_Manager::stop(TCP_Connection::sptr c)
 void Connection_Manager::stop_all()
 {
     std::for_each(connections_.begin(), connections_.end(),
-       boost::bind(&TCP_Connection::stop, _1));
+       [](const auto& conn){ conn->stop(); });
     connections_.clear();
 }
 
-int  Connection_Manager::get_number_of_connections()
+size_t Connection_Manager::get_number_of_connections() const
 {
     return connections_.size();
 }
 
-const std::set<TCP_Connection::sptr>::const_iterator Connection_Manager::iterator_begin()
+std::set<TCP_Connection::sptr>::const_iterator Connection_Manager::iterator_begin()
 {
-    return connections_.begin();
+    return connections_.cbegin();
 }
 
-const std::set<TCP_Connection::sptr>::const_iterator Connection_Manager::iterator_end()
+std::set<TCP_Connection::sptr>::const_iterator Connection_Manager::iterator_end()
 {
-    return connections_.end();
+    return connections_.cend();
 }
 
-} // namespace server
-} // namespace amethyst
+} // namespace amethyst::server

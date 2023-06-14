@@ -19,8 +19,7 @@
 
 #include <boost/units/systems/si/io.hpp> // Testing
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 #ifdef UNITS_FLOAT
 typedef float Float_Type;
@@ -42,7 +41,6 @@ typedef quantity<si::mass, Float_Type>  Mass;
 
 typedef quantity<volume_over_mass_time_squared , Float_Type>  Grav_Const;
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #endif

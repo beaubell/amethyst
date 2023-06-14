@@ -38,7 +38,9 @@ namespace client
 
 class Amethyst_GL
 {
-   public:
+  public:
+    using RenderFunc = void (const lib::Cartesian_Vector& reference);
+
     Amethyst_GL(const std::string &path_root);
     virtual ~Amethyst_GL();
 
@@ -49,7 +51,7 @@ class Amethyst_GL
     UI        ui;
     Input    *const input;
 
-    typedef boost::signals2::signal<void (const lib::Cartesian_Vector& reference)> Signal_render;
+    typedef boost::signals2::signal<RenderFunc> Signal_render;
     Signal_render sig_render_scene;
 
     void pause_toggle();

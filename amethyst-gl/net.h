@@ -24,7 +24,6 @@
 #include "lib/manifest.h"
 
 #include <boost/array.hpp>
-#include <boost/bind.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 

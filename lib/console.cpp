@@ -34,6 +34,7 @@ ConsoleCLI::ConsoleCLI(ConsoleIO& io,
   prompt_(newprompt),
   mainmenu_(mainmenu),
   history_(newhistory),
+  history_pos_(0),
   io_(io) {
 }
 
@@ -86,7 +87,6 @@ ConsoleCLI::start() {
             case 2:
                 stop();
                 return;
-                break;
         }
     }
 
@@ -109,10 +109,10 @@ ConsoleCLI::catch_signal(int /*unused*/) {
 
 
 std::string
-ConsoleCLI::command_get(void) {
-    unsigned int curpos = 0; // Cursor Position
-    int    ret;
-    char   one;        // Input Charater
+ConsoleCLI::command_get() {
+    int    curpos = 0; // Cursor Position
+    int    ret = 0;
+    char   one = 0;        // Input Charater
 
     do {
         ret = io_.getch(one);
@@ -289,7 +289,7 @@ ConsoleCLI::command_get(void) {
 int
 ConsoleCLI::command_parse(const std::string& command) {
     //Check for null command
-    if (command == "") return 0;
+    if (command.empty()) return 0;
 
     //Add to command history
     history_.push_back(command);
@@ -301,7 +301,7 @@ ConsoleCLI::command_parse(const std::string& command) {
 
 
 void
-ConsoleCLI::show_prompt(void) {
+ConsoleCLI::show_prompt() {
     io_.out << '\n' << prompt_ << buffer_;
 }
 

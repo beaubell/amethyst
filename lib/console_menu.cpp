@@ -237,7 +237,7 @@ Console_Menu::list(const std::string &command, std::string &possibilities) {
         // std::cout << "\nAM:\"" << unambiguity << "\"";
 
         // List all posibles if no characters can be found
-        if (possibilities == "" && count > 1) {
+        if (possibilities.empty() && count > 1) {
             std::cout << "\n";
 
             for (unsigned int x = 1; x < found_commands.size(); x++) {
@@ -255,6 +255,6 @@ Console_Menu::list(const std::string &command, std::string &possibilities) {
 }
 
 Console_Menu::CommandV&
-Console_Menu::get_commands() { return menu_; }
+Console_Menu::getCommands() { return menu_; }
 
 }  // namespace amethyst

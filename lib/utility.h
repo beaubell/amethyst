@@ -16,8 +16,7 @@
 #include <vector>
 #include <iomanip>
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
   void gen_model_solarsystem(Universe &uni);
   void gen_object_variation(Universe &uni,
@@ -38,7 +37,6 @@ std::string to_string(const T a_value, const int n = 6)
 }
 
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #endif /* UTILIty_H */

@@ -39,6 +39,14 @@ CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
+# Workaround for de-deprecated volitile handling in glm.  Remove when C++23 is properly supported.
+if ( CMAKE_COMPILER_IS_GNUCC )
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-volatile")
+endif()
+if ( MSVC )
+#set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS}")
+endif()
+
 add_subdirectory(support)
 add_subdirectory(lib)
 add_subdirectory(server)

@@ -47,7 +47,7 @@ void opengl_setup(void)
     std::cout << "GL_RENDERER   = " << glRenderer << std::endl;
     std::cout << "GL_VERSION    = " << glVersion << std::endl;
     std::cout << "GL_VENDOR     = " << glVendor << std::endl;
-    //std::cout << "GL_EXTENSIONS = " << glExtensions << std::endl;  
+    //std::cout << "GL_EXTENSIONS = " << glExtensions << std::endl;
 
     // Query point size capabilities
     GLint points[2], points_gran;
@@ -68,6 +68,7 @@ void opengl_setup(void)
     //Register Debug Callbacl
     if(glDebugMessageCallback)
     {
+      glEnable              ( GL_DEBUG_OUTPUT );
       glDebugMessageCallback((GLDEBUGPROC)GLDebugCallBack, NULL);
       std::cout << "Registered OpenGL Debug Callback." << std::endl;
       

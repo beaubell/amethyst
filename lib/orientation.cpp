@@ -6,14 +6,15 @@
  2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include <math.h>
-#include "object.h"
 #include "orientation.h"
+
+#include <cmath>
+#include "object.h"
+
 #include "yaml-cpp/yaml.h"
 
-namespace amethyst {
-namespace lib {
-        
+namespace amethyst::lib {
+
 YAML::Node
 Euler::toYAML() const
 {
@@ -29,7 +30,7 @@ Euler::toYAML() const
 }
 
 void
-Euler::fromYAML(const YAML::Node vec){
+Euler::fromYAML(const YAML::Node& vec){
 
     using namespace YAML;
 
@@ -37,16 +38,6 @@ Euler::fromYAML(const YAML::Node vec){
     y = vec["y"].as<float_type>();
     z = vec["z"].as<float_type>();
 }
-
-
-  Quaternion::Quaternion(const Quaternion &old) {
-
-       w = old.w;
-       x = old.x;
-       y = old.y;
-       z = old.z;
-       }
-
 
   Quaternion::Quaternion(const Euler &old) {
 
@@ -68,13 +59,13 @@ Euler::fromYAML(const YAML::Node vec){
    //}
 
 
-   double Quaternion::length(){
+   double Quaternion::length() const{
 
        return sqrt(x * x + y * y + z * z + w * w);
        }
 
 
-   void Quaternion::normalize(void) {
+   void Quaternion::normalize() {
 
        double L = length();
 
@@ -100,7 +91,7 @@ Quaternion::toYAML() const
 }
 
 void
-Quaternion::fromYAML(const YAML::Node vec){
+Quaternion::fromYAML(const YAML::Node& vec){
 
     using namespace YAML;
 
@@ -110,15 +101,15 @@ Quaternion::fromYAML(const YAML::Node vec){
     z = vec["z"].as<float_type>();
 }
        
-   Cartesian_Vector  Quaternion::GetVector(void) {
+   Cartesian_Vector  Quaternion::GetVector() const {
 
-       return Cartesian_Vector(x,y,z);
+       return {x,y,z};
        }
 
 
-    Quaternion Quaternion::scale( const double &s)
+    Quaternion Quaternion::scale( const double &s) const
     {
-        return Quaternion(w * s, x * s, y * s, z * s);
+        return {w * s, x * s, y * s, z * s};
     }
 
     double Quaternion::dot(const Quaternion &right) const
@@ -241,5 +232,4 @@ Cartesian_Vector QVRotate(Quaternion &q, const Cartesian_Vector &v)
     return t.GetVector();
 }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lilb

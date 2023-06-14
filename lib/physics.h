@@ -6,27 +6,23 @@
   - Physics Functions, Declarations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+ 2006-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
 
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
  ***********************************************************************/
 
 #include "object.h"
 
 #define BOOST_MATH_DOMAIN_ERROR_POLICY throw_on_error
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 // Constants
 
   // Gravitational Constant, Defined in physics.cpp   (6.672E-11)
-  extern double G;
+  extern const double G;
 
   // Speed of Light        , Defined in physics.cpp   (2.99792458E8 meters per second)
-  extern double C;
+  extern const double C;
 
   // PI
   //extern double PI;
@@ -73,7 +69,6 @@ namespace lib {
   void placement_L2(const Object &primary, const Object &satellite, Object &L2);
   double distance_L1(const Object &primary, const Object &satellite, Object &probe);
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #endif  /* AMETHYST_LIB_PHYSICS_H */

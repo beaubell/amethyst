@@ -18,18 +18,15 @@
 #include <iostream>
 #include <fstream>
 
-namespace amethyst
-{
-namespace lib
-{
+namespace amethyst::lib {
 
 bool FileManifest::initialize(const std::string &file_root)
 {
     using boost::filesystem::path;
     using boost::filesystem::directory_iterator;
 
-    path root(file_root);
-    size_t root_size = file_root.length();
+    const path root(file_root);
+    const size_t root_size = file_root.length();
 
     std::cout << "Generating Manifest...." << std::endl;
 
@@ -37,7 +34,7 @@ bool FileManifest::initialize(const std::string &file_root)
     if ( !exists( root ) ) return false;
 
     // Iterate through directory
-    directory_iterator end_itr; // default construction yields past-the-end
+    const directory_iterator end_itr; // default construction yields past-the-end
     for ( directory_iterator itr( root );
           itr != end_itr;
           ++itr )
@@ -55,11 +52,9 @@ bool FileManifest::initialize(const std::string &file_root)
                     sub_path.erase(0,root_size);
 
                     std::string sha2;
-                    size_t filesize;
+                    const size_t filesize = calculate_sha256(sub_itr->path(), sha2);
 
-                    filesize = calculate_sha256(sub_itr->path(), sha2);
-
-                    FileEntry entry = {sub_path, sha2, filesize};
+                    const FileEntry entry = {sub_path, sha2, filesize};
                     filelist_.push_back(entry);
 
                     std::cout << sub_path << std::endl;
@@ -73,11 +68,9 @@ bool FileManifest::initialize(const std::string &file_root)
             rt_path.erase(0,root_size);
 
             std::string sha2;
-            size_t filesize;
+            const size_t filesize = calculate_sha256(itr->path(), sha2);
 
-            filesize = calculate_sha256(itr->path(), sha2);
-
-            FileEntry entry = {rt_path, sha2, filesize};
+            const FileEntry entry = {rt_path, sha2, filesize};
             filelist_.push_back(entry);
 
             std::cout << rt_path << std::endl;
@@ -90,17 +83,17 @@ bool FileManifest::initialize(const std::string &file_root)
 size_t FileManifest::calculate_sha256 (const boost::filesystem::path &path, std::string &sha256_out)
 {
     // Load file
-    std::string strpath = path.string();
+    const std::string& strpath = path.string();
     std::ifstream file;
     file.open(strpath.c_str(), std::ios::in | std::ios::ate | std::ios::binary);
 
     if (file.is_open())
     {
         std::ifstream::pos_type size;
-        char * memblock;
 
+        // FIXME Use Memmapped File Handling
         size = file.tellg();
-        memblock = new char [size];
+        char * memblock = new char [size];
 
         file.seekg (0, std::ios::beg);
         file.read (memblock, size);
@@ -122,7 +115,7 @@ size_t FileManifest::calculate_sha256 (const boost::filesystem::path &path, std:
 
 void FileManifest::push(const std::string &file, const std::string &hash, const size_t &size)
 {
-    FileEntry entry = {file, hash, size};
+    const FileEntry entry = {file, hash, size};
     filelist_.push_back(entry);
 }
 
@@ -138,11 +131,11 @@ void diff(const FileManifest &in, const FileManifest &in2, FileManifest &out)
               match = true;
 
         }
-        if (match == false)
-         out.push(in[count].file, in[count].hash, in[count].size);
+        if (!match) {
+            out.push(in[count].file, in[count].hash, in[count].size);
+        }
 
     }
 }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
