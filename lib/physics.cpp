@@ -3,23 +3,17 @@
   - Physics Functions, Implementations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
+ 2006-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
 
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
  ***********************************************************************/
 
 // Include local files first
 #include "physics.h"
-#include "types.h"
 
 // Then include system files
-#include <boost/bind.hpp>
 #include <boost/math/tools/roots.hpp>
 
 #include <cmath>
-#include <stdio.h>
 
 #ifdef WIN32
 #define M_PI  3.14159265358979323846
@@ -27,13 +21,14 @@
 #endif
 
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
+
+using boost::math::tools::bisect;
 
 // Big 'G', The gravitational constant, also The constant of proportionality.
-double G = 6.6738480e-11; // N m^2 kg^-2
+const double G = 6.6743015e-11; // N m^2 kg^-2
 // Speed of Light
-double C = 2.99792458e8;  // m/s
+const double C = 2.99792458e8;  // m/s
 
 double phys_distance (const Cartesian_Coord &a, const Cartesian_Coord &b)
 {
@@ -51,7 +46,7 @@ double phys_distance (const Cartesian_Coord &a, const Cartesian_Coord &b)
 double phys_gravity (const Object &a, const Object &b)
 {
 
-  double distance = phys_distance (a.location, b.location);
+  const double distance = phys_distance (a.location, b.location);
 
   return ((G*(a.mass)*(b.mass)) / pow(distance, 2));
 }
@@ -75,8 +70,8 @@ double phys_gravity_accel (const Object &a, const Object &b, const double x)
   const float_type M2 = b.mass;
   const float_type d = (b.location - a.location).magnitude();
 
-  double massratio = a.mass/b.mass;
-  double bary = d/(1 + massratio);
+  const double massratio = a.mass/b.mass;
+  const double bary = d/(1 + massratio);
 
   //const float_type w = (b.velocity).magnitude()/(d-bary);
   const float_type w = (b.velocity - a.velocity).magnitude()/(d-bary);
@@ -93,8 +88,8 @@ double phys_gravity_accel_l2 (const Object &a, const Object &b, const double x)
   const float_type M2 = b.mass;
   const float_type d = (b.location - a.location).magnitude();
 
-  double massratio = a.mass/b.mass;
-  double bary = d/(1 + massratio);
+  const double massratio = a.mass/b.mass;
+  const double bary = d/(1 + massratio);
 
   //const float_type w = (b.velocity).magnitude()/(d-bary);
   const float_type w = (b.velocity - a.velocity).magnitude()/(d-bary);
@@ -109,7 +104,7 @@ double phys_gravity_accel_l2 (const Object &a, const Object &b, const double x)
 Spherical_Vector phys_alias_transform (const Cartesian_Coord &a)
 {
 
-  Cartesian_Vector zero;
+  const Cartesian_Vector zero;
   //Spherical_Vector output;
 
   //zero.x = 0;
@@ -120,8 +115,8 @@ Spherical_Vector phys_alias_transform (const Cartesian_Coord &a)
   //output.a = atan2(a.y, a.x);
   //output.p = acos(a.z/output.r);
 
-  double radius = phys_distance (zero, a);
-  return Spherical_Vector ( atan2(a.y, a.x), acos(a.z/radius), radius);
+  const double radius = phys_distance (zero, a);
+  return {atan2(a.y, a.x), acos(a.z/radius), radius};
 
   //return output;
 }
@@ -136,7 +131,7 @@ Cartesian_Vector phys_alias_transform (const Spherical_Vector &a)
   //output.y = (a.r)*sin(a.a)*sin(a.p);
   //output.z = (a.r)*cos(a.p);
 
-  Cartesian_Vector output( (a.r)*cos(a.a)*sin(a.p), (a.r)*sin(a.a)*sin(a.p), (a.r)*cos(a.p) );
+  const Cartesian_Vector output( (a.r)*cos(a.a)*sin(a.p), (a.r)*sin(a.a)*sin(a.p), (a.r)*cos(a.p) );
 
   return output;
 }
@@ -211,7 +206,7 @@ void placement_SimpleOrbit(const Object &primary, Object &satellite, double dist
   satellite.location.x += distance;
 
   satellite.velocity = primary.velocity;
-  double grav_acc = G*primary.mass/pow(distance,2);
+  const double grav_acc = G*primary.mass/pow(distance,2);
   satellite.velocity.y += sqrt(grav_acc * distance);
 }
 
@@ -223,35 +218,40 @@ double fxd(double foo)
 }
 
   struct TerminationCondition  {
+    constexpr static double minSpan = 1e-8;
+
     bool operator() (double min, double max)  {
-      return (std::abs(min - max) <= 1e-8);
+      return (std::abs(min - max) <= minSpan);
     }
   };
 
 void placement_L1(const Object &primary, const Object &satellite, Object &L1)
 {
-
   
   /// Find Location of L1 Point
   Cartesian_Vector to_body1 = primary.location - satellite.location;
-  double distance = to_body1.magnitude();
+  const double distance = to_body1.magnitude();
   to_body1.normalize();
   
   // Angular velocity
   //double w = satellite.velocity.magnitude()/distance;
-  double massratio = primary.mass/satellite.mass;
-  double bary = distance/(1 + massratio);
+  const double massratio = primary.mass/satellite.mass;
+  const double bary = distance/(1 + massratio);
 
-  double Ecorrection = -5000e3  - 3040 -36.48 -0.20608 -0.00076288;
+  const double Ecorrection = -5000e3  - 3040 -36.48 -0.20608 -0.00076288;
   //double Ecorrection = 0.0;
   //double distanceL1 = (distance - bary)*cbrt(satellite.mass/(3.0*(primary.mass))) + Ecorrection;
+
+  auto finderFn = [&primary, &satellite](double x) -> double {
+    return phys_gravity_accel(primary, satellite, x);
+  };
 
   //printf("Lagrange distance: %f \n", distanceL1);
   //std::cout << "Lagrange distance: " << distanceL1 << std::endl;
   //root_func fx(boost::bind(phys_gravity_accel, primary, satellite, _1, w));
   //std::pair<double, double> result = boost::math::tools::bisect(boost::bind(phys_gravity_accel, primary, satellite, _1, 20.0), 0, 5e6, 1.0);
-  std::pair<double, double> result = boost::math::tools::bisect(boost::bind(phys_gravity_accel, primary, satellite, _1), 0.1, (distance)-0.1, TerminationCondition());
-  double distanceL1 = (result.first + result.second) / 2.0;
+  const auto [rootLow, rootHigh] = bisect(finderFn, 0.1, (distance)-0.1, TerminationCondition());
+  const double distanceL1 = (rootLow + rootHigh) / 2.0;
   //printf("Root = %f (%f,%f)\n", root,result.first, result.second);
   //root_func fx(boost::bind(pow,w,_1));
   //double distanceL1 = find_root(boost::bind(phys_gravity_accel, primary, satellite, _1, w), 1.0, 10000.0, distance/2.0);
@@ -261,7 +261,7 @@ void placement_L1(const Object &primary, const Object &satellite, Object &L1)
   L1.location = satellite.location + to_body1*distanceL1;
 
   /// Find Velocity of L1 Point
-  double disL1ratio = distanceL1/(distance);
+  const double disL1ratio = distanceL1/(distance);
   L1.velocity = (primary.velocity - satellite.velocity)*disL1ratio + satellite.velocity;
   //L1.velocity = primary.velocity*(-disL1ratio) + satellite.velocity*(1.0+disL1ratio);
 
@@ -273,20 +273,25 @@ void placement_L2(const Object &primary, const Object &satellite, Object &L2)
 
   /// Find Location of L1 Point
   Cartesian_Vector to_body1 = primary.location - satellite.location;
-  double distance = to_body1.magnitude();
+  const double distance = to_body1.magnitude();
   to_body1.normalize();
 
-  double massratio = primary.mass/satellite.mass;
-  double bary = distance/(1 + massratio);
+  const double massratio = primary.mass/satellite.mass;
+  const double bary = distance/(1 + massratio);
 
   //double distanceL2 = distance*pow(satellite.mass/(3.0*primary.mass),1.0/3.0);
   //double distanceL2 = (distance-bary)*cbrt(satellite.mass/(3.0*(primary.mass + satellite.mass)));
-  std::pair<double, double> result = boost::math::tools::bisect(boost::bind(phys_gravity_accel_l2, primary, satellite, _1), 0.1, (distance)-0.1, TerminationCondition());
-  double distanceL2 = (result.first + result.second) / 2.0;
+
+  auto finderFn = [&primary, &satellite](double x) -> double {
+    return phys_gravity_accel(primary, satellite, x);
+  };
+
+  const auto [rootLow, rootHigh]  = bisect(finderFn, 0.1, (distance)-0.1, TerminationCondition());
+  const double distanceL2 = (rootLow + rootHigh) / 2.0;
   L2.location = satellite.location - to_body1*distanceL2;
 
   /// Find Velocity of L1 Point
-  double disL2ratio = distanceL2/(distance);
+  const double disL2ratio = distanceL2/(distance);
   //L2.velocity = (primary.velocity - satellite.velocity)*disL2ratio + satellite.velocity;
   L2.velocity = primary.velocity*(-disL2ratio) + satellite.velocity*(1.0+disL2ratio);
 
@@ -310,5 +315,4 @@ double distance_L2(const Object &primary, const Object &satellite, Object &probe
   return (probe.location - L2.location).magnitude();
 }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

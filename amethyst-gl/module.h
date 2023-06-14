@@ -43,8 +43,8 @@ class Module
     bool start(Amethyst_GL &);
     bool stop();
 
-    const std::string& mod_name();
-    const std::string& name();
+    const std::string& mod_name() const;
+    const std::string& name() const;
 
     bool is_active();
 

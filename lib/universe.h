@@ -13,8 +13,7 @@
 #include "cl.h"
 #include "object_group.h"
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 class Universe
 {
@@ -144,7 +143,7 @@ class Universe
     float_type mass_cutoff;
 };
 
-} // namespace lib
-} // namespace amethyst
+
+} // namespace amethyst::lib
 
 #endif // UNIVERSE_H

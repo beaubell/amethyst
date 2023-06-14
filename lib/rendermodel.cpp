@@ -10,8 +10,7 @@
 
 #include "rendermodel.h"
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 
 void RenderModel::setName(const std::string& name)
@@ -25,5 +24,4 @@ const std::string& RenderModel::getName()
 }
 
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

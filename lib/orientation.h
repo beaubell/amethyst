@@ -27,7 +27,7 @@ namespace amethyst::lib {
        inline Euler(const double &xx, const double &yy, const double &zz) : x(xx), y(yy), z(zz){};
        Euler(const Euler &right) : x(right.x), y(right.y), z(right.z) {};
        
-       YAML::Node toYAML() const;
+       [[nodiscard]] YAML::Node toYAML() const;
        void fromYAML(const YAML::Node& vec);
 
        //void Set_Identity(void);
@@ -52,8 +52,10 @@ namespace amethyst::lib {
 
        inline Quaternion() : w(1), x(0), y(0), z(0) {};
        inline Quaternion(const double &ww, const double &xx, const double &yy, const double &zz) : w(ww), x(xx), y(yy), z(zz){};
-       Quaternion(const Quaternion&);
+       Quaternion(const Quaternion&) = default;
+       Quaternion(Quaternion&&) = default;
        explicit Quaternion(const Euler&);
+       ~Quaternion() = default;
 
        void  normalize();
        
@@ -67,10 +69,11 @@ namespace amethyst::lib {
        [[nodiscard]] double            dot   (const Quaternion &right) const;
        void               slerp (const Quaternion &left, Quaternion &right, double t);
        //Cartesian_Vector GetAxis(void);
-       void               setIdentity(void) {w=1; x=y=z=0; };
+       void               setIdentity() {w=1; x=y=z=0; };
        [[nodiscard]] bool isIdentity() const {return ( w==1 && x==0 && y==0 && z==0); };
 
-       //const Quaternion& operator = (Quaternion&);
+       Quaternion& operator=(const Quaternion&) = default;
+       Quaternion& operator=(Quaternion&&)      = default;
        Quaternion operator*(double scale) const;
        Quaternion operator+(const Quaternion &b) const;
 

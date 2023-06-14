@@ -11,8 +11,7 @@
 
 #include "console_io.h"
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
   // All tests return 1 for success 0 for failure
   bool full_test(ConsoleIO& io, bool quiet, bool debug);
@@ -25,7 +24,6 @@ namespace lib {
   bool test_units(ConsoleIO& io, bool quiet, bool debug);
   void test_rk4(ConsoleIO& io);
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #endif /* AMETHYST_LIB_TEST_H */

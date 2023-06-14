@@ -3,16 +3,17 @@
   - Vector Class Objects Implementations
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include <math.h>
 #include "vector.h"
+
+#include <cmath>
+
 #include "types.h"
 #include "yaml-cpp/yaml.h"
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
   void Cartesian_Vector::clear(void) {
 
@@ -28,7 +29,7 @@ namespace lib {
 
   void Cartesian_Vector::normalize(void) {
 
-       double m = magnitude();
+       const double m = magnitude();
        x /= m;
        y /= m;
        z /= m;
@@ -56,7 +57,7 @@ Cartesian_Vector::toYAML() const
 }
 
 void
-Cartesian_Vector::fromYAML(const YAML::Node vec){
+Cartesian_Vector::fromYAML(const YAML::Node& vec){
 
     using namespace YAML;
 
@@ -64,14 +65,6 @@ Cartesian_Vector::fromYAML(const YAML::Node vec){
     y = vec["y"].as<float_type>();
     z = vec["z"].as<float_type>();
 }
-
-    Cartesian_Vector& Cartesian_Vector::operator = (const Cartesian_Vector& vector)
-    {
-        x = vector.x;
-        y = vector.y;
-        z = vector.z;
-        return *this;
-    }
 
   const Cartesian_Vector& Cartesian_Vector::operator += (const Cartesian_Vector& vector) {
 
@@ -109,12 +102,12 @@ Cartesian_Vector::fromYAML(const YAML::Node vec){
        return *this;
        }
 
-  Cartesian_Vector Cartesian_Vector::operator - (void) {
+  Cartesian_Vector Cartesian_Vector::operator-() const {
 
-       return Cartesian_Vector(-x, -y, -z);
+       return {-x, -y, -z};
        }
 
-  const Cartesian_Vector operator+(const Cartesian_Vector &left, const Cartesian_Vector &right) {
+  Cartesian_Vector operator+(const Cartesian_Vector &left, const Cartesian_Vector &right) {
 
        Cartesian_Vector vector;
 
@@ -126,7 +119,7 @@ Cartesian_Vector::fromYAML(const YAML::Node vec){
        }
 
 
-  const Cartesian_Vector operator-(const Cartesian_Vector &left, const Cartesian_Vector &right) {
+  Cartesian_Vector operator-(const Cartesian_Vector &left, const Cartesian_Vector &right) {
 
        Cartesian_Vector vector;
 
@@ -138,7 +131,7 @@ Cartesian_Vector::fromYAML(const YAML::Node vec){
        }
 
 
-  const Cartesian_Vector operator*(const Cartesian_Vector &left, const double &multiplier) {
+  Cartesian_Vector operator*(const Cartesian_Vector &left, const double &multiplier) {
 
        Cartesian_Vector vector;
 
@@ -150,7 +143,7 @@ Cartesian_Vector::fromYAML(const YAML::Node vec){
        }
 
 
-  const Cartesian_Vector operator/(const Cartesian_Vector &left, const double &divisor) {
+  Cartesian_Vector operator/(const Cartesian_Vector &left, const double &divisor) {
 
        Cartesian_Vector vector;
 
@@ -178,14 +171,6 @@ operator<<(std::ostream& os, const Cartesian_Vector& cv) {
     return os;
 }
 
-      Spherical_Vector& Spherical_Vector::operator=(const Spherical_Vector &right)
-      {
-          a = right.a;
-          p = right.p;
-          r = right.r;
-
-          return *this;
-      }
 
   void Spherical_Vector::clear(void) {
 
@@ -209,7 +194,7 @@ Spherical_Vector::toYAML() const
 }
 
 void
-Spherical_Vector::fromYAML(const YAML::Node vec){
+Spherical_Vector::fromYAML(const YAML::Node& vec){
 
     using namespace YAML;
 
@@ -230,5 +215,4 @@ operator<<(std::ostream& os, const Spherical_Vector& sv) {
     return os;
 }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

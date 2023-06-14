@@ -6,8 +6,7 @@
 #include <boost/crypto/sha2.hpp>
 #include <boost/crypto/message_digest.hpp>
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 namespace fs = std::filesystem;
 namespace bio = boost::iostreams;
@@ -180,5 +179,4 @@ Resource::getSHA256() const {
 }
 
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

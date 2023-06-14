@@ -7,10 +7,6 @@
 
  Authors (c):
  2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
  ***********************************************************************/
 
 #include "object.h"

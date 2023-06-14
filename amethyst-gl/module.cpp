@@ -13,7 +13,7 @@
 #include "module.h"
 #include "global.h"
 
-#include <boost/bind.hpp>
+#include <functional>
 #include <exception>
 #include <iostream>
 
@@ -26,6 +26,8 @@ namespace amethyst {
 namespace client {
 
 static const std::string blank("NULL");
+
+using std::placeholders::_1;
 
 /// Module Class Functions
 Module::Module(const std::string &module_name, const std::string &module_path)
@@ -100,7 +102,7 @@ bool Module::stop()
     return false;
 }
 
-const std::string& Module::mod_name()
+const std::string& Module::mod_name() const
 {
     if(mod_get_name_)
         return mod_get_name_();
@@ -108,7 +110,7 @@ const std::string& Module::mod_name()
     return blank;
 }
 
-const std::string& Module::name()
+const std::string& Module::name() const
 {
     return name_;
 }
@@ -138,8 +140,7 @@ void Module_Manager::start(const std::string &name,Amethyst_GL &agl)
 {
     std::cerr << "Finding Module, " << name << ", to Start." << std::endl;
     /// Find Module name "name"
-    std::set<Module::sptr>::iterator mod =
-            std::find_if(modules_.begin(), modules_.end(),  (bind(&Module::name, _1) == name) );
+    auto mod = std::find_if(modules_.begin(), modules_.end(),  [&name](const auto& mod) -> bool { return (mod->name() == name);} );
 
     /// Call start on it.
     if(mod != modules_.end())
@@ -152,8 +153,7 @@ void Module_Manager::start(const std::string &name,Amethyst_GL &agl)
 void Module_Manager::stop(const std::string &name)
 {
     /// Find Module name "name"
-    std::set<Module::sptr>::iterator mod =
-            std::find_if(modules_.begin(), modules_.end(),  (bind(&Module::name, _1) == name) );
+    auto mod = std::find_if(modules_.begin(), modules_.end(),  [&name](const auto& mod) -> bool { return (mod->name() == name);} );
 
     /// Call start on it.
     if(mod != modules_.end())
@@ -166,7 +166,7 @@ void Module_Manager::stop(const std::string &name)
 void Module_Manager::stop_all(void)
 {
     /// Stop Each Module
-    std::for_each(modules_.begin(), modules_.end(),  bind(&Module::stop, _1) );
+    std::for_each(modules_.begin(), modules_.end(),  std::bind(&Module::stop, _1) );
 
 }
 

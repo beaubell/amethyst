@@ -17,8 +17,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace amethyst {
-namespace lib{
+namespace amethyst::lib{
 
 
 void gen_model_solarsystem(Universe &uni)
@@ -270,5 +269,4 @@ void gen_object_variation(Universe &uni,
 }
 
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

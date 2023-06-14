@@ -111,8 +111,8 @@ ConsoleCLI::catch_signal(int /*unused*/) {
 std::string
 ConsoleCLI::command_get() {
     int    curpos = 0; // Cursor Position
-    int    ret;
-    char   one;        // Input Charater
+    int    ret = 0;
+    char   one = 0;        // Input Charater
 
     do {
         ret = io_.getch(one);

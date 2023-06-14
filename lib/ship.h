@@ -7,18 +7,13 @@
 
  Authors (c):
  2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
  ***********************************************************************/
 
 #include "object.h"
 
 #include <memory>
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 
 class Ship : public Object
@@ -28,9 +23,9 @@ class Ship : public Object
     typedef std::weak_ptr<Ship>   wptr;
 
     Ship();
-    ~Ship();
+    ~Ship() override;
 
-    virtual void iterate(const double &time);
+    void iterate(const double &time) override;
 
     void set_throttle(const float &position);
     void set_thrust_x(const float &position);
@@ -52,7 +47,6 @@ class Ship : public Object
     Cartesian_Vector thrust_;
 };
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #endif

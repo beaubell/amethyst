@@ -19,6 +19,11 @@ class ConsoleCTX; // Platform Specific Data
 class ConsoleIO {
  public:
   ConsoleIO(std::istream& cin, std::ostream& cout, std::ostream& cerr, bool stdio);
+  ConsoleIO(std::istream& cin, std::ostream&& cout, std::ostream&& cerr, bool stdio) = delete;
+  ConsoleIO(const ConsoleIO&) = delete;
+  ConsoleIO(ConsoleIO&&) = delete;
+  ConsoleIO& operator=(const ConsoleIO&) = delete;
+  ConsoleIO& operator=(ConsoleIO&&) = delete;
   ~ConsoleIO();
 
   void stateSave();

@@ -73,7 +73,8 @@ void Server_Connection::handshake_read()
 {
     // wait for server header
     boost::asio::async_read_until(socket_, in_data_, "\r\n",
-     boost::bind(&Server_Connection::handle_handshake_read, this, _1));
+        [this](boost::system::error_code ec, size_t){ handle_handshake_read(ec);}
+    );
 }
 
 void Server_Connection::handle_handshake_read(boost::system::error_code ec)
@@ -102,7 +103,8 @@ void Server_Connection::handshake_send()
     // Write Header
     message_ = "Amethyst-GL 0.0.1 %host\r\n";
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-      boost::bind(&Server_Connection::handle_handshake_send, this, _1));
+        [this](boost::system::error_code ec, size_t){ handle_handshake_send(ec);}
+    );
 }
 
 void Server_Connection::handle_handshake_send(boost::system::error_code ec)
@@ -122,7 +124,8 @@ void Server_Connection::handle_handshake_send(boost::system::error_code ec)
 void Server_Connection::login_read()
 {
     boost::asio::async_read_until(socket_, in_data_, "\r\n",
-     boost::bind(&Server_Connection::handle_login_read, this, _1));
+        [this](boost::system::error_code ec, size_t){ handle_login_read(ec);}
+    );
 
 }
 
@@ -164,7 +167,8 @@ void Server_Connection::login_send()
     message_ =  server_user + " " + pass_hash + "\r\n";
 
     boost::asio::async_write(socket_, boost::asio::buffer(message_),
-     boost::bind(&Server_Connection::handle_login_send, this, _1));
+        [this](boost::system::error_code ec, size_t){ handle_login_send(ec);}
+    );
 }
 
 void Server_Connection::handle_login_send(boost::system::error_code ec)

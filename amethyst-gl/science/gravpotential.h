@@ -7,13 +7,12 @@
 
 #include <boost/signals2.hpp>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 class GravPotential
 {
 public:
-    GravPotential(Amethyst_GL &agl);
+    explicit GravPotential(Amethyst_GL &agl);
 
     void update();
     void render(const lib::Cartesian_Vector& reference);
@@ -65,7 +64,6 @@ private:
     unsigned int _grid_y;
 };
 
-}
-}
+} // namespace amethyst::client
 
 #endif // GRAVPOTENTIAL_H

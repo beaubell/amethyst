@@ -39,16 +39,6 @@ Euler::fromYAML(const YAML::Node& vec){
     z = vec["z"].as<float_type>();
 }
 
-
-  Quaternion::Quaternion(const Quaternion &old) {
-
-       w = old.w;
-       x = old.x;
-       y = old.y;
-       z = old.z;
-       }
-
-
   Quaternion::Quaternion(const Euler &old) {
 
        //Qx = [ cos(a/2), (sin(a/2), 0, 0)]

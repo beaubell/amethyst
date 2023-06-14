@@ -15,8 +15,7 @@
 #include <memory>  // For shared_ptr, weak_ptr
 #include <string>  // For sring
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 class RenderModel
 {
@@ -24,9 +23,10 @@ class RenderModel
     typedef std::shared_ptr<RenderModel> sptr;
     typedef std::weak_ptr<RenderModel>   wptr;
 
-    RenderModel(){};
-    RenderModel(const std::string& new_name) : _name(new_name) {};
-    virtual ~RenderModel(){};
+    RenderModel() = default;
+    explicit RenderModel(const std::string& new_name) : _name(new_name) {};
+    explicit RenderModel(std::string&& new_name) : _name(std::move(new_name)) {};
+    virtual ~RenderModel() = default;
     virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) = 0;
     //virtual void clear();
 
@@ -38,7 +38,6 @@ class RenderModel
     //std::list<Primative::sptr> _primatives;
 };
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #endif  /* AMETHYST_LIB_RENDERMODEL_H */

@@ -4,7 +4,7 @@ project(Amethyst LANGUAGES C CXX VERSION 0.1.0)
 
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 option(AMETHYST_GUI "Enable OpenGL Frontend" ON)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)

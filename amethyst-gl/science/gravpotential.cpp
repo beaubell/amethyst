@@ -6,7 +6,6 @@
 #include "../opengl.h"
 #include "../shaderprog.h"
 #include "../global.h"
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <fstream>
@@ -18,8 +17,7 @@ DECLARE_RESOURCE(amethyst_gl_science_gravpotential_cl);
 DECLARE_RESOURCE(amethyst_gl_science_colorizer_frag);
 DECLARE_RESOURCE(amethyst_gl_science_fixed_vert);
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 using namespace boost;
 
@@ -28,20 +26,20 @@ float get_seconds_elapsed(cl::Event& ev)
     cl_ulong start, end;
     ev.getProfilingInfo(CL_PROFILING_COMMAND_END, &end);
     ev.getProfilingInfo(CL_PROFILING_COMMAND_START, &start);
-    return (end - start) * 1.0e-9f;
+    return (float)(end - start) * 1.0e-9f;
 }
 
 
 GravPotential::GravPotential(Amethyst_GL &amgl)
 : _amgl(amgl),
-  _scon_update( _amgl.input->sig_kb[SDL_SCANCODE_Z].connect(bind(&GravPotential::update,this)) ),  // Setup Keyboard Shortcuts
-  _scon_inc_max( _amgl.input->sig_kb[SDL_SCANCODE_W].connect(bind(&GravPotential::inc_max,this)) ),
-  _scon_dec_max( _amgl.input->sig_kb[SDL_SCANCODE_S].connect(bind(&GravPotential::dec_max,this)) ),
-  _scon_inc_min( _amgl.input->sig_kb[SDL_SCANCODE_Q].connect(bind(&GravPotential::inc_min,this)) ),
-  _scon_dec_min( _amgl.input->sig_kb[SDL_SCANCODE_A].connect(bind(&GravPotential::dec_min,this)) ),
-  _scon_inc_scaler( _amgl.input->sig_kb[SDL_SCANCODE_E].connect(bind(&GravPotential::inc_scaler,this)) ),
-  _scon_dec_scaler( _amgl.input->sig_kb[SDL_SCANCODE_D].connect(bind(&GravPotential::dec_scaler,this)) ),
-  _scon_render( _amgl.sig_render_scene.connect(bind(&GravPotential::render,this, _1)) ),  // Add to Render List
+  _scon_update( _amgl.input->sig_kb[SDL_SCANCODE_Z].connect( [this](){ update(); } )),  // Setup Keyboard Shortcuts
+  _scon_inc_max( _amgl.input->sig_kb[SDL_SCANCODE_W].connect( [this](){ inc_max(); } )),
+  _scon_dec_max( _amgl.input->sig_kb[SDL_SCANCODE_S].connect( [this](){ dec_max(); } )),
+  _scon_inc_min( _amgl.input->sig_kb[SDL_SCANCODE_Q].connect( [this](){ inc_min(); } )),
+  _scon_dec_min( _amgl.input->sig_kb[SDL_SCANCODE_A].connect( [this](){ dec_min(); } )),
+  _scon_inc_scaler( _amgl.input->sig_kb[SDL_SCANCODE_E].connect( [this](){ inc_scaler(); } )),
+  _scon_dec_scaler( _amgl.input->sig_kb[SDL_SCANCODE_D].connect( [this](){ dec_scaler(); } )),
+  _scon_render( _amgl.sig_render_scene.connect( [this](const auto& ref){ render(ref); } )),  // Add to Render List
   _texname(0),
   _shader_min(20.0f),
   _shader_max(29.0f),
@@ -54,7 +52,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
   _grid_y(16384)
 {
     //std::string log = "Module: science_potplane Activating...";
-    std::string log = "Module: science_potplace is broken."; //FIXME
+    const std::string log = "Module: science_potplace is broken."; //FIXME
     Global.log.add(log);
    
    auto init = std::initializer_list<double>({ 1.5e12, 1.5e12, 0, 0,
@@ -96,7 +94,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
     try {
       _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
     }
-    catch(cl::Error e)
+    catch(cl::Error& e)
     {
       std::cout << "ERROR:" << e.what() << "(" << lib::oclErrorString(e.err()) << ")" << std::endl;
       throw e;
@@ -135,8 +133,8 @@ void GravPotential::update()
     
     int gpu_id = 0;
     cl::Event send_event, kernel_event;
-    cl::CommandQueue queue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, NULL);
-    std::vector<cl::Memory> mem_objects;
+    const cl::CommandQueue queue(lib::amethyst_cl_context, lib::cl_devices[gpu_id], CL_QUEUE_PROFILING_ENABLE, NULL);
+    const std::vector<cl::Memory> mem_objects;
     std::vector<cl::Event> wait_queue;
 
     std::cout << "Size of Potential Plane: " << sizeof(_potential_plane) << std::endl;
@@ -164,7 +162,7 @@ void GravPotential::update()
     //Release GL Buffer
     //FIXME queue.enqueueReleaseGLObjects(&mem_objects);
 
-    std::string msg = "Finished. Elapsed: " + lexical_cast<std::string>(get_seconds_elapsed(kernel_event)) + " (s)";
+    const std::string msg = "Finished. Elapsed: " + lexical_cast<std::string>(get_seconds_elapsed(kernel_event)) + " (s)";
     Global.log.add(msg);
     std::cout << "Amethyst GravPotential: Kernel Finished?" << std::endl;
     //queue.finish();
@@ -178,7 +176,7 @@ void GravPotential::render_toggle()
 
 void GravPotential::render(const lib::Cartesian_Vector& reference)
 {
-    bool texture_smooth = false;
+    const bool texture_smooth = false;
 
     //glDisable( GL_TEXTURE_2D );
     glDisable( GL_LIGHTING );
@@ -195,8 +193,8 @@ void GravPotential::render(const lib::Cartesian_Vector& reference)
     glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, texture_smooth?GL_LINEAR:GL_NEAREST);
 
     glPushMatrix();
-    lib::Cartesian_Vector location;
-    lib::Cartesian_Vector temp = location - reference;
+    const lib::Cartesian_Vector location;
+    const lib::Cartesian_Vector temp = location - reference;
     // Move to object location
     glTranslated(temp.x, temp.y, temp.z);
 
@@ -228,7 +226,7 @@ void GravPotential::set_min(float bound)
     _shaderprog->use();
     _shader_min = bound;
     glUniform1f(_shader_min_loc, _shader_min);
-    GLint err = glGetError();
+    GLenum err = glGetError();
     if(err)
       std::cout << "OpenGL ERROR (glUniform1f(shader_data_min_loc, shader_data_min)): " << err << std::endl;
 
@@ -250,7 +248,7 @@ void GravPotential::set_max(float bound)
     _shaderprog->use();
     _shader_max = bound;
     glUniform1f(_shader_max_loc, _shader_max);
-    GLint err = glGetError();
+    GLenum err = glGetError();
     if(err)
       std::cout << "OpenGL ERROR (glUniform1f(shader_data_max_loc, shader_data_max)): " << err << std::endl;
 
@@ -283,5 +281,4 @@ void GravPotential::dec_scaler()
 }
 
 
-}
-}
+} // namespace amethyst::client
