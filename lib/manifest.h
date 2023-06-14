@@ -47,6 +47,8 @@ class FileManifest
 
     void push(const std::string &file, const std::string &hash, const size_t &size);
 
+    static auto calculate_sha256 (const boost::filesystem::path &path, std::string &sha256_out) -> std::size_t;
+
    private:
     std::vector<FileEntry> filelist_;
 };

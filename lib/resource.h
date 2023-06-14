@@ -56,8 +56,7 @@ private:
     mutable std::vector<std::weak_ptr<std::istream>> vistream_;
 };
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib
 
 #define LOAD_RESOURCE(x,y,z) amethyst::lib::Resource(_binary_##x##_begin, _binary_##x##_end, y, z)
 #define DECLARE_RESOURCE(x) extern const char* const _binary_##x##_begin, *const _binary_##x##_end
