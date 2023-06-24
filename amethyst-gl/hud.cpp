@@ -125,12 +125,12 @@ static void hud_widget_memory(int x, int y)
 {
     struct mallinfo2 mstats = mallinfo2();
     char status[100];
-    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
+    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %zu", mstats.uordblks);
     //glRasterPos3f(-45.0f, 30.0f,-100.0f);
     //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
 
-    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Free: %d",mstats.fordblks);
+    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Free: %zu", mstats.fordblks);
     //glRasterPos3f(-45.0f, 29.0f,-100.0f);
     //DEPRECATED glWindowPos2i(x, y - 13);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
