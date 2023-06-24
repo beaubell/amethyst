@@ -11,6 +11,10 @@ cmrc_add_resource_library(libamethyst_cl ALIAS amrc::cl NAMESPACE cl
   rk4_sum.cl
 )
 
+set_property(TARGET libamethyst_cl PROPERTY
+    POSITION_INDEPENDENT_CODE ON
+)
+
 add_library(libamethyst
   cl.cpp
   console.cpp

@@ -13,3 +13,7 @@ cmrc_add_resource_library(shader_SRCS ALIAS amrc::shader_srcs
   uifont.vert
   uifont.frag
 )
+
+set_property(TARGET shader_SRCS PROPERTY
+    POSITION_INDEPENDENT_CODE ON
+)

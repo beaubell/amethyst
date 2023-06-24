@@ -92,7 +92,7 @@ GravPotential::GravPotential(Amethyst_GL &amgl)
 
     // Make CL texture fom GL one
     try {
-      _cl_tex = cl::Image2DGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
+      _cl_tex = cl::ImageGL( lib::amethyst_cl_context, CL_MEM_WRITE_ONLY, GL_TEXTURE_RECTANGLE_ARB, 0, _texname, NULL);
     }
     catch(cl::Error& e)
     {
