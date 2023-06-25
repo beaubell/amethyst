@@ -4,7 +4,7 @@
 
  Authors (c):
  2006      Jason A. Guild    (aguild@gmail.com)
- 2006-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ 2006-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "texture.h"
@@ -12,15 +12,11 @@
 #include "lib/object.h"
 #include <iostream>
 #include <stdexcept>
-#include <stdio.h>
-#include <errno.h>
+#include <cstdio>
 
 #include "global.h"
 
-namespace amethyst {
-namespace client {
-
-extern __global Global;
+namespace amethyst::client {
 
 
 std::list<Texture::wptr>  texture_list;
@@ -52,7 +48,7 @@ void Texture::setName(const std::string& newname)
 }
 
 
-Texture::TextureHDL Texture::operator ()()
+Texture::TextureHDL Texture::operator()()
 {
     return texture_;
 }
@@ -85,11 +81,10 @@ Texture2D::Texture2D()
 //
 void Texture::load(const Resource& res)
 {
-    textureImage *texti;
-    unsigned int  num_mipmaps = 2; //TODO, don't hardcode this.
+    GLsizei num_mipmaps = 2; //TODO, don't hardcode this.
 
-    texti = new textureImage;
-    getBitmapImageData(res, texti);
+    TextureData texti;
+    getBitmapImageData(res, &texti);
 
     // set unpacking method
     glPixelStorei (GL_UNPACK_ALIGNMENT, 1);
@@ -98,10 +93,10 @@ void Texture::load(const Resource& res)
     this->bind();
 
     // Create texture storage space
-    glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, GL_RGB8, texti->width, texti->height);
+    glTexStorage2D(GL_TEXTURE_2D, num_mipmaps, GL_RGB8, texti.width, texti.height);
 
     // Load
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texti->width, texti->height, GL_RGB, GL_UNSIGNED_BYTE, texti->data);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, texti.width, texti.height, GL_RGB, GL_UNSIGNED_BYTE, *texti.data);
 
     // Generate mipmap levels
     glGenerateMipmap(GL_TEXTURE_2D);
@@ -110,9 +105,6 @@ void Texture::load(const Resource& res)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-    delete [] texti->data;
-    delete texti;
 }
 
 
@@ -133,7 +125,7 @@ Texture::sptr texture_load(const std::string &texture_name)
         }
         catch(std::runtime_error &e)
         {
-            texture = NULL;
+            texture = nullptr;
             throw e;
         }
         texture->setName(texture_name);
@@ -148,8 +140,6 @@ void texture_add(Texture::sptr newtexture)
 {
     if (newtexture)
         texture_list.push_back(newtexture);
-
-    return;
 }
 
 
@@ -174,11 +164,11 @@ Texture::sptr texture_find(const std::string &name)
 
         }  while (texwptr_it != texture_list.end());
     }
-    return NULL;
+    return nullptr;
 }
 
 
-void textures_free(void)
+void textures_free()
 {
     texture_list.clear();
 }
@@ -190,7 +180,7 @@ void textures_free(void)
 // Desc: Simply image loader for 24 bit BMP files.
 // Shamelessly Stolen From: Nehe
 //-----------------------------------------------------------------------------
-bool getBitmapImageData(const Resource& res, textureImage *pImage )
+bool getBitmapImageData(const Resource& res, TextureData *pImage )
 {
     const size_t BMP_WIDTH_OFF = 18;
     const size_t BMP_HEIGHT_OFF = 22;
@@ -200,9 +190,6 @@ bool getBitmapImageData(const Resource& res, textureImage *pImage )
     
     unsigned short nNumPlanes;
     unsigned short nNumBPP;
-
-    Uint32 t = 0;
-    Uint16 t2 = 0;
 
     // Parse Header
     pImage->width = SDL_SwapLE32(res.getUInt32(BMP_WIDTH_OFF));
@@ -225,11 +212,11 @@ bool getBitmapImageData(const Resource& res, textureImage *pImage )
     // file will give you 3 bytes per pixel.
     unsigned int nTotalImagesize = (pImage->width * pImage->height) * 3;
 
-    pImage->data = new char[nTotalImagesize];
-    
+    pImage->data = std::make_unique<char *>(new char[nTotalImagesize]);
+    auto data = (*pImage->data);
 
     for (size_t i = 0; i < nTotalImagesize; i++) {
-        pImage->data[i] = res[BMP_DATA_OFF + i];
+        data[i] = res[BMP_DATA_OFF + i];
     }
 
     //
@@ -242,7 +229,7 @@ bool getBitmapImageData(const Resource& res, textureImage *pImage )
     int x, y;
     char *ptr, temp;
     for (y = 0; y < pImage->height; y ++)
-        for (ptr = pImage->data + y * length, x = pImage->width;
+        for (ptr = data + y * length, x = pImage->width;
                 x > 0;
                 x--, ptr += 3)
         {
@@ -257,5 +244,4 @@ bool getBitmapImageData(const Resource& res, textureImage *pImage )
 }
 
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

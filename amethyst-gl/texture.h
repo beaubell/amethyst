@@ -6,7 +6,7 @@
 
  Authors (c):
  2006      Jason A. Guild    (aguild@gmail.com)
- 2006-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ 2006-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -16,14 +16,13 @@
 #include <list>
 #include <memory>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 typedef struct {
-    int width;
-    int height;
-	char *data;
-} textureImage;
+    GLsizei width;
+    GLsizei height;
+    std::unique_ptr<char *> data;
+} TextureData;
 
 class Texture
 {
@@ -34,7 +33,7 @@ class Texture
     typedef unsigned int TextureHDL;
     typedef unsigned int TextureType;
 
-    Texture(const TextureType& type);
+    explicit Texture(const TextureType& type);
     virtual ~Texture();
 
     const std::string& getName();
@@ -49,11 +48,11 @@ class Texture
     void load(const lib::Resource& res);
 
   protected:
-    // Texture handle
-    TextureHDL texture_;
-
     // GLenum type
     TextureType type_;
+
+    // Texture handle
+    TextureHDL texture_;
 
   private:
     std::string    name_;
@@ -81,7 +80,6 @@ void textures_free(void);
 void   load_skybox (void);
 void   skybox (void);
 
-bool   getBitmapImageData(const lib::Resource& res, textureImage *pImage );
+bool   getBitmapImageData(const lib::Resource& res, TextureData *pImage );
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
