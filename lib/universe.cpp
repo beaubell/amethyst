@@ -1,12 +1,15 @@
-/***************************************************************************
- *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
- *   beau@borealisbroadband.net                                            *
- ***************************************************************************/
+/***********************************************************************
+Amethyst Physics Library
+ - Universe Class to holds all objects used in physics interactions.
+
+Authors (c):
+   2004-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+***********************************************************************/
+
 
 #include "universe.h"
 #include "object.h"
 #include "physics.h"
-#include "utility.h"
 #include "io_hdf5.h"
 #include "resource.h"
 
@@ -16,8 +19,7 @@
 
 #include <boost/timer/timer.hpp>
 
-namespace amethyst {
-namespace lib {
+namespace amethyst::lib {
 
 /// Constants
 static const std::string SectionName("Amethyst Library (Universe)");
@@ -434,17 +436,15 @@ void Universe::iterate_cpu(const double &dtime)
 {
   if(!_object_list.empty())
   {
+    // Zero Forces out
+    for(auto& obj: _object_list) {
+      if(obj) {
+        obj->force_clear();
+      }
+    }
+
     std::list<Object::sptr>::iterator obj1;
     std::list<Object::sptr>::iterator obj2;
-
-    // Zero Forces out
-    obj1 = _object_list.begin();
-    do
-    {
-      (*obj1)->force_clear();
-
-      obj1++;
-    } while (obj1 != _object_list.end());
 
     // Do Gravity Calulation
     if (do_gravity_calc && (_object_list.size() > 1) ) {
@@ -556,9 +556,8 @@ void Universe::cl_setup()
 
   /// Load CL kernels
   std::string searchpath; // TODO
-  std::string rk4_sum_fn("rk4_sum.cl");
      
-  kern_rk4_sum      = cl_loadkernel( LOAD_RESOURCE(lib_rk4_sum_cl, searchpath, rk4_sum_fn), "rk4_sum");
+  kern_rk4_sum      = cl_loadkernel( LOAD_RESOURCE(lib_rk4_sum_cl, searchpath, "rk4_sum.cl"), "rk4_sum");
   kern_rk4_grav     = cl_loadkernel( LOAD_RESOURCE(lib_rk4_grav_cl, searchpath, "rk4_grav.cl"), "rk4_grav");
   kern_rk4_scale    = cl_loadkernel( LOAD_RESOURCE(lib_rk4_scale_cl, searchpath, "rk4_scale.cl"), "rk4_scale");
   kern_rk4_copy3d   = cl_loadkernel( LOAD_RESOURCE(lib_rk4_copy3d_cl, searchpath, "rk4_copy3d.cl"), "rk4_copy3d");
@@ -595,7 +594,6 @@ void Universe::cl_copytogpu()
 
   // FIXME FIll out buffer before this step.
   size_t objects = _object_list.size();
-  auto obj = _object_list.begin();
 
   for (auto &obj: _object_list)
   {
@@ -833,5 +831,4 @@ void Universe::sort_objects()
 }
 
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

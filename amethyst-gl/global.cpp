@@ -3,13 +3,12 @@
   - Instantiation of global class
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "global.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 __global::__global()
 {
@@ -61,5 +60,4 @@ __global::__global()
 
 __global Global;
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

@@ -3,15 +3,14 @@
   - OpenGL Primitive Object Handling implementations
 
  Authors (c):
- 2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2016-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "primitive.h"
 
 #include "global.h" //FIXME
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 //
 //
@@ -27,8 +26,7 @@ Primitive::Primitive(const std::string& name)
 }
 
 
-Primitive::~Primitive()
-{}
+Primitive::~Primitive() = default;
 
 void Primitive::setName(const std::string& name)
 {
@@ -61,13 +59,12 @@ Triangles::Triangles()
 
 Triangles::Triangles(const std::string& name, Texture::sptr texturein)
  : Primitive(name),
-   _texture(texturein)
+   _texture(std::move(texturein))
 {
 }
 
-Triangles::~Triangles()
-{
-}
+Triangles::~Triangles() = default;
+
 
 void Triangles::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model)
 {
@@ -146,9 +143,7 @@ TriangleStrip::TriangleStrip(const std::string& name, Texture::sptr texturein)
 {
 }
 
-TriangleStrip::~TriangleStrip()
-{
-}
+TriangleStrip::~TriangleStrip() = default;
 
 void TriangleStrip::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model)
 {
@@ -210,8 +205,7 @@ void TriangleStrip::clear()
 
 void TriangleStrip::setTexture(Texture::sptr texturein)
 {
-    _texture = texturein;
+    _texture = std::move(texturein);
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

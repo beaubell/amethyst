@@ -1,10 +1,12 @@
-#ifndef UNIVERSE_H
-#define UNIVERSE_H
+#pragma once
 
-/***************************************************************************
- *   Copyright (C) 2004 by Beau V.C. Bellamy                               *
- *   beau@borealisbroadband.net                                            *
- ***************************************************************************/
+/***********************************************************************
+ Amethyst Physics Library
+  - Universe Class to holds all objects used in physics interactions.
+
+Authors (c):
+    2004-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+***********************************************************************/
 
 #include <list>
 
@@ -145,5 +147,3 @@ class Universe
 
 
 } // namespace amethyst::lib
-
-#endif // UNIVERSE_H

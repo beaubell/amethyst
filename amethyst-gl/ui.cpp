@@ -3,11 +3,7 @@
   - OpenGL UI implementations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -27,8 +23,7 @@
 
 using namespace std::placeholders;
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 UI::UI(const std::string &fontfile)
@@ -58,14 +53,12 @@ UI::~UI()
     delete font_;
 }
 
-void UI::render(void)
+void UI::render()
 {
 
     float y = Global.screen_y; 
     float x = Global.screen_x;
 
-    //glm::mat4 m_proj = glm::ortho(0.0f, static_cast<float>(w_win), 0.0f, static_cast<float>(h_win));
-    //glm::mat4 m_proj = glm::ortho(-2e2f, 2e3f, -2e2f, 2e3f);
     glm::mat4 m_proj = glm::ortho(-1.0f, x, y, -1.0f);
     glm::mat4 m_identity(1.0);
 
@@ -75,18 +68,18 @@ void UI::render(void)
     ui_shader->setColorV4(Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     /// Render each window
-    for(auto windowit = windows_.begin(); windowit != windows_.end(); windowit++)
+    for(const auto& window: windows_)
     {
-        if ((*windowit)->isVisible())
+        if (window->isVisible())
 	{
-	    glm::vec2 window_position((*windowit)->getPosition());
+	    glm::vec2 window_position(window->getPosition());
 	    
 	    // Check for negative position.  Wrap if so.
 	    window_position.x = (window_position.x < 0.0f)?(x+window_position.x):window_position.x;
 	    window_position.y = (window_position.y < 0.0f)?(y+window_position.y):window_position.y;
 	    
-	    glm::mat4 m_windowpos = glm::translate(m_identity, glm::vec3(window_position, 0.0f));
-	    (*windowit)->render(m_proj, m_windowpos);  
+	    const glm::mat4 m_windowpos = glm::translate(m_identity, glm::vec3(window_position, 0.0f));
+	    window->render(m_proj, m_windowpos);
 	}
     }
 }
@@ -254,5 +247,4 @@ void UI_Window::clearWidgets()
     _widgets.clear();
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

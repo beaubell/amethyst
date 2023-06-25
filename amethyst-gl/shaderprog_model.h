@@ -8,7 +8,7 @@
  This class is a specialization of ShaderProgram for the purpose of drawing simulation models on the screen.
 
  Authors (c):
- 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ 2016-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "shaderprog.h"
@@ -16,8 +16,7 @@
 
 #include "yaml-cpp/node/node.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 class LightInfo 
 {
@@ -55,9 +54,9 @@ class ShaderProgramModel : public ShaderProgram
 
     void setTexUnit(unsigned int  unit);
 
-    unsigned int  getVertexLoc();
-    unsigned int  getTexCoordLoc();
-    unsigned int  getNormalLoc();
+    unsigned int  getVertexLoc()   const;
+    unsigned int  getTexCoordLoc() const;
+    unsigned int  getNormalLoc()   const;
 
   private:
     // Vertex Attribute Locations
@@ -80,7 +79,6 @@ class ShaderProgramModel : public ShaderProgram
 };
 
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::client
 
 #endif //AMETHYST_CLIENT_SHADERPROG_MODEL_H

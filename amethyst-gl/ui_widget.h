@@ -11,7 +11,7 @@ class UI_Widget : public UI_Object
   public:
     typedef std::shared_ptr<UI_Widget> sptr;
     UI_Widget();
-   ~UI_Widget();
+    ~UI_Widget() override;
 };
 
 } // namespace client

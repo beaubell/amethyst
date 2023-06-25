@@ -3,7 +3,7 @@
  - ShaderProgramModel implementation
 
  Authors (c):
- 2016-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ 2016-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "shaderprog_model.h"
@@ -16,10 +16,14 @@
 DECLARE_RESOURCE(amethyst_gl_shaders_model_vert);
 DECLARE_RESOURCE(amethyst_gl_shaders_model_frag);
 
-namespace amethyst {
-namespace client{
+namespace amethyst::client {
 
-MaterialInfo::MaterialInfo(YAML::Node ymatinfo) {
+MaterialInfo::MaterialInfo(YAML::Node ymatinfo)
+  : Ka{1},
+    Kd{1},
+    Ks{1}
+{
+
     using namespace YAML;
 
     Node yka = ymatinfo["ambient"];
@@ -28,23 +32,23 @@ MaterialInfo::MaterialInfo(YAML::Node ymatinfo) {
     Node yshininess = ymatinfo["shininess"];
 
     if (yka.IsSequence() && yka.size() == 3) {
-        for (int i = 0; i < yka.size(); i++)
-            Ka[i] = yka[i].as<float_type>();
+        for (int i = 0; i < (int)yka.size(); i++)
+            Ka[i] = (glm_float_type)yka[i].as<float_type>();
         std::cout << Ka[0] << Ka[1] << Ka[2] << std::endl;
     }
 
     if (ykd.IsSequence() && ykd.size() == 3) {
-        for (int i = 0; i < ykd.size(); i++)
-            Kd[i] = ykd[i].as<float_type>();
+        for (int i = 0; i < (int)ykd.size(); i++)
+            Kd[i] = (glm_float_type)ykd[i].as<float_type>();
     }
 
     if (yks.IsSequence() && yks.size() == 3) {
-        for (int i = 0; i < yks.size(); i++)
-            Ks[i] = yks[i].as<float_type>();
+        for (int i = 0; i < (int)yks.size(); i++)
+            Ks[i] = (glm_float_type)yks[i].as<float_type>();
     }
 
     if (yshininess.IsScalar())
-        Shininess = yshininess.as<float_type>();
+        Shininess = (glm_float_type)yshininess.as<float_type>();
 }
 
 
@@ -108,20 +112,19 @@ void ShaderProgramModel::setTexUnit(unsigned int  unit)
     Uniform1i(texUnitLoc_, unit);
 }
 
-unsigned int  ShaderProgramModel::getVertexLoc()
+unsigned int  ShaderProgramModel::getVertexLoc() const
 {
     return vertexLoc_.value;
 }
 
-unsigned int  ShaderProgramModel::getTexCoordLoc()
+unsigned int  ShaderProgramModel::getTexCoordLoc() const
 {
     return texcoordLoc_.value;
 }
 
-unsigned int  ShaderProgramModel::getNormalLoc()
+unsigned int  ShaderProgramModel::getNormalLoc() const
 {
     return normalLoc_.value;
 }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

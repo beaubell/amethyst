@@ -6,11 +6,7 @@
   - OpenGL UI declarations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -28,8 +24,7 @@
 
 #include <memory>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 class UI_Window;
 typedef std::shared_ptr<UI_Window> UI_Window_ptr;
@@ -104,8 +99,7 @@ class UI_Window : public UI_Object
     UI_TextBox _titlewidget;
 };
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
 
 
 #endif // AMETHYST_CLIENT_UI_H
