@@ -3,7 +3,7 @@
  - Model manager and factory
 
  Authors (c):
- 2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2020-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "model_manager.h"
@@ -15,26 +15,13 @@
 
 namespace amethyst::client {
 
-ModelManager modelmanager;
-
+ModelManager g_modelmanager;
 
 #define SPHERE_DETAIL 100
 
 void model_yaml_load(std::string &name, Model &model);
 void model_load_file(const Resource& res, Model &model, Texture::sptr tex, ShaderProgramModel::sptr shdr);
 TriangleStrip::sptr model_sphere_create(double cx, double cy, double cz, double r, int p );
-
-
-
-ModelManager::ModelManager()
-{
-    // Nothing to do
-}
-
-ModelManager::~ModelManager()
-{
-    clear();
-}
 
 
 Model::sptr
@@ -86,11 +73,9 @@ ModelManager::find(const std::string &name)
 
 
 void
-ModelManager::clear(void)
+ModelManager::clear()
 {
     models_.clear();
-
-    return;
 }
 
 

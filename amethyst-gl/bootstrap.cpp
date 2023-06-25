@@ -3,7 +3,7 @@
   - Main client initialization
 
  Authors (c):
- 2008-2020 Beau V.C. Bellamy (beau@stellarnetservices.net)
+ 2008-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "amethyst-gl.h"
@@ -234,7 +234,7 @@ int main(int argc, char* argv[])
     
     client.main_loop();
 
-    modelmanager.clear();
+    g_modelmanager.clear();
     textures_free();
     stars_free();
 

@@ -3,29 +3,21 @@
   - Scene Object implementations
 
  Authors (c):
- 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2008-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "scene_object.h"
-#include "global.h"
-#include "model.h"
+
 #include "model_manager.h"
 #include "yaml-cpp/yaml.h"
 
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace amethyst {
-namespace client {
-
-Scene_Object_Base::Scene_Object_Base(void)
-{}
-
-Scene_Object_Base::~Scene_Object_Base(void)
-{}
+namespace amethyst::client {
 
 
-void Scene_Object_Base::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) //, const lib::Cartesian_Vector& reference)
+void Scene_Object_Base::render(const TransMatrix& /*m_proj*/, const TransMatrix& /*m_view*/, const TransMatrix& /*m_model*/) //, const lib::Cartesian_Vector& reference)
 {
 
     // Move to object location
@@ -42,48 +34,40 @@ void Scene_Object_Base::render(const TransMatrix& m_proj, const TransMatrix& m_v
 void Scene_Object::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) //, const lib::Cartesian_Vector& reference)
 {
 
-    // Move to object location
-    //lib::Cartesian_Vector temp = location - reference;
-    //glTranslated(temp.x, temp.y, temp.z);
+    float theta = 2.0f * (float)acos(attitude.w);
 
+    TransMatrix m_rotatemodel = glm::rotate(m_model, theta, glm::vec3(attitude.x, attitude.y, attitude.z));
 
-    float theta = 2.0 * acos(attitude.w);
-    //TODEG(theta);
-
-    //glRotated(theta, attitude.x, attitude.y, attitude.z);
-   TransMatrix model = glm::rotate(m_model, theta, glm::vec3(attitude.x, attitude.y, attitude.z));
-
-   Scene_Object_Base::render(m_proj, m_view, m_model);
+    Scene_Object_Base::render(m_proj, m_view, m_rotatemodel);
 
 }
 
 
 void
-Scene_Object::fromYAML(YAML::Node ynode) {
+Scene_Object::fromYAML(const YAML::Node& ynode) {
 
     using namespace YAML;
     Object::fromYAML(ynode);
 
     Node ymodel = ynode["model"];
     if (ymodel.IsScalar()) {
-        std::string modelstr = ymodel.as<std::string>();
-        model = modelmanager.get(modelstr);
+        auto modelstr = ymodel.as<std::string>();
+        model = g_modelmanager.get(modelstr);
     }
 }
 
 
 void
-Scene_Ship::fromYAML(YAML::Node ynode) {
+Scene_Ship::fromYAML(const YAML::Node& ynode) {
 
     using namespace YAML;
     Object::fromYAML(ynode);
 
     Node ymodel = ynode["model"];
-    if (ymodel.IsScalar()) {
-        std::string modelstr = ymodel.as<std::string>();
-        model = modelmanager.get(modelstr);
+    if (ymodel && ymodel.IsScalar()) {
+        auto modelstr = ymodel.as<std::string>();
+        model = g_modelmanager.get(modelstr);
     }
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

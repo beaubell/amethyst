@@ -4,7 +4,7 @@
  - Model manager and factory
 
  Authors (c):
- 2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2020-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "model.h"
@@ -17,13 +17,13 @@ namespace amethyst::client {
 class ModelManager {
 
   public:
-    ModelManager();
-   ~ModelManager();
+    ModelManager() = default;
+   ~ModelManager() = default;
 
     void add(Model::sptr newmodel);
     Model::sptr get(std::string &model_name);
     Model::sptr find(const std::string &name);
-    void clear(void);
+    void clear();
 
   private:
     ModelManager(const ModelManager&) = delete;
@@ -32,7 +32,7 @@ class ModelManager {
     std::unordered_map<std::string, Model::sptr>  models_;
 };
 
-extern ModelManager modelmanager;
+extern ModelManager g_modelmanager;
 
 
 } // namsspace amethyst::client

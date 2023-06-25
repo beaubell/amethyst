@@ -27,7 +27,7 @@ class RenderModel
     explicit RenderModel(const std::string& new_name) : _name(new_name) {};
     explicit RenderModel(std::string&& new_name) : _name(std::move(new_name)) {};
     virtual ~RenderModel() = default;
-    virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) = 0;
+    virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) const = 0;
     //virtual void clear();
 
     void setName(const std::string& name);

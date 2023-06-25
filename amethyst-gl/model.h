@@ -5,7 +5,7 @@
   - Model loading and processing function prototypes
 
  Authors (c):
- 2004-2020 Beau V.C. Bellamy (beau@stellarnetservices.net)
+ 2004-2023 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "texture.h"
@@ -19,8 +19,7 @@
 #include <string>
 #include <memory>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 class Model : public lib::RenderModel
 {
@@ -28,9 +27,9 @@ class Model : public lib::RenderModel
     typedef std::shared_ptr<Model> sptr;
     typedef std::weak_ptr<Model>   wptr;
 
-    Model();
-    virtual ~Model();
-    virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
+    Model() = default;
+    ~Model() override = default;
+    void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) const override;
 
     void addPrimitive(Primitive::sptr newprim);
     const std::list<Primitive::sptr>& getPrimitives();
@@ -39,5 +38,4 @@ class Model : public lib::RenderModel
     std::list<Primitive::sptr> _primitives;
 };
 
-} // namespace client
-} // namsspace amethyst
+} // namespace amethyst::client
