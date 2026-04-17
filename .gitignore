@@ -3,5 +3,5 @@
 .vs/
 out/
 cmake-build-debug
-
+cmake-build-debug-coverage
 CMakeSettings.json
