@@ -5,8 +5,7 @@
 #include <glm/glm.hpp>
 #include "lib/types.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 class UI_Object
 {
@@ -27,6 +26,8 @@ public:
     virtual void render(const TransMatrix& proj, const TransMatrix& mat) = 0;
     virtual void update() = 0;
 
+    virtual auto getExtents() -> glm::vec2;
+
 //private:
     glm::vec2 _position;
     //glm::vec2 _size;
@@ -34,7 +35,6 @@ public:
     bool _visibile;
 };
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
 
-#endif // UI_OBJECT_H
+#endif // AMETHYST_UI_OBJECT_H

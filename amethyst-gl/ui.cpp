@@ -3,11 +3,7 @@
   - OpenGL UI implementations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -18,7 +14,6 @@
 #include "shaderprog_uifont.h"
 
 #include <iostream>
-#include <sstream>
 #include <functional>
 #include <cmath>
 
@@ -27,8 +22,7 @@
 
 using namespace std::placeholders;
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 UI::UI(const std::string &fontfile)
@@ -101,10 +95,10 @@ void UI::update()
 bool UI::check_focus(unsigned short x, unsigned short y, unsigned short but)
 {
     // Check each window to see if mouse is within it's bounds
-    
+
     // Convert mouse coords to gl-coords
     y = Global.screen_y - y;
-   
+
     // Else UI doesn't have focus.
     std::string log = "D: Mouse Click (" + std::to_string(but) + ") <" + std::to_string(x) + "," + std::to_string(y) + "";
     //log += " Converted   (" + lexical_cast<std::string>(posX) + "," + lexical_cast<std::string>(posY) + "," + lexical_cast<std::string>(posZ) +")";
@@ -254,5 +248,4 @@ void UI_Window::clearWidgets()
     _widgets.clear();
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

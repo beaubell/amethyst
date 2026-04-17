@@ -4,17 +4,15 @@
   - Global parameters class definition and default values
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "scene_object.h"
-//#include "lib/ship.h"
 #include "lib/universe.h"
 #include "camera.h"
 
 #include <string>
 #include <set>
-//#include "opengl.h"
 
 #include "joystick.h"
 #include "log.h"
@@ -29,8 +27,7 @@
 #define TODEG(x)    x = x * 180.0 / M_PI
 #define TORAD(x)    x = x / 180.0 * M_PI
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 //using lib::Object;
 //using lib::Ship;
@@ -41,7 +38,7 @@ using lib::Quaternion;
 class __global {
 
    public:
-      __global (void);
+      __global ();
 
       // Physics Engine
       Universe universe;
@@ -114,5 +111,4 @@ class __global {
 // Tell all c files that Global is instantiated somewhere externally
 extern __global Global;
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

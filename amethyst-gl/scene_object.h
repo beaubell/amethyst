@@ -4,7 +4,7 @@
   - Scene Object declarations
 
  Authors (c):
- 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "lib/object.h"
@@ -15,8 +15,7 @@
 
 #include <memory>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 class Scene_Object_Base
@@ -25,8 +24,8 @@ class Scene_Object_Base
         typedef std::shared_ptr<Scene_Object_Base> sptr;
         typedef std::weak_ptr<Scene_Object_Base>   wptr;
 
-        Scene_Object_Base(void);
-        virtual ~Scene_Object_Base(void);
+        Scene_Object_Base();
+        virtual ~Scene_Object_Base();
 
         virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
 };
@@ -38,9 +37,9 @@ class Scene_Object : public Scene_Object_Base, public lib::Object
         typedef std::shared_ptr<Scene_Object> sptr;
         typedef std::weak_ptr<Scene_Object>   wptr;
         
-        virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
+        void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) override;
 
-        virtual void fromYAML(YAML::Node node);
+        void fromYAML(const YAML::Node& node) override;
 };
 
 
@@ -50,7 +49,7 @@ class Scene_Ship : public Scene_Object_Base, public lib::Ship
         typedef std::shared_ptr<Scene_Ship> sptr;
         typedef std::weak_ptr<Scene_Ship>   wptr;
 
-        virtual void fromYAML(YAML::Node node);
+        void fromYAML(const YAML::Node& node) override;
         //virtual void render(const lib::Cartesian_Vector& reference);
         //virtual void render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model);
 };
@@ -71,6 +70,4 @@ class Scene_Planet : public Scene_Object_Base //, public lib::Planet  FIXME No P
         typedef std::shared_ptr<Scene_Planet> wptr;
 };
 
-
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

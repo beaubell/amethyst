@@ -6,11 +6,7 @@
   - OpenGL UI declarations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -48,8 +44,8 @@ class UI
     virtual void update();
 
     // Focus functions
-    bool check_focus(unsigned short x, unsigned short y, unsigned short but); // Uint16
-    bool is_focused();
+    virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but); // Uint16
+    //virtual bool is_focused() = 0;
 
     ftgl::FTFont &get_font();
 
@@ -71,12 +67,12 @@ class UI_Window : public UI_Object
     typedef std::weak_ptr<UI_Window>   wptr;
 
     UI_Window(UI &ui, const std::string &title);
-    virtual ~UI_Window();
+    ~UI_Window() override;
 
     virtual void resize(const glm::vec2 &newsize);
-    virtual void render(const TransMatrix& proj, const TransMatrix& window);
-    virtual void update();
-    virtual bool check_focus(unsigned short x, unsigned short y, unsigned short but);
+    void render(const TransMatrix& proj, const TransMatrix& window) override;
+    void update() override;
+    bool check_focus(unsigned short x, unsigned short y, unsigned short but);
 
     virtual void addWidget(UI_Widget::sptr newwidget);
     virtual void delWidget(UI_Widget::sptr newwidget);

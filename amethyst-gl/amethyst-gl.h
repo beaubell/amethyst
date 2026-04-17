@@ -4,21 +4,18 @@
   - Main class declarations declarations
 
  Authors (c):
- 2008-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
+
   class Amethyst_GL;
 }
-}
 
-#include "opengl.h"
 #include "lib/manifest.h"
 #include "net.h"
 #include "ui.h"
 #include "input.h"
-#include "log.h"
 #include "framebuffer.h"
 #include "renderbuffer.h"
 #include "texture.h"
@@ -31,9 +28,7 @@ namespace client {
 #include <boost/thread.hpp>
 #include <boost/signals2.hpp>
 
-namespace amethyst
-{
-namespace client
+namespace amethyst::client
 {
 
 class Amethyst_GL
@@ -41,7 +36,7 @@ class Amethyst_GL
   public:
     using RenderFunc = void (const lib::Cartesian_Vector& reference);
 
-    Amethyst_GL(const std::string &path_root);
+    explicit Amethyst_GL(const std::string &path_root);
     virtual ~Amethyst_GL();
 
     void setupFramebuffers(void);
@@ -107,5 +102,4 @@ class Amethyst_GL
     ShaderProgram::UniformHDL shadereye_;
 };
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

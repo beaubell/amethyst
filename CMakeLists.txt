@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 3.16...3.19)
+cmake_minimum_required(VERSION 3.16...3.30)
 
 project(Amethyst LANGUAGES C CXX VERSION 0.1.0)
 
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 option(AMETHYST_GUI "Enable OpenGL Frontend" ON)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMake.local)
@@ -29,13 +29,6 @@ check_include_file(execinfo.h HAVE_EXECINFO_H)
 
 include(TestBigEndian)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
-
-include(CheckTypeSize)
-CHECK_TYPE_SIZE("short"       SIZEOF_SHORT)
-CHECK_TYPE_SIZE("int"         SIZEOF_INT)
-CHECK_TYPE_SIZE("float"       SIZEOF_FLOAT)
-CHECK_TYPE_SIZE("double"      SIZEOF_DOUBLE)
-CHECK_TYPE_SIZE("long double" SIZEOF_LONG_DOUBLE)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 

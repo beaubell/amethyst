@@ -3,11 +3,7 @@
   - ??? FIXME ??? implementations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "log.h"
@@ -15,12 +11,10 @@
 #include <string>
 #include <iostream>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
-Log::Log()
-{
-}
+Log::Log() = default;
+
 
 void Log::add(std::string message)
 {
@@ -33,5 +27,4 @@ const std::vector<std::string>& Log::log()
     return log_buffer_;
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

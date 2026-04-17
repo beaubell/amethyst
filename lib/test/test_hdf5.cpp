@@ -10,8 +10,6 @@
 
 #include "lib/io_hdf5.h"
 
-#include <iostream>
-
 using namespace amethyst::lib;
 using namespace boost::unit_test;
 
@@ -30,7 +28,7 @@ BOOST_AUTO_TEST_CASE ( test_hdf5_float_rw )
 
         // Create and Write Data to HDF5 File
         constexpr int dims = 2;
-        std::array<int, dims> shape = {{20,4}};
+        std::array<unsigned int, dims> shape = {{20,4}};
         Am2DArrayF test2d(shape);
         for (size_t i = 0; i < shape[0]; i++) {
             for (size_t j = 0; j < shape[1]; j++) {
@@ -66,7 +64,7 @@ BOOST_AUTO_TEST_CASE ( test_hdf5_float_rw )
 
         // Create and Write Data to HDF5 File
         constexpr int dims = 3;
-        std::array<int, dims> shape = {{20,4,8}};
+        std::array<unsigned int, dims> shape = {{20,4,8}};
         Am3DArrayF test3d(shape);
         for (size_t i = 0; i < shape[0]; i++) {
             for (size_t j = 0; j < shape[1]; j++) {
@@ -115,7 +113,7 @@ BOOST_AUTO_TEST_CASE ( test_hdf5_double_rw )
 
         // Create and Write Data to HDF5 File
         constexpr int dims = 2;
-        std::array<int, dims> shape = {{20,4}};
+        std::array<unsigned int, dims> shape = {{20,4}};
         Am2DArrayD test2d(shape);
         for (size_t i = 0; i < shape[0]; i++) {
             for (size_t j = 0; j < shape[1]; j++) {
@@ -126,7 +124,7 @@ BOOST_AUTO_TEST_CASE ( test_hdf5_double_rw )
         h5file.write_MDA_double(datatag, test2d);
 
         // Read Data Back from HDF5 File
-        std::array<int, dims> shape_read = {{1,1}};
+        std::array<unsigned int, dims> shape_read = {{1,1}};
         Am2DArrayD test2d_read(shape_read);
 
         h5file.read_MDA_double(datatag, test2d_read);
@@ -151,7 +149,7 @@ BOOST_AUTO_TEST_CASE ( test_hdf5_double_rw )
 
         // Create and Write Data to HDF5 File
         constexpr int dims = 3;
-        std::array<int, dims> shape = {{20,4,8}};
+        std::array<unsigned int, dims> shape = {{20,4,8}};
         Am3DArrayD test3d(shape);
         for (size_t i = 0; i < shape[0]; i++) {
             for (size_t j = 0; j < shape[1]; j++) {
@@ -164,7 +162,7 @@ BOOST_AUTO_TEST_CASE ( test_hdf5_double_rw )
         h5file.write_MDA_double(datatag, test3d);
 
         // Read Data Back from HDF5 File
-        std::array<int, dims> shape_read = {{1,1,1}};
+        std::array<unsigned int, dims> shape_read = {{1,1,1}};
         Am3DArrayD test3d_read(shape_read);
 
         h5file.read_MDA_double(datatag, test3d_read);

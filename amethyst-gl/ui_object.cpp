@@ -1,11 +1,12 @@
 #include "ui_object.h"
+#include "global.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 UI_Object::UI_Object()
-: _visibile(true)
+: _position(),
+  _visibile(true)
 {
 
 }
@@ -43,6 +44,9 @@ void UI_Object::update()
   
 }
 
+auto UI_Object::getExtents() -> glm::vec2 {
+    return {0.0,0.0};
+}
 
-} // namespace client
-} // namespace amethyst
+
+} // namespace amethyst::client

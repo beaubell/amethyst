@@ -3,7 +3,7 @@
   - Library Console CLI class implementations
 
  Authors (c):
- 2003-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2003-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "lib/console.h"
@@ -11,11 +11,6 @@
 #include <string>
 #include <vector>
 #include <functional>
-
-#include <signal.h>
-
-#include <stdlib.h>
-
 
 #include "console_io.h"
 #include "console_defs.h"
@@ -110,7 +105,7 @@ ConsoleCLI::catch_signal(int /*unused*/) {
 
 std::string
 ConsoleCLI::command_get() {
-    int    curpos = 0; // Cursor Position
+    unsigned int curpos = 0; // Cursor Position
     int    ret = 0;
     char   one = 0;        // Input Charater
 

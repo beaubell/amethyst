@@ -3,22 +3,25 @@
   - OpenGL Buffer Object Handling implementations
 
  Authors (c):
- 2016 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "bufferobj.h"
-
 #include "opengl.h"
 
-namespace amethyst {
-namespace client {
+#include <limits>
+
+
+
+namespace amethyst::client {
 
 #define DSA 0 //FIXME
 
 //
 //
 BufferObject::BufferObject(const BufferType& new_type)
- : type_(new_type)
+ : buffer_(std::numeric_limits<decltype(buffer_)>::max()),
+   type_(new_type)
 {
 #if DSA
     glCreateBuffers(1, &buffer_);
@@ -34,7 +37,7 @@ BufferObject::~BufferObject()
 }
 
 
-BufferObject::BufferHDL BufferObject::operator ()()
+BufferObject::BufferHDL BufferObject::operator ()() const
 {
     return buffer_;  
 }
@@ -52,12 +55,12 @@ const std::string& BufferObject::getName()
 }
 
 
-void BufferObject::bind()
+void BufferObject::bind() const
 {
     glBindBuffer(type_, buffer_);
 }
 
-void BufferObject::data(BufferSize size, const void* data, BufferUsage usage)
+void BufferObject::data(BufferSize size, const void* data, BufferUsage usage) const
 {
 #if DSA
     glNamedBufferData(buffer_, size, data, usage);
@@ -68,7 +71,7 @@ void BufferObject::data(BufferSize size, const void* data, BufferUsage usage)
 }
 
 
-void BufferObject::enableVertexAttribArray(unsigned int index)
+void BufferObject::enableVertexAttribArray(const unsigned int index) const
 {
 #if DSA
     //FIXME
@@ -79,7 +82,12 @@ void BufferObject::enableVertexAttribArray(unsigned int index)
 }
 
 
-void BufferObject::vertexAttribPointer(unsigned int index, int size, unsigned int type, bool normalized, unsigned int stride, const void * pointer)
+void BufferObject::vertexAttribPointer(const unsigned int index,
+                                       const int size,
+                                       const unsigned int type,
+                                       const bool normalized,
+                                       const int stride,
+                                       const void * pointer) const
 {
 #if DSA
     //FIXME
@@ -112,6 +120,7 @@ ElementArrayBuffer::ElementArrayBuffer()
 //
 //
 VertexArray::VertexArray()
+ : vao_(std::numeric_limits<decltype(vao_)>::max())
 {
     glGenVertexArrays(1, &vao_);
 }
@@ -121,22 +130,21 @@ VertexArray::~VertexArray()
     glDeleteVertexArrays(1, &vao_);
 }
 
-VertexArray::ArrayHDL VertexArray::operator ()()
+VertexArray::ArrayHDL VertexArray::operator ()() const
 {
     return vao_;  
 }
 
-void VertexArray::bind()
+void VertexArray::bind() const
 {
     glBindVertexArray(vao_);
 }
 
-void VertexArray::addBuffer(BufferObject::sptr buffer)
+void VertexArray::addBuffer(const BufferObject::sptr& buffer)
 {
     buffers_.push_back(buffer);
     bind();
     buffer->bind();
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

@@ -3,7 +3,7 @@
   - Heads up display function definitions
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "hud.h"
@@ -34,10 +34,8 @@
 #endif
 
 #include <stdio.h>
-#include <math.h> // for quaternion lenth calculation
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 using lib::Cartesian_Vector;
 using lib::Quaternion;
@@ -125,12 +123,12 @@ static void hud_widget_memory(int x, int y)
 {
     struct mallinfo2 mstats = mallinfo2();
     char status[100];
-    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %d",mstats.uordblks);
+    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Allocated: %zu", mstats.uordblks);
     //glRasterPos3f(-45.0f, 30.0f,-100.0f);
     //DEPRECATED glWindowPos2i(x, y);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
 
-    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Free: %d",mstats.fordblks);
+    snprintf(reinterpret_cast<char*>(&status), 50, "Memmory Blocks Free: %zu", mstats.fordblks);
     //glRasterPos3f(-45.0f, 29.0f,-100.0f);
     //DEPRECATED glWindowPos2i(x, y - 13);
     fonts[0]->Render(reinterpret_cast<char*>(&status));
@@ -288,6 +286,4 @@ static void hud_widget_vectorbox(int /*x unused*/, int /*y unused*/, float xvect
     glPopAttrib();
 }
 
-
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

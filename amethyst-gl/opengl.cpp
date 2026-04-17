@@ -3,11 +3,7 @@
   - OpenGL setup and processing function implemenations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "opengl.h"
@@ -23,13 +19,12 @@
 #include <GL/glcorearb.h>
 
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
-GLubyte const *glRenderer   = NULL;
-GLubyte const *glVendor     = NULL;
-GLubyte const *glVersion    = NULL;
-GLubyte const *glExtensions = NULL;
+GLubyte const *glRenderer   = nullptr;
+GLubyte const *glVendor     = nullptr;
+GLubyte const *glVersion    = nullptr;
+GLubyte const *glExtensions = nullptr;
 
 void GLDebugCallBack (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
@@ -86,9 +81,6 @@ void opengl_setup(void)
 
 void opengl_change_aspect(GLsizei w, GLsizei h)
 {
-
-    GLfloat fAspect;
-
     // Prevent a divide by zero, when window is too short
     // (you cant make a window of zero width).
     if(h == 0)
@@ -130,8 +122,8 @@ void GLDebugCallBack (GLenum source, GLenum type, GLuint id, GLenum severity, GL
     std::string logmessage = boost::lexical_cast<std::string>(source);
     Global.log.add(logmessage + std::string(message));
   
-    void *array[10];
-    size_t size;
+    //void *array[10];
+    //size_t size;
 
     // get void*'s for all entries on the stack
     //size = backtrace(array, 10);
@@ -143,7 +135,4 @@ void GLDebugCallBack (GLenum source, GLenum type, GLuint id, GLenum severity, GL
     //throw std::runtime_error(logmessage);
 }
 
-
-
-} // namespace amethyst
-} // namespace client
+} // namespace amethyst::client

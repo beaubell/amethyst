@@ -15,14 +15,13 @@
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
-Scene_Object_Base::Scene_Object_Base(void)
-{}
+Scene_Object_Base::Scene_Object_Base() = default;
 
-Scene_Object_Base::~Scene_Object_Base(void)
-{}
+
+Scene_Object_Base::~Scene_Object_Base() = default;
+
 
 
 void Scene_Object_Base::render(const TransMatrix& m_proj, const TransMatrix& m_view, const TransMatrix& m_model) //, const lib::Cartesian_Vector& reference)
@@ -47,11 +46,11 @@ void Scene_Object::render(const TransMatrix& m_proj, const TransMatrix& m_view, 
     //glTranslated(temp.x, temp.y, temp.z);
 
 
-    float theta = 2.0 * acos(attitude.w);
+    const auto theta = static_cast<float>(2.0 * acos(attitude.w));
     //TODEG(theta);
 
     //glRotated(theta, attitude.x, attitude.y, attitude.z);
-   TransMatrix model = glm::rotate(m_model, theta, glm::vec3(attitude.x, attitude.y, attitude.z));
+   TransMatrix mmodel = glm::rotate(m_model, theta, glm::vec3(attitude.x, attitude.y, attitude.z));
 
    Scene_Object_Base::render(m_proj, m_view, m_model);
 
@@ -59,31 +58,31 @@ void Scene_Object::render(const TransMatrix& m_proj, const TransMatrix& m_view, 
 
 
 void
-Scene_Object::fromYAML(YAML::Node ynode) {
+Scene_Object::fromYAML(const YAML::Node& ynode) {
 
     using namespace YAML;
     Object::fromYAML(ynode);
 
+
     Node ymodel = ynode["model"];
-    if (ymodel.IsScalar()) {
-        std::string modelstr = ymodel.as<std::string>();
+    if (ymodel.IsDefined() && ymodel.IsScalar()) {
+        auto modelstr = ymodel.as<std::string>();
         model = modelmanager.get(modelstr);
     }
 }
 
 
 void
-Scene_Ship::fromYAML(YAML::Node ynode) {
+Scene_Ship::fromYAML(const YAML::Node& ynode) {
 
     using namespace YAML;
     Object::fromYAML(ynode);
 
     Node ymodel = ynode["model"];
-    if (ymodel.IsScalar()) {
-        std::string modelstr = ymodel.as<std::string>();
+    if (ymodel.IsDefined() && ymodel.IsScalar()) {
+        auto modelstr = ymodel.as<std::string>();
         model = modelmanager.get(modelstr);
     }
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

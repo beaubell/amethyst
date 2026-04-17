@@ -4,7 +4,7 @@
   - Camera class declarations
 
  Authors (c):
- 2016-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2016-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "lib/orientation.h"
@@ -16,8 +16,7 @@
 #include <memory>
 
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 enum Eye {MONO = 0, LEFT = 1, RIGHT = 2, MAX = 3};
 
@@ -41,7 +40,10 @@ class Camera
     typedef std::weak_ptr<Camera>   wptr;
 
     Camera();
+    Camera(const Camera& rhs) = delete;
     virtual ~Camera();
+
+    Camera& operator=(const Camera&) = delete;
 
     //Set Screen;
     void setScreen(const Screen& scrnsize);
@@ -54,7 +56,7 @@ class Camera
     void genMatView() const;
 
     //Get Matrii
-    const PVMatrix& getMatrii(const Eye eye = Eye::MONO) const;
+    const PVMatrix& getMatrii(Eye eye = Eye::MONO) const;
 
     //Camera Position
     double getDistance() const;
@@ -82,8 +84,6 @@ class Camera
     Position cam_pos_;
 
   private:
-    Camera(const Camera& rhs) = delete;
-    Camera& operator=(const Camera&) = delete;
     glm::dvec2 screen;
     mutable double eyeseparation_;
     double yaw;
@@ -96,5 +96,4 @@ class Camera
 };
 
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

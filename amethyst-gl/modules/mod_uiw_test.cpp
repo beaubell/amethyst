@@ -3,11 +3,7 @@
   - UI Test Module implementations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "../amethyst-gl.h"
@@ -20,9 +16,7 @@
 #include "windows.h"
 #endif
 
-namespace amethyst {
-namespace client {
-namespace module {
+namespace amethyst::client::module {
 
 using boost::lexical_cast;
   
@@ -41,8 +35,8 @@ class UIW_Test : public UI_Window
 {
    public:
     UIW_Test(UI &ui);
-    ~UIW_Test();
-    void render();
+    ~UIW_Test() override;
+    void render(const TransMatrix& proj, const TransMatrix& window) override;
 
    private:
 };
@@ -59,9 +53,9 @@ UIW_Test::~UIW_Test()
 }
 
 
-void UIW_Test::render()
+void UIW_Test::render(const TransMatrix& proj, const TransMatrix& window)
 {
-
+   //FIXME, This needs updating
   glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);  // FIXME Seeing if this fixes the only on vertex pointer call problem
   glPushAttrib(GL_ALL_ATTRIB_BITS);
   
@@ -109,9 +103,7 @@ void UIW_Test::render()
 
 }
 
-} // namespace module
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client::module
 
 using namespace amethyst;
 using namespace amethyst::client;

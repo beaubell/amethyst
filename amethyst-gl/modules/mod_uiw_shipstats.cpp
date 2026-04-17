@@ -12,7 +12,6 @@
 
 #include "mod_uiw_shipstats.h"
 
-#include "../opengl.h"
 #include "../module.h"
 #include "../ui.h"
 #include "../global.h"
@@ -24,9 +23,7 @@
 #include "windows.h"
 #endif
 
-namespace amethyst {
-namespace client {
-namespace module {
+namespace amethyst::client::module {
 
 /// Module Static Objects
 static const std::string module_name = "uiw_shipstats";
@@ -159,15 +156,7 @@ void UIW_Shipstat::update()
     }
 }
 
-bool UIW_Shipstat::check_focus(unsigned short /*x unused*/, unsigned short /*y unused*/)
-{
-  
-    return false;  
-}
-
-} // namespace module
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client::module
 
 using namespace amethyst;
 using namespace amethyst::client;

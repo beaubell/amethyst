@@ -3,7 +3,7 @@
   - Camera class implementations
 
  Authors (c):
- 2016-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2016-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "camera.h"
@@ -14,11 +14,11 @@
 
 #include "yaml-cpp/yaml.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 Camera::Camera()
-: screen(1024.0,640.0),
+: cam_pos_(),
+  screen(1024.0,640.0),
   eyeseparation_(1.0),
   yaw(0),
   pitch(0),
@@ -28,10 +28,7 @@ Camera::Camera()
 
 }
 
-Camera::~Camera()
-{
-
-}
+Camera::~Camera() = default;
 
 void Camera::setScreen(const Screen& newscreen)
 {
@@ -210,5 +207,4 @@ Camera::fromYAML(YAML::Node cam) {
     
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

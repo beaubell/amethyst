@@ -1,28 +1,24 @@
+#ifndef AMETHYST_CLIENT_MOD_UIW_SHIPSTATS_H
+#define AMETHYST_CLIENT_MOD_UIW_SHIPSTATS_H
+
 /***********************************************************************
  Amethyst-GL Module
   - FPS UI module declarations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2026 Beau V.C. Bellamy (beau@stellarnetservices.net)
  ***********************************************************************/
 
 #include "../ui.h"
 #include "../ui_textbox.h"
 
-namespace amethyst {
-namespace client {
-namespace module {
+namespace amethyst::client::module {
 
 class UIW_Shipstat : public UI_Window
 {
    public:
     UIW_Shipstat(UI &ui);
-    void update();
-    bool check_focus(unsigned short x, unsigned short y);
+    void update() override;
 
    private:
     UI_TextBox::sptr _tbLocHead;
@@ -37,6 +33,6 @@ class UIW_Shipstat : public UI_Window
 
 };
 
-} // namespace module
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client::module
+
+#endif // AMETHYST_CLIENT_MOD_UIW_SHIPSTATS_H

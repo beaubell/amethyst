@@ -16,10 +16,10 @@ class UI_TextBox : public UI_Widget
   public:
     typedef std::shared_ptr<UI_TextBox> sptr;
     UI_TextBox(ftgl::FTFont &font, ShaderProgramFont::sptr shader);
-    virtual ~UI_TextBox();
+    ~UI_TextBox() override;
 
-    virtual void render(const TransMatrix& proj, const TransMatrix& mat);
-    virtual void update();
+    void render(const TransMatrix& proj, const TransMatrix& mat) override;
+    void update() override;
 
     void setText(const std::string& text);
 

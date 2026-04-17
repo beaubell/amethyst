@@ -16,8 +16,7 @@
 #include <string>
 #include <vector>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 class Log
 {
@@ -33,8 +32,7 @@ class Log
 
 };
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
 
 
 #endif // AMETHYST_CLIENT_LOG_H

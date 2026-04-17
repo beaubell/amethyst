@@ -6,11 +6,7 @@
   - Network setup and processing function prototypes
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <sys/types.h>
@@ -23,13 +19,10 @@
 
 #include "lib/manifest.h"
 
-#include <boost/array.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
 
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 class network_client
 {
@@ -156,7 +149,6 @@ class Server_Connection
     std::string server_hash;
 };
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
 
 #endif  /* NET_H */

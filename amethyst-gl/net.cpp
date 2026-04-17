@@ -3,11 +3,7 @@
   - Network setup and processing function implementations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 //#ifdef WIN32
@@ -24,8 +20,7 @@
 #include <boost/crypto/sha2.hpp>
 #include <boost/crypto/message_digest.hpp>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 void Server_Connection::start(const std::string &server,
                               const std::string &port,
@@ -377,5 +372,4 @@ int net_start_thread(void *data)
 
 #endif
 
-} //namespace client
-} //namespace amethyst
+} //namespace amethyst::client

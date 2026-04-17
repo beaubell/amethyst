@@ -6,11 +6,7 @@
   - Network setup and processing function prototypes
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -26,14 +22,12 @@
 
 #include <string>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 void opengl_setup(void);
 void opengl_change_aspect(GLsizei w, GLsizei h);
 int  opengl_check_errors(const std::string &where);
 
-} // namespace amethyst
-} // namespace client
+} // namespace amethyst::client
 
 #endif /* AMETHYST_CLIENT_OPENGL_H */

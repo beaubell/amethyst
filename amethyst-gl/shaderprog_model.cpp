@@ -16,8 +16,7 @@
 DECLARE_RESOURCE(amethyst_gl_shaders_model_vert);
 DECLARE_RESOURCE(amethyst_gl_shaders_model_frag);
 
-namespace amethyst {
-namespace client{
+namespace amethyst::client {
 
 MaterialInfo::MaterialInfo(YAML::Node ymatinfo) {
     using namespace YAML;
@@ -28,7 +27,7 @@ MaterialInfo::MaterialInfo(YAML::Node ymatinfo) {
     Node yshininess = ymatinfo["shininess"];
 
     if (yka.IsSequence() && yka.size() == 3) {
-        for (int i = 0; i < yka.size(); i++)
+        for (std::size_t i = 0; i < yka.size(); i++)
             Ka[i] = yka[i].as<float_type>();
         std::cout << Ka[0] << Ka[1] << Ka[2] << std::endl;
     }
@@ -123,5 +122,4 @@ unsigned int  ShaderProgramModel::getNormalLoc()
     return normalLoc_.value;
 }
 
-} // namespace lib
-} // namespace amethyst
+} // namespace amethyst::lib

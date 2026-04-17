@@ -3,21 +3,20 @@
   - Instantiation of global class
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "global.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 __global::__global()
 {
     // Field of view (in degrees)
     fov      =     40;
 
-    mainwindow = NULL;
-    maincontext = 0;
+    mainwindow = nullptr;
+    maincontext = nullptr;
 
     screen_x = 1024;
     screen_y = 640;
@@ -61,5 +60,4 @@ __global::__global()
 
 __global Global;
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
