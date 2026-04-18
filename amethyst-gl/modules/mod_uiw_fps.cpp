@@ -3,11 +3,7 @@
   - FPS UI module implementations
 
  Authors (c):
- 2008-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "../module.h"
@@ -18,13 +14,13 @@
 
 #include <iostream>
 
+#include <SDL3/SDL_timer.h>
+
 #ifdef WIN32
 #include "windows.h"
 #endif
 
-namespace amethyst {
-namespace client {
-namespace module {
+namespace amethyst::client::module {
 
 /// Module Static Objects
 static const std::string module_name = "uiw_fps";
@@ -73,9 +69,8 @@ void UIW_FPS::update()
 
 }
 
-} // namespace module
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client::module
+
 
 using namespace amethyst;
 using namespace amethyst::client;

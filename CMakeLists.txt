@@ -12,7 +12,7 @@ include(CMakeRC)
 
 #set(Boost_USE_STATIC_LIBS ON)
 
-find_package(SDL2)
+find_package(SDL3)
 find_package(Boost 1.71.0 COMPONENTS chrono date_time filesystem system thread timer iostreams unit_test_framework REQUIRED)
 find_package(OpenGL)
 find_package(GLEW)
@@ -45,7 +45,7 @@ add_subdirectory(lib)
 add_subdirectory(server)
 
 # Build only the server if no gui components exist
-if( SDL2_FOUND AND AMETHYST_GUI )
+if( SDL3_FOUND AND AMETHYST_GUI )
     add_subdirectory(support/FTGL)
     add_subdirectory(amethyst-gl)
 endif()

@@ -3,16 +3,13 @@
   - Joystick input setup function definitions
 
  Authors (c):
- 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2004-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <iostream>
 
-#include "SDL.h"
+#include "SDL3/SDL_joystick.h"
+#include "SDL3/SDL.h"
 
 #include "joystick.h"
 #include "global.h"
@@ -20,8 +17,7 @@
 using namespace std;
 using namespace amethyst;
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 Joystick::Joystick()
@@ -31,34 +27,36 @@ Joystick::Joystick()
 {
     cout << "Initializing Joysticks...";
 
-    SDL_InitSubSystem(SDL_INIT_JOYSTICK);
+    SDL_Init(SDL_INIT_JOYSTICK);
 
     cout << "OK!" << endl;
 
     // Check for joysticks
-    joysticks = SDL_NumJoysticks();
-    cout << " Found " << joysticks << " joysticks" << endl;
+    int numJoysticks = 0;
+    SDL_JoystickID* joysticksIDs = SDL_GetJoysticks(&numJoysticks);
+    cout << " Found " << numJoysticks << " joysticks" << endl;
 
-    for(int i = 0;i < joysticks; i++){
+    for(int i = 0;i < numJoysticks; i++){
 
+        auto joyId = joysticksIDs[i];
         // Open joystick
-        Global.joystick[i] = SDL_JoystickOpen(i);
+        joystick[joyId] = SDL_OpenJoystick(i);
 
-        if(Global.joystick[i])
+        if(joystick[i])
         {
             cout << " Opened Joystck " << i << endl;
-            cout << "  Name   : " << SDL_JoystickName(Global.joystick[i]) << endl;
-            cout << "  Axises : " << SDL_JoystickNumAxes(Global.joystick[i]) << endl;
-            cout << "  Buttons: " << SDL_JoystickNumButtons(Global.joystick[i]) << endl;
-            cout << "  Hats   : " << SDL_JoystickNumHats(Global.joystick[i])    << endl;
-            cout << "  Balls  : " << SDL_JoystickNumBalls(Global.joystick[i])   << endl;
+            cout << "  Name   : " << SDL_GetJoystickName(joystick[joyId]) << endl;
+            cout << "  Axises : " << SDL_GetNumJoystickAxes(joystick[joyId]) << endl;
+            cout << "  Buttons: " << SDL_GetNumJoystickButtons(joystick[joyId]) << endl;
+            cout << "  Hats   : " << SDL_GetNumJoystickHats(joystick[joyId])    << endl;
+            cout << "  Balls  : " << SDL_GetNumJoystickBalls(joystick[joyId])   << endl;
         }
         else
             cout << "NOES!1  Couldn't open Joystick " << i << endl;
 
     }
 
-    if (joysticks == 0)
+    if (numJoysticks == 0)
       cout << "NOES!1 No Joysticks found." << endl;
 }
 
@@ -75,8 +73,7 @@ Joystick::~Joystick()
     */
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
 
 
 short joystick_axis_norm(short value, unsigned short null)

@@ -3,7 +3,7 @@
   - Input function definitions
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include <iostream>
@@ -17,8 +17,7 @@
 #include <boost/lexical_cast.hpp>
 #include <math.h>
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 Input::Input(Amethyst_GL &context)
@@ -45,41 +44,41 @@ int Input::process_events()
 
         switch (event.type)
         {
-            case SDL_KEYDOWN:
+            case SDL_EVENT_KEY_DOWN:
                 if(event_keydown(event.key))
                     return 1;
                 break;
 
-            case SDL_KEYUP:
+            case SDL_EVENT_KEY_UP:
                 if(event_keyup(event.key))
                     return 1;
                 break;
 
-            case SDL_MOUSEBUTTONDOWN:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 event_mouse_buttondown(event.button);
                 break;
 
-            case SDL_MOUSEBUTTONUP:
+            case SDL_EVENT_MOUSE_BUTTON_UP:
                 event_mouse_buttonup(event.button);
                 break;
 
-            case SDL_MOUSEMOTION:
+            case SDL_EVENT_MOUSE_MOTION:
                 event_mouse_motion(event.motion);
                 break;
                 
-            case SDL_MOUSEWHEEL:
+            case SDL_EVENT_MOUSE_WHEEL:
                 event_mouse_wheel(event.wheel);
                 break;
 
-            case SDL_JOYAXISMOTION:
+            case SDL_EVENT_JOYSTICK_AXIS_MOTION:
                 event_joy_axismotion(event.jaxis);
                 break;
 
-            case SDL_WINDOWEVENT:
+            case SDL_EVENT_WINDOW_RESIZED:
                 event_window(event.window);
                 break;
 
-            case SDL_QUIT:
+            case SDL_EVENT_QUIT:
                 return 1;
         }
     }
@@ -91,7 +90,7 @@ int Input::process_events()
 
 int Input::event_keydown(const SDL_KeyboardEvent &key)
 {
-    switch (key.keysym.sym)
+    switch (key.key)
     {
         case SDLK_ESCAPE:
             return 1;
@@ -122,7 +121,7 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
 
         default:
         {
-          SDL_Scancode scancode = SDL_GetScancodeFromKey(key.keysym.sym);
+          SDL_Scancode scancode = key.scancode;
           
           if (kb_lctrl || kb_rctrl)
             sig_kb_ctl[scancode]();
@@ -152,7 +151,7 @@ int Input::event_keydown(const SDL_KeyboardEvent &key)
 
 int Input::event_keyup(const SDL_KeyboardEvent &key)
 {
-    switch (key.keysym.sym)
+    switch (key.key)
     {
         case SDLK_LALT:
             kb_lalt = false;
@@ -228,7 +227,7 @@ int Input::event_mouse_buttondown(const SDL_MouseButtonEvent &button)
 	{
 	  ui_has_focus_ = false;
 	  mouse_camera = true;
-          SDL_SetRelativeMouseMode(SDL_TRUE);
+          SDL_SetWindowRelativeMouseMode(Global.mainwindow, true);
 	}
     }
 
@@ -247,7 +246,7 @@ int Input::event_mouse_buttonup(const SDL_MouseButtonEvent &button)
     if (button.button == SDL_BUTTON_LEFT)
     {
         mouse_camera = false;
-        SDL_SetRelativeMouseMode(SDL_FALSE);
+        SDL_SetWindowRelativeMouseMode(Global.mainwindow, false);
     }
     
     return 0;
@@ -295,7 +294,7 @@ int Input::event_joy_axismotion(const SDL_JoyAxisEvent &jaxis)
 
 int Input::event_window(const SDL_WindowEvent &window)
 {
-    if (window.event == SDL_WINDOWEVENT_RESIZED)
+    if (window.type == SDL_EVENT_WINDOW_RESIZED)
     {
         int w = window.data1;
         int h = window.data2;
@@ -308,5 +307,4 @@ int Input::event_window(const SDL_WindowEvent &window)
 }
 
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

@@ -3,19 +3,15 @@
   - Timing function implementations
 
  Authors (c):
- 2006-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 
 #include "timer.h"
 #include "global.h"
+#include "SDL3/SDL_timer.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 unsigned int time_left(void)
 {
@@ -28,5 +24,4 @@ unsigned int time_left(void)
     return Global.next_time - now;
 }
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

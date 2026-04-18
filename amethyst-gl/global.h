@@ -16,6 +16,7 @@
 
 #include "joystick.h"
 #include "log.h"
+#include "SDL3/SDL_video.h"
 
 #define WIDTH  800
 #define HEIGHT 600
@@ -65,7 +66,6 @@ class __global {
       unsigned int screen_y;
 
       // Joystick
-      SDL_Joystick     *joystick[16];      // Pointers to joysticks
       Joy_Axis_Map      axis_pitch;
       Joy_Axis_Map      axis_roll;
       Joy_Axis_Map      axis_yaw;

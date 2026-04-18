@@ -6,14 +6,11 @@
   - Joystick input setup function declarations
 
  Authors (c):
- 2004-2008 Beau V.C. Bellamy (beau@stellarnetservices.net)
-
- $Revision$
- $LastChangedDate$
- $LastChangedBy$
+ 2004-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
-#include "SDL.h"
+#include <map>
+#include "SDL3/SDL_joystick.h"
 
 typedef struct {
    int joystick;
@@ -22,8 +19,7 @@ typedef struct {
 
 short joystick_axis_norm(short value, unsigned short null);
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 class Joystick
@@ -37,13 +33,11 @@ class Joystick
     short             joy_min;
 
    private:
-     int               joysticks;         // Number of joysticks
-     SDL_Joystick     *joystick[16];      // Pointers to joysticks
+     std::map<SDL_JoystickID, SDL_Joystick*> joystick;      // Pointers to joysticks
 
 };
 
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
 
 #endif /* AMETHYST_CLIENT_JOYSTICK_H */

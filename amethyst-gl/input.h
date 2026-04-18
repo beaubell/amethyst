@@ -4,23 +4,22 @@
   - Input function declarations
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 // Forward Delcaration
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
   class Input;
-}
 }
 
 #include <boost/signals2.hpp>
 
 #include "joystick.h"
 #include "amethyst-gl.h"
+#include "SDL3/SDL_scancode.h"
+#include "SDL3/SDL_events.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 
 class Input
@@ -34,9 +33,9 @@ class Input
     typedef boost::signals2::signal<void ()> Signal_kb;
     typedef boost::signals2::signal<void (signed short)> Signal_axis;
 
-    Signal_kb sig_kb[SDL_NUM_SCANCODES];
-    Signal_kb sig_kb_shift[SDL_NUM_SCANCODES];
-    Signal_kb sig_kb_ctl[SDL_NUM_SCANCODES];
+    Signal_kb sig_kb[SDL_SCANCODE_COUNT];
+    Signal_kb sig_kb_shift[SDL_SCANCODE_COUNT];
+    Signal_kb sig_kb_ctl[SDL_SCANCODE_COUNT];
 
    private:
     /// Process Keyboard Key Down/Up
@@ -73,9 +72,6 @@ class Input
     /// Process User Event
     int event_user(const SDL_UserEvent &user);
 
-    /// Process Window Manager Events
-    int event_wm(const SDL_SysWMEvent &syswm);
-
     /// flag for when alt key is held down.
     bool kb_lalt;
     bool kb_ralt;
@@ -99,5 +95,4 @@ class Input
 };
 
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client

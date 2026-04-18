@@ -3,7 +3,7 @@
   - Main client initialization
 
  Authors (c):
- 2008-2020 Beau V.C. Bellamy (beau@stellarnetservices.net)
+ 2008-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "amethyst-gl.h"
@@ -25,6 +25,8 @@
 
 #include "yaml-cpp/yaml.h"
 #include <iostream>
+
+#include <SDL3/SDL.h>
 
 #ifdef WIN32
 #define PROFILE_DIR_ENV "APPDATA"
@@ -66,11 +68,14 @@ static void sdl_setup()
     using namespace amethyst::client;
   
     cout << "Initializing SDL...";
-    if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+    if (SDL_Init(SDL_INIT_VIDEO)) {
+        cout << "Success!" << endl;
+
+    } else {
         fprintf(stderr,
                 "Couldn't initialize SDL: %s\n", SDL_GetError());
         exit(1);
-    } else cout << "Success!" << endl;
+    }
 
     atexit(SDL_Quit);
 
@@ -97,7 +102,7 @@ static void sdl_setup()
     SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4);
     //SDL_GL_SetAttribute( SDL_GL_STEREO, 1 );
 
-    Global.mainwindow = SDL_CreateWindow(QUOTEME(AMETHYST_LONG_NAME), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    Global.mainwindow = SDL_CreateWindow(QUOTEME(AMETHYST_LONG_NAME), WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
     if (!Global.mainwindow)
     {
@@ -244,7 +249,7 @@ int main(int argc, char* argv[])
 
     module_manager.unload_all();
     
-    SDL_GL_DeleteContext(Global.maincontext);
+    SDL_GL_DestroyContext(Global.maincontext);
     SDL_DestroyWindow(Global.mainwindow);
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
 

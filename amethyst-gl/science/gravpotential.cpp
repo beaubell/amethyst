@@ -11,7 +11,7 @@
 #include <fstream>
 #include <cmath>
 
-#include "SDL_keycode.h"
+#include "SDL3/SDL_keycode.h"
 
 DECLARE_RESOURCE(amethyst_gl_science_gravpotential_cl);
 DECLARE_RESOURCE(amethyst_gl_science_colorizer_frag);

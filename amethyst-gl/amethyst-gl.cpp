@@ -3,7 +3,7 @@
   - Starup / Main Loop Functions
 
  Authors (c):
- 2006-2020 Beau V.C. Bellamy (bellamy.beau@gmail.com)
+ 2006-2026 Beau V.C. Bellamy (bellamy.beau@gmail.com)
  ***********************************************************************/
 
 
@@ -34,6 +34,8 @@
 #include <string>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+
+#include <SDL3/SDL_timer.h>
 
 #define TICK_INTERVAL    10
 
@@ -379,14 +381,14 @@ void Amethyst_GL::fullscn_toggle()
 {
   if (fullscreen)
   {
-    SDL_SetWindowFullscreen(Global.mainwindow, 0);
+    SDL_SetWindowFullscreen(Global.mainwindow, false);
     SDL_RestoreWindow(Global.mainwindow);
   }
   else
   { 
     //SDL_SetWindowFullscreen(Global.mainwindow, SDL_WINDOW_FULLSCREEN);
     SDL_MaximizeWindow(Global.mainwindow);
-    SDL_SetWindowFullscreen(Global.mainwindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_SetWindowFullscreen(Global.mainwindow, true);
   }
 
   fullscreen = !fullscreen;

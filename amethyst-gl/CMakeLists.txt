@@ -52,7 +52,7 @@ target_link_libraries(amethyst-glcore
   amrc::science_cl
   amrc::shader_srcs
   amrc::res_srcs
-  SDL2::SDL2
+  SDL3::SDL3
   ${CMAKE_DL_LIBS}
   libamethyst
   ftgl::ftgl

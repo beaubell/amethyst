@@ -4,7 +4,7 @@
 
  Authors (c):
  2006      Jason A. Guild    (aguild@gmail.com)
- 2006-2020 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
+ 2006-2026 Beau V.C. Bellamy (beau@bellamy.beau@gmail.com)
  ***********************************************************************/
 
 #include "texture.h"
@@ -17,8 +17,7 @@
 
 #include "global.h"
 
-namespace amethyst {
-namespace client {
+namespace amethyst::client {
 
 extern __global Global;
 
@@ -205,15 +204,15 @@ bool getBitmapImageData(const Resource& res, textureImage *pImage )
     Uint16 t2 = 0;
 
     // Parse Header
-    pImage->width = SDL_SwapLE32(res.getUInt32(BMP_WIDTH_OFF));
-    pImage->height = SDL_SwapLE32(res.getUInt32(BMP_HEIGHT_OFF));
-    nNumPlanes = SDL_SwapLE16(res.getUInt16(BMP_NPLANES_OFF));
+    pImage->width = SDL_Swap32LE(res.getUInt32(BMP_WIDTH_OFF));
+    pImage->height = SDL_Swap32LE(res.getUInt32(BMP_HEIGHT_OFF));
+    nNumPlanes = SDL_Swap16LE(res.getUInt16(BMP_NPLANES_OFF));
 
     if( nNumPlanes != 1 )
         std::cout << "ERROR: getBitmapImageData - Plane count from " << res.name()
                   << " is not 1: " << nNumPlanes << "." << std::endl;
 
-    nNumBPP = SDL_SwapLE16(res.getUInt16(BMP_NBPP_OFF));
+    nNumBPP = SDL_Swap16LE(res.getUInt16(BMP_NBPP_OFF));
 
     if( nNumBPP != 24 )
         std::cout << "ERROR: getBitmapImageData - BPP from " << res.name()
@@ -257,5 +256,4 @@ bool getBitmapImageData(const Resource& res, textureImage *pImage )
 }
 
 
-} // namespace client
-} // namespace amethyst
+} // namespace amethyst::client
