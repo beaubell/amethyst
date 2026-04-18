@@ -26,7 +26,7 @@ class FTGL_EXPORT FTContour
          * @param pointTags
          * @param numberOfPoints
          */
-        FTContour( FT_Vector* contour, char* pointTags, unsigned int numberOfPoints);
+        FTContour( FT_Vector* contour, unsigned char* pointTags, unsigned int numberOfPoints);
 
         /**
          * Destructor

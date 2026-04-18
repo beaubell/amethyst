@@ -72,7 +72,7 @@ void FTContour::evaluateCubicCurve()
 }
 
 
-FTContour::FTContour( FT_Vector* contour, char* pointTags, unsigned int numberOfPoints)
+FTContour::FTContour( FT_Vector* contour, unsigned char* pointTags, unsigned int numberOfPoints)
 {
     for( unsigned int pointIndex = 0; pointIndex < numberOfPoints; ++ pointIndex)
     {

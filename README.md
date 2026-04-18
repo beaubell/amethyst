@@ -19,7 +19,7 @@ Demo of Gravimetric Potential Plane visualization module.
 # Build Requirements
 
 - [ ] Boost
-- [ ] Simple DirectMedia Layer v2 (libSDL2)
+- [ ] Simple DirectMedia Layer v3 (libSDL3)
 - [ ] OpenGL
 - [ ] OpenCL
 - [ ] OpenAL
@@ -31,7 +31,7 @@ Demo of Gravimetric Potential Plane visualization module.
 If GUI components (OpenGL, X11, etc) are missing during build, only the library, server, and commandline utilities will be built.
 
 ## on Fedora
-`dnf install boost-devel boost-static freetype-devel libxml2-devel SDL2-devel SDL2-static glew-devel hdf5-devel ocl-icd-devel openal-soft-devel glut-devel vulkan-loader-devel vulkan-headers vulkan-validation-layers-devel`
+`dnf install boost-devel boost-static freetype-devel SDL3-devel SDL3-static glew-devel hdf5-devel ocl-icd-devel openal-soft-devel glut-devel vulkan-loader-devel vulkan-headers vulkan-validation-layers-devel`
 
 # Building
 `mkdir build && cd build`
